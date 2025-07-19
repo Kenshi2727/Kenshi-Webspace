@@ -1,1 +1,1 @@
-# Kenshi WebSpace
+# Kenshi WebSpace - Prototype
