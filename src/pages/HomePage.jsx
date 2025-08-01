@@ -45,7 +45,7 @@ const HomePage = () => {
                         <Link
                             to="#"
                             className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-800 bg-opacity-60 hover:bg-opacity-70"
-                        >Join as Writer</Link>
+                        >Contribute Now !</Link>
                     </motion.div>
                 </div>
             </motion.section>

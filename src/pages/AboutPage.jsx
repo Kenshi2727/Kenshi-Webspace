@@ -1,13 +1,39 @@
 import React from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import { img } from 'framer-motion/client';
 
 const AboutPage = () => {
     const teamMembers = [
-        { id: 1, name: "Alex Johnson", role: "Founder & Editor", bio: "10+ years of experience in web development and technical writing." },
-        { id: 2, name: "Sarah Williams", role: "Senior Writer", bio: "Specializes in React and frontend architecture. Passionate about developer education." },
-        { id: 3, name: "Michael Chen", role: "Content Strategist", bio: "Helps shape our content direction and community engagement." },
-        { id: 4, name: "Emma Rodriguez", role: "UI/UX Expert", bio: "Brings design thinking to our technical content and visual presentations." },
+        {
+            id: 1,
+            name: "Abhishek Mathur",
+            role: "Founder & Editor",
+            bio: "Specializes in web development and technology.",
+            // img: "./assets/abhishek.jpg"
+            img: "https://placehold.co/640x400"
+        },
+        {
+            id: 2,
+            name: "Rishikesh Shukla",
+            role: "Contributor & Editor",
+            bio: "Specializes in Machine Learning and AI.",
+            img: "src/assets/rishikesh.jpg"
+        },
+        {
+            id: 3,
+            name: "Soon to be added",
+            role: "Designer",
+            bio: "Specializes in UI/UX design.",
+            img: "https://placehold.co/640x400"
+        },
+        {
+            id: 4,
+            name: "Soon to be added",
+            role: "Cloud and DevOps Specialist",
+            bio: "Expert in cloud infrastructure and DevOps practices.",
+            img: "https://placehold.co/640x400"
+        }
     ];
 
     return (
@@ -21,7 +47,7 @@ const AboutPage = () => {
                         About Kenshi Webspace
                     </h1>
                     <p className="mt-6 max-w-2xl mx-auto text-xl text-gray-500">
-                        Our mission is to create the best learning platform for modern web developers
+                        Kenshi Webspace is the world of Abhishek Mathur, a place where I share my learnings, projects, and tech journey..
                     </p>
                 </div>
 
@@ -31,14 +57,13 @@ const AboutPage = () => {
                         <div className="mb-10 lg:mb-0">
                             <h2 className="text-3xl font-bold text-gray-900 mb-6">Our Story</h2>
                             <p className="text-gray-600 mb-4">
-                                Blogify was founded in 2020 with a simple goal: to create high-quality, accessible
-                                learning resources for web developers. We noticed a gap between rapidly evolving web
-                                technologies and the learning materials available to developers.
+                                Kenshi Webspace was founded in 2025 with a simple goal: to create high-quality, accessible
+                                learning resources for tech enthusiasts. This platform will showcase the learnings, projects,
+                                and journey of me(Abhishek Mathur aka Kenshi) and my fellow contributors and tech friends.
                             </p>
                             <p className="text-gray-600 mb-4">
-                                What started as a small blog with a few tutorials has grown into a comprehensive
-                                platform with contributions from industry experts around the world. Today, we serve
-                                over 500,000 developers every month.
+                                We have started as a small blog but will soon expand into different areas of tech including
+                                Web Development, AI & ML, Cloud, DevOps, etc.
                             </p>
                             <p className="text-gray-600">
                                 We're committed to keeping all our content up-to-date, accurate, and completely free.
@@ -87,7 +112,7 @@ const AboutPage = () => {
                     <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
                         {teamMembers.map((member) => (
                             <div key={member.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-                                <div className="bg-gray-200 border-2 border-dashed w-full h-48" />
+                                <img src={member.img} className="w-full h-48" />
                                 <div className="p-6">
                                     <h3 className="text-xl font-bold text-gray-900">{member.name}</h3>
                                     <p className="text-indigo-600 font-medium">{member.role}</p>
@@ -111,7 +136,7 @@ const AboutPage = () => {
                                 Create Account
                             </button>
                             <button className="bg-indigo-800 text-white px-6 py-3 rounded-md font-medium hover:bg-indigo-700 transition-colors">
-                                Follow on Twitter
+                                Follow on GitHub
                             </button>
                         </div>
                     </div>

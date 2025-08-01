@@ -41,7 +41,7 @@ const Footer = () => {
                 </div>
                 <div className="mt-12 border-t border-gray-700 pt-8">
                     <p className="text-base text-gray-400 text-center">
-                        &copy; 2023 Blogify. All rights reserved.
+                        &copy; {new Date().getFullYear()} Kenshi Webspace. All rights reserved.
                     </p>
                 </div>
             </div>
