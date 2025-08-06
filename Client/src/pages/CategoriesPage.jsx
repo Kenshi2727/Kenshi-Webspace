@@ -17,7 +17,7 @@ const CategoriesPage = () => {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <Navbar />
+            {/* <Navbar /> */}
 
             <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-12">
@@ -62,7 +62,7 @@ const CategoriesPage = () => {
                 </div>
             </div>
 
-            <Footer />
+            {/* <Footer /> */}
         </div>
     );
 };
