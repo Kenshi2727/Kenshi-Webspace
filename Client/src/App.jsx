@@ -8,6 +8,7 @@ import SignInPage from './auth/SignInPage';
 import ArticlePage from './pages/ArticlePage';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import EditorPage from './pages/EditorPage';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/about" element={<AboutPage />} />
           <Route path="/auth/login" element={<SignInPage />} />
           <Route path="/articles/:id" element={<ArticlePage />} />
+          <Route path="/articles/:id/edit" element={<EditorPage />} />
           {/* Add more routes as needed */}
         </Routes>
       </main>

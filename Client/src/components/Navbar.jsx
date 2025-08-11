@@ -53,7 +53,4 @@ export default function Navbar() {
         </motion.nav>
     );
 }
-<<<<<<< HEAD
 
-=======
->>>>>>> e062ed1e1daac7f7dea9c095c0b48513a7025075

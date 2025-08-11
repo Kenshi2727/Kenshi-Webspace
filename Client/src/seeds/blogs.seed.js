@@ -1,19 +1,19 @@
 export const featuredPosts = [
-    {
-        id: 1,
-        title: 'Redis Explained: The In-Memory Data Store Powering Real-Time Applications',
-        excerpt:
-            'Redis is a lightning-fast, in-memory data store used for caching, real-time analytics, and high-performance applications.',
-        category: 'React',
-        date: 'June 15, 2023',
-        readTime: '5 min read',
-        category: 'Web Dev',
-        author: 'Kenshi',
-        thumbnail: '/thumbnail1.png',
-        authorImg: 'https://i.pravatar.cc/150?u=kenshi',
-        coverImg: '/cover1.png',
-        content:
-            `If you’ve ever wondered how real-time applications like chat systems, gaming leaderboards, or caching layers work so seamlessly, chances are Redis is behind the scenes. Redis is a blazing-fast, in-memory key-value store that’s revolutionized how developers build high-performance applications.
+  {
+    id: 1,
+    title: 'Redis Explained: The In-Memory Data Store Powering Real-Time Applications',
+    excerpt:
+      'Redis is a lightning-fast, in-memory data store used for caching, real-time analytics, and high-performance applications.',
+    category: 'React',
+    date: 'June 15, 2023',
+    readTime: '5 min read',
+    category: 'Web Dev',
+    author: 'Kenshi',
+    thumbnail: '/thumbnail1.png',
+    authorImg: 'https://i.pravatar.cc/150?u=kenshi',
+    coverImg: '/cover1.png',
+    content:
+      `If you’ve ever wondered how real-time applications like chat systems, gaming leaderboards, or caching layers work so seamlessly, chances are Redis is behind the scenes. Redis is a blazing-fast, in-memory key-value store that’s revolutionized how developers build high-performance applications.
 
 🚀 What is Redis?
 Redis (REmote DIctionary Server) is an open-source, in-memory data structure store used as a database, cache, and message broker. Unlike traditional databases that store data on disk, Redis stores everything in RAM, offering sub-millisecond response times.
@@ -127,77 +127,58 @@ Redis isn’t just a cache—it’s a multi-purpose powerhouse that supports rea
 
 
         `
-    },
+  },
 
-    {
-        id: 2,
-        title: 'Mastering WebSockets: Real-Time Communication Made Simple',
-        excerpt:
-            'WebSockets enable real-time, full-duplex communication between the client and server over a single connection.',
-        category: 'Web Dev',
-        date: 'July 10, 2023',
-        readTime: '6 min read',
-        author: 'Wild Coyote',
-        thumbnail: '/thumbnail2.png',
-        authorImg: 'https://i.pravatar.cc/150?u=kenshi2',
-        coverImg: '/cover2.png',
-        content:
-            `Building real-time features like live chat, notifications, or collaborative apps? WebSockets are your go-to solution.
+  {
+    id: 2,
+    title: 'Mastering WebSockets: Real-Time Communication Made Simple',
+    excerpt:
+      'WebSockets enable real-time, full-duplex communication between the client and server over a single connection.',
+    category: 'Web Dev',
+    date: 'July 10, 2023',
+    readTime: '6 min read',
+    author: 'Wild Coyote',
+    thumbnail: '/thumbnail2.png',
+    authorImg: 'https://i.pravatar.cc/150?u=kenshi2',
+    coverImg: '/cover2.png',
+    content:
+      `
+# GitHub Flavored Markdown Example
 
-🌐 What are WebSockets?
+## Features
+- **Bold**, *Italic*, ~~Strikethrough~~
+- Task List:
+  - [x] Done
+  - [ ] Pending
 
-WebSockets provide a full-duplex communication channel over a single TCP connection, allowing clients and servers to exchange data instantly without the need for repeated HTTP requests.
+## Table
+| Name | Value |
+|------|-------|
+| One  | 1     |
+| Two  | 2     |
 
-🔄 How It Works:
+## Code Block
+\`\`\`js
+console.log('Hello, world!');
+\`\`\`
 
-1. Client initiates a handshake with the server.
-2. If accepted, the server switches to the WebSocket protocol.
-3. Now both can send messages independently and in real-time.
 
-⚙️ Use Cases:
+            `
+  },
 
-- Chat apps
-- Live stock updates
-- Online multiplayer games
-- Collaborative tools like Google Docs
-
-🚀 Implementing WebSockets:
-
-Using Node.js with the 'ws' package:
-
-const WebSocket = require('ws');
-const wss = new WebSocket.Server({ port: 8080 });
-
-wss.on('connection', function connection(ws) {
-  ws.on('message', function incoming(message) {
-    console.log('received:', message);
-  });
-  ws.send('Hello from server!');
-});
-
-🔐 Security:
-
-- Use WSS (WebSocket Secure)
-- Validate all incoming data
-- Implement authentication and rate limiting
-
-WebSockets allow modern apps to deliver seamless, real-time interactions, improving user experience and system responsiveness.
-`
-    },
-
-    {
-        id: 3,
-        title: 'PostgreSQL Essentials: Powerful, Open-Source Relational Database',
-        excerpt:
-            'PostgreSQL is a robust, enterprise-grade open-source database system known for extensibility and SQL compliance.',
-        category: 'Databases',
-        date: 'July 24, 2023',
-        readTime: '7 min read',
-        author: 'Ragnar Lothbrok',
-        thumbnail: '/thumbnail3.png',
-        authorImg: 'https://i.pravatar.cc/150?u=kenshi3',
-        coverImg: '/cover3.png',
-        content: `
+  {
+    id: 3,
+    title: 'PostgreSQL Essentials: Powerful, Open-Source Relational Database',
+    excerpt:
+      'PostgreSQL is a robust, enterprise-grade open-source database system known for extensibility and SQL compliance.',
+    category: 'Databases',
+    date: 'July 24, 2023',
+    readTime: '7 min read',
+    author: 'Ragnar Lothbrok',
+    thumbnail: '/thumbnail3.png',
+    authorImg: 'https://i.pravatar.cc/150?u=kenshi3',
+    coverImg: '/cover3.png',
+    content: `
 PostgreSQL, also known as Postgres, is a powerful, open-source object-relational database system used by organizations of all sizes.
 
 💡 Why PostgreSQL?
@@ -235,7 +216,7 @@ SELECT * FROM users;
 
 PostgreSQL is ideal for applications needing reliable, feature-rich relational data management — from web apps to financial systems.
 `
-    }
+  }
 
 
 
