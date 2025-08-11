@@ -38,14 +38,14 @@ const AboutPage = () => {
         {
             id: 3,
             name: "Soon to be added",
-            role: "Designer",
+            role: "Unallocated",
             bio: "Specializes in UI/UX design.",
             img: "https://placehold.co/640x400"
         },
         {
             id: 4,
             name: "Soon to be added",
-            role: "Cloud and DevOps Specialist",
+            role: "Unallocated",
             bio: "Expert in cloud infrastructure and DevOps practices.",
             img: "https://placehold.co/640x400"
         }
@@ -88,7 +88,7 @@ const AboutPage = () => {
                             most to developers.
                         </p>
                     </div>
-                    <div className="bg-gray-200 border-2 border-dashed rounded-xl w-full h-80" />
+                    <img src="/about.png" className="border-2 rounded-xl w-full h-80" />
                 </motion.div>
 
                 <motion.div variants={itemVariants} className="mb-16">
@@ -124,19 +124,39 @@ const AboutPage = () => {
                     </div>
                 </motion.div>
 
-                <motion.div variants={itemVariants} className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl p-8 md:p-12">
-                    <div className="max-w-3xl mx-auto text-center">
-                        <h2 className="text-3xl font-bold text-white">Join Our Community</h2>
-                        <p className="mt-4 text-indigo-100 max-w-xl mx-auto">
-                            Whether you're looking to learn, contribute, or just stay updated,
-                            we'd love to have you as part of our developer community.
+                <motion.div
+                    variants={itemVariants}
+                    className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 via-purple-700 to-fuchsia-600 p-10 md:p-14 shadow-2xl border border-white/10"
+                >
+                    {/* Decorative blur effect */}
+                    <div className="absolute -top-20 -right-20 w-64 h-64 bg-purple-500 opacity-30 rounded-full blur-3xl"></div>
+                    <div className="absolute -bottom-24 -left-24 w-72 h-72 bg-pink-500 opacity-30 rounded-full blur-3xl"></div>
+
+                    <div className="relative max-w-3xl mx-auto text-center space-y-6">
+                        <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-white drop-shadow-lg">
+                            Join Our Community
+                        </h2>
+                        <p className="text-lg md:text-xl text-indigo-100 leading-relaxed max-w-2xl mx-auto">
+                            Whether you're looking to <span className="font-semibold text-white">learn</span>,
+                            <span className="font-semibold text-white"> contribute</span>, or simply stay updated,
+                            we'd love to welcome you to our thriving developer network.
                         </p>
                         <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
-                            <Button variant="outline" className="bg-white text-indigo-600 hover:bg-indigo-50">Create Account</Button>
-                            <Button className="bg-indigo-800 hover:bg-indigo-700 text-white">Follow on GitHub</Button>
+                            <Button
+                                variant="outline"
+                                className="bg-white text-indigo-700 hover:bg-indigo-50 hover:scale-105 transition-transform duration-300 font-medium px-6 py-3 rounded-full shadow-md"
+                            >
+                                Create Account
+                            </Button>
+                            <Button
+                                className="bg-indigo-900 hover:bg-indigo-800 text-white hover:scale-105 transition-transform duration-300 font-medium px-6 py-3 rounded-full shadow-md"
+                            >
+                                Follow on GitHub
+                            </Button>
                         </div>
                     </div>
                 </motion.div>
+
             </motion.div>
 
             {/* <Footer /> */}
