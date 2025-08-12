@@ -9,6 +9,8 @@ import ArticlePage from './pages/ArticlePage';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import EditorPage from './pages/EditorPage';
+import SignUpPage from './auth/SignUpPage';
+import SsoCallback from './auth/SsoCallback';
 
 function App() {
   return (
@@ -21,6 +23,8 @@ function App() {
           <Route path="/categories" element={<CategoriesPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/auth/login" element={<SignInPage />} />
+          <Route path="/auth/sign-up" element={<SignUpPage />} />
+          <Route path="/auth/sso-callback" element={<SsoCallback />} />
           <Route path="/articles/:id" element={<ArticlePage />} />
           <Route path="/articles/:id/edit" element={<EditorPage />} />
           {/* Add more routes as needed */}

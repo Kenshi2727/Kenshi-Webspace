@@ -60,7 +60,7 @@ export default function ArticlePage() {
                             </div>
 
                             <div className="flex items-center justify-between">
-                                <h1 className="text-4xl lg:text-5xl font-extrabold text-white drop-shadow-lg">{article.title}</h1>
+                                <h1 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-extrabold text-white drop-shadow-lg">{article.title}</h1>
                                 <Link to={`/articles/${article.id}/edit`}>
                                     <Button variant="outline" size="sm" className="flex items-center gap-2 bg-white/20 border-white/50 hover:bg-white">
                                         <Pencil size={16} /> Edit

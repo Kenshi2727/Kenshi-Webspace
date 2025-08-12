@@ -3,6 +3,8 @@ import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { useAuth } from "@clerk/clerk-react";
+import { useClerk } from "@clerk/clerk-react";
 
 const navLinks = [
     { to: '/', label: 'Home' },
@@ -14,6 +16,17 @@ const navLinks = [
 export default function Navbar() {
     const location = useLocation();
     const isActive = (path) => location.pathname === path;
+    const { isSignedIn, userId } = useAuth();
+    const { signOut } = useClerk();
+
+    const handleSignOut = async () => {
+        try {
+            await signOut();
+            console.log("Signed out successfully!");
+        } catch (error) {
+            console.error("Error signing out:", error);
+        }
+    };
 
     return (
         <motion.nav
@@ -43,9 +56,9 @@ export default function Navbar() {
                             </Link>
                         ))}
                     </div>
-                    <Link to="/auth/login">
-                        <Button variant="ghost" className="bg-indigo-600/65 text-white cursor-pointer text-sm font-medium">
-                            Sign in
+                    <Link to={isSignedIn ? "" : "/auth/login"}>
+                        <Button variant="ghost" onClick={isSignedIn ? handleSignOut : undefined} className="bg-indigo-600/65 text-white cursor-pointer text-sm font-medium">
+                            {isSignedIn ? 'Sign out' : 'Sign in'}
                         </Button>
                     </Link>
                 </div>
