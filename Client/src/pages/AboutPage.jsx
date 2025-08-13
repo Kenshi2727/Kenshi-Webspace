@@ -26,7 +26,7 @@ const AboutPage = () => {
             name: "Abhishek Mathur",
             role: "Founder & Editor",
             bio: "Specializes in web development and technology.",
-            img: "https://placehold.co/640x400"
+            img: "abhishek.jpg"
         },
         {
             id: 2,
