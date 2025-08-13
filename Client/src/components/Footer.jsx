@@ -76,7 +76,7 @@ export default function Footer() {
                                     </div>
 
                                     <div>
-                                        <h2 className="text-base font-semibold tracking-tight">Kenshi Webspace</h2>
+                                        <h2 className="text-base text-white font-semibold tracking-tight">Kenshi Webspace</h2>
                                         <p className="text-xs text-white/70">Community · Code · Adventure</p>
                                     </div>
                                 </div>
@@ -174,10 +174,10 @@ export default function Footer() {
                             <p className="text-xs text-white/60">© {year} Kenshi Webspace. All rights reserved.</p>
 
                             <nav className="flex items-center gap-4">
-                                <Link to="/sitemap" className="text-xs text-white/60 hover:text-indigo-300">
+                                <Link to={(true) ? "/maintenance" : "/sitemap"} className="text-xs text-white/60 hover:text-indigo-300">
                                     Sitemap
                                 </Link>
-                                <Link to="/privacy" className="text-xs text-white/60 hover:text-indigo-300">
+                                <Link to={(true) ? "/maintenance" : "/privacy"} className="text-xs text-white/60 hover:text-indigo-300">
                                     Privacy
                                 </Link>
                                 <motion.a href="#top" whileHover={{ x: 6 }} className="text-xs text-white/60 hover:text-indigo-300 flex items-center gap-2">
