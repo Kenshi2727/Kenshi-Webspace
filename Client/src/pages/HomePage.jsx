@@ -167,7 +167,7 @@ const HomePage = () => {
                     </motion.h2>
                     <motion.div variants={itemVariants} className="mt-6 md:mt-0">
                         <Button asChild variant="secondary">
-                            <Link to="#">Create Account</Link>
+                            <Link to="/auth/sign-up">Create Account</Link>
                         </Button>
                     </motion.div>
                 </div>
