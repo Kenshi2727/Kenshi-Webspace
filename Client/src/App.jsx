@@ -24,17 +24,20 @@ function App() {
           <MaintenancePage />
         ) : (
           <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/articles" element={<ArticlesPage />} />
-            <Route path="/categories" element={<CategoriesPage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/auth/login" element={<SignInPage />} />
-            <Route path="/auth/sign-up" element={<SignUpPage />} />
-            <Route path="/auth/sso-callback" element={<SsoCallback />} />
-            <Route path="/articles/:id" element={<ArticlePage />} />
-            <Route path="/articles/:id/edit" element={<EditorPage />} />
-            {/* <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} /> */}
-            <Route path="/auth/forgot-password" element={<MaintenancePage />} />
+            {/*Specific Maintenance route */}
+            <Route path="/maintenance" element={<MaintenancePage />} />
+
+            <Route path="/" element={isMaintenanceMode ? <MaintenancePage /> : <HomePage />} />
+            {/* <Route path="/articles" element={isMaintenanceMode ? <MaintenancePage /> : <ArticlesPage />} /> */}
+            <Route path="/articles" element={true ? <MaintenancePage /> : <ArticlesPage />} />
+            <Route path="/categories" element={isMaintenanceMode ? <MaintenancePage /> : <CategoriesPage />} />
+            <Route path="/about" element={isMaintenanceMode ? <MaintenancePage /> : <AboutPage />} />
+            <Route path="/auth/login" element={isMaintenanceMode ? <MaintenancePage /> : <SignInPage />} />
+            <Route path="/auth/sign-up" element={isMaintenanceMode ? <MaintenancePage /> : <SignUpPage />} />
+            <Route path="/auth/sso-callback" element={isMaintenanceMode ? <MaintenancePage /> : <SsoCallback />} />
+            <Route path="/articles/:id" element={isMaintenanceMode ? <MaintenancePage /> : <ArticlePage />} />
+            <Route path="/articles/:id/edit" element={isMaintenanceMode ? <MaintenancePage /> : <EditorPage />} />
+            <Route path="/auth/forgot-password" element={isMaintenanceMode ? <MaintenancePage /> : <ForgotPasswordPage />} />
             {/* Add more routes as needed */}
           </Routes>
         )}

@@ -76,12 +76,12 @@ const HomePage = () => {
                     </motion.p>
                     <motion.div className="mt-8 flex justify-center gap-4">
                         <motion.div whileHover={{ scale: 1.1 }}>
-                            <Button asChild variant="secondary">
+                            <Button className='w-28 sm:w-32 text-xs sm:text-sm' asChild variant="secondary">
                                 <Link to="/articles">Start Reading</Link>
                             </Button>
                         </motion.div>
                         <motion.div whileHover={{ scale: 1.1 }}>
-                            <Button asChild variant="outline">
+                            <Button className='w-28 sm:w-32 text-xs sm:text-sm' asChild variant="outline">
                                 <Link to="#">Contribute Now!</Link>
                             </Button>
                         </motion.div>
