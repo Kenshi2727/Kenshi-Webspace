@@ -9,10 +9,13 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { Users, ShieldCheck, Sparkles } from "lucide-react";
+import { FaGithub, FaLinkedin } from "react-icons/fa";
+import { FcGoogle } from 'react-icons/fc';
+import { useSignIn } from "@clerk/clerk-react";
 
 export default function CustomSignUpPage() {
     const { signUp, setActive, isLoaded } = useSignUp();
-
+    const { signIn } = useSignIn();
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
@@ -32,6 +35,27 @@ export default function CustomSignUpPage() {
         if (!agreeTerms) return "Please agree to the terms to continue.";
         return null;
     };
+
+    const providers = [
+        {
+            name: "Google",
+            icon: <FcGoogle className="size-6" />,
+            strategy: "oauth_google",
+            className: "bg-white text-black hover:bg-gray-100 border border-gray-300",
+        },
+        {
+            name: "GitHub",
+            icon: <FaGithub className="size-6" />,
+            strategy: "oauth_github",
+            className: "bg-black text-white hover:bg-gray-800",
+        },
+        {
+            name: "LinkedIn",
+            icon: <FaLinkedin className="size-6" />,
+            strategy: "oauth_linkedin_oidc",
+            className: "bg-white text-[#0A66C2] border border-[#0A66C2] hover:bg-[#0A66C2] hover:text-white",
+        },
+    ];
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -90,72 +114,13 @@ export default function CustomSignUpPage() {
         }
     };
 
-
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-    //     setError("");
-    //     setInfo("");
-    //     if (!isLoaded) return setError("Auth not ready");
-
-    //     const validationError = validate();
-    //     if (validationError) return setError(validationError);
-
-    //     setLoading(true);
-    //     try {
-    //         // -- 1) create minimal sign-up attempt (no names)
-    //         const attempt = await signUp.create({
-    //             emailAddress: email, // use emailAddress (not identifier)
-    //             password
-    //         });
-
-    //         // -- 2) show the raw object so we can see exactly what Clerk returned
-    //         console.log("CLERK signUp.create response:", JSON.stringify(attempt, null, 2));
-
-    //         // Helpful extra: show the signUp SDK object too
-    //         try { console.log("signUp sdk:", JSON.stringify(signUp, Object.getOwnPropertyNames(signUp), 2)); } catch (e) { }
-
-    //         // -- 3) handle direct completion
-    //         if (attempt.status === "complete") {
-    //             if (attempt.createdSessionId) {
-    //                 await setActive({ session: attempt.createdSessionId });
-    //                 window.location.href = "/";
-    //                 return;
-    //             }
-    //             setInfo("Signed up successfully — redirecting...");
-    //             window.location.href = "/";
-    //             return;
-    //         }
-
-    //         // -- 4) if missing_requirements, log details and try prepare verification
-    //         if (attempt.status === "missing_requirements") {
-    //             // Log any clue Clerk provided
-    //             console.log("missing_requirements details:", attempt);
-
-    //             // If Clerk expects email verification, explicitly prepare it so we can observe behavior
-    //             try {
-    //                 await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
-    //                 setInfo("Verification step prepared — check console/network and the user's email (spam folder).");
-    //             } catch (verErr) {
-    //                 console.error("prepareEmailAddressVerification error:", verErr);
-    //                 setError("Sign-up incomplete: missing requirements. Check console for details.");
-    //             }
-
-    //             // Stop here so user can check email or you can paste logs
-    //             setInfo(`Sign-up initiated. Status: ${attempt.status}. Check console/network for 'required' fields.`);
-    //             return;
-    //         }
-
-    //         // fallback
-    //         setInfo(`Sign-up initiated. Status: ${attempt.status}. Check your email to verify and finish onboarding.`);
-    //     } catch (err) {
-    //         console.error("signUp.create failed:", err, err?.errors || err?.message);
-    //         setError(err?.errors?.[0]?.message || err?.message || "Sign-up failed.");
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
-
-
+    const handleSocial = (provider) => {
+        signIn.authenticateWithRedirect({
+            strategy: provider, // e.g., "oauth_google"
+            // redirectUrl: "/auth/sso-callback", // Your callback page(for production)
+            redirectUrlComplete: "/", // After successful login
+        });
+    };
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 flex items-center justify-center p-6">
@@ -223,6 +188,23 @@ export default function CustomSignUpPage() {
                                     <div className="mb-4 text-center">
                                         <h2 className="text-2xl font-extrabold text-white">Create your account</h2>
                                         <p className="text-sm text-white/70 mt-2">Sign up to start your journey with Kenshi WebSpace</p>
+                                    </div>
+
+                                    {/* Social Sign-Up Icons Row */}
+                                    <div className="m-4 grid grid-cols-3 gap-3">
+                                        {providers.map((provider, idx) => (
+                                            <motion.button
+                                                key={provider.name}
+                                                initial={{ opacity: 0, y: 15 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                transition={{ delay: idx * 0.08, duration: 0.3 }}
+                                                onClick={() => handleSocial(provider.strategy)}
+                                                className={`flex items-center justify-center p-3 h-9 rounded-lg shadow-md border hover:scale-105 active:scale-95 transition-transform ${provider.className}`}
+                                                title={`Sign in with ${provider.name}`}
+                                            >
+                                                {provider.icon}
+                                            </motion.button>
+                                        ))}
                                     </div>
 
                                     <form onSubmit={handleSubmit} className="space-y-4">
@@ -312,16 +294,16 @@ export default function CustomSignUpPage() {
                                                 {loading ? "Creating account..." : "Create account"}
                                             </Button>
 
-                                            <a href="/sign-in" className="text-sm text-white/70 hover:underline">Already have an account?</a>
+                                            <a href="/auth/login" className="text-sm text-white/70 hover:underline">Already have an account?</a>
                                         </div>
                                     </form>
 
                                     <Separator className="my-4" />
 
-                                    <div className="text-sm text-white/70 text-center">Or sign up using social providers — enable OAuth in Clerk dashboard.</div>
+                                    <div className="text-sm text-white/70 text-center">Or use Google, GitHub, or LinkedIn to quickly sign in or sign up—no password needed!</div>
 
                                     <div className="mt-4 flex items-center justify-center gap-3">
-                                        <a href="/auth/sign-in" className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-white/6 text-white hover:bg-white/8 transition">Sign in instead</a>
+                                        <a href="/auth/login" className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-white/6 text-white hover:bg-white/8 transition">Sign in instead</a>
                                     </div>
                                 </CardContent>
                             </Card>
@@ -330,7 +312,7 @@ export default function CustomSignUpPage() {
                                 <summary className="cursor-pointer">Dev debug</summary>
                                 <pre className="text-[11px] mt-2 max-h-40 overflow-auto">
                                     Clerk loaded: {String(isLoaded)}
-                                    Clerk frontend API: {import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || "NOT SET"}
+                                    <br />
                                     window.Clerk: {typeof window !== "undefined" && window.Clerk ? "present" : "missing"}
                                 </pre>
                             </details>

@@ -1,4 +1,4 @@
-// src/auth/SsoCallback.jsx
+// for production
 import React from "react";
 import { AuthenticateWithRedirectCallback } from "@clerk/clerk-react";
 

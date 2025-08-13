@@ -9,6 +9,8 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { Users, ShieldCheck, Sparkles } from "lucide-react";
+import { FaGithub, FaLinkedin } from "react-icons/fa";
+import { FcGoogle } from 'react-icons/fc';
 
 /**
  * CustomSignInPage
@@ -23,7 +25,6 @@ import { Users, ShieldCheck, Sparkles } from "lucide-react";
 
 export default function CustomSignInPage() {
     const { signIn, setActive, isLoaded } = useSignIn();
-
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
@@ -71,6 +72,35 @@ export default function CustomSignInPage() {
             setLoading(false);
         }
     };
+
+    const handleSocial = (provider) => {
+        signIn.authenticateWithRedirect({
+            strategy: provider, // e.g., "oauth_google"
+            // redirectUrl: "/auth/sso-callback", // Your callback page(for production)
+            redirectUrlComplete: "/", // After successful login
+        });
+    };
+
+    const providers = [
+        {
+            name: "Google",
+            icon: <FcGoogle className="size-6" />,
+            strategy: "oauth_google",
+            className: "bg-white text-black hover:bg-gray-100 border border-gray-300",
+        },
+        {
+            name: "GitHub",
+            icon: <FaGithub className="size-6" />,
+            strategy: "oauth_github",
+            className: "bg-black text-white hover:bg-gray-800",
+        },
+        {
+            name: "LinkedIn",
+            icon: <FaLinkedin className="size-6" />,
+            strategy: "oauth_linkedin_oidc",
+            className: "bg-white text-[#0A66C2] border border-[#0A66C2] hover:bg-[#0A66C2] hover:text-white",
+        },
+    ];
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 flex items-center justify-center p-6">
@@ -151,6 +181,24 @@ export default function CustomSignInPage() {
                                         <p className="text-sm text-white/70 mt-2">Sign in to continue to Kenshi WebSpace</p>
                                     </div>
 
+                                    {/* Social Sign-in Icons Row */}
+                                    <div className="m-4 grid grid-cols-3 gap-3">
+                                        {providers.map((provider, idx) => (
+                                            <motion.button
+                                                key={provider.name}
+                                                initial={{ opacity: 0, y: 15 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                transition={{ delay: idx * 0.08, duration: 0.3 }}
+                                                onClick={() => handleSocial(provider.strategy)}
+                                                className={`flex items-center justify-center p-3 h-9 rounded-lg shadow-md border hover:scale-105 active:scale-95 transition-transform ${provider.className}`}
+                                                title={`Sign in with ${provider.name}`}
+                                            >
+                                                {provider.icon}
+                                            </motion.button>
+                                        ))}
+                                    </div>
+
+
                                     <form onSubmit={handleSubmit} className="space-y-4">
                                         <div>
                                             <Label className="text-sm text-white/80">Email</Label>
@@ -200,7 +248,7 @@ export default function CustomSignInPage() {
                                                 {loading ? "Signing in..." : "Sign in"}
                                             </Button>
 
-                                            <a href="/forgot-password" className="text-sm text-white/70 hover:underline">
+                                            <a href="/auth/forgot-password" className="text-sm text-white/70 hover:underline">
                                                 Forgot?
                                             </a>
                                         </div>
@@ -209,8 +257,9 @@ export default function CustomSignInPage() {
                                     <Separator className="my-4" />
 
                                     <div className="text-sm text-white/70 text-center">
-                                        <div>Or sign in using social providers — enable OAuth in Clerk dashboard.</div>
+                                        <div>Or use Google, GitHub, or LinkedIn to quickly sign in or sign up—no password needed!</div>
                                     </div>
+
 
                                     <div className="mt-4 flex items-center justify-center gap-3">
                                         <a
@@ -228,7 +277,7 @@ export default function CustomSignInPage() {
                                 <summary className="cursor-pointer">Dev debug</summary>
                                 <pre className="text-[11px] mt-2 max-h-40 overflow-auto">
                                     Clerk loaded: {String(isLoaded)}
-                                    Clerk frontend API: {import.meta.env.VITE_CLERK_FRONTEND_API || "NOT SET"}
+                                    <br />
                                     window.Clerk: {typeof window !== "undefined" && window.Clerk ? "present" : "missing"}
                                 </pre>
                             </details>
