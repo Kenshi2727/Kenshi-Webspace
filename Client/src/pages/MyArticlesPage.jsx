@@ -298,7 +298,7 @@ export default function MyArticlesPage() {
                     <div className="py-4">
                         <ScrollArea className="h-96 p-4 bg-white/5 rounded-lg border border-white/10">
                             {selectedArticle ? (
-                                <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw, rehypeHighlight]} className="prose prose-invert max-w-none">
+                                <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw, rehypeHighlight]}>
                                     {selectedArticle.content}
                                 </ReactMarkdown>
                             ) : (
