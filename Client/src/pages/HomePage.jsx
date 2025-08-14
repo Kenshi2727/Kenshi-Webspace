@@ -1,4 +1,5 @@
 import React from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -6,6 +7,10 @@ import { motion } from 'framer-motion';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { featuredPosts } from '../seeds/blogs.seed';
+import {
+    Dialog, DialogContent, DialogTrigger,
+    DialogHeader, DialogTitle, DialogFooter
+} from "@/components/ui/dialog";
 
 const containerVariants = {
     hidden: { opacity: 0, y: 30 },
@@ -39,7 +44,24 @@ const cardHover = {
 };
 
 const HomePage = () => {
+    const [submitting, setSubmitting] = useState(false);
+    const [open, setOpen] = useState(false);
 
+    async function handleConfirm() {
+        try {
+            setSubmitting(true);
+        } catch (err) {
+            // optional: show error UI (left minimal here)
+            // console.error(err);
+        } finally {
+            setSubmitting(false);
+            if (setOpen) setOpen(false);
+        }
+    }
+
+    function handleCancel() {
+        if (setOpen) setOpen(false);
+    }
 
     return (
         <motion.div
@@ -81,9 +103,54 @@ const HomePage = () => {
                             </Button>
                         </motion.div>
                         <motion.div whileHover={{ scale: 1.1 }}>
-                            <Button className='w-28 sm:w-32 text-xs sm:text-sm' asChild variant="outline">
+                            <Button onClick={() => setOpen(true)} className='w-28 sm:w-32 text-xs sm:text-sm' asChild variant="outline">
                                 <Link to="#">Contribute Now!</Link>
                             </Button>
+
+                            <Dialog open={open} onOpenChange={setOpen}>
+                                <DialogContent className="max-w-md w-full sm:mx-4 rounded-2xl shadow-xl border border-white/10 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white p-0 overflow-hidden">
+                                    <motion.div
+                                        initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                                        exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                                        transition={{ duration: 0.2, ease: "easeOut" }}
+                                    >
+                                        {/* Header */}
+                                        <div className="px-6 pt-6 pb-4 border-b border-white/10">
+                                            <DialogHeader>
+                                                <DialogTitle className="text-xl font-bold tracking-wide bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent">
+                                                    Contribute to Kenshi Webspace?
+                                                </DialogTitle>
+                                            </DialogHeader>
+                                            <p className="text-sm text-gray-300 mt-1">
+                                                We welcome contributors — would you like to join and publish your articles on Kenshi Webspace?
+                                            </p>
+                                        </div>
+
+                                        {/* Footer */}
+                                        <DialogFooter className="px-6 py-4 flex items-center justify-end gap-3 bg-gray-800/40">
+                                            <Button
+                                                variant="ghost"
+                                                onClick={handleCancel}
+                                                disabled={submitting}
+                                                className="hover:bg-gray-700/50 text-gray-300"
+                                            >
+                                                No, thanks
+                                            </Button>
+                                            <Link to="/my-articles ">
+                                                <Button
+                                                    onClick={handleConfirm}
+                                                    disabled={submitting}
+                                                    className="bg-gradient-to-r from-indigo-500 to-pink-500 hover:from-indigo-400 hover:to-pink-400 text-white shadow-md"
+                                                >
+                                                    {submitting ? "Processing…" : "Yes, contribute"}
+                                                </Button>
+                                            </Link>
+                                        </DialogFooter>
+                                    </motion.div>
+                                </DialogContent>
+                            </Dialog>
+
                         </motion.div>
                     </motion.div>
                 </motion.div>

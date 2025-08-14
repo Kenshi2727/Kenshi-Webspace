@@ -13,6 +13,7 @@ import SignUpPage from './auth/SignUpPage';
 import SsoCallback from './auth/SsoCallback';
 import ForgotPasswordPage from './auth/ForgotPasswordPage';
 import MaintenancePage from './components/MaintenancePage';
+import MyArticlesPage from './pages/MyArticlesPage';
 
 function App() {
   const isMaintenanceMode = false;
@@ -38,6 +39,8 @@ function App() {
             <Route path="/articles/:id" element={isMaintenanceMode ? <MaintenancePage /> : <ArticlePage />} />
             <Route path="/articles/:id/edit" element={isMaintenanceMode ? <MaintenancePage /> : <EditorPage />} />
             <Route path="/auth/forgot-password" element={isMaintenanceMode ? <MaintenancePage /> : <ForgotPasswordPage />} />
+            <Route path="/my-articles" element={isMaintenanceMode ? <MaintenancePage /> : <MyArticlesPage />} />
+
             {/* Add more routes as needed */}
           </Routes>
         )}
