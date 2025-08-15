@@ -128,7 +128,7 @@ const HomePage = () => {
             variants={containerVariants}
             className="min-h-screen bg-gray-50"
         >
-            {/* ---------- HERO (TALL & RESPONSIVE) ---------- */}
+            {/* ---------- HERO ---------- */}
             <motion.section
                 variants={itemVariants}
                 className="relative hero-section overflow-hidden bg-gradient-to-r from-indigo-600 to-purple-600"
@@ -140,11 +140,7 @@ const HomePage = () => {
                 {/* soft diagonal blur */}
                 <div className="absolute -left-36 -top-36 w-[640px] h-[640px] bg-white/6 transform rotate-[22deg] blur-[80px] pointer-events-none" />
 
-                {/* 
-                    USER REQUEST: cut down the top padding by pt-16 (4rem)
-                    Original had py-28 / sm:py-32 / lg:py-40. 
-                    We set explicit top & bottom padding so top is reduced by 4rem while bottom preserves the roomy feel.
-                */}
+                {/*Hero Content*/}
                 <div className="max-w-7xl mx-auto px-4 pt-12 sm:pt-16 lg:pt-24 pb-28 sm:pb-32 lg:pb-40 min-h-[68vh] lg:min-h-[78vh]">
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
                         {/* LEFT: Messaging (bigger) */}
