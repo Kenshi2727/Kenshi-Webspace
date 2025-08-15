@@ -147,7 +147,7 @@ export default function MyArticlesPage() {
 
                         <div className="flex-shrink-0 flex items-center gap-2">
                             <Button asChild>
-                                <a href="/editor/new" className="flex items-center gap-2">
+                                <a href="/maintenance" className="flex items-center gap-2">
                                     <Plus size={16} /> New Article
                                 </a>
                             </Button>
@@ -229,7 +229,7 @@ export default function MyArticlesPage() {
                                                                         </Button>
                                                                     </TooltipTrigger>
                                                                     <TooltipContent>
-                                                                        <span>Preview</span>
+                                                                        <span>AI Summary</span>
                                                                     </TooltipContent>
                                                                 </Tooltip>
                                                             </TooltipProvider>
@@ -238,7 +238,7 @@ export default function MyArticlesPage() {
                                                                 <Tooltip>
                                                                     <TooltipTrigger asChild>
                                                                         <Button asChild variant="ghost" size="sm">
-                                                                            <a href={`/editor/${article.id}`} className="flex items-center gap-2">
+                                                                            <a href='/articles/:id/edit' className="flex items-center gap-2">
                                                                                 <Edit3 size={16} />
                                                                             </a>
                                                                         </Button>
