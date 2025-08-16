@@ -131,18 +131,33 @@ const HomePage = () => {
             {/* ---------- HERO ---------- */}
             <motion.section
                 variants={itemVariants}
-                className="relative hero-section overflow-hidden bg-gradient-to-r from-indigo-600 to-purple-600"
+                className="min-h-screen relative hero-section overflow-hidden bg-gradient-to-r from-indigo-600 to-purple-600"
             >
                 <FloatingOrbs />
                 <AnimatedDots />
                 <MouseGlow />
 
-                {/* soft diagonal blur */}
-                {
-                    Array.from({ length: 6 }).map((_, i) => (
-                        <div key={i} className="absolute -left-36 -top-36 w-[640px] h-[640px] bg-white/6 transform rotate-[22deg] blur-[80px] pointer-events-none" />
-                    ))
-                }
+                {/* 1..3 crisp squares on top */}
+                {Array.from({ length: 3 }).map((_, i) => (
+                    <div
+                        key={i}
+                        aria-hidden
+                        className="absolute transform pointer-events-none"
+                        style={{
+                            left: `${-48 + i * 6}px`,
+                            top: `${-48 + i * 4}px`,
+                            width: `clamp(240px, ${22 - i * 2}vw, ${480 + i * 80}px)`,
+                            height: `clamp(240px, ${22 - i * 2}vw, ${480 + i * 80}px)`,
+                            transform: `rotate(22deg) translate(${i * 6}px, ${i * 4}px)`,
+                            background: 'rgba(255,255,255,0.20)',
+                            border: '1px solid rgba(255,255,255,0.10)',
+                            boxShadow: '0 14px 40px rgba(2,6,23,0.12)',
+                            zIndex: 0,
+                            filter: 'none' // keep front squares crisp
+                        }}
+                    />
+                ))}
+
 
                 {/*Hero Content*/}
                 <div className="max-w-7xl mx-auto px-4 pt-12 sm:pt-16 lg:pt-24 pb-28 sm:pb-32 lg:pb-40 min-h-[68vh] lg:min-h-[78vh]">
