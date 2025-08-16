@@ -18,6 +18,7 @@ import MaintenancePage from './components/MaintenancePage';
 import MyArticlesPage from './pages/MyArticlesPage';
 import DarkHomePage from './pages/DarkHomePage';
 import DarkModePrompt from './components/DarkModePrompt';
+import ScrollToTopButton from './components/ScrollToTopButton';
 
 function App() {
   const isMaintenanceMode = false;
@@ -43,7 +44,7 @@ function App() {
 
             <Route path="/" element={isMaintenanceMode ? <MaintenancePage /> : <HomePage />} />
             {/* <Route path="/articles" element={isMaintenanceMode ? <MaintenancePage /> : <ArticlesPage />} /> */}
-            <Route path="/articles" element={true ? <MaintenancePage /> : <ArticlesPage />} />
+            <Route path="/articles" element={false ? <MaintenancePage /> : <ArticlesPage />} />
             <Route path="/categories" element={isMaintenanceMode ? <MaintenancePage /> : <CategoriesPage />} />
             <Route path="/about" element={isMaintenanceMode ? <MaintenancePage /> : <AboutPage />} />
             <Route path="/auth/login" element={isMaintenanceMode ? <MaintenancePage /> : <SignInPage />} />
@@ -59,11 +60,10 @@ function App() {
         )}
 
         <motion.div>
-          {/* all your existing page markup */}
-          {/* put the prompt near the root so it's rendered once */}
-
           <DarkModePrompt open={showDarkPrompt} onOpenChange={setShowDarkPrompt} />
         </motion.div>
+
+        <ScrollToTopButton />
       </main>
       <Footer />
     </Router>

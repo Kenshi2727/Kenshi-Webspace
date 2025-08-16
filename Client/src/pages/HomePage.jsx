@@ -10,6 +10,10 @@ import { featuredPosts } from '../seeds/blogs.seed';
 import {
     Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter
 } from "@/components/ui/dialog";
+import AnimatedFloatingSquares from '../components/AnimatedFloatingSquares';
+import FloatingOrbs from '../components/FloatingOrbs';
+import AnimatedDots from '../components/AnimatedDots';
+import MouseGlow from '../components/MouseGlow';
 
 const containerVariants = {
     hidden: { opacity: 0, y: 30 },
@@ -63,64 +67,6 @@ const HomePage = () => {
     }
 
     // Decorative helpers
-    const FloatingOrbs = () => (
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-full opacity-50 blur-3xl animate-pulse" />
-            <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-tr from-purple-100 to-pink-100 rounded-full opacity-40 blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-indigo-100 to-purple-100 rounded-full opacity-30 blur-3xl animate-pulse" style={{ animationDelay: '4s' }} />
-        </div>
-    );
-
-    const AnimatedDots = () => (
-        <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
-            <div className="absolute inset-0"
-                style={{
-                    backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(99, 102, 241, 0.12) 1px, transparent 0)',
-                    backgroundSize: '32px 32px'
-                }}
-            />
-        </div>
-    );
-
-    const MouseGlow = () => {
-        const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
-        const [isVisible, setIsVisible] = useState(false);
-
-        useEffect(() => {
-            const handleMouseMove = (e) => {
-                const rect = document.querySelector('.hero-section')?.getBoundingClientRect();
-                if (rect) {
-                    const x = ((e.clientX - rect.left) / rect.width) * 100;
-                    const y = ((e.clientY - rect.top) / rect.height) * 100;
-                    setMousePos({ x, y });
-                }
-            };
-            const handleEnter = () => setIsVisible(true);
-            const handleLeave = () => setIsVisible(false);
-
-            const el = document.querySelector('.hero-section');
-            if (!el) return;
-            el.addEventListener('mousemove', handleMouseMove);
-            el.addEventListener('mouseenter', handleEnter);
-            el.addEventListener('mouseleave', handleLeave);
-            return () => {
-                el.removeEventListener('mousemove', handleMouseMove);
-                el.removeEventListener('mouseenter', handleEnter);
-                el.removeEventListener('mouseleave', handleLeave);
-            };
-        }, []);
-
-        if (!isVisible) return null;
-        return (
-            <div
-                className="absolute inset-0 opacity-10 transition-opacity duration-300 pointer-events-none"
-                style={{
-                    background: `radial-gradient(300px circle at ${mousePos.x}% ${mousePos.y}%, rgba(255,255,255,0.18), transparent 50%)`
-                }}
-            />
-        );
-    };
-
     return (
         <motion.div
             initial="hidden"
@@ -136,28 +82,7 @@ const HomePage = () => {
                 <FloatingOrbs />
                 <AnimatedDots />
                 <MouseGlow />
-
-                {/* 1..3 crisp squares on top */}
-                {Array.from({ length: 3 }).map((_, i) => (
-                    <div
-                        key={i}
-                        aria-hidden
-                        className="absolute transform pointer-events-none"
-                        style={{
-                            left: `${-48 + i * 6}px`,
-                            top: `${-48 + i * 4}px`,
-                            width: `clamp(240px, ${22 - i * 2}vw, ${480 + i * 80}px)`,
-                            height: `clamp(240px, ${22 - i * 2}vw, ${480 + i * 80}px)`,
-                            transform: `rotate(22deg) translate(${i * 6}px, ${i * 4}px)`,
-                            background: 'rgba(255,255,255,0.20)',
-                            border: '1px solid rgba(255,255,255,0.10)',
-                            boxShadow: '0 14px 40px rgba(2,6,23,0.12)',
-                            zIndex: 0,
-                            filter: 'none' // keep front squares crisp
-                        }}
-                    />
-                ))}
-
+                <AnimatedFloatingSquares />
 
                 {/*Hero Content*/}
                 <div className="max-w-7xl mx-auto px-4 pt-12 sm:pt-16 lg:pt-24 pb-28 sm:pb-32 lg:pb-40 min-h-[68vh] lg:min-h-[78vh]">
