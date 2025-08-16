@@ -163,7 +163,7 @@ const HomePage = () => {
                                 Kenshi Webspace is a shared journey between me and my friends — writing blogs, exchanging ideas, and connecting with readers who love to think, learn, and create.
                             </motion.p>
 
-                            <motion.div className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-center sm:items-start gap-3 sm:gap-4 justify-center md:justify-start" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+                            <motion.div className="mt-8 sm:mt-10 flex flex-col md:flex-row items-center md:items-start gap-3 md:gap-4 justify-center md:justify-start" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
                                 <motion.div whileHover={{ scale: 1.03 }}>
                                     <Button asChild className="px-6 py-3">
                                         <Link to="/articles">Start Reading</Link>
@@ -176,12 +176,12 @@ const HomePage = () => {
                                     </Button>
                                 </motion.div>
 
-                                <div className="mt-3 sm:mt-0 text-sm text-indigo-100/80 pl-1">
-                                    <span className="font-medium">No review queue</span> — publish drafts, get feedback.
+                                <div className="mt-3 sm:mt-0 text-sm text-indigo-100/80 pl-1 lg:py-1.5">
+                                    <span className="font-bold">No review queue</span> — publish drafts, get feedback.
                                 </div>
                             </motion.div>
 
-                            <motion.ul className="mt-8 sm:mt-10 flex flex-col sm:flex-row gap-4 text-sm text-indigo-100/80" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.45 }}>
+                            <motion.ul className="mt-8 sm:mt-10 flex flex-col md:flex-row gap-4 text-sm text-indigo-100/80" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.45 }}>
                                 <li className="inline-flex items-center gap-2">
                                     <span className="w-2 h-2 rounded-full bg-white/70" />
                                     <span>Fast, simple editor</span>
@@ -201,7 +201,7 @@ const HomePage = () => {
                         <motion.div variants={itemVariants} className="md:col-span-5 relative flex items-center justify-center">
                             <div className="w-full">
                                 {/* Mobile: horizontal snap (visible on small screens) */}
-                                <div className="md:hidden -mx-4 px-4">
+                                {/* <div className="md:hidden -mx-4 px-4">
                                     <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory py-2">
                                         {featuredPosts.slice(0, 3).map((p) => (
                                             <Link key={p.id} to={`/articles/${p.id}`} className="snap-center shrink-0 w-[260px] rounded-2xl shadow-lg overflow-hidden border border-white/8 bg-white/5 backdrop-blur-md">
@@ -216,11 +216,11 @@ const HomePage = () => {
                                             </Link>
                                         ))}
                                     </div>
-                                </div>
+                                </div> */}
 
                                 {/* Desktop: stacked cards (visible on md+) */}
-                                <div className="hidden md:block relative w-full max-w-[340px] mx-auto h-[380px]">
-                                    {featuredPosts.slice(0, 3).map((p, i) => {
+                                <div className="relative w-full max-w-[340px] mx-auto h-[380px]">
+                                    {featuredPosts.map((p, i) => {
                                         const xOffset = i === 0 ? -12 : i === 1 ? 0 : 12;
                                         const topOffsetPx = i * 20;
 
