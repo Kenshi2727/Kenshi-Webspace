@@ -1,8 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
 import { motion } from 'framer-motion';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
@@ -37,12 +35,12 @@ const itemVariants = {
 const cardHover = {
     whileHover: {
         scale: 1.02,
-        boxShadow: '0px 12px 25px rgba(0, 0, 0, 0.1)',
+        boxShadow: '0px 12px 30px rgba(0, 0, 0, 0.45)',
         transition: { type: 'spring', stiffness: 300 }
     }
 };
 
-const HomePage = () => {
+const DarkHomePage = () => {
     const [submitting, setSubmitting] = useState(false);
     const [open, setOpen] = useState(false);
 
@@ -62,20 +60,20 @@ const HomePage = () => {
         setOpen(false);
     }
 
-    // Decorative helpers
+    // Decorative helpers (dark-mode tuned)
     const FloatingOrbs = () => (
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-full opacity-50 blur-3xl animate-pulse" />
-            <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-tr from-purple-100 to-pink-100 rounded-full opacity-40 blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-indigo-100 to-purple-100 rounded-full opacity-30 blur-3xl animate-pulse" style={{ animationDelay: '4s' }} />
+            <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full opacity-30 blur-3xl animate-pulse" />
+            <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-tr from-purple-500 to-pink-500 rounded-full opacity-24 blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full opacity-18 blur-3xl animate-pulse" style={{ animationDelay: '4s' }} />
         </div>
     );
 
     const AnimatedDots = () => (
-        <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-16">
             <div className="absolute inset-0"
                 style={{
-                    backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(99, 102, 241, 0.12) 1px, transparent 0)',
+                    backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(99, 102, 241, 0.06) 1px, transparent 0)',
                     backgroundSize: '32px 32px'
                 }}
             />
@@ -115,7 +113,7 @@ const HomePage = () => {
             <div
                 className="absolute inset-0 opacity-10 transition-opacity duration-300 pointer-events-none"
                 style={{
-                    background: `radial-gradient(300px circle at ${mousePos.x}% ${mousePos.y}%, rgba(255,255,255,0.18), transparent 50%)`
+                    background: `radial-gradient(300px circle at ${mousePos.x}% ${mousePos.y}%, rgba(255,255,255,0.08), transparent 50%)`
                 }}
             />
         );
@@ -126,26 +124,23 @@ const HomePage = () => {
             initial="hidden"
             animate="visible"
             variants={containerVariants}
-            className="min-h-screen bg-gray-50"
+            className="min-h-screen bg-slate-900 text-slate-100"
         >
-            {/* ---------- HERO ---------- */}
+            {/* ---------- HERO (dark) ---------- */}
             <motion.section
                 variants={itemVariants}
-                className="relative hero-section overflow-hidden bg-gradient-to-r from-indigo-600 to-purple-600"
+                className="relative hero-section overflow-hidden bg-gradient-to-r from-slate-900 via-indigo-950 to-purple-950"
             >
                 <FloatingOrbs />
                 <AnimatedDots />
                 <MouseGlow />
 
-                {/* soft diagonal blur */}
-                {
-                    Array.from({ length: 6 }).map((_, i) => (
-                        <div key={i} className="absolute -left-36 -top-36 w-[640px] h-[640px] bg-white/6 transform rotate-[22deg] blur-[80px] pointer-events-none" />
-                    ))
-                }
+                {/* two-layer diagonal squares: large halo + defined subtle square */}
+                <div aria-hidden className="absolute -left-44 -top-44 w-[920px] h-[920px] transform rotate-[22deg] pointer-events-none" style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.06) 0%, rgba(236,72,153,0.04) 60%, rgba(255,255,255,0) 100%)', filter: 'blur(120px)', mixBlendMode: 'screen', zIndex: 0 }} />
+                <div aria-hidden className="absolute -left-36 -top-36 w-[640px] h-[640px] transform rotate-[22deg] pointer-events-none border border-white/8 rounded-sm" style={{ background: 'rgba(255,255,255,0.18)', filter: 'blur(28px)', boxShadow: '0 18px 50px rgba(0,0,0,0.6)', mixBlendMode: 'screen', zIndex: 0 }} />
 
                 {/*Hero Content*/}
-                <div className="max-w-7xl mx-auto px-4 pt-12 sm:pt-16 lg:pt-24 pb-28 sm:pb-32 lg:pb-40 min-h-[68vh] lg:min-h-[78vh]">
+                <div className="max-w-7xl mx-auto px-4 pt-12 sm:pt-16 lg:pt-24 pb-28 sm:pb-32 lg:pb-40 min-h-[68vh] lg:min-h-[78vh] relative z-10">
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
                         {/* LEFT: Messaging (bigger) */}
                         <motion.div variants={itemVariants} className="md:col-span-7 text-center md:text-left">
@@ -160,10 +155,10 @@ const HomePage = () => {
                                 animate={{ y: 0, opacity: 1 }}
                                 transition={{ duration: 0.6 }}
                             >
-                                Share your ideas — <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-100 to-pink-300">write boldly</span> and connect with readers.
+                                Share your ideas — <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-300 to-pink-300">write boldly</span> and connect with readers.
                             </motion.h1>
 
-                            <motion.p className="mt-6 text-lg sm:text-xl max-w-2xl text-indigo-100/95" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.18 }}>
+                            <motion.p className="mt-6 text-lg sm:text-xl max-w-2xl text-slate-300" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.18 }}>
                                 Kenshi Webspace is a shared journey between me and my friends — writing blogs, exchanging ideas, and connecting with readers who love to think, learn, and create.
                             </motion.p>
 
@@ -175,17 +170,17 @@ const HomePage = () => {
                                 </motion.div>
 
                                 <motion.div whileHover={{ scale: 1.03 }}>
-                                    <Button onClick={() => setOpen(true)} asChild variant="outline" className="px-6 py-3">
+                                    <Button onClick={() => setOpen(true)} asChild variant="outline" className="px-6 py-3 text-black">
                                         <span>Contribute Now</span>
                                     </Button>
                                 </motion.div>
 
-                                <div className="mt-3 sm:mt-0 text-sm text-indigo-100/80 pl-1 lg:py-1.5">
+                                <div className="mt-3 sm:mt-0 text-sm text-slate-300 pl-1 lg:py-1.5">
                                     <span className="font-bold">No review queue</span> — publish drafts, get feedback.
                                 </div>
                             </motion.div>
 
-                            <motion.ul className="mt-8 sm:mt-10 flex flex-col md:flex-row gap-4 text-sm text-indigo-100/80" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.45 }}>
+                            <motion.ul className="mt-8 sm:mt-10 flex flex-col md:flex-row gap-4 text-sm text-slate-300" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.45 }}>
                                 <li className="inline-flex items-center gap-2">
                                     <span className="w-2 h-2 rounded-full bg-white/70" />
                                     <span>Fast, simple editor</span>
@@ -204,25 +199,6 @@ const HomePage = () => {
                         {/* RIGHT: Previews */}
                         <motion.div variants={itemVariants} className="md:col-span-5 relative flex items-center justify-center">
                             <div className="w-full">
-                                {/* Mobile: horizontal snap (visible on small screens) */}
-                                {/* <div className="md:hidden -mx-4 px-4">
-                                    <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory py-2">
-                                        {featuredPosts.slice(0, 3).map((p) => (
-                                            <Link key={p.id} to={`/articles/${p.id}`} className="snap-center shrink-0 w-[260px] rounded-2xl shadow-lg overflow-hidden border border-white/8 bg-white/5 backdrop-blur-md">
-                                                <div className="h-40 overflow-hidden rounded-t-2xl">
-                                                    <img src={p.thumbnail} alt={p.title} className="w-full h-full object-cover" />
-                                                </div>
-                                                <CardContent className="p-3">
-                                                    <p className="text-xs font-semibold text-indigo-200">{p.category}</p>
-                                                    <h3 className="mt-1 text-sm font-semibold text-white/95 line-clamp-2">{p.title}</h3>
-                                                    <p className="mt-2 text-xs text-indigo-100/70 line-clamp-2">{p.excerpt}</p>
-                                                </CardContent>
-                                            </Link>
-                                        ))}
-                                    </div>
-                                </div> */}
-
-                                {/* Desktop: stacked cards (visible on md+) */}
                                 <div className="relative w-full max-w-[340px] mx-auto h-[380px]">
                                     {featuredPosts.map((p, i) => {
                                         const xOffset = i === 0 ? -12 : i === 1 ? 0 : 12;
@@ -235,7 +211,7 @@ const HomePage = () => {
                                                 animate={{ opacity: 1, y: 0, rotate: 0 }}
                                                 transition={{ delay: 0.08 * i, duration: 0.5, type: 'spring', stiffness: 150 }}
                                                 whileHover={{ y: -10, scale: 1.035, zIndex: 80 }}
-                                                className="pointer-events-auto absolute left-1/2 -translate-x-1/2 w-[320px] rounded-2xl shadow-2xl overflow-hidden border border-white/8 bg-white/5 backdrop-blur-md"
+                                                className="pointer-events-auto absolute left-1/2 -translate-x-1/2 w-[320px] rounded-2xl shadow-2xl overflow-hidden border border-white/8 bg-gray-800 backdrop-blur-md"
                                                 style={{
                                                     top: `${topOffsetPx + 24}px`,
                                                     transform: `translateX(-50%) translateX(${xOffset}px)`,
@@ -246,10 +222,10 @@ const HomePage = () => {
                                                     <div className="h-44 overflow-hidden rounded-t-2xl">
                                                         <img src={p.thumbnail} alt={p.title} className="w-full h-full object-cover" />
                                                     </div>
-                                                    <CardContent className="p-4">
-                                                        <p className="text-xs font-semibold text-indigo-200">{p.category}</p>
+                                                    <CardContent className="p-4 bg-gray-800">
+                                                        <p className="text-xs font-semibold text-indigo-300">{p.category}</p>
                                                         <h3 className="mt-1 text-base font-semibold text-white/95">{p.title}</h3>
-                                                        <p className="mt-2 text-xs text-indigo-100/70 line-clamp-3">{p.excerpt}</p>
+                                                        <p className="mt-2 text-xs text-slate-300 line-clamp-3">{p.excerpt}</p>
                                                     </CardContent>
                                                 </Link>
                                             </motion.div>
@@ -257,7 +233,7 @@ const HomePage = () => {
                                     })}
 
                                     {/* anchor so stack visually sits on something */}
-                                    <div aria-hidden className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-36 h-1 rounded-full bg-white/8 shadow-inner" />
+                                    <div aria-hidden className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-36 h-1 rounded-full bg-white/6 shadow-inner" />
                                 </div>
                             </div>
                         </motion.div>
@@ -266,24 +242,24 @@ const HomePage = () => {
 
                 {/* bottom wave */}
                 <svg className="absolute bottom-0 left-0 w-full" viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M0,48 C180,120 360,0 720,48 C1080,96 1260,24 1440,64 L1440 120 L0 120 Z" fill="rgba(255,255,255,0.06)" />
+                    <path d="M0,48 C180,120 360,0 720,48 C1080,96 1260,24 1440,64 L1440 120 L0 120 Z" fill="rgba(255,255,255,0.02)" />
                 </svg>
 
-                {/* Contribute dialog */}
+                {/* Contribute dialog (dark) */}
                 <Dialog open={open} onOpenChange={setOpen}>
-                    <DialogContent className="max-w-md w-full sm:mx-4 rounded-2xl shadow-xl border border-white/10 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white p-0 overflow-hidden">
+                    <DialogContent className="max-w-md w-full sm:mx-4 rounded-2xl shadow-xl border border-white/8 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-950 text-white p-0 overflow-hidden">
                         <motion.div initial={{ opacity: 0, scale: 0.95, y: 10 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 10 }} transition={{ duration: 0.2, ease: "easeOut" }}>
-                            <div className="px-6 pt-6 pb-4 border-b border-white/10">
+                            <div className="px-6 pt-6 pb-4 border-b border-white/8">
                                 <DialogHeader>
-                                    <DialogTitle className="text-xl font-bold tracking-wide bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent">
+                                    <DialogTitle className="text-xl font-bold tracking-wide bg-gradient-to-r from-indigo-300 to-pink-300 bg-clip-text text-transparent">
                                         Contribute to Kenshi Webspace?
                                     </DialogTitle>
                                 </DialogHeader>
-                                <p className="text-sm text-gray-300 mt-1">We welcome contributors — would you like to join and publish your articles on Kenshi Webspace?</p>
+                                <p className="text-sm text-slate-300 mt-1">We welcome contributors — would you like to join and publish your articles on Kenshi Webspace?</p>
                             </div>
 
                             <DialogFooter className="px-6 py-4 flex items-center justify-end gap-3 bg-gray-800/40">
-                                <Button variant="ghost" onClick={handleCancel} disabled={submitting} className="hover:bg-gray-700/50 text-gray-300">No, thanks</Button>
+                                <Button variant="ghost" onClick={handleCancel} disabled={submitting} className="hover:bg-gray-700/50 text-slate-300">No, thanks</Button>
                                 <Link to="/my-articles ">
                                     <Button onClick={handleConfirm} disabled={submitting} className="bg-gradient-to-r from-indigo-500 to-pink-500 hover:from-indigo-400 hover:to-pink-400 text-white shadow-md">
                                         {submitting ? "Processing…" : "Yes, contribute"}
@@ -295,15 +271,15 @@ const HomePage = () => {
                 </Dialog>
             </motion.section>
 
-            {/* ---------- REST OF PAGE (UNCHANGED) ---------- */}
+            {/* ---------- REST OF PAGE (DARK) ---------- */}
             {/* Featured Posts */}
-            <motion.section variants={itemVariants} className="py-16 bg-white">
+            <motion.section variants={itemVariants} className="py-16 bg-gray-900">
                 <div className="max-w-7xl mx-auto px-4">
                     <motion.div className="text-center mb-10" variants={itemVariants}>
-                        <h2 className="text-4xl font-semibold text-gray-900">
+                        <h2 className="text-4xl font-semibold text-white">
                             Featured Articles
                         </h2>
-                        <p className="mt-2 text-lg text-gray-500">
+                        <p className="mt-2 text-lg text-slate-400">
                             Discover our most popular and trending content
                         </p>
                     </motion.div>
@@ -319,7 +295,7 @@ const HomePage = () => {
                                 {...cardHover}
                                 className="flex flex-col"
                             >
-                                <Card className="p-0 flex flex-col h-full transition-shadow">
+                                <Card className="p-0 flex flex-col h-full transition-shadow bg-gray-800 border border-white/6">
                                     <Link to={`/articles/${post.id}`}>
                                         <motion.div className="h-48 w-full overflow-hidden rounded-t-xl">
                                             <img
@@ -329,22 +305,22 @@ const HomePage = () => {
                                             />
                                         </motion.div>
 
-                                        <CardContent className="p-6 space-y-4 flex-grow">
-                                            <p className="text-sm font-medium text-indigo-600">{post.category}</p>
+                                        <CardContent className="p-6 space-y-4 flex-grow bg-gray-800">
+                                            <p className="text-sm font-medium text-indigo-300">{post.category}</p>
 
                                             <motion.h3
-                                                className="text-xl font-semibold text-gray-900"
-                                                whileHover={{ color: '#4f46e5' }}
+                                                className="text-xl font-semibold text-white"
+                                                whileHover={{ color: '#c4b5fd' }}
                                             >
                                                 {post.title}
                                             </motion.h3>
-                                            <p className="text-gray-500 mt-2">{post.excerpt}</p>
+                                            <p className="text-slate-400 mt-2">{post.excerpt}</p>
 
                                             <div className="flex justify-between items-center pt-4">
-                                                <span className="text-sm text-gray-400">{post.date} · {post.readTime}</span>
+                                                <span className="text-sm text-slate-400">{post.date} · {post.readTime}</span>
                                                 <Link
                                                     to={`/articles/${post.id}`}
-                                                    className="text-indigo-600 hover:underline text-sm"
+                                                    className="text-indigo-300 hover:underline text-sm"
                                                 >
                                                     Read more →
                                                 </Link>
@@ -357,7 +333,7 @@ const HomePage = () => {
                     </motion.div>
 
                     <motion.div variants={itemVariants} className="mt-10 text-center">
-                        <Link to="/articles" className="text-indigo-600 hover:underline text-lg">
+                        <Link to="/articles" className="text-indigo-300 hover:underline text-lg">
                             View all articles →
                         </Link>
                     </motion.div>
@@ -365,11 +341,11 @@ const HomePage = () => {
             </motion.section>
 
             {/* CTA Section */}
-            <motion.section variants={itemVariants} className="bg-indigo-700">
+            <motion.section variants={itemVariants} className="bg-indigo-900">
                 <div className="max-w-7xl mx-auto py-16 px-4 flex flex-col md:flex-row items-center justify-between">
                     <motion.h2 variants={itemVariants} className="text-3xl font-bold text-white">
                         <span className="block">Ready to start writing?</span>
-                        <span className="block text-indigo-200">Join our community today.</span>
+                        <span className="block text-indigo-300">Join our community today.</span>
                     </motion.h2>
                     <motion.div variants={itemVariants} className="mt-6 md:mt-0">
                         <Button asChild variant="secondary">
@@ -382,4 +358,4 @@ const HomePage = () => {
     );
 };
 
-export default HomePage;
+export default DarkHomePage;

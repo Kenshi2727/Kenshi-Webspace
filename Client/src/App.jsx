@@ -1,4 +1,6 @@
 import React from 'react';
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import ArticlesPage from './pages/ArticlesPage';
@@ -14,9 +16,20 @@ import SsoCallback from './auth/SsoCallback';
 import ForgotPasswordPage from './auth/ForgotPasswordPage';
 import MaintenancePage from './components/MaintenancePage';
 import MyArticlesPage from './pages/MyArticlesPage';
+import DarkHomePage from './pages/DarkHomePage';
+import DarkModePrompt from './components/DarkModePrompt';
 
 function App() {
   const isMaintenanceMode = false;
+  const [showDarkPrompt, setShowDarkPrompt] = useState(false);
+
+  useEffect(() => {
+    // show dialog immediately on first render
+    if (window.location.pathname !== "/dark") {
+      setShowDarkPrompt(true);
+    }
+  }, []);
+
   return (
     <Router>
       <Navbar />
@@ -40,10 +53,17 @@ function App() {
             <Route path="/articles/:id/edit" element={isMaintenanceMode ? <MaintenancePage /> : <EditorPage />} />
             <Route path="/auth/forgot-password" element={isMaintenanceMode ? <MaintenancePage /> : <ForgotPasswordPage />} />
             <Route path="/my-articles" element={isMaintenanceMode ? <MaintenancePage /> : <MyArticlesPage />} />
-
+            <Route path="/dark" element={isMaintenanceMode ? <MaintenancePage /> : <DarkHomePage />} />
             {/* Add more routes as needed */}
           </Routes>
         )}
+
+        <motion.div>
+          {/* all your existing page markup */}
+          {/* put the prompt near the root so it's rendered once */}
+
+          <DarkModePrompt open={showDarkPrompt} onOpenChange={setShowDarkPrompt} />
+        </motion.div>
       </main>
       <Footer />
     </Router>
