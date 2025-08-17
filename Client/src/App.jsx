@@ -59,9 +59,9 @@ function App() {
           </Routes>
         )}
 
-        <motion.div>
+        {/* <motion.div>
           <DarkModePrompt open={showDarkPrompt} onOpenChange={setShowDarkPrompt} />
-        </motion.div>
+        </motion.div> */}
 
         <ScrollToTopButton />
       </main>

@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { motion, useViewportScroll, useTransform, useSpring } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { Facebook, Twitter, Linkedin, Pencil, Clock, Eye, Heart, Bookmark, Share2 } from 'lucide-react';
 import MarkdownRenderer from '@/components/MarkdownRenderer';
 
@@ -23,7 +23,8 @@ export default function ArticlePage() {
     const [isLiked, setIsLiked] = useState(false);
     const [isBookmarked, setIsBookmarked] = useState(false);
 
-    const { scrollYProgress, scrollY } = useViewportScroll();
+    // Fixed scroll hook
+    const { scrollYProgress, scrollY } = useScroll();
 
     const scaleX = useTransform(scrollYProgress, [0, 1], [0, 1]);
     const opacity = useTransform(scrollY, [0, 300], [1, 0]);
@@ -38,7 +39,6 @@ export default function ArticlePage() {
             setReadingTime(Math.ceil(words / 200));
         }
     }, [article?.content]);
-
 
     if (!article) {
         return (
@@ -77,28 +77,106 @@ export default function ArticlePage() {
 
     return (
         <>
-            {/* Enhanced Progress Bar */}
-            <motion.div
-                style={{ scaleX }}
-                className="origin-left fixed top-0 left-0 h-1 bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 z-50 shadow-lg"
-            />
+            {/* Beautiful Enhanced Progress Bar */}
+            <div className="fixed top-0 left-0 right-0 z-50">
+                {/* Background track */}
+                <div className="h-1 bg-black/20 backdrop-blur-sm">
+                    {/* Animated progress fill */}
+                    <motion.div
+                        style={{ scaleX }}
+                        className="origin-left h-full bg-gradient-to-r from-purple-400 via-pink-500 to-indigo-500 relative overflow-hidden"
+                    >
+                        {/* Animated shimmer effect */}
+                        <motion.div
+                            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                            animate={{
+                                x: ['-100%', '100%']
+                            }}
+                            transition={{
+                                duration: 2,
+                                repeat: Infinity,
+                                ease: "easeInOut"
+                            }}
+                        />
+                    </motion.div>
+                </div>
 
-            {/* Floating Action Buttons */}
+                {/* Glowing effect */}
+                <motion.div
+                    style={{ scaleX }}
+                    className="origin-left h-0.5 bg-gradient-to-r from-purple-400 via-pink-500 to-indigo-500 blur-sm opacity-60"
+                />
+            </div>
+
+            {/* Reading Progress Indicator */}
+            <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.6 }}
+                className="fixed top-4 right-6 z-40 bg-white/10 backdrop-blur-lg border border-white/20 rounded-full px-4 py-2 text-sm text-white shadow-lg"
+            >
+                <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full"></div>
+                    <motion.span
+                        key={Math.round(scrollYProgress.get() * 100)}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.3 }}
+                    >
+                        {Math.round(scrollYProgress.get() * 100)}%
+                    </motion.span>
+                </div>
+            </motion.div>
+
+            {/* Fixed Floating Action Buttons - Single Instance */}
             <motion.div
                 initial={{ opacity: 0, x: 100 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 1, duration: 0.5 }}
-                className="fixed right-6 top-1/2 -translate-y-1/2 z-40 flex flex-col gap-3"
+                className="fixed right-6 top-1/2 -translate-y-1/2 z-40 p-1 flex flex-col gap-3"
             >
-                <motion.button
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setIsLiked(!isLiked)}
-                    className={`p-3 rounded-full backdrop-blur-lg border border-white/20 transition-all duration-300 ${isLiked ? 'bg-red-500/80 text-white' : 'bg-white/10 text-gray-300 hover:bg-white/20'
-                        }`}
-                >
-                    <Heart size={20} className={isLiked ? 'fill-current' : ''} />
-                </motion.button>
+                {/* Circular progress ring around like button */}
+                <div className="relative">
+                    <svg className="absolute top-0 left-0 w-full h-full -rotate-90 pointer-events-none z-10" viewBox="0 0 48 48">
+                        <circle
+                            cx="24"
+                            cy="24"
+                            r="24"
+                            fill="none"
+                            stroke="rgba(255,255,255,0.1)"
+                            strokeWidth="1"
+                        />
+                        <motion.circle
+                            cx="24"
+                            cy="24"
+                            r="24"
+                            fill="none"
+                            stroke="url(#progressGradient)"
+                            strokeWidth="1"
+                            strokeLinecap="round"
+                            initial={{ pathLength: 0 }}
+                            style={{ pathLength: scrollYProgress }}
+                            transition={{ duration: 0.1 }}
+                        />
+                        <defs>
+                            <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stopColor="#a855f7" />
+                                <stop offset="50%" stopColor="#ec4899" />
+                                <stop offset="100%" stopColor="#6366f1" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+
+                    <motion.button
+                        whileHover={{ scale: 1.1, rotate: 5 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => setIsLiked(!isLiked)}
+                        className={`relative p-3 rounded-full backdrop-blur-lg border border-white/20 transition-all duration-300 ${isLiked ? 'bg-red-500/80 text-white' : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                            }`}
+                    >
+                        <Heart size={20} className={isLiked ? 'fill-current' : ''} />
+                    </motion.button>
+                </div>
 
                 <motion.button
                     whileHover={{ scale: 1.1, rotate: -5 }}
@@ -120,7 +198,7 @@ export default function ArticlePage() {
             </motion.div>
 
             <div className="min-h-screen bg-gradient-to-br from-purple-950 to-purple-800 relative overflow-hidden">
-                {/* Animated Background Elements */}
+                {/* Enhanced Animated Background Elements */}
                 <div className="absolute inset-0 overflow-hidden">
                     <motion.div
                         animate={{
@@ -132,7 +210,7 @@ export default function ArticlePage() {
                             repeat: Infinity,
                             ease: "linear"
                         }}
-                        className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-purple-400/10 to-purple-600/10 rounded-full blur-3xl"
+                        className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-purple-400/30 to-purple-600/20 rounded-full blur-3xl"
                     />
                     <motion.div
                         animate={{
@@ -144,7 +222,33 @@ export default function ArticlePage() {
                             repeat: Infinity,
                             ease: "linear"
                         }}
-                        className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-tr from-purple-400/10 to-purple-600/10 rounded-full blur-3xl"
+                        className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-tr from-purple-400/30 to-purple-600/20 rounded-full blur-3xl"
+                    />
+
+                    {/* Additional animated elements for more visibility */}
+                    <motion.div
+                        animate={{
+                            x: [0, 100, -100, 0],
+                            y: [0, -50, 50, 0],
+                        }}
+                        transition={{
+                            duration: 12,
+                            repeat: Infinity,
+                            ease: "easeInOut"
+                        }}
+                        className="absolute top-1/4 left-1/4 w-32 h-32 bg-gradient-to-br from-indigo-400/25 to-purple-400/25 rounded-full blur-2xl"
+                    />
+                    <motion.div
+                        animate={{
+                            x: [0, -80, 80, 0],
+                            y: [0, 60, -60, 0],
+                        }}
+                        transition={{
+                            duration: 18,
+                            repeat: Infinity,
+                            ease: "easeInOut"
+                        }}
+                        className="absolute bottom-1/3 right-1/3 w-24 h-24 bg-gradient-to-br from-pink-400/20 to-indigo-400/20 rounded-full blur-xl"
                     />
                 </div>
 
@@ -180,13 +284,24 @@ export default function ArticlePage() {
                             </motion.div>
                         </motion.div>
 
-                        <Card className="max-w-5xl mx-auto rounded-3xl shadow-2xl bg-white/10 border border-white/20 backdrop-blur-xl relative overflow-hidden">
-                            {/* Animated Background Pattern */}
-                            <div className="absolute inset-0 opacity-5">
-                                <div className="absolute inset-0" style={{
-                                    backgroundImage: `radial-gradient(circle at 2px 2px, white 1px, transparent 0)`,
-                                    backgroundSize: '40px 40px'
-                                }} />
+                        <Card className="max-w-5xl mx-auto rounded-3xl shadow-2xl bg-white/20 border border-white/30 backdrop-blur-xl relative overflow-hidden">
+                            {/* Enhanced Animated Background Pattern */}
+                            <div className="absolute inset-0 opacity-20">
+                                <motion.div
+                                    className="absolute inset-0"
+                                    style={{
+                                        backgroundImage: `radial-gradient(circle at 2px 2px, rgba(255,255,255,0.4) 1px, transparent 0)`,
+                                        backgroundSize: '40px 40px'
+                                    }}
+                                    animate={{
+                                        backgroundPosition: ['0px 0px', '40px 40px', '0px 0px']
+                                    }}
+                                    transition={{
+                                        duration: 8,
+                                        repeat: Infinity,
+                                        ease: "linear"
+                                    }}
+                                />
                             </div>
 
                             <CardContent className="relative p-10 space-y-8">
@@ -414,9 +529,13 @@ export default function ArticlePage() {
                                         transition={{ delay: 2.4, duration: 0.6 }}
                                         className="text-center py-12 border-2 border-dashed border-white/20 rounded-2xl bg-white/5"
                                     >
-                                        <p className="text-gray-300 text-lg">
+                                        <motion.p
+                                            className="text-gray-300 text-lg"
+                                            animate={{ opacity: [0.7, 1, 0.7] }}
+                                            transition={{ duration: 2, repeat: Infinity }}
+                                        >
                                             Comments section coming soon...
-                                        </p>
+                                        </motion.p>
                                         <p className="text-gray-400 text-sm mt-2">
                                             Share your thoughts and connect with other readers
                                         </p>
