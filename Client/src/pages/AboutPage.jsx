@@ -165,7 +165,7 @@ const FloatingTechElements = () => {
             {techElements.slice(0, window.innerWidth < 768 ? 4 : techElements.length).map((element, i) => (
                 <motion.div
                     key={i}
-                    className="absolute text-sm md:text-lg font-mono opacity-10 select-none"
+                    className="absolute text-xs sm:text-sm md:text-base lg:text-lg font-mono opacity-10 select-none"
                     animate={{
                         y: [0, -30, 0],
                         x: [0, Math.sin(i * 0.5) * 20, 0],
@@ -190,7 +190,7 @@ const FloatingTechElements = () => {
     );
 };
 
-// Enhanced Team Card with Responsive Dimensions
+// Enhanced Team Card with Fixed Responsive Dimensions
 const TeamCard = ({ member, index }) => {
     const [isHovered, setIsHovered] = useState(false);
 
@@ -212,7 +212,7 @@ const TeamCard = ({ member, index }) => {
             }}
             onHoverStart={() => setIsHovered(true)}
             onHoverEnd={() => setIsHovered(false)}
-            className="relative group"
+            className="relative group h-full"
         >
             <motion.div
                 animate={{
@@ -220,7 +220,7 @@ const TeamCard = ({ member, index }) => {
                     z: isHovered ? 50 : 0,
                 }}
                 transition={{ duration: 0.4, type: "spring" }}
-                className="bg-white rounded-xl md:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden h-80 sm:h-96 flex flex-col"
+                className="bg-white rounded-lg sm:rounded-xl md:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden h-full flex flex-col"
             >
                 {/* Tech circuit header pattern */}
                 <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
@@ -243,45 +243,45 @@ const TeamCard = ({ member, index }) => {
                 <motion.div
                     animate={{ scale: isHovered ? 1.02 : 1 }}
                     transition={{ duration: 0.3 }}
-                    className="relative z-10 p-4 sm:p-6 flex flex-col h-full"
+                    className="relative z-10 p-3 sm:p-4 md:p-6 flex flex-col h-full"
                 >
-                    {/* Image container with responsive aspect ratio */}
-                    <div className="relative mb-3 sm:mb-4 h-32 sm:h-40 w-full">
+                    {/* Image container with fixed responsive aspect ratio */}
+                    <div className="relative mb-3 sm:mb-4 h-28 sm:h-32 md:h-40 w-full flex-shrink-0">
                         <img
                             src={member.img}
                             alt={member.name}
-                            className="w-full h-full object-cover rounded-lg sm:rounded-xl"
+                            className="w-full h-full object-cover rounded-md sm:rounded-lg md:rounded-xl"
                         />
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: isHovered ? 1 : 0 }}
-                            className="absolute inset-0 bg-gradient-to-t from-indigo-600/90 via-transparent to-transparent rounded-lg sm:rounded-xl flex items-end p-2 sm:p-3"
+                            className="absolute inset-0 bg-gradient-to-t from-indigo-600/90 via-transparent to-transparent rounded-md sm:rounded-lg md:rounded-xl flex items-end p-2"
                         >
-                            <div className="text-white text-xs font-medium flex items-center gap-1 sm:gap-2">
-                                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-400 rounded-full animate-pulse"></span>
-                                <span className="hidden sm:inline">Available for collaboration</span>
-                                <span className="sm:hidden">Available</span>
+                            <div className="text-white text-xs font-medium flex items-center gap-1">
+                                <span className={`w-1.5 h-1.5 ${member.available ? 'bg-green-400' : 'bg-red-400'} rounded-full animate-[pulse_1s_ease-in-out_infinite]`}></span>
+                                <span className="hidden sm:inline text-xs">{member.available ? 'Available for collaboration' : 'Not Available'}</span>
+                                <span className="sm:hidden text-xs">{member.available ? 'Available' : 'Not Available'}</span>
                             </div>
                         </motion.div>
                     </div>
 
-                    {/* Content with responsive layout */}
-                    <div className="flex-1 flex flex-col">
-                        <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-1 line-clamp-1">{member.name}</h3>
-                        <div className="flex items-center gap-1 sm:gap-2 mb-2 sm:mb-3">
-                            <span className="inline-block w-1.5 h-1.5 sm:w-2 sm:h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+                    {/* Content with fixed responsive layout */}
+                    <div className="flex-1 flex flex-col min-h-0">
+                        <h3 className="text-sm sm:text-base md:text-lg font-bold text-gray-900 mb-1 sm:mb-2 line-clamp-2 flex-shrink-0">{member.name}</h3>
+                        <div className="flex items-center gap-1 mb-2 sm:mb-3 flex-shrink-0">
+                            <span className="inline-block w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span>
                             <p className="text-indigo-600 font-semibold text-xs sm:text-sm line-clamp-1">{member.role}</p>
                         </div>
-                        <p className="text-gray-600 text-xs sm:text-sm leading-relaxed flex-1 line-clamp-3 sm:line-clamp-4">{member.bio}</p>
+                        <p className="text-gray-600 text-xs sm:text-sm leading-relaxed flex-1 line-clamp-4 mb-3">{member.bio}</p>
 
                         {/* Enhanced tech expertise visualization */}
-                        <div className="mt-3 sm:mt-4">
-                            <div className="text-xs text-gray-400 mb-1 sm:mb-2 font-mono">EXPERTISE_LEVEL</div>
+                        <div className="mt-auto flex-shrink-0">
+                            <div className="text-xs text-gray-400 mb-1 font-mono">EXPERTISE_LEVEL</div>
                             <div className="flex gap-1">
                                 {[1, 2, 3, 4, 5].map(i => (
                                     <motion.div
                                         key={i}
-                                        className="h-1.5 sm:h-2 bg-gray-200 rounded-full flex-1 overflow-hidden"
+                                        className="h-1.5 bg-gray-200 rounded-full flex-1 overflow-hidden"
                                         animate={{
                                             backgroundColor: isHovered && i <= 4 ? '#6366f1' : '#e5e7eb'
                                         }}
@@ -303,7 +303,7 @@ const TeamCard = ({ member, index }) => {
 
                 {/* Holographic edge effect */}
                 <motion.div
-                    className="absolute inset-0 rounded-xl md:rounded-2xl border-2 border-transparent"
+                    className="absolute inset-0 rounded-lg sm:rounded-xl md:rounded-2xl border-2 border-transparent"
                     animate={{
                         borderColor: isHovered
                             ? ['rgba(99, 102, 241, 0)', 'rgba(99, 102, 241, 0.5)', 'rgba(147, 197, 253, 0.5)', 'rgba(99, 102, 241, 0)']
@@ -316,7 +316,7 @@ const TeamCard = ({ member, index }) => {
     );
 };
 
-// Enhanced Value Card with Responsive Dimensions
+// Enhanced Value Card with Fixed Responsive Dimensions
 const ValueCard = ({ title, description, index, icon }) => {
     const [isHovered, setIsHovered] = useState(false);
 
@@ -332,14 +332,14 @@ const ValueCard = ({ title, description, index, icon }) => {
             }}
             onHoverStart={() => setIsHovered(true)}
             onHoverEnd={() => setIsHovered(false)}
-            className="relative group h-72 sm:h-80"
+            className="relative group h-full"
         >
             <motion.div
                 animate={{
                     y: isHovered ? -8 : 0,
                     scale: isHovered ? 1.03 : 1,
                 }}
-                className="bg-white rounded-xl md:rounded-2xl p-4 sm:p-6 md:p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 relative overflow-hidden h-full flex flex-col"
+                className="bg-white rounded-lg sm:rounded-xl md:rounded-2xl p-4 sm:p-6 md:p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 relative overflow-hidden h-full flex flex-col"
             >
                 {/* Tech grid background - simplified for mobile */}
                 <div className="absolute inset-0 opacity-5 hidden sm:block">
@@ -365,7 +365,7 @@ const ValueCard = ({ title, description, index, icon }) => {
                         rotate: isHovered ? 180 : 0,
                     }}
                     transition={{ duration: 1.2 }}
-                    className="absolute inset-0 bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500 rounded-xl md:rounded-2xl"
+                    className="absolute inset-0 bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500 rounded-lg sm:rounded-xl md:rounded-2xl"
                 />
 
                 <div className="relative z-10 flex flex-col h-full">
@@ -375,19 +375,19 @@ const ValueCard = ({ title, description, index, icon }) => {
                             scale: isHovered ? 1.1 : 1,
                         }}
                         transition={{ duration: 1.5, type: "spring" }}
-                        className="text-indigo-600 text-3xl sm:text-4xl md:text-5xl mb-3 sm:mb-6 font-bold flex items-center gap-2 sm:gap-4"
+                        className="text-indigo-600 text-2xl sm:text-3xl md:text-4xl lg:text-5xl mb-3 sm:mb-6 font-bold flex items-center gap-2 sm:gap-4 flex-shrink-0"
                     >
-                        <span className="font-mono text-lg sm:text-xl md:text-2xl bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                        <span className="font-mono text-sm sm:text-base md:text-lg lg:text-xl bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
                             {`0${index + 1}`}
                         </span>
-                        <span className="text-2xl sm:text-3xl">{icon}</span>
+                        <span className="text-xl sm:text-2xl md:text-3xl">{icon}</span>
                     </motion.div>
 
-                    <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-4 flex-shrink-0">{title}</h3>
-                    <p className="text-gray-600 leading-relaxed flex-1 text-sm sm:text-base">{description}</p>
+                    <h3 className="text-base sm:text-lg md:text-xl font-bold text-gray-900 mb-2 sm:mb-4 flex-shrink-0">{title}</h3>
+                    <p className="text-gray-600 leading-relaxed flex-1 text-sm sm:text-base mb-4">{description}</p>
 
                     {/* Enhanced progress indicator with data visualization */}
-                    <div className="mt-4 sm:mt-6 space-y-1 sm:space-y-2">
+                    <div className="mt-auto space-y-1 sm:space-y-2 flex-shrink-0">
                         <div className="flex justify-between text-xs font-mono text-gray-400">
                             <span>PROGRESS</span>
                             <span>{isHovered ? '100%' : '0%'}</span>
@@ -444,28 +444,32 @@ const AboutPage = () => {
             name: "Abhishek Mathur",
             role: "Founder & Editor",
             bio: "Specializes in web development and technology. Leading the vision and technical direction of Kenshi Webspace.",
-            img: "abhishek.jpg"
+            img: "abhishek.jpg",
+            available: true
         },
         {
             id: 2,
             name: "Rishikesh Shukla",
             role: "Contributor & Editor",
             bio: "Specializes in Machine Learning and AI. Driving innovation in artificial intelligence content and research.",
-            img: "rishikesh.jpg"
+            img: "rishikesh.jpg",
+            available: false
         },
         {
             id: 3,
-            name: "Position Open",
-            role: "Frontend Developer",
-            bio: "Seeking passionate frontend developer to join our mission of creating exceptional user experiences.",
-            img: "https://placehold.co/640x400/6366f1/ffffff?text=Frontend+Dev"
+            name: "Soon to be added...",
+            role: "Unallocated",
+            bio: "Some amazing tech content is on the way!",
+            img: "https://placehold.co/640x400/6366f1/ffffff?text=Yet+To+Be+Added",
+            available: false
         },
         {
             id: 4,
-            name: "Position Open",
-            role: "Content Creator",
-            bio: "Looking for creative minds to help expand our content across emerging technologies and platforms.",
-            img: "https://placehold.co/640x400/8b5cf6/ffffff?text=Content+Creator"
+            name: "Soon to be added..",
+            role: "Unallocated",
+            bio: "Some amazing tech content is on the way!",
+            img: "https://placehold.co/640x400/8b5cf6/ffffff?text=Yet+To+Be+Added",
+            available: false
         }
     ];
 
@@ -504,37 +508,12 @@ const AboutPage = () => {
                 variants={containerVariants}
                 initial="hidden"
                 animate="show"
-                className="relative z-10 max-w-7xl mx-auto py-6 sm:py-12 px-4 sm:px-6 lg:px-8"
+                className="relative z-10 max-w-7xl mx-auto py-4 sm:py-8 md:py-12 px-4 sm:px-6 lg:px-8"
             >
                 {/* Enhanced Hero Section - Responsive */}
-                <motion.div variants={itemVariants} className="text-center mb-12 sm:mb-20 relative">
-                    {/* Holographic effect rings - simplified for mobile */}
-                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hidden sm:block">
-                        {[1, 2, 3].map(i => (
-                            <motion.div
-                                key={i}
-                                className="absolute border border-indigo-300/30 rounded-full"
-                                style={{
-                                    width: `${100 + i * 50}px`,
-                                    height: `${100 + i * 50}px`,
-                                    left: `${-50 - i * 25}px`,
-                                    top: `${-50 - i * 25}px`,
-                                }}
-                                animate={{
-                                    scale: [1, 1.1, 1],
-                                    opacity: [0.3, 0.1, 0.3],
-                                }}
-                                transition={{
-                                    duration: 4,
-                                    delay: i * 0.5,
-                                    repeat: Infinity,
-                                }}
-                            />
-                        ))}
-                    </div>
-
+                <motion.div variants={itemVariants} className="text-center mb-8 sm:mb-12 md:mb-20 relative">
                     <motion.h1
-                        className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 relative font-mono px-4"
+                        className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-gray-900 relative font-mono px-4"
                         animate={{
                             backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
                         }}
@@ -550,7 +529,7 @@ const AboutPage = () => {
                     </motion.h1>
 
                     <motion.p
-                        className="mt-4 sm:mt-8 max-w-3xl mx-auto text-base sm:text-lg md:text-xl text-gray-600 font-medium px-4"
+                        className="mt-4 sm:mt-6 md:mt-8 max-w-3xl mx-auto text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 font-medium px-4"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.5, duration: 0.8 }}
@@ -562,7 +541,7 @@ const AboutPage = () => {
 
                     {/* Enhanced tech indicators with responsive design */}
                     <motion.div
-                        className="flex justify-center gap-2 sm:gap-4 md:gap-6 mt-6 sm:mt-10 px-4"
+                        className="flex justify-center gap-2 sm:gap-3 md:gap-4 lg:gap-6 mt-6 sm:mt-8 md:mt-10 px-4"
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.8 }}
@@ -575,11 +554,11 @@ const AboutPage = () => {
                         ].map((tech, i) => (
                             <motion.div
                                 key={tech.name}
-                                className="text-center group flex-1 max-w-20 sm:max-w-none"
+                                className="text-center group flex-1 max-w-16 sm:max-w-20 md:max-w-none"
                                 whileHover={{ scale: 1.1 }}
                             >
                                 <motion.div
-                                    className={`w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-2 sm:mb-3 bg-gradient-to-br ${tech.color} rounded-xl sm:rounded-2xl flex items-center justify-center text-white font-bold text-xs sm:text-sm shadow-lg`}
+                                    className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 mx-auto mb-2 sm:mb-3 bg-gradient-to-br ${tech.color} rounded-lg sm:rounded-xl md:rounded-2xl flex items-center justify-center text-white font-bold text-xs sm:text-sm md:text-base shadow-lg`}
                                     animate={{
                                         rotateY: [0, 360],
                                         boxShadow: [
@@ -620,29 +599,29 @@ const AboutPage = () => {
                 <motion.div
                     ref={storyRef}
                     variants={itemVariants}
-                    className="mb-12 sm:mb-20 relative"
+                    className="mb-8 sm:mb-12 md:mb-20 relative"
                 >
                     {/* Clean background for readability */}
-                    <div className="bg-white/90 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-12 shadow-xl border border-gray-200 relative overflow-hidden">
+                    <div className="bg-white/90 backdrop-blur-sm rounded-xl sm:rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 lg:p-12 shadow-xl border border-gray-200 relative overflow-hidden">
                         {/* Subtle tech accent border */}
                         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
 
                         <div className="lg:grid lg:grid-cols-2 lg:gap-16 items-center">
-                            <div className="mb-8 lg:mb-0">
+                            <div className="mb-6 sm:mb-8 lg:mb-0">
                                 <motion.div
                                     className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6"
                                     whileInView={{ x: [0, 10, 0] }}
                                     transition={{ duration: 2, repeat: Infinity }}
                                 >
-                                    <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg sm:rounded-xl flex items-center justify-center">
-                                        <span className="text-white font-mono text-sm sm:text-base md:text-lg">{'<>'}</span>
+                                    <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-md sm:rounded-lg md:rounded-xl flex items-center justify-center">
+                                        <span className="text-white font-mono text-xs sm:text-sm md:text-base lg:text-lg">{'<>'}</span>
                                     </div>
-                                    <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 font-mono">
+                                    <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 font-mono">
                                         Our.Story();
                                     </h2>
                                 </motion.div>
 
-                                <motion.div className="space-y-4 sm:space-y-6">
+                                <motion.div className="space-y-3 sm:space-y-4 md:space-y-6">
                                     {[
                                         "Kenshi Webspace was founded in 2025 with a simple goal: to create high-quality, accessible learning resources for tech enthusiasts. This platform showcases the learnings, projects, and journey of Abhishek Mathur (aka Kenshi) and our growing community of contributors.",
                                         "We started as a focused blog but are rapidly expanding into multiple domains of technology including Web Development, AI & ML, Cloud Computing, DevOps, and emerging tech trends.",
@@ -663,7 +642,7 @@ const AboutPage = () => {
 
                                 {/* Enhanced interactive stats with responsive design */}
                                 <motion.div
-                                    className="mt-6 sm:mt-10 grid grid-cols-3 gap-2 sm:gap-4 md:gap-6"
+                                    className="mt-6 sm:mt-8 md:mt-10 grid grid-cols-3 gap-2 sm:gap-3 md:gap-4 lg:gap-6"
                                     initial={{ opacity: 0 }}
                                     whileInView={{ opacity: 1 }}
                                     transition={{ delay: 0.8 }}
@@ -699,13 +678,13 @@ const AboutPage = () => {
 
                                             <div className="relative z-10">
                                                 <motion.div
-                                                    className="text-lg sm:text-xl md:text-2xl mb-1 sm:mb-2"
+                                                    className="text-base sm:text-lg md:text-xl lg:text-2xl mb-1 sm:mb-2"
                                                     animate={{ rotate: [0, 360] }}
                                                     transition={{ duration: 4, delay: i * 0.5, repeat: Infinity }}
                                                 >
                                                     {stat.icon}
                                                 </motion.div>
-                                                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 font-mono mb-1">{stat.value}</div>
+                                                <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 font-mono mb-1">{stat.value}</div>
                                                 <div className="text-xs text-gray-500 font-mono tracking-wider">{stat.label}</div>
                                             </div>
                                         </motion.div>
@@ -714,18 +693,18 @@ const AboutPage = () => {
                             </div>
 
                             <motion.div
-                                className="relative mt-8 lg:mt-0"
+                                className="relative mt-6 sm:mt-8 lg:mt-0"
                                 whileHover={{ scale: 1.02 }}
                                 transition={{ duration: 0.3 }}
                             >
                                 <img
                                     src="/about.png"
-                                    className="border-2 border-indigo-200 rounded-xl sm:rounded-2xl w-full h-64 sm:h-80 md:h-96 object-contain shadow-xl"
+                                    className="border-2 border-indigo-200 rounded-lg sm:rounded-xl md:rounded-2xl w-full h-48 sm:h-64 md:h-80 lg:h-96 object-contain shadow-xl"
                                     alt="About Kenshi Webspace"
                                 />
                                 {/* Enhanced holographic overlay */}
                                 <motion.div
-                                    className="absolute inset-0 bg-gradient-to-tr from-indigo-500/20 via-purple-500/20 to-pink-500/20 rounded-xl sm:rounded-2xl"
+                                    className="absolute inset-0 bg-gradient-to-tr from-indigo-500/20 via-purple-500/20 to-pink-500/20 rounded-lg sm:rounded-xl md:rounded-2xl"
                                     animate={{
                                         opacity: [0.1, 0.4, 0.1],
                                         background: [
@@ -753,18 +732,18 @@ const AboutPage = () => {
                 </motion.div>
 
                 {/* Enhanced Values Section - Responsive */}
-                <motion.div variants={itemVariants} className="mb-12 sm:mb-20">
+                <motion.div variants={itemVariants} className="mb-8 sm:mb-12 md:mb-20">
                     <motion.div
-                        className="text-center mb-8 sm:mb-12"
+                        className="text-center mb-6 sm:mb-8 md:mb-12"
                         whileInView={{
                             scale: [1, 1.02, 1],
                         }}
                         transition={{ duration: 2 }}
                     >
-                        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4 font-mono px-4">
+                        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 font-mono px-4">
                             core.Values[]
                         </h2>
-                        <div className="w-16 sm:w-24 h-1 bg-gradient-to-r from-indigo-500 to-purple-500 mx-auto rounded-full">
+                        <div className="w-12 sm:w-16 md:w-20 lg:w-24 h-1 bg-gradient-to-r from-indigo-500 to-purple-500 mx-auto rounded-full">
                             <motion.div
                                 className="h-full bg-white rounded-full"
                                 animate={{ x: ['-100%', '100%'] }}
@@ -774,7 +753,7 @@ const AboutPage = () => {
                     </motion.div>
 
                     <motion.div
-                        className="grid gap-4 sm:gap-6 md:gap-8 md:grid-cols-3"
+                        className="grid gap-4 sm:gap-6 md:gap-8 md:grid-cols-3 auto-rows-fr"
                         variants={containerVariants}
                     >
                         {values.map((value, index) => (
@@ -790,15 +769,15 @@ const AboutPage = () => {
                 </motion.div>
 
                 {/* Enhanced Team Section - Responsive */}
-                <motion.div variants={itemVariants} className="mb-12 sm:mb-20">
+                <motion.div variants={itemVariants} className="mb-8 sm:mb-12 md:mb-20">
                     <motion.div
-                        className="text-center mb-8 sm:mb-12"
+                        className="text-center mb-6 sm:mb-8 md:mb-12"
                         whileInView={{
                             y: [0, -5, 0],
                         }}
                         transition={{ duration: 2, repeat: Infinity }}
                     >
-                        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4 font-mono px-4">
+                        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 font-mono px-4">
                             team.Members()
                         </h2>
                         <p className="text-gray-600 max-w-2xl mx-auto text-sm sm:text-base md:text-lg px-4">
@@ -807,7 +786,7 @@ const AboutPage = () => {
                     </motion.div>
 
                     <motion.div
-                        className="grid gap-4 sm:gap-6 md:gap-8 sm:grid-cols-2 lg:grid-cols-4"
+                        className="grid gap-4 sm:gap-6 md:gap-8 sm:grid-cols-2 lg:grid-cols-4 auto-rows-fr"
                         variants={containerVariants}
                     >
                         {teamMembers.map((member, index) => (
@@ -819,7 +798,7 @@ const AboutPage = () => {
                 {/* Enhanced CTA Section with Responsive Design */}
                 <motion.div
                     variants={itemVariants}
-                    className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-gray-900 via-indigo-900 to-purple-900 p-6 sm:p-8 md:p-12 lg:p-16 shadow-2xl border border-indigo-500/20"
+                    className="relative overflow-hidden rounded-xl sm:rounded-2xl md:rounded-3xl bg-gradient-to-br from-gray-900 via-indigo-900 to-purple-900 p-4 sm:p-6 md:p-8 lg:p-12 xl:p-16 shadow-2xl border border-indigo-500/20"
                 >
                     {/* Matrix-style background - simplified for mobile */}
                     <div className="absolute inset-0 opacity-10 hidden sm:block">
@@ -844,7 +823,7 @@ const AboutPage = () => {
 
                     {/* Enhanced decorative effects - responsive */}
                     <motion.div
-                        className="absolute -top-16 sm:-top-32 -right-16 sm:-right-32 w-48 h-48 sm:w-96 sm:h-96 bg-indigo-500 opacity-20 rounded-full blur-3xl"
+                        className="absolute -top-12 sm:-top-16 md:-top-24 lg:-top-32 -right-12 sm:-right-16 md:-right-24 lg:-right-32 w-32 h-32 sm:w-48 sm:h-48 md:w-72 md:h-72 lg:w-96 lg:h-96 bg-indigo-500 opacity-20 rounded-full blur-3xl"
                         animate={{
                             scale: [1, 1.3, 1],
                             x: [0, 30, 0],
@@ -853,7 +832,7 @@ const AboutPage = () => {
                         transition={{ duration: 8, repeat: Infinity }}
                     />
                     <motion.div
-                        className="absolute -bottom-16 sm:-bottom-32 -left-16 sm:-left-32 w-48 h-48 sm:w-96 sm:h-96 bg-purple-500 opacity-20 rounded-full blur-3xl"
+                        className="absolute -bottom-12 sm:-bottom-16 md:-bottom-24 lg:-bottom-32 -left-12 sm:-left-16 md:-left-24 lg:-left-32 w-32 h-32 sm:w-48 sm:h-48 md:w-72 md:h-72 lg:w-96 lg:h-96 bg-purple-500 opacity-20 rounded-full blur-3xl"
                         animate={{
                             scale: [1, 1.2, 1],
                             x: [0, -25, 0],
@@ -862,9 +841,9 @@ const AboutPage = () => {
                         transition={{ duration: 6, repeat: Infinity }}
                     />
 
-                    <div className="relative max-w-4xl mx-auto text-center space-y-6 sm:space-y-8">
+                    <div className="relative max-w-4xl mx-auto text-center space-y-4 sm:space-y-6 md:space-y-8">
                         <motion.h2
-                            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-white font-mono px-4"
+                            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold tracking-tight text-white font-mono px-4"
                             animate={{
                                 textShadow: [
                                     '0 0 20px rgba(99,102,241,0.5)',
@@ -878,7 +857,7 @@ const AboutPage = () => {
                         </motion.h2>
 
                         <motion.p
-                            className="text-base sm:text-lg md:text-xl lg:text-2xl text-indigo-200 leading-relaxed max-w-3xl mx-auto px-4"
+                            className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-indigo-200 leading-relaxed max-w-3xl mx-auto px-4"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.3 }}
@@ -891,13 +870,13 @@ const AboutPage = () => {
                         </motion.p>
 
                         <motion.div
-                            className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6 mt-8 sm:mt-12 px-4"
+                            className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 md:gap-6 mt-6 sm:mt-8 md:mt-12 px-4"
                             initial={{ opacity: 0, scale: 0.8 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ delay: 0.6, type: "spring", stiffness: 100 }}
                         >
                             <motion.button
-                                className="bg-white text-gray-900 hover:bg-gray-100 font-bold px-6 sm:px-8 md:px-10 py-3 sm:py-4 rounded-xl sm:rounded-2xl shadow-xl border-2 border-white/20 relative overflow-hidden group font-mono text-sm sm:text-base"
+                                className="bg-white text-gray-900 hover:bg-gray-100 font-bold px-4 sm:px-6 md:px-8 lg:px-10 py-3 sm:py-4 rounded-lg sm:rounded-xl md:rounded-2xl shadow-xl border-2 border-white/20 relative overflow-hidden group font-mono text-sm sm:text-base"
                                 whileHover={{
                                     scale: 1.05,
                                     boxShadow: '0 0 40px rgba(255,255,255,0.6)'
@@ -924,7 +903,7 @@ const AboutPage = () => {
                             </motion.button>
 
                             <motion.button
-                                className="bg-transparent hover:bg-white/10 text-white font-bold px-6 sm:px-8 md:px-10 py-3 sm:py-4 rounded-xl sm:rounded-2xl shadow-xl border-2 border-white/30 relative overflow-hidden group font-mono text-sm sm:text-base"
+                                className="bg-transparent hover:bg-white/10 text-white font-bold px-4 sm:px-6 md:px-8 lg:px-10 py-3 sm:py-4 rounded-lg sm:rounded-xl md:rounded-2xl shadow-xl border-2 border-white/30 relative overflow-hidden group font-mono text-sm sm:text-base"
                                 whileHover={{
                                     scale: 1.05,
                                     borderColor: 'rgba(147, 197, 253, 0.8)',
@@ -954,7 +933,7 @@ const AboutPage = () => {
 
                         {/* Terminal-style footer - responsive */}
                         <motion.div
-                            className="mt-8 sm:mt-12 text-left max-w-2xl mx-auto px-4"
+                            className="mt-6 sm:mt-8 md:mt-12 text-left max-w-2xl mx-auto px-4"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 1 }}
@@ -989,12 +968,12 @@ const AboutPage = () => {
                 {/* Enhanced Tech Stack Visualization - Responsive */}
                 <motion.div
                     variants={itemVariants}
-                    className="mb-8 sm:mb-16 text-center relative"
+                    className="mb-6 sm:mb-8 md:mb-16 mt-6 text-center relative"
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
                     viewport={{ once: true }}
                 >
-                    <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 sm:mb-8 font-mono px-4">
+                    <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-4 sm:mb-6 md:mb-8 font-mono px-4">
                         techStack.dependencies
                     </h3>
 
@@ -1020,7 +999,7 @@ const AboutPage = () => {
                                     hover: { duration: 0.2 }
                                 }}
                             >
-                                <div className={`h-16 sm:h-20 md:h-24 w-full bg-gradient-to-br ${tech.color} text-white rounded-xl sm:rounded-2xl flex flex-col items-center justify-center shadow-lg relative overflow-hidden`}>
+                                <div className={`h-14 sm:h-16 md:h-20 lg:h-24 w-full bg-gradient-to-br ${tech.color} text-white rounded-lg sm:rounded-xl md:rounded-2xl flex flex-col items-center justify-center shadow-lg relative overflow-hidden`}>
                                     {/* Circuit pattern - simplified for mobile */}
                                     <div className="absolute inset-0 opacity-20 hidden sm:block">
                                         <svg className="w-full h-full" viewBox="0 0 100 100">
@@ -1038,7 +1017,7 @@ const AboutPage = () => {
 
                                     <div className="relative z-10 text-center">
                                         <motion.div
-                                            className="text-lg sm:text-xl md:text-2xl mb-1"
+                                            className="text-base sm:text-lg md:text-xl lg:text-2xl mb-1"
                                             animate={{ rotate: [0, 360] }}
                                             transition={{ duration: 4, delay: i * 0.5, repeat: Infinity }}
                                         >
@@ -1068,13 +1047,13 @@ const AboutPage = () => {
 
                     {/* Terminal command showcase - responsive */}
                     <motion.div
-                        className="mt-8 sm:mt-12 max-w-4xl mx-auto"
+                        className="mt-6 sm:mt-8 md:mt-12 max-w-4xl mx-auto"
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.5 }}
                     >
-                        <div className="bg-gray-900 rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-700 relative overflow-hidden">
-                            <div className="flex items-center gap-2 mb-3 sm:mb-4">
+                        <div className="bg-gray-900 rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-6 border border-gray-700 relative overflow-hidden">
+                            <div className="flex items-center gap-1 sm:gap-2 mb-2 sm:mb-3 md:mb-4">
                                 <div className="w-2 h-2 sm:w-3 sm:h-3 bg-red-500 rounded-full"></div>
                                 <div className="w-2 h-2 sm:w-3 sm:h-3 bg-yellow-500 rounded-full"></div>
                                 <div className="w-2 h-2 sm:w-3 sm:h-3 bg-green-500 rounded-full"></div>
@@ -1114,4 +1093,4 @@ const AboutPage = () => {
     );
 };
 
-export default AboutPage;
+export default AboutPage;   
