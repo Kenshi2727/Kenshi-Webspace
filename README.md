@@ -1,5 +1,40 @@
 # 🌌 Kenshi WebSpace – Prototype Release 🚀
 
+## Structure(Planned)-
+
+```
+kenshi-webspace/
+│── frontend/                     # React/Vite frontend
+│   ├── src/
+│   └── package.json
+│
+│── backend/                      # Node.js backend (API layer)
+│   ├── src/
+│   │   ├── controllers/          # API route handlers
+│   │   ├── routes/               # Express routes
+│   │   ├── services/             # Business logic
+│   │   ├── middlewares/          # Middleware (auth, logging, etc.)
+│   │   ├── utils/                # Helpers (formatters, validators)
+│   │   ├── db/                   # DB client wrapper (imported from database/)
+│   │   │   └── client.ts         # Exports Prisma client
+│   │   └── index.ts              # Entry point (Express server)
+│   ├── package.json
+│   └── tsconfig.json             # If using TypeScript
+│
+│── database/                     # ORM & migration layer
+│   ├── prisma/                   # Prisma-specific folder
+│   │   ├── schema.prisma         # Database schema
+│   │   ├── migrations/           # Auto-generated migrations
+│   │   └── seed.ts               # Seeding script
+│   ├── drizzle/ (optional alt)   # If you switch ORM later
+│   └── README.md                 # DB-related docs
+│
+│── .env                          # Environment variables (shared)
+│── package.json                  # Monorepo root config (if using workspaces/turborepo)
+│── README.md
+
+```
+
 > **Currently under development** – shaping the future, one commit at a time.
 
 ---
