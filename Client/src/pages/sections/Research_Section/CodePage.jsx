@@ -599,7 +599,7 @@ export default function CodePage() {
                     </AnimatePresence>
                 </main>
 
-                <footer className="text-sm text-gray-500">Tip: Replace localStorage persistence with your backend (Supabase / Firebase / Postgres + API) and wire OAuth for LinkedIn/GitHub for full integration.</footer>
+                <footer className="text-sm text-gray-500">To do(dev): Replace localStorage persistence with your backend (Supabase / Firebase / Postgres + API) and wire OAuth for LinkedIn/GitHub for full integration.</footer>
             </div>
 
             <Toasts toasts={toasts} />
