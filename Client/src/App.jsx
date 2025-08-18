@@ -20,6 +20,7 @@ import DarkHomePage from './pages/DarkHomePage';
 import DarkModePrompt from './components/DarkModePrompt';
 import ScrollToTopButton from './components/ScrollToTopButton';
 import Progress from './components/Progress';
+import ResearchBrewery from './pages/sections/Research_Section/ResearchBrewery';
 
 function App() {
   const isMaintenanceMode = false;
@@ -57,6 +58,7 @@ function App() {
             <Route path="/auth/forgot-password" element={isMaintenanceMode ? <MaintenancePage /> : <ForgotPasswordPage />} />
             <Route path="/my-articles" element={isMaintenanceMode ? <MaintenancePage /> : <MyArticlesPage />} />
             <Route path="/dark" element={isMaintenanceMode ? <MaintenancePage /> : <DarkHomePage />} />
+            <Route path="/research" element={isMaintenanceMode ? <MaintenancePage /> : <ResearchBrewery />} />
             {/* Add more routes as needed */}
           </Routes>
         )}

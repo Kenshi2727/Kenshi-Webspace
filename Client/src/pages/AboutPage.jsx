@@ -449,7 +449,7 @@ const AboutPage = () => {
         },
         {
             id: 2,
-            name: "Rishikesh Shukla",
+            name: "Hrishikesh Shukla",
             role: "Contributor & Editor",
             bio: "Specializes in Machine Learning and AI. Driving innovation in artificial intelligence content and research.",
             img: "rishikesh.jpg",
