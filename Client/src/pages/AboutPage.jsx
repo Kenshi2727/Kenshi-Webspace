@@ -250,7 +250,7 @@ const TeamCard = ({ member, index }) => {
                         <img
                             src={member.img}
                             alt={member.name}
-                            className="w-full h-full object-cover rounded-md sm:rounded-lg md:rounded-xl"
+                            className="w-full h-full object-fill rounded-md sm:rounded-lg md:rounded-xl"
                         />
                         <motion.div
                             initial={{ opacity: 0 }}
@@ -699,7 +699,7 @@ const AboutPage = () => {
                             >
                                 <img
                                     src="/about.png"
-                                    className="border-2 border-indigo-200 rounded-lg sm:rounded-xl md:rounded-2xl w-full h-48 sm:h-64 md:h-80 lg:h-96 object-contain shadow-xl"
+                                    className="border-2 border-indigo-200 rounded-lg sm:rounded-xl md:rounded-2xl w-full h-48 sm:h-64 md:h-80 lg:h-96 object-fill shadow-xl"
                                     alt="About Kenshi Webspace"
                                 />
                                 {/* Enhanced holographic overlay */}

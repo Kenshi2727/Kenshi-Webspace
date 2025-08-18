@@ -19,6 +19,7 @@ import MyArticlesPage from './pages/MyArticlesPage';
 import DarkHomePage from './pages/DarkHomePage';
 import DarkModePrompt from './components/DarkModePrompt';
 import ScrollToTopButton from './components/ScrollToTopButton';
+import Progress from './components/Progress';
 
 function App() {
   const isMaintenanceMode = false;
@@ -34,6 +35,7 @@ function App() {
   return (
     <Router>
       <Navbar />
+      <Progress />
       <main className="pt-16">
         {isMaintenanceMode ? (
           <MaintenancePage />

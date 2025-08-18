@@ -25,13 +25,18 @@ export default function ArticlePage() {
 
     // Fixed scroll hook
     const { scrollYProgress, scrollY } = useScroll();
-
+    const readingProgress = useTransform(scrollYProgress, [0, 1], [0, 100]);
+    const [progress, setProgress] = useState(0);
     const scaleX = useTransform(scrollYProgress, [0, 1], [0, 1]);
     const opacity = useTransform(scrollY, [0, 300], [1, 0]);
     const scale = useTransform(scrollY, [0, 300], [1, 0.8]);
     const y = useTransform(scrollY, [0, 300], [0, -50]);
-
     const article = getPost(id);
+
+    useEffect(() => {
+        const unsubscribe = readingProgress.onChange(setProgress);
+        return unsubscribe;
+    }, [readingProgress]);
 
     useEffect(() => {
         if (article?.content) {
@@ -113,17 +118,20 @@ export default function ArticlePage() {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5, duration: 0.6 }}
-                className="fixed top-4 right-6 z-40 bg-white/10 backdrop-blur-lg border border-white/20 rounded-full px-4 py-2 text-sm text-white shadow-lg"
+                className="fixed top-20 right-4 sm:right-6 z-50 bg-white/10 backdrop-blur-lg border border-white/20 rounded-full px-3 py-1 sm:px-4 sm:py-2 text-xs sm:text-sm text-white shadow-lg"
             >
                 <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full"></div>
+                    <motion.div
+                        className="w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full animate-[caret-blink_3s_ease-in-out_infinite]"
+                        animate={{ scale: [1, 1.2, 1] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                    />
                     <motion.span
-                        key={Math.round(scrollYProgress.get() * 100)}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.3 }}
+                        style={{
+                            opacity: scrollYProgress.get() > 0 ? 1 : 0.5
+                        }}
                     >
-                        {Math.round(scrollYProgress.get() * 100)}%
+                        {Math.round(progress)}%
                     </motion.span>
                 </div>
             </motion.div>
@@ -268,7 +276,7 @@ export default function ArticlePage() {
                             <motion.img
                                 src={article.coverImg}
                                 alt="Cover"
-                                className="w-full h-[400px] object-cover transition-transform duration-700 group-hover:scale-105"
+                                className="w-full h-[200px] sm:h-[250px] md:h-[350px] lg:h-[400px] object-fill transition-transform duration-700 group-hover:scale-105"
                                 whileHover={{ scale: 1.02 }}
                                 transition={{ duration: 0.3 }}
                             />
@@ -359,7 +367,7 @@ export default function ArticlePage() {
                                             <Button
                                                 variant="outline"
                                                 size="sm"
-                                                className="flex items-center gap-2 bg-white/20 border-white/30 hover:bg-white/30 hover:border-white/50 text-white transition-all duration-300 backdrop-blur-sm"
+                                                className="flex items-center gap-2 bg-white/5 border-white/30 hover:bg-white/30 hover:border-white/50 text-white transition-all duration-300 backdrop-blur-sm"
                                             >
                                                 <Pencil size={16} />
                                                 <span className="hidden sm:inline">Edit</span>

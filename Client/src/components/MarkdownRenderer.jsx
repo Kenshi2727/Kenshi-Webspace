@@ -6,9 +6,9 @@ import rehypeHighlight from 'rehype-highlight';
 import 'highlight.js/styles/github-dark.css';
 
 const mdComponents = {
-    h1: ({ node, ...props }) => <h1 className="text-4xl md:text-5xl font-extrabold mt-2 mb-4 text-white" {...props} />,
-    h2: ({ node, ...props }) => <h2 className="text-3xl md:text-4xl font-semibold mt-4 mb-3 text-white" {...props} />,
-    h3: ({ node, ...props }) => <h3 className="text-2xl md:text-3xl font-semibold mt-3 mb-2 text-white" {...props} />,
+    h1: ({ node, ...props }) => <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mt-2 mb-4 text-white" {...props} />,
+    h2: ({ node, ...props }) => <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold mt-4 mb-3 text-white" {...props} />,
+    h3: ({ node, ...props }) => <h3 className="text-xl sm:text-2xl md:text-3xl font-semibold mt-3 mb-2 text-white" {...props} />,
     p: ({ node, ...props }) => <p className="text-gray-200 leading-relaxed mb-4" {...props} />,
     a: ({ node, ...props }) => <a className="text-indigo-300 hover:underline" target="_blank" rel="noopener noreferrer" {...props} />,
     ul: ({ node, ...props }) => <ul className="list-disc pl-6 space-y-2 mb-4" {...props} />,
