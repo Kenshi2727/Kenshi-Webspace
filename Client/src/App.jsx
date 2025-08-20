@@ -22,6 +22,7 @@ import ScrollToTopButton from './components/ScrollToTopButton';
 import Progress from './components/Progress';
 import ResearchBrewery from './pages/sections/Research_Section/ResearchBrewery';
 import CodePage from './pages/sections/Research_Section/CodePage';
+import ScrollToTop from './navigate/ScrollToTop';
 
 function App() {
   const isMaintenanceMode = false;
@@ -38,6 +39,7 @@ function App() {
     <Router>
       <Navbar />
       <Progress />
+      <ScrollToTop />
       <main className="pt-16">
         {isMaintenanceMode ? (
           <MaintenancePage />

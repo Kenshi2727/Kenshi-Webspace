@@ -7,6 +7,7 @@ import {
     X, Sun, Moon
 } from 'lucide-react';
 import * as d3 from 'd3';
+import DevBanner from '../../../components/banners/DevBanner';
 
 // ---------- Mock data (same as original, kept here for demo) ----------
 const mockProjects = [
@@ -740,7 +741,6 @@ export default function ResearchBrewery() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800 p-4 sm:p-6">
             {renderHeader()}
-
             {/* tabs */}
             <div className="max-w-7xl mx-auto mt-4 bg-white dark:bg-slate-900 rounded-lg overflow-x-auto border dark:border-slate-700">
                 <div className="flex space-x-1 p-2">
@@ -759,6 +759,7 @@ export default function ResearchBrewery() {
                         <div>
                             <strong>Note:</strong> This section is under active development — core features will roll out progressively.
                         </div>
+                        <DevBanner />
                         <div className="flex items-center gap-2">
                             <button onClick={() => setBannerVisible(false)} className="p-1 rounded hover:bg-gray-100 dark:hover:bg-slate-700"><X className="w-4 h-4" /></button>
                         </div>

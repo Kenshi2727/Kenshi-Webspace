@@ -36,7 +36,7 @@ export default function Navbar() {
             initial={{ y: -60, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5, ease: 'easeOut' }}
-            className="fixed w-full z-50 backdrop-blur-lg bg-white/30 dark:bg-gray-900/30 border-b border-white/20 dark:border-gray-800/20"
+            className="fixed w-full z-50 backdrop-blur-lg bg-white/30 dark:bg-gray-900/30 border-b border-white/20 dark:border-gray-800/20 shadow-md"
         >
             {/* make this container relative so the mobile dropdown can be absolutely positioned */}
             <div className="max-w-7xl mx-auto px-6 lg:px-8 relative">

@@ -685,7 +685,7 @@ const AboutPage = () => {
                                                     {stat.icon}
                                                 </motion.div>
                                                 <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 font-mono mb-1">{stat.value}</div>
-                                                <div className="text-xs text-gray-500 font-mono tracking-wider">{stat.label}</div>
+                                                <div className="text-[0.55rem] sm:text-xs text-gray-500 font-mono tracking-wider">{stat.label}</div>
                                             </div>
                                         </motion.div>
                                     ))}

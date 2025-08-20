@@ -312,7 +312,7 @@ export default function ArticlePage() {
                                 />
                             </div>
 
-                            <CardContent className="relative p-10 space-y-8">
+                            <CardContent className="relative p-8 sm:p-10 space-y-8">
                                 {/* Enhanced Header */}
                                 <motion.div variants={itemVariants} className="flex flex-wrap items-center justify-between gap-4">
                                     <motion.div

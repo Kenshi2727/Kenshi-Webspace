@@ -52,7 +52,7 @@ const cardVariants = {
 
 // Floating particles component
 const FloatingParticles = () => {
-    const particles = Array.from({ length: 20 }, (_, i) => i);
+    const particles = Array.from({ length: 80 }, (_, i) => i);
 
     return (
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -202,25 +202,18 @@ const ArticlesPage = () => {
         <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-950 to-violet-900 relative overflow-hidden">
             {/* Stable Animated Background */}
             <div className="absolute inset-0 overflow-hidden">
-                <FluidBlob
+                {/* <FluidBlob
                     className="w-96 h-96 bg-gradient-to-br from-purple-400/10 to-violet-600/10 -top-48 -right-48"
                     duration={30}
-                />
-                <FluidBlob
-                    className="w-80 h-80 bg-gradient-to-tr from-indigo-400/8 to-purple-500/8 -bottom-40 -left-40"
-                    duration={35}
-                    delay={8}
-                />
-                <FluidBlob
-                    className="w-64 h-64 bg-gradient-to-br from-violet-300/6 to-purple-400/6 top-1/3 right-1/4"
-                    duration={25}
-                    delay={15}
-                />
-                <FluidBlob
-                    className="w-72 h-72 bg-gradient-to-bl from-purple-500/5 to-indigo-600/5 bottom-1/4 left-1/3"
-                    duration={40}
-                    delay={5}
-                />
+                /> */}
+                {
+                    Array.from({ length: 3 }, (_, i) => (
+                        <FluidBlob
+                            className="w-96 h-96 bg-gradient-to-br from-purple-400/10 to-violet-600/10 -top-48 -right-48"
+                            duration={30}
+                        />
+                    ))}
+
             </div>
 
             <FloatingParticles />
@@ -342,7 +335,7 @@ const ArticlesPage = () => {
                                     className="group"
                                     layout
                                 >
-                                    <Card className="overflow-hidden p-0 bg-gradient-to-br from-purple-500/10 to-violet-500/10 backdrop-blur-xl border border-purple-300/20 hover:border-purple-300/40 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-500/20 h-full">
+                                    <Card className="overflow-hidden p-0 bg-gradient-to-br from-purple-500/10 to-violet-500/10 hover:from-purple-500/20 hover:to-violet-500/20 backdrop-blur-xl border border-purple-300/20 hover:border-purple-300/40 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-500/20 h-full">
                                         {/* Article Image */}
                                         <div className="relative overflow-hidden h-52 bg-gradient-to-br from-purple-400/20 to-violet-600/20">
                                             <motion.img
