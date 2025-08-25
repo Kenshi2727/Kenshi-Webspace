@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Filter, TrendingUp, BookOpen, Star, ArrowRight, Grid, List } from 'lucide-react';
+import { Link } from "react-router-dom";
 
 const containerVariants = {
     hidden: { opacity: 0, y: 12 },
@@ -121,7 +122,7 @@ const CategoriesPage = () => {
     const totalArticles = categories.reduce((sum, cat) => sum + cat.count, 0);
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
+        <div className="min-h-screen bg-gradient-to-br from-purple-200 via-white to-purple-300">
             <div className="max-w-7xl mx-auto py-6 px-3 sm:py-12 sm:px-6 lg:px-8">
                 {/* Header Section */}
                 <div className="text-center mb-8 sm:mb-12">
@@ -366,7 +367,7 @@ const CategoriesPage = () => {
                         <div className="text-indigo-800 font-medium text-xs sm:text-base">Categories</div>
                     </div>
 
-                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center">
+                    <div className="bg-gradient-to-br from-purple-50 to-purple-200 rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center">
                         <div className="text-xl sm:text-3xl font-bold text-purple-600 mb-1 sm:mb-2">{totalArticles}</div>
                         <div className="text-purple-800 font-medium text-xs sm:text-base">Articles</div>
                     </div>
@@ -406,21 +407,25 @@ const CategoriesPage = () => {
                                 </p>
 
                                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
-                                    <motion.button
-                                        whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(99, 102, 241, 0.3)" }}
-                                        whileTap={{ scale: 0.95 }}
-                                        className="px-6 py-3 sm:px-8 sm:py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all text-sm sm:text-base"
-                                    >
-                                        Request a Topic
-                                    </motion.button>
+                                    <Link to="/maintenance">
+                                        <motion.button
+                                            whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(99, 102, 241, 0.3)" }}
+                                            whileTap={{ scale: 0.95 }}
+                                            className="px-6 py-3 sm:px-8 sm:py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all text-sm sm:text-base"
+                                        >
+                                            Request a Topic
+                                        </motion.button>
+                                    </Link>
 
-                                    <motion.button
-                                        whileHover={{ scale: 1.05 }}
-                                        whileTap={{ scale: 0.95 }}
-                                        className="px-6 py-3 sm:px-8 sm:py-4 border-2 border-indigo-200 text-indigo-600 font-semibold rounded-xl hover:bg-indigo-50 transition-all text-sm sm:text-base"
-                                    >
-                                        Browse All Articles
-                                    </motion.button>
+                                    <Link to="/articles">
+                                        <motion.button
+                                            whileHover={{ scale: 1.05 }}
+                                            whileTap={{ scale: 0.95 }}
+                                            className="px-6 py-3 sm:px-8 sm:py-4 border-2 border-indigo-200 text-indigo-600 font-semibold rounded-xl hover:bg-indigo-50 transition-all text-sm sm:text-base"
+                                        >
+                                            Browse All Articles
+                                        </motion.button>
+                                    </Link>
                                 </div>
                             </div>
                         </div>

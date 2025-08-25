@@ -158,26 +158,26 @@ function LiveSandbox({ pushToast }) {
                     <motion.div whileHover={{ scale: 1.06, rotate: 3 }} className="rounded-full bg-gradient-to-tr from-indigo-500 to-pink-500 text-white w-12 h-12 flex items-center justify-center shadow-2xl">KS</motion.div>
                     <div>
                         <div className="text-sm font-semibold">Live Sandbox</div>
-                        <div className="text-xs text-gray-500">Edit HTML · CSS · JS — instant preview</div>
+                        <div className="hidden md:block text-xs text-gray-500">Edit HTML · CSS · JS — instant preview</div>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                    <label className="flex items-center gap-2 text-sm select-none"><input type="checkbox" checked={autoRun} onChange={e => setAutoRun(e.target.checked)} className="accent-indigo-600" /> <span className="text-xs">Auto-run</span></label>
-
+                <div className="overflow-scroll sm:overflow-auto flex items-center gap-6">
                     <div className="flex items-center gap-2">
-                        <Button onClick={run} className="inline-flex items-center gap-2"><Play className="w-4 h-4" /> Run</Button>
-                        <Button variant="ghost" onClick={saveSnippet} className="inline-flex items-center gap-2"><Save className="w-4 h-4" /> Save</Button>
-                        <Button variant="ghost" onClick={shareSnippet} className="inline-flex items-center gap-2"><Share2 className="w-4 h-4" /> Share</Button>
+                        <label className="hidden sm:flex items-center gap-2 text-sm select-none"><input type="checkbox" checked={autoRun} onChange={e => setAutoRun(e.target.checked)} className="accent-indigo-600" /> <span className="text-xs">Auto-run</span></label>
+                        <Button onClick={run} className="inline-flex items-center gap-2"><Play className="w-4 h-4" /> <span className="hidden md:inline">Run</span></Button>
+                        <Button variant="ghost" onClick={saveSnippet} className="inline-flex items-center gap-2"><Save className="w-4 h-4" /> <span className="hidden md:inline">Save</span></Button>
+                        <Button variant="ghost" onClick={shareSnippet} className="inline-flex items-center gap-2"><Share2 className="w-4 h-4" /> <span className="hidden md:inline">Share</span></Button>
                     </div>
                 </div>
             </div>
 
             {/* mobile toggles */}
             {isMobile && (
-                <div className="flex gap-2">
+                <div className="flex my-2 gap-2">
                     <Button onClick={() => setMobileView('editor')} size="sm" variant={mobileView === 'editor' ? 'default' : 'ghost'}>Editor</Button>
                     <Button onClick={() => setMobileView('preview')} size="sm" variant={mobileView === 'preview' ? 'default' : 'ghost'}>Preview</Button>
+                    <label className="flex items-center gap-2 text-sm select-none"><input type="checkbox" checked={autoRun} onChange={e => setAutoRun(e.target.checked)} className="accent-indigo-600" /> <span className="text-xs">Auto-run</span></label>
                 </div>
             )}
 
@@ -507,14 +507,14 @@ function Achievements({ refreshSignal }) {
 }
 
 
-// ------------------ Page wrapper (improved layout + header) ------------------
+// ------------------ Page wrapper (layout + header) ------------------
 export default function CodePage() {
     const [tab, setTab] = useState('sandbox');
     const [refresh, setRefresh] = useState(0);
     const { toasts, push } = useToasts();
 
     return (
-        <div className="min-h-screen p-6 bg-gradient-to-b from-white to-slate-50 dark:from-slate-900 dark:to-slate-900">
+        <div className="min-h-screen p-6 bg-gradient-to-b from-purple-200 via-white to-purple-300 dark:from-slate-900 dark:to-slate-900">
             {/* subtle animated blob */}
             <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
                 <svg className="absolute left-[-8%] top-0 w-[55vw] h-[55vh] opacity-18" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
@@ -533,22 +533,22 @@ export default function CodePage() {
             <div className="max-w-7xl mx-auto space-y-6">
                 <DevBanner />
 
-                <header className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <header className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
                     <div className="flex items-center gap-4">
                         <motion.div initial={{ scale: 0.96 }} animate={{ scale: 1 }} whileHover={{ scale: 1.05 }} className="rounded-2xl bg-gradient-to-r from-indigo-600 to-pink-500 text-white px-4 py-3 shadow-2xl">
                             <div className="font-bold">Kenshi Webspace</div>
-                            <div className="text-xs opacity-90">Interactive Features</div>
+                            <div className="hidden sm:block text-xs opacity-90">Interactive Features</div>
                         </motion.div>
 
                         <div>
-                            <h1 className="text-2xl font-extrabold">Interactive Playground & Tools</h1>
-                            <p className="text-sm text-gray-600">Live sandbox, resume import, research wall & achievements — polished UI with motion and depth.</p>
+                            <h1 className="text-xl md:text-2xl font-extrabold">Interactive Playground & Tools</h1>
+                            <p className="text-xs md:text-sm text-gray-600">Live sandbox, resume import, research wall & achievements — polished UI with motion and depth.</p>
                         </div>
                     </div>
 
-                    <nav className="flex gap-2 items-center">
+                    <nav className="grid grid-cols-2 w-full sm:w-fit sm:flex gap-2 items-center">
                         {[['sandbox', 'Sandbox'], ['resume', 'Resume'], ['wall', 'Research Wall'], ['achievements', 'Achievements']].map(([k, label]) => (
-                            <motion.button key={k} onClick={() => setTab(k)} layout whileTap={{ scale: 0.98 }} className={`px-4 py-2 rounded-full ${tab === k ? 'bg-indigo-600 text-white shadow-lg' : 'bg-white dark:bg-slate-800 border'}`}>
+                            <motion.button key={k} onClick={() => setTab(k)} layout whileTap={{ scale: 0.98 }} className={`px-4 py-2 rounded-full line-clamp-1 ${tab === k ? 'bg-indigo-600 text-white shadow-lg' : 'bg-white dark:bg-slate-800 border'}`}>
                                 {label}
                             </motion.button>
                         ))}

@@ -162,11 +162,11 @@ const HomePage = () => {
                                     </div>
                                 </div> */}
 
-                                {/* Desktop: stacked cards (visible on md+) */}
-                                <div className="relative w-full max-w-[340px] mx-auto h-[380px]">
+                                {/* Desktop: stacked cards (visible on sm+) */}
+                                <div className="relative hidden sm:block w-full max-w-[340px] mx-auto h-[380px]">
                                     {featuredPosts.map((p, i) => {
                                         const xOffset = i === 0 ? -12 : i === 1 ? 0 : 12;
-                                        const topOffsetPx = i * 20;
+                                        const topOffsetPx = i * 30;
 
                                         return (
                                             <motion.div
@@ -188,7 +188,7 @@ const HomePage = () => {
                                                     </div>
                                                     <CardContent className="p-4">
                                                         <p className="text-xs font-semibold text-indigo-200">{p.category}</p>
-                                                        <h3 className="mt-1 text-base font-semibold text-white/95">{p.title}</h3>
+                                                        <h3 className="mt-1 text-base font-semibold text-white/95 line-clamp-2">{p.title}</h3>
                                                         <p className="mt-2 text-xs text-indigo-100/70 line-clamp-3">{p.excerpt}</p>
                                                     </CardContent>
                                                 </Link>
@@ -235,7 +235,7 @@ const HomePage = () => {
                 </Dialog>
             </motion.section>
 
-            {/* ---------- REST OF PAGE (UNCHANGED) ---------- */}
+            {/* ---------- REST OF PAGE ---------- */}
             {/* Featured Posts */}
             <motion.section variants={itemVariants} className="py-16 bg-white">
                 <div className="max-w-7xl mx-auto px-4">
@@ -273,12 +273,12 @@ const HomePage = () => {
                                             <p className="text-sm font-medium text-indigo-600">{post.category}</p>
 
                                             <motion.h3
-                                                className="text-xl font-semibold text-gray-900"
+                                                className="text-xl font-semibold text-gray-900 line-clamp-2"
                                                 whileHover={{ color: '#4f46e5' }}
                                             >
                                                 {post.title}
                                             </motion.h3>
-                                            <p className="text-gray-500 mt-2">{post.excerpt}</p>
+                                            <p className="text-gray-500 mt-2 line-clamp-3">{post.excerpt}</p>
 
                                             <div className="flex justify-between items-center pt-4">
                                                 <span className="text-sm text-gray-400">{post.date} · {post.readTime}</span>

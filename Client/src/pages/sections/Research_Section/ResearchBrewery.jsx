@@ -343,8 +343,8 @@ export default function ResearchBrewery() {
                                 <Beaker className="w-6 h-6 text-white" />
                             </div>
                             <div>
-                                <h1 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-100">Kenshi Research Brewery</h1>
-                                <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-300">Where ideas ferment into innovation</p>
+                                <h1 className="text-sm md:text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-100">Kenshi Research Brewery</h1>
+                                <p className="hidden md:block text-xs sm:text-sm text-gray-500 dark:text-gray-300">Where ideas ferment into innovation</p>
                             </div>
                         </div>
 
@@ -352,12 +352,16 @@ export default function ResearchBrewery() {
                             <button onClick={() => setDarkMode(d => !d)} title="Toggle dark" className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-slate-700">
                                 {darkMode ? <Sun className="w-4 h-4 text-yellow-400" /> : <Moon className="w-4 h-4 text-slate-600" />}
                             </button>
-                            <div className="hidden sm:flex items-center text-sm text-gray-600 dark:text-gray-300">
+                            <div className="hidden md:flex items-center text-sm text-gray-600 dark:text-gray-300">
                                 <Clock className="w-4 h-4 mr-2" />
                                 <span>Last brew: 2 hours ago</span>
                             </div>
-                            <button className="ml-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-3 py-2 rounded-lg hover:shadow transition" onClick={() => alert('Open project creation modal (not implemented in demo)')}>
+                            <button className="hidden md:block ml-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm px-3 py-2 rounded-lg hover:shadow transition" onClick={() => alert('Open project creation modal (not implemented in demo)')}>
                                 <Plus className="w-4 h-4 inline mr-2" />New Project
+                            </button>
+
+                            <button className="block md:hidden ml-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm px-3 py-2 rounded-lg hover:shadow transition" onClick={() => alert('Open project creation modal (not implemented in demo)')}>
+                                <Plus className="w-4 h-4 inline" />
                             </button>
                         </div>
                     </div>
@@ -368,7 +372,7 @@ export default function ResearchBrewery() {
 
     function renderFilters() {
         return (
-            <div className="bg-white dark:bg-slate-900 p-4 rounded-lg shadow-sm border dark:border-slate-700 flex flex-col md:flex-row gap-3 items-stretch md:items-center">
+            <div className="bg-white dark:bg-slate-900 p-4 rounded-lg shadow-sm border dark:border-slate-700 flex flex-col md:flex-row gap-3 items-stretch md:items-center overflow-scroll">
                 <div className="flex-1 flex items-center gap-3">
                     <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search projects, tags..." className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-indigo-400 dark:bg-slate-800 dark:border-slate-700" aria-label="Search projects" />
                     <select value={selectedStatus} onChange={e => setSelectedStatus(e.target.value)} className="px-3 py-2 border rounded-md dark:bg-slate-800">
@@ -739,7 +743,7 @@ export default function ResearchBrewery() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800 p-4 sm:p-6">
+        <div className="min-h-screen bg-gradient-to-br from-purple-200 via-white to-purple-300 dark:from-indigo-900 dark:via-purple-900 dark:to-indigo-800 p-4 sm:p-6">
             {renderHeader()}
             {/* tabs */}
             <div className="max-w-7xl mx-auto mt-4 bg-white dark:bg-slate-900 rounded-lg overflow-x-auto border dark:border-slate-700">

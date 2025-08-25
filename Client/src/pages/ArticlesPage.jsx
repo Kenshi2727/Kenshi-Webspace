@@ -406,7 +406,7 @@ const ArticlesPage = () => {
                                         <CardContent className="p-6 space-y-4">
                                             {/* Article Title */}
                                             <motion.h3
-                                                className="text-xl font-bold text-transparent bg-gradient-to-r from-purple-100 to-violet-100 bg-clip-text leading-tight line-clamp-2 cursor-pointer"
+                                                className="h-12 text-xl font-bold text-transparent bg-gradient-to-r from-purple-100 to-violet-100 bg-clip-text leading-tight line-clamp-2 cursor-pointer"
                                                 whileHover={{ scale: 1.02 }}
                                                 transition={{ type: "spring", stiffness: 300 }}
                                             >
@@ -414,7 +414,7 @@ const ArticlesPage = () => {
                                             </motion.h3>
 
                                             {/* Article Excerpt */}
-                                            <p className="text-purple-200/80 text-sm leading-relaxed line-clamp-3">
+                                            <p className="h-24 text-purple-200/80 text-sm leading-relaxed line-clamp-3">
                                                 {article.excerpt}
                                             </p>
 
