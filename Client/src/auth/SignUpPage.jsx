@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
-import { Users, ShieldCheck, Sparkles } from "lucide-react";
+import { Users, ShieldCheck, FileText, Layers, Smartphone, Moon, Sparkles } from "lucide-react";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 import { FcGoogle } from 'react-icons/fc';
 import { useSignIn } from "@clerk/clerk-react";
@@ -150,11 +150,10 @@ export default function CustomSignUpPage() {
                             <p className="text-sm text-white/70 mb-6">
                                 Join a small community of curious builders — write, share, and grow with creators who care.
                             </p>
-
                             <div className="grid grid-cols-1 gap-3">
                                 <div className="flex items-start gap-3">
                                     <div className="flex h-9 w-9 items-center justify-center rounded-md bg-white/6">
-                                        <Users className="h-5 w-5" />
+                                        <Users className="h-5 w-5" aria-hidden />
                                     </div>
                                     <div>
                                         <p className="font-semibold">Community first</p>
@@ -162,13 +161,58 @@ export default function CustomSignUpPage() {
                                     </div>
                                 </div>
 
+
                                 <div className="flex items-start gap-3">
                                     <div className="flex h-9 w-9 items-center justify-center rounded-md bg-white/6">
-                                        <ShieldCheck className="h-5 w-5" />
+                                        <ShieldCheck className="h-5 w-5" aria-hidden />
                                     </div>
                                     <div>
                                         <p className="font-semibold">Secure auth</p>
                                         <p className="text-xs text-white/80">Powerful and secure sign-up via Clerk.</p>
+                                    </div>
+                                </div>
+
+
+                                <div className="flex items-start gap-3">
+                                    <div className="flex h-9 w-9 items-center justify-center rounded-md bg-white/6">
+                                        <FileText className="h-5 w-5" aria-hidden />
+                                    </div>
+                                    <div>
+                                        <p className="font-semibold">EJS entrypoint</p>
+                                        <p className="text-xs text-white/80">Use an EJS file as the Vite app entry for server-side templating.</p>
+                                    </div>
+                                </div>
+
+
+                                <div className="flex items-start gap-3">
+                                    <div className="flex h-9 w-9 items-center justify-center rounded-md bg-white/6">
+                                        <Layers className="h-5 w-5" aria-hidden />
+                                    </div>
+                                    <div>
+                                        <p className="font-semibold">Tailwind + Flowbite</p>
+                                        <p className="text-xs text-white/80">Preconfigured Tailwind utilities and Flowbite components.</p>
+                                    </div>
+                                </div>
+
+
+                                <div className="flex items-start gap-3">
+                                    <div className="flex h-9 w-9 items-center justify-center rounded-md bg-white/6">
+                                        <Smartphone className="h-5 w-5" aria-hidden />
+                                    </div>
+                                    <div>
+                                        <p className="font-semibold">Responsive UI</p>
+                                        <p className="text-xs text-white/80">Layouts that look great on phones, tablets and desktops.</p>
+                                    </div>
+                                </div>
+
+
+                                <div className="flex items-start gap-3">
+                                    <div className="flex h-9 w-9 items-center justify-center rounded-md bg-white/6">
+                                        <Moon className="h-5 w-5" aria-hidden />
+                                    </div>
+                                    <div>
+                                        <p className="font-semibold">Dark mode support</p>
+                                        <p className="text-xs text-white/80">Easily toggle between light and dark themes.</p>
                                     </div>
                                 </div>
                             </div>
