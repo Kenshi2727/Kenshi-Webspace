@@ -754,17 +754,22 @@ export default function ResearchBrewery() {
             </div>
 
             <div className="max-w-7xl mx-auto mt-6">
-                {bannerVisible && (
+                {/* {bannerVisible && (
                     <div className="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-400 p-3 rounded mb-4 flex items-center justify-between">
                         <div>
                             <strong>Note:</strong> This section is under active development — core features will roll out progressively.
                         </div>
-                        <DevBanner />
+
                         <div className="flex items-center gap-2">
                             <button onClick={() => setBannerVisible(false)} className="p-1 rounded hover:bg-gray-100 dark:hover:bg-slate-700"><X className="w-4 h-4" /></button>
                         </div>
                     </div>
-                )}
+                )} */}
+
+                <div className='my-5'>
+                    <DevBanner />
+                </div>
+
 
                 <div className="space-y-6">
                     {renderContent()}
