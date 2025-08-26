@@ -304,26 +304,26 @@ export default function ReviewPage() {
                             <div className="flex items-center gap-2">
                                 <Tabs defaultValue="all" onValueChange={(v) => setFilter(v)} className="bg-white/5 rounded-full p-1">
                                     <TabsList className="flex gap-1">
-                                        <TabsTrigger value="all" className="px-3 py-1 rounded-full">
+                                        <TabsTrigger value="all" className="data-[state=active]:bg-black data-[state=active]:text-white px-3 py-1 rounded-full">
                                             All
                                         </TabsTrigger>
                                         <TabsTrigger
                                             value="pending"
-                                            className="px-3 py-1 rounded-full flex items-center gap-2"
+                                            className="data-[state=active]:bg-black data-[state=active]:text-white px-3 py-1 rounded-full flex items-center gap-2"
                                         >
                                             <Clock size={14} />
                                             Pending ({articles.filter(a => a.status === 'pending').length})
                                         </TabsTrigger>
                                         <TabsTrigger
                                             value="approved"
-                                            className="px-3 py-1 rounded-full flex items-center gap-2"
+                                            className="data-[state=active]:bg-black data-[state=active]:text-white px-3 py-1 rounded-full flex items-center gap-2"
                                         >
                                             <CheckCircle size={14} />
                                             Approved
                                         </TabsTrigger>
                                         <TabsTrigger
                                             value="rejected"
-                                            className="px-3 py-1 rounded-full flex items-center gap-2"
+                                            className="data-[state=active]:bg-black data-[state=active]:text-white px-3 py-1 rounded-full flex items-center gap-2"
                                         >
                                             <AlertTriangle size={14} />
                                             Rejected
