@@ -94,7 +94,7 @@ export default function DevBanner() {
                                         Beta
                                     </span>
                                 </div>
-                                <p className="text-xs text-amber-800/90 dark:text-amber-100/85 truncate">
+                                <p className="text-xs text-amber-800/90 dark:text-amber-100/85 line-clamp-2">
                                     Development starts Q2 2026. UI may be inconsistent — please report visual bugs.
                                 </p>
                             </div>

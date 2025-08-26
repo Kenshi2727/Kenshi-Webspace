@@ -210,7 +210,7 @@ function LiveSandbox({ pushToast }) {
                 <div style={{ width: isMobile ? '100%' : `${100 - leftPct}%` }} className={`p-3 ${isMobile && mobileView !== 'preview' ? 'hidden' : ''} ${isMobile ? '' : 'border-l border-slate-100 dark:border-slate-800'} bg-slate-50 dark:bg-slate-900`}>
                     <div className="flex items-center justify-between mb-2">
                         <div className="text-sm font-semibold">Preview</div>
-                        <div className="text-xs text-gray-500">Sandbox iframe</div>
+                        <div className="text-xs text-gray-500">Sandbox</div>
                     </div>
 
                     <div className="rounded-xl overflow-hidden border bg-white dark:bg-slate-900 shadow-inner">
@@ -542,7 +542,7 @@ export default function CodePage() {
 
                         <div>
                             <h1 className="text-xl md:text-2xl font-extrabold">Interactive Playground & Tools</h1>
-                            <p className="text-xs md:text-sm text-gray-600">Live sandbox, resume import, research wall & achievements — polished UI with motion and depth.</p>
+                            <p className="text-xs md:text-sm text-gray-600">Live sandbox, resume import, research wall & achievements</p>
                         </div>
                     </div>
 
