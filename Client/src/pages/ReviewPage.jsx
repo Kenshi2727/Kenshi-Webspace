@@ -33,7 +33,7 @@ export default function ReviewPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [query, setQuery] = useState('');
-    const [filter, setFilter] = useState('pending');
+    const [filter, setFilter] = useState('all');
     const [selectedArticle, setSelectedArticle] = useState(null);
     const [previewOpen, setPreviewOpen] = useState(false);
     const [actionLoading, setActionLoading] = useState(null);
@@ -243,7 +243,7 @@ export default function ReviewPage() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="min-h-screen bg-gradient-to-br from-indigo-950 to-purple-900 py-10 px-4 sm:px-8 lg:px-16"
+            className="min-h-screen bg-gradient-to-br from-purple-950 to-purple-800 py-10 px-4 sm:px-8 lg:px-16"
         >
             <div className="max-w-7xl mx-auto">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
@@ -302,7 +302,7 @@ export default function ReviewPage() {
                             </div>
 
                             <div className="flex items-center gap-2">
-                                <Tabs defaultValue="pending" onValueChange={(v) => setFilter(v)} className="bg-white/5 rounded-full p-1">
+                                <Tabs defaultValue="all" onValueChange={(v) => setFilter(v)} className="bg-white/5 rounded-full p-1">
                                     <TabsList className="flex gap-1">
                                         <TabsTrigger value="all" className="px-3 py-1 rounded-full">
                                             All

@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useAuth } from "@clerk/clerk-react";
 import { useClerk } from "@clerk/clerk-react";
+import AvatarDropdown from './AvatarDropdown';
 
 const navLinks = [
     { to: '/', label: 'Home' },
@@ -67,11 +68,7 @@ export default function Navbar() {
                     <div className="flex items-center gap-3">
                         {/* desktop sign-in/out */}
                         <div className="hidden md:block">
-                            {isSignedIn ? (
-                                <Button variant="ghost" onClick={handleSignOut} className="bg-indigo-600/65 text-white cursor-pointer text-sm font-medium">
-                                    Sign out
-                                </Button>
-                            ) : (
+                            {!isSignedIn && (
                                 <Link to="/auth/login">
                                     <Button variant="ghost" className="bg-indigo-600/65 text-white cursor-pointer text-sm font-medium">
                                         Sign in
@@ -79,6 +76,8 @@ export default function Navbar() {
                                 </Link>
                             )}
                         </div>
+
+                        <AvatarDropdown />
 
                         {/* mobile hamburger */}
                         <button
