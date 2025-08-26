@@ -126,7 +126,7 @@ export default function MyArticlesPage() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="min-h-screen bg-gradient-to-br from-purple-950 to-purple-800 py-10 px-4 sm:px-8 lg:px-16"
+            className="min-h-screen bg-gradient-to-br from-indigo-950 to-purple-900 py-10 px-4 sm:px-8 lg:px-16"
         >
             <div className="max-w-6xl mx-auto">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">

@@ -23,6 +23,7 @@ import Progress from './components/Progress';
 import ResearchBrewery from './pages/sections/Research_Section/ResearchBrewery';
 import CodePage from './pages/sections/Research_Section/CodePage';
 import ScrollToTop from './navigate/ScrollToTop';
+import ReviewPage from './pages/ReviewPage';
 
 function App() {
   const isMaintenanceMode = false;
@@ -63,6 +64,7 @@ function App() {
             <Route path="/dark" element={isMaintenanceMode ? <MaintenancePage /> : <DarkHomePage />} />
             <Route path="/research" element={isMaintenanceMode ? <MaintenancePage /> : <ResearchBrewery />} />
             <Route path="/code" element={isMaintenanceMode ? <MaintenancePage /> : <CodePage />} />
+            <Route path="/review" element={isMaintenanceMode ? <MaintenancePage /> : <ReviewPage />} />
             {/* Add more routes as needed */}
           </Routes>
         )}
