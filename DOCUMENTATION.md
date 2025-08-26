@@ -1,3 +1,4 @@
+```
 backend/
 ├─ package.json        (type:"module", scripts: dev/start/migrate/seed)
 ├─ .env                (DATABASE_URL, CLERK_*, S3 creds, etc.)
@@ -37,3 +38,5 @@ backend/
 │  ├─ seed.js
 │  └─ migrations/
 └─ README.md
+
+```
