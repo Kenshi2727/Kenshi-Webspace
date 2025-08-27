@@ -25,6 +25,7 @@ import CodePage from './pages/sections/Research_Section/CodePage';
 import ScrollToTop from './navigate/ScrollToTop';
 import ReviewPage from './pages/ReviewPage';
 import ProfilePage from './pages/ProfilePage';
+import MaintainerPage from './super-admin/MaintainerPage';
 
 function App() {
   const isMaintenanceMode = false;
@@ -67,6 +68,7 @@ function App() {
             <Route path="/code" element={isMaintenanceMode ? <MaintenancePage /> : <CodePage />} />
             <Route path="/review" element={isMaintenanceMode ? <MaintenancePage /> : <ReviewPage />} />
             <Route path="/profile" element={isMaintenanceMode ? <MaintenancePage /> : <ProfilePage />} />
+            <Route path="/super-admin/maintainer" element={isMaintenanceMode ? <MaintenancePage /> : <MaintainerPage />} />
             {/* Add more routes as needed */}
           </Routes>
         )}

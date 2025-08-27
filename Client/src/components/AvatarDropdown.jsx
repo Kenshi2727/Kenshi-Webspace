@@ -53,6 +53,7 @@ const AvatarDropdown = () => {
 
     // Check if user is admin (you can modify this logic based on your admin detection)
     const isAdmin = true;
+    const isMaintainer = true;
 
     const userInitials = getInitials(user.fullName || user.firstName || user.username);
     const userName = user.fullName || user.firstName || user.username || 'User';
@@ -86,6 +87,16 @@ const AvatarDropdown = () => {
             to: '/review',
             description: 'Manage the platform',
             isAdmin: true
+        });
+    }
+
+    if (isMaintainer) {
+        menuItems.push({
+            icon: Sparkles,
+            label: 'Maintainer Console',
+            to: '/super-admin/maintainer',
+            description: 'Access tools for content moderation',
+            isMaintainer: true
         });
     }
 
@@ -195,9 +206,14 @@ const AvatarDropdown = () => {
                                                 <p className="text-sm font-semibold">{item.label}</p>
                                                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{item.description}</p>
                                             </div>
-                                            {item.isAdmin && (
+                                            {(item.isAdmin) && (
                                                 <div className="px-2 py-1 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold rounded-full">
                                                     ADMIN
+                                                </div>
+                                            )}
+                                            {(item.isMaintainer) && (
+                                                <div className="px-2 py-1 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold rounded-full">
+                                                    OWNER
                                                 </div>
                                             )}
                                         </motion.div>
