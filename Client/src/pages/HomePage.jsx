@@ -14,6 +14,7 @@ import AnimatedFloatingSquares from '../components/AnimatedFloatingSquares';
 import FloatingOrbs from '../components/FloatingOrbs';
 import AnimatedDots from '../components/AnimatedDots';
 import MouseGlow from '../components/MouseGlow';
+import { Edit3, ArrowRight } from "lucide-react";
 
 const containerVariants = {
     hidden: { opacity: 0, y: 30 },
@@ -305,19 +306,186 @@ const HomePage = () => {
             </motion.section>
 
             {/* CTA Section */}
-            <motion.section variants={itemVariants} className="bg-indigo-700">
-                <div className="max-w-7xl mx-auto py-16 px-4 flex flex-col md:flex-row items-center justify-between">
-                    <motion.h2 variants={itemVariants} className="text-3xl font-bold text-white">
-                        <span className="block">Ready to start writing?</span>
-                        <span className="block text-indigo-200">Join our community today.</span>
-                    </motion.h2>
-                    <motion.div variants={itemVariants} className="mt-6 md:mt-0">
-                        <Button asChild variant="secondary">
-                            <Link to="/auth/sign-up">Create Account</Link>
+            <motion.section
+                variants={itemVariants}
+                className="relative overflow-hidden bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-800 shadow-2xl"
+            >
+                {/* Animated Background Effects */}
+                <div className="absolute inset-0">
+                    {/* Floating orbs */}
+                    <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-white/10 rounded-full blur-xl animate-pulse"></div>
+                    <div className="absolute bottom-1/3 right-1/4 w-24 h-24 bg-indigo-300/20 rounded-full blur-lg animate-bounce delay-1000"></div>
+                    <div className="absolute top-1/2 right-1/3 w-16 h-16 bg-violet-300/15 rounded-full blur-md animate-pulse delay-500"></div>
+
+                    {/* Grid pattern overlay */}
+                    <div className="absolute inset-0 opacity-5">
+                        <div className="h-full w-full bg-[radial-gradient(circle_at_center,_white_1px,_transparent_1px)] bg-[length:24px_24px]"></div>
+                    </div>
+                </div>
+
+                {/* Enhanced decorative blob */}
+                <svg
+                    aria-hidden="true"
+                    className="pointer-events-none absolute -right-12 -top-20 h-[500px] w-[500px] opacity-100 animate-spin"
+                    style={{ animationDuration: '20s' }}
+                    viewBox="0 0 600 600"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <defs>
+                        <linearGradient id="blobGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stopColor="#ffffff" stopOpacity="0.8" />
+                            <stop offset="50%" stopColor="#a855f7" stopOpacity="0.4" />
+                            <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.2" />
+                        </linearGradient>
+                    </defs>
+                    <g transform="translate(300,300)">
+                        <path d="M120,-170C170,-130,204,-67,209,-1C214,65,189,130,142,168C95,206,27,217,-33,206C-92,195,-143,163,-174,112C-205,61,-217,-12,-192,-66C-166,-120,-104,-154,-41,-177C22,-200,105,-210,120,-170Z"
+                            fill="url(#blobGradient)" />
+                    </g>
+                </svg>
+
+                {/* Additional decorative blob */}
+                <svg
+                    aria-hidden="true"
+                    className="pointer-events-none absolute -left-8 -bottom-12 h-[350px] w-[350px] opacity-10 animate-pulse"
+                    viewBox="0 0 600 600"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <g transform="translate(300,300)">
+                        <path d="M85,-120C115,-95,145,-75,160,-45C175,-15,175,25,160,60C145,95,115,125,75,140C35,155,-15,155,-55,140C-95,125,-125,95,-140,60C-155,25,-155,-15,-140,-45C-125,-75,-95,-95,-65,-120C-35,-145,55,-175,85,-120Z"
+                            fill="#ffffff" opacity="0.1" />
+                    </g>
+                </svg>
+
+                <div className="relative z-10 max-w-7xl mx-auto py-16 px-6 md:px-12 flex flex-col lg:flex-row items-center justify-between gap-8">
+                    <div className="max-w-2xl text-center lg:text-left">
+                        <motion.div
+                            variants={itemVariants}
+                            className="inline-flex items-center px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white/90 text-sm font-medium mb-6"
+                        >
+                            <div className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
+                            Join 10,000+ writers worldwide
+                        </motion.div>
+
+                        <motion.h2
+                            variants={itemVariants}
+                            className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight mb-6"
+                        >
+                            <span className="block">Ready to start</span>
+                            <span className="block bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 via-pink-300 to-white animate-gradient-x">
+                                writing magic?
+                            </span>
+                        </motion.h2>
+
+                        <motion.p
+                            variants={itemVariants}
+                            className="text-lg sm:text-xl text-indigo-100/90 leading-relaxed max-w-lg mx-auto lg:mx-0"
+                        >
+                            Transform your ideas into captivating stories. Share, collaborate, and grow with a vibrant community of passionate writers.
+                        </motion.p>
+
+                        {/* Feature highlights */}
+                        <motion.div
+                            variants={itemVariants}
+                            className="mt-8 flex flex-wrap justify-center lg:justify-start gap-4 text-sm text-white/80"
+                        >
+                            <div className="flex items-center">
+                                <div className="w-1.5 h-1.5 bg-green-400 rounded-full mr-2"></div>
+                                Free to start
+                            </div>
+                            <div className="flex items-center">
+                                <div className="w-1.5 h-1.5 bg-blue-400 rounded-full mr-2"></div>
+                                Instant feedback
+                            </div>
+                            <div className="flex items-center">
+                                <div className="w-1.5 h-1.5 bg-purple-400 rounded-full mr-2"></div>
+                                Global community
+                            </div>
+                        </motion.div>
+                    </div>
+
+                    <motion.div
+                        variants={itemVariants}
+                        className="flex flex-col gap-4 min-w-[280px]"
+                    >
+                        {/* Primary CTA */}
+                        <Button
+                            asChild
+                            className="group relative overflow-hidden rounded-2xl px-8 py-4 bg-white text-purple-600 hover:bg-gray-50 shadow-2xl transform transition-all duration-300 hover:scale-105 hover:shadow-white/25 focus:outline-none focus:ring-4 focus:ring-white/30 font-bold text-lg"
+                        >
+                            <Link to="/auth/sign-up" aria-label="Create your free account">
+                                <span className="relative z-10 inline-flex items-center">
+                                    <Edit3 className="mr-3 h-5 w-5 transition-transform group-hover:rotate-12" />
+                                    Start Writing Now
+                                </span>
+                                {/* Shimmer effect */}
+                                <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:translate-x-full transition-transform duration-1000"></div>
+                            </Link>
                         </Button>
+
+                        {/* Secondary CTA */}
+                        <Button
+                            asChild
+                            variant="ghost"
+                            className="group rounded-2xl px-6 py-4 border-2 border-white/30 text-white hover:bg-white/10 hover:border-white/50 focus:outline-none focus:ring-4 focus:ring-white/20 transition-all duration-300 backdrop-blur-sm font-semibold"
+                        >
+                            <Link to="/about" aria-label="Learn more about Kenshi Webspace" className="inline-flex items-center">
+                                Explore Features
+                                <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                            </Link>
+                        </Button>
+
+                        {/* Social proof */}
+                        <div className="flex items-center justify-center gap-2 mt-4 text-white/70 text-sm">
+                            <div className="flex -space-x-2">
+                                <img
+                                    src="https://i.pravatar.cc/150?img=1"
+                                    alt="User 1"
+                                    className="w-8 h-8 rounded-full border-2 border-white"
+                                />
+                                <img
+                                    src="https://i.pravatar.cc/150?img=3"
+                                    alt="User 2"
+                                    className="w-8 h-8 rounded-full border-2 border-white"
+                                />
+                                <img
+                                    src="rishikesh.jpg"
+                                    alt="User 3"
+                                    className="w-8 h-8 rounded-full border-2 border-white"
+                                />
+                                <img
+                                    src="abhishek.jpg"
+                                    alt="User 4"
+                                    className="w-8 h-8 rounded-full border-2 border-white"
+                                />
+                                <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-teal-500 rounded-full border-2 border-white/20 flex items-center justify-center text-xs font-bold text-white">+</div>
+                            </div>
+                            <span>Join the community</span>
+                        </div>
                     </motion.div>
                 </div>
+
+                {/* Bottom accent line */}
+                <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500"></div>
             </motion.section>
+
+            <style jsx>{`
+    @keyframes gradient-x {
+        0%, 100% {
+            background-size: 200% 200%;
+            background-position: left center;
+        }
+        50% {
+            background-size: 200% 200%;
+            background-position: right center;
+        }
+    }
+    
+    .animate-gradient-x {
+        animation: gradient-x 3s ease infinite;
+    }
+`}</style>
+
         </motion.div>
     );
 };

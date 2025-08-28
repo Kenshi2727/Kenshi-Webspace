@@ -58,10 +58,71 @@ export default function Navbar() {
             {/* make this container relative so the mobile dropdown can be absolutely positioned */}
             <div className="max-w-7xl mx-auto px-6 lg:px-8 relative">
                 <div className="flex justify-between h-16 items-center">
-                    <Link to="/" className="text-indigo-600 dark:text-indigo-400 font-bold text-xl sm:text-2xl">
-                        Kenshi Webspace
-                    </Link>
+                    <div className="flex items-center gap-2">
+                        {/* mobile hamburger */}
+                        <button
+                            type="button"
+                            aria-label={open ? "Close navigation" : "Open navigation"}
+                            aria-expanded={open}
+                            aria-pressed={open}
+                            onClick={() => setOpen((s) => !s)}
+                            title={open ? "Close menu" : "Open menu"}
+                            className="md:hidden inline-flex items-center justify-center p-2.5"
+                        >
+                            <span className="sr-only">{open ? "Close menu" : "Open menu"}</span>
 
+                            <motion.svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                className="h-6 w-6 text-gray-800 dark:text-gray-200"
+                                initial={false}
+                                animate={open ? "open" : "closed"}
+                            >
+                                <motion.path
+                                    d="M4 6h16"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    variants={{
+                                        closed: { rotate: 0, y: 0 },
+                                        open: { rotate: 45, y: 6 },
+                                    }}
+                                    transition={{ duration: 0.18 }}
+                                    style={{ originX: "50%", originY: "50%" }}
+                                />
+                                <motion.path
+                                    d="M4 12h16"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    variants={{
+                                        closed: { opacity: 1 },
+                                        open: { opacity: 0 },
+                                    }}
+                                    transition={{ duration: 0.12 }}
+                                />
+                                <motion.path
+                                    d="M4 18h16"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    variants={{
+                                        closed: { rotate: 0, y: 0 },
+                                        open: { rotate: -45, y: -6 },
+                                    }}
+                                    transition={{ duration: 0.18 }}
+                                    style={{ originX: "50%", originY: "50%" }}
+                                />
+                            </motion.svg>
+                        </button>
+
+                        <Link to="/" className="text-indigo-600 dark:text-indigo-400 font-bold text-xl sm:text-2xl">
+                            Kenshi Webspace
+                        </Link>
+                    </div>
                     {/* Desktop links */}
                     <div className="hidden md:flex space-x-8">
                         {navLinks.map(({ to, label }) => (
@@ -81,38 +142,19 @@ export default function Navbar() {
                     </div>
 
                     {/* Right side: sign in/out (desktop) and mobile menu button */}
-                    <div className="flex items-center gap-3">
-                        {/* desktop sign-in/out */}
-                        <div className="hidden md:block">
-                            {!isSignedIn && (
-                                <Link to="/auth/login">
-                                    <Button variant="ghost" className="bg-indigo-600/65 text-white cursor-pointer text-sm font-medium">
-                                        Sign in
-                                    </Button>
-                                </Link>
-                            )}
-                        </div>
 
-                        <AvatarDropdown />
-
-                        {/* mobile hamburger */}
-                        <button
-                            type="button"
-                            aria-label="Toggle navigation"
-                            aria-expanded={open}
-                            onClick={() => setOpen((s) => !s)}
-                            className="md:hidden inline-flex items-center justify-center p-2 rounded-md hover:bg-white/20 dark:hover:bg-gray-700/20"
-                        >
-                            {/* simple hamburger icon */}
-                            <svg className="h-6 w-6 text-gray-800 dark:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                {open ? (
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                ) : (
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                                )}
-                            </svg>
-                        </button>
+                    {/* desktop sign-in/out */}
+                    <div className="hidden md:block">
+                        {!isSignedIn && (
+                            <Link to="/auth/login">
+                                <Button variant="ghost" className="bg-indigo-600/65 text-white cursor-pointer text-sm font-medium">
+                                    Sign in
+                                </Button>
+                            </Link>
+                        )}
                     </div>
+
+                    <AvatarDropdown />
                 </div>
 
                 {/* Mobile dropdown - overlayed and absolutely positioned so it doesn't stretch the navbar */}

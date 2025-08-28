@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, act } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 
 // Enhanced Neural Network Background Component with exclusion zones
@@ -226,7 +226,7 @@ const TeamCard = ({ member, index }) => {
                 <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
 
                 {/* Binary code background pattern - hidden on small screens */}
-                <div className="absolute inset-0 opacity-5 font-mono text-xs leading-none hidden md:block">
+                {/* <div className="absolute inset-0 opacity-5 font-mono text-xs leading-none hidden md:block">
                     <div className="grid grid-cols-8 gap-0 h-full">
                         {Array.from({ length: 64 }).map((_, i) => (
                             <motion.div
@@ -238,7 +238,7 @@ const TeamCard = ({ member, index }) => {
                             </motion.div>
                         ))}
                     </div>
-                </div>
+                </div> */}
 
                 <motion.div
                     animate={{ scale: isHovered ? 1.02 : 1 }}
@@ -269,7 +269,7 @@ const TeamCard = ({ member, index }) => {
                     <div className="flex-1 flex flex-col min-h-0">
                         <h3 className="text-sm sm:text-base md:text-lg font-bold text-gray-900 mb-1 sm:mb-2 line-clamp-2 flex-shrink-0">{member.name}</h3>
                         <div className="flex items-center gap-1 mb-2 sm:mb-3 flex-shrink-0">
-                            <span className="inline-block w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span>
+                            <span className={`inline-block w-1.5 h-1.5 ${member.active ? 'bg-emerald-400' : 'bg-red-400'} rounded-full animate-pulse`}></span>
                             <p className="text-indigo-600 font-semibold text-xs sm:text-sm line-clamp-1">{member.role}</p>
                         </div>
                         <p className="text-gray-600 text-xs sm:text-sm leading-relaxed flex-1 line-clamp-4 mb-3">{member.bio}</p>
@@ -283,14 +283,14 @@ const TeamCard = ({ member, index }) => {
                                         key={i}
                                         className="h-1.5 bg-gray-200 rounded-full flex-1 overflow-hidden"
                                         animate={{
-                                            backgroundColor: isHovered && i <= 4 ? '#6366f1' : '#e5e7eb'
+                                            backgroundColor: isHovered && i <= member.level ? '#6366f1' : '#e5e7eb'
                                         }}
                                         transition={{ delay: i * 0.1 }}
                                     >
                                         <motion.div
                                             className="h-full bg-gradient-to-r from-indigo-500 to-purple-500"
                                             animate={{
-                                                x: isHovered && i <= 4 ? '0%' : '-100%'
+                                                x: isHovered && i <= member.level ? '0%' : '-100%'
                                             }}
                                             transition={{ delay: i * 0.1, duration: 0.6 }}
                                         />
@@ -445,7 +445,9 @@ const AboutPage = () => {
             role: "Founder & Editor",
             bio: "Specializes in web development and technology. Leading the vision and technical direction of Kenshi Webspace.",
             img: "abhishek.jpg",
-            available: true
+            available: true,
+            active: true,
+            level: 5
         },
         {
             id: 2,
@@ -453,23 +455,29 @@ const AboutPage = () => {
             role: "Contributor & Editor",
             bio: "Specializes in Machine Learning and AI. Driving innovation in artificial intelligence content and research.",
             img: "rishikesh.jpg",
-            available: false
+            available: false,
+            active: true,
+            level: 4
         },
         {
             id: 3,
             name: "Soon to be added...",
             role: "Unallocated",
             bio: "Some amazing tech content is on the way!",
-            img: "https://placehold.co/640x400/6366f1/ffffff?text=Yet+To+Be+Added",
-            available: false
+            img: "https://placehold.co/600x420/6366f1/ffffff?text=Waiting...",
+            available: false,
+            active: false,
+            level: 1
         },
         {
             id: 4,
             name: "Soon to be added..",
             role: "Unallocated",
             bio: "Some amazing tech content is on the way!",
-            img: "https://placehold.co/640x400/8b5cf6/ffffff?text=Yet+To+Be+Added",
-            available: false
+            img: "https://placehold.co/600x420/8b5cf6/ffffff?text=Waiting...",
+            available: false,
+            active: false,
+            level: 1
         }
     ];
 
@@ -786,7 +794,7 @@ const AboutPage = () => {
                     </motion.div>
 
                     <motion.div
-                        className="grid gap-4 sm:gap-6 md:gap-8 sm:grid-cols-2 lg:grid-cols-4 auto-rows-fr"
+                        className="grid gap-4 sm:gap-6 md:gap-8 grid-cols-2 lg:grid-cols-4 auto-rows-fr"
                         variants={containerVariants}
                     >
                         {teamMembers.map((member, index) => (

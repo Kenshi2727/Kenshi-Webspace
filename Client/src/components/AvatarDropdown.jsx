@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, LogOut, ChevronDown, FileText, PenTool, Settings, Sparkles } from 'lucide-react';
+import { User, LogOut, ChevronDown, FileText, PenTool, Settings, Sparkles, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth, useUser } from "@clerk/clerk-react";
 import { useClerk } from "@clerk/clerk-react";
@@ -92,7 +92,7 @@ const AvatarDropdown = () => {
 
     if (isMaintainer) {
         menuItems.push({
-            icon: Sparkles,
+            icon: ShieldCheck,
             label: 'Maintainer Console',
             to: '/super-admin/maintainer',
             description: 'Access tools for content moderation',
@@ -186,18 +186,18 @@ const AvatarDropdown = () => {
                                 return (
                                     <Link key={index} to={item.to} onClick={() => setIsOpen(false)}>
                                         <motion.div
-                                            className={`flex items-center px-6 py-3 text-gray-700 dark:text-gray-300 hover:bg-gradient-to-r transition-all duration-200 cursor-pointer group ${item.isAdmin
+                                            className={`flex items-center px-6 py-3 text-gray-700 dark:text-gray-300 hover:bg-gradient-to-r transition-all duration-200 cursor-pointer group ${(item.isAdmin || item.isMaintainer)
                                                 ? 'hover:from-orange-50 hover:to-red-50 dark:hover:from-orange-900/20 dark:hover:to-red-900/20 hover:text-orange-700 dark:hover:text-orange-400'
                                                 : 'hover:from-purple-50 hover:to-indigo-50 dark:hover:from-purple-900/20 dark:hover:to-indigo-900/20 hover:text-purple-700 dark:hover:text-purple-300'
                                                 }`}
                                             whileHover={{ x: 8 }}
                                             transition={{ type: "spring", stiffness: 400, damping: 25 }}
                                         >
-                                            <div className={`p-2 rounded-lg mr-4 transition-all duration-200 ${item.isAdmin
+                                            <div className={`p-2 rounded-lg mr-4 transition-all duration-200 ${(item.isAdmin || item.isMaintainer)
                                                 ? 'bg-orange-100 dark:bg-orange-900/30 group-hover:bg-orange-200 dark:group-hover:bg-orange-800/40'
                                                 : 'bg-purple-100 dark:bg-purple-900/30 group-hover:bg-purple-200 dark:group-hover:bg-purple-800/40'
                                                 }`}>
-                                                <IconComponent className={`w-5 h-5 ${item.isAdmin
+                                                <IconComponent className={`w-5 h-5 ${(item.isAdmin || item.isMaintainer)
                                                     ? 'text-orange-600 dark:text-orange-400'
                                                     : 'text-purple-600 dark:text-purple-400'
                                                     }`} />
