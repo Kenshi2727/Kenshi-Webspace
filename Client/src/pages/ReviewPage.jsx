@@ -246,15 +246,15 @@ export default function ReviewPage() {
             className="min-h-screen bg-gradient-to-br from-purple-950 to-purple-800 py-10 px-4 sm:px-8 lg:px-16"
         >
             <div className="max-w-7xl mx-auto">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
                     <div>
-                        <h1 className="text-3xl md:text-4xl font-extrabold text-white flex items-center gap-3">
+                        <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white flex items-center gap-3">
                             Admin Review Dashboard
                             {pendingCount > 0 && (
                                 <motion.div
                                     animate={{ scale: [1, 1.1, 1] }}
                                     transition={{ repeat: Infinity, duration: 2 }}
-                                    className="bg-red-500 text-white text-sm px-2 py-1 rounded-full"
+                                    className="bg-red-500 text-white text-sm px-2 py-1 line-clamp-1 rounded-full"
                                 >
                                     {pendingCount} pending
                                 </motion.div>
@@ -289,7 +289,7 @@ export default function ReviewPage() {
                     <CardContent className="space-y-4">
                         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                             <div className="flex items-center gap-3">
-                                <div className="hidden sm:block">
+                                <div className="block">
                                     <Avatar className="w-12 h-12">
                                         <AvatarImage src="/admin-avatar.png" alt="Admin" />
                                         <AvatarFallback className="bg-indigo-600">AD</AvatarFallback>
@@ -302,7 +302,7 @@ export default function ReviewPage() {
                             </div>
 
                             <div className="flex items-center gap-2">
-                                <Tabs defaultValue="all" onValueChange={(v) => setFilter(v)} className="bg-white/5 rounded-full p-1">
+                                <Tabs defaultValue="all" onValueChange={(v) => setFilter(v)} className="bg-white/5 rounded-full p-1 overflow-auto">
                                     <TabsList className="flex gap-1">
                                         <TabsTrigger value="all" className="data-[state=active]:bg-black data-[state=active]:text-white px-3 py-1 rounded-full">
                                             All

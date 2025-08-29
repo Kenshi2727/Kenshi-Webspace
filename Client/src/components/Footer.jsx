@@ -96,7 +96,7 @@ export default function Footer() {
                                     <motion.div
                                         variants={logoVariants}
                                         whileHover="hover"
-                                        className="flex items-center gap-2 sm:gap-3"
+                                        className="flex items-center w-fit gap-2 sm:gap-3"
                                     >
                                         <div className="flex items-center justify-center h-8 w-8 sm:h-10 sm:w-10 rounded-lg sm:rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 shadow-lg">
                                             <svg viewBox="0 0 24 24" className="h-4 w-4 sm:h-6 sm:w-6" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>

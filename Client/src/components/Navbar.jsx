@@ -144,10 +144,13 @@ export default function Navbar() {
                     {/* Right side: sign in/out (desktop) and mobile menu button */}
 
                     {/* desktop sign-in/out */}
-                    <div className="hidden md:block">
+                    <div className="block">
                         {!isSignedIn && (
                             <Link to="/auth/login">
-                                <Button variant="ghost" className="bg-indigo-600/65 text-white cursor-pointer text-sm font-medium">
+                                <Button variant="ghost" className="hidden sm:block bg-indigo-600/65 text-white cursor-pointer text-sm font-medium">
+                                    Sign in
+                                </Button>
+                                <Button variant="ghost" size="sm" className="sm:hidden block bg-indigo-600/65 text-white cursor-pointer text-xs font-medium">
                                     Sign in
                                 </Button>
                             </Link>
