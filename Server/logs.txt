@@ -1,0 +1,63 @@
+[1m[90m[TAILING] Tailing last 100 lines for [all] processes (change the value with --lines option)[39m[22m
+[90mC:\Users\abhis\.pm2\pm2.log last 100 lines:[39m
+[34mPM2        | [39m2025-08-30T00:02:57: PM2 log: ===============================================================================
+[34mPM2        | [39m2025-08-30T00:02:57: PM2 log: --- New PM2 Daemon started ----------------------------------------------------
+[34mPM2        | [39m2025-08-30T00:02:57: PM2 log: Time                 : Sat Aug 30 2025 00:02:57 GMT+0530 (India Standard Time)
+[34mPM2        | [39m2025-08-30T00:02:57: PM2 log: PM2 version          : 6.0.8
+[34mPM2        | [39m2025-08-30T00:02:57: PM2 log: Node.js version      : 22.17.1
+[34mPM2        | [39m2025-08-30T00:02:57: PM2 log: Current arch         : x64
+[34mPM2        | [39m2025-08-30T00:02:57: PM2 log: PM2 home             : C:\Users\abhis\.pm2
+[34mPM2        | [39m2025-08-30T00:02:57: PM2 log: PM2 PID file         : C:\Users\abhis\.pm2\pm2.pid
+[34mPM2        | [39m2025-08-30T00:02:57: PM2 log: RPC socket file      : \\.\pipe\rpc.sock
+[34mPM2        | [39m2025-08-30T00:02:57: PM2 log: BUS socket file      : \\.\pipe\pub.sock
+[34mPM2        | [39m2025-08-30T00:02:57: PM2 log: Application log path : C:\Users\abhis\.pm2\logs
+[34mPM2        | [39m2025-08-30T00:02:57: PM2 log: Worker Interval      : 30000
+[34mPM2        | [39m2025-08-30T00:02:57: PM2 log: Process dump file    : C:\Users\abhis\.pm2\dump.pm2
+[34mPM2        | [39m2025-08-30T00:02:57: PM2 log: Concurrent actions   : 2
+[34mPM2        | [39m2025-08-30T00:02:57: PM2 log: SIGTERM timeout      : 1600
+[34mPM2        | [39m2025-08-30T00:02:57: PM2 log: Runtime Binary       : C:\Program Files\nodejs\node.exe
+[34mPM2        | [39m2025-08-30T00:02:57: PM2 log: ===============================================================================
+[34mPM2        | [39m2025-08-30T20:10:09: PM2 log: ===============================================================================
+[34mPM2        | [39m2025-08-30T20:10:09: PM2 log: --- New PM2 Daemon started ----------------------------------------------------
+[34mPM2        | [39m2025-08-30T20:10:09: PM2 log: Time                 : Sat Aug 30 2025 20:10:09 GMT+0530 (India Standard Time)
+[34mPM2        | [39m2025-08-30T20:10:09: PM2 log: PM2 version          : 6.0.8
+[34mPM2        | [39m2025-08-30T20:10:09: PM2 log: Node.js version      : 22.17.1
+[34mPM2        | [39m2025-08-30T20:10:09: PM2 log: Current arch         : x64
+[34mPM2        | [39m2025-08-30T20:10:09: PM2 log: PM2 home             : C:\Users\abhis\.pm2
+[34mPM2        | [39m2025-08-30T20:10:09: PM2 log: PM2 PID file         : C:\Users\abhis\.pm2\pm2.pid
+[34mPM2        | [39m2025-08-30T20:10:09: PM2 log: RPC socket file      : \\.\pipe\rpc.sock
+[34mPM2        | [39m2025-08-30T20:10:09: PM2 log: BUS socket file      : \\.\pipe\pub.sock
+[34mPM2        | [39m2025-08-30T20:10:09: PM2 log: Application log path : C:\Users\abhis\.pm2\logs
+[34mPM2        | [39m2025-08-30T20:10:09: PM2 log: Worker Interval      : 30000
+[34mPM2        | [39m2025-08-30T20:10:09: PM2 log: Process dump file    : C:\Users\abhis\.pm2\dump.pm2
+[34mPM2        | [39m2025-08-30T20:10:09: PM2 log: Concurrent actions   : 2
+[34mPM2        | [39m2025-08-30T20:10:09: PM2 log: SIGTERM timeout      : 1600
+[34mPM2        | [39m2025-08-30T20:10:09: PM2 log: Runtime Binary       : C:\Program Files\nodejs\node.exe
+[34mPM2        | [39m2025-08-30T20:10:09: PM2 log: ===============================================================================
+
+stdout is not a tty
+stdout is not a tty
+stdout is not a tty
+
+> server@1.0.0 dev
+> nodemon src/index.js --color
+
+[33m[nodemon] 3.1.7[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): *.*[39m
+[33m[nodemon] watching extensions: js,mjs,cjs,json[39m
+[32m[nodemon] starting `node src/index.js --color`[39m
+[dotenv@17.2.1] injecting env (1) from .env -- tip: 📡 observe env with Radar: https://dotenvx.com/radar
+Server is running on http://localhost:3000
+Prisma Client is connected: true
+[32m[nodemon] clean exit - waiting for changes before restart[39m
+[32m[nodemon] starting `node src/index.js --color`[39m
+[dotenv@17.2.1] injecting env (1) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+Server is running on http://localhost:3000
+Prisma Client is connected: true
+[32m[nodemon] clean exit - waiting for changes before restart[39m
+[32m[nodemon] starting `node src/index.js --color`[39m
+[dotenv@17.2.1] injecting env (1) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+Server is running on http://localhost:3000
+Prisma Client is connected: true
+[32m[nodemon] clean exit - waiting for changes before restart[39m
