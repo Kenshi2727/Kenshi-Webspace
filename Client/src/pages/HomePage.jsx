@@ -1,8 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
 import { motion } from 'framer-motion';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
@@ -15,6 +13,8 @@ import FloatingOrbs from '../components/FloatingOrbs';
 import AnimatedDots from '../components/AnimatedDots';
 import MouseGlow from '../components/MouseGlow';
 import { Edit3, ArrowRight } from "lucide-react";
+import { useUser } from '@clerk/clerk-react';
+import toast from 'react-hot-toast';
 
 const containerVariants = {
     hidden: { opacity: 0, y: 30 },
@@ -50,13 +50,15 @@ const cardHover = {
 const HomePage = () => {
     const [submitting, setSubmitting] = useState(false);
     const [open, setOpen] = useState(false);
+    const { isSignedIn } = useUser();
 
     async function handleConfirm() {
         try {
             setSubmitting(true);
+            if (!isSignedIn) toast.error("Please sign in to continue.");
             // async actions if needed
         } catch (err) {
-            // handle
+            toast.error("An error occurred. Please try again.");
         } finally {
             setSubmitting(false);
             setOpen(false);
@@ -223,9 +225,9 @@ const HomePage = () => {
                                 <p className="text-sm text-gray-300 mt-1">We welcome contributors — would you like to join and publish your articles on Kenshi Webspace?</p>
                             </div>
 
-                            <DialogFooter className="px-6 py-4 flex items-center justify-end gap-3 bg-gray-800/40">
+                            <DialogFooter className="px-6 py-4 flex-row items-center justify-end gap-3 bg-gray-800/40">
                                 <Button variant="ghost" onClick={handleCancel} disabled={submitting} className="hover:bg-gray-700/50 text-gray-300">No, thanks</Button>
-                                <Link to="/my-articles ">
+                                <Link to={isSignedIn ? "/my-articles" : "/auth/login"}>
                                     <Button onClick={handleConfirm} disabled={submitting} className="bg-gradient-to-r from-indigo-500 to-pink-500 hover:from-indigo-400 hover:to-pink-400 text-white shadow-md">
                                         {submitting ? "Processing…" : "Yes, contribute"}
                                     </Button>

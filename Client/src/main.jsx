@@ -12,9 +12,9 @@ if (!PUBLISHABLE_KEY) {
 }
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+  <>
     <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
       <PostsProvider><App /></PostsProvider>
     </ClerkProvider>
-  </StrictMode>,
+  </>,
 )
