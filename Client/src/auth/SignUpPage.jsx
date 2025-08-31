@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSignUp } from "@clerk/clerk-react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
@@ -12,6 +12,7 @@ import { Users, ShieldCheck, FileText, Layers, Smartphone, Moon, Sparkles } from
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 import { FcGoogle } from 'react-icons/fc';
 import { useSignIn } from "@clerk/clerk-react";
+import { createUser } from '../services/GlobalApi.js';
 
 export default function CustomSignUpPage() {
     const { signUp, setActive, isLoaded } = useSignUp();
@@ -94,10 +95,10 @@ export default function CustomSignUpPage() {
             if (attempt.status === "complete") {
                 if (attempt.createdSessionId) {
                     await setActive({ session: attempt.createdSessionId });
-                    window.location.href = "/";
-                    return;
                 }
                 setInfo("Signed up successfully — redirecting...");
+                //user creation in database
+                await createUser({ "msg": "hello from client via clerk!" });
                 window.location.href = "/";
                 return;
             }
@@ -258,7 +259,7 @@ export default function CustomSignUpPage() {
                                                 <Input
                                                     value={firstName}
                                                     onChange={(e) => setFirstName(e.target.value)}
-                                                    placeholder="Asha"
+                                                    placeholder="Abhishek"
                                                     className="mt-1 bg-white/6 text-white border-transparent focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/30"
                                                 />
                                             </div>
@@ -268,7 +269,7 @@ export default function CustomSignUpPage() {
                                                 <Input
                                                     value={lastName}
                                                     onChange={(e) => setLastName(e.target.value)}
-                                                    placeholder="Kumar"
+                                                    placeholder="Mathur"
                                                     className="mt-1 bg-white/6 text-white border-transparent focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/30"
                                                 />
                                             </div>

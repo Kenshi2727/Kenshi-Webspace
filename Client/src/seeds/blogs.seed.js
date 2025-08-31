@@ -221,3 +221,50 @@ PostgreSQL is ideal for applications needing reliable, feature-rich relational d
 
 
 ];
+
+export const myArticles = [
+  {
+    id: 'demo-1',
+    title: 'How I build Kenshi Webspace — a developer diary',
+    excerpt: 'A short tour through architecture, design choices and the lessons I learned while building Kenshi Webspace end-to-end. This demo excerpt is intentionally long to show truncation.',
+    status: 'published',
+    cover: null,
+    content: '# Hello from Kenshi\n\nThis is a demo article used as fallback when the API fails.',
+    readTime: 4,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 'demo-2',
+    title: 'Draft: Ghibli-inspired community art',
+    excerpt: 'Ideas for a Ghibli-style hero image that represents community growth and tech with storytelling elements to make it feel warm and adventurous.',
+    status: 'draft',
+    cover: null,
+    content: '## Ideas\n- Community tree\n- Neon circuits',
+    readTime: 2,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 'demo-3',
+    title: 'Draft: Ghibli-inspired community art',
+    excerpt: 'Ideas for a Ghibli-style hero image that represents community growth and tech with storytelling elements to make it feel warm and adventurous.',
+    status: 'draft',
+    cover: null,
+    content: '## Ideas\n- Community tree\n- Neon circuits',
+    readTime: 2,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 'demo-4',
+    title: 'Ha ha ha ha wo dekho bihari ka ladka',
+    excerpt: 'Harmony in Racism:a weird concept',
+    status: 'rejected',
+    cover: null,
+    content: '## Ideas\n- Community tree\n- Neon circuits',
+    readTime: 2,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+];

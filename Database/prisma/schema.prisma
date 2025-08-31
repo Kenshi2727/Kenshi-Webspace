@@ -25,9 +25,18 @@ model User {
 }
 
 enum Role {
-  OWNER // Supreme power, only one per space
+  OWNER // Supreme power
   MODERATOR // Can appoint/demote Admins, manage space
   ADMIN // Reviews posts, cannot demote Admins
   COLLABORATOR // Default contributor/member
   USER // Regular user with limited permissions
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  authorId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

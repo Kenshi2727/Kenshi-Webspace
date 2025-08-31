@@ -275,6 +275,10 @@ export default function ArticlePage() {
                             <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent z-10" />
                             <motion.img
                                 src={article.coverImg}
+                                onError={(e) => {
+                                    e.target.onerror = null;//prevent loop if placeholder fails
+                                    e.target.src = '/placeholder.png';
+                                }}
                                 alt="Cover"
                                 className="w-full h-[200px] sm:h-[250px] md:h-[350px] lg:h-[400px] object-fill transition-transform duration-700 group-hover:scale-105"
                                 whileHover={{ scale: 1.02 }}

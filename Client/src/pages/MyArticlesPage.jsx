@@ -15,6 +15,7 @@ import rehypeHighlight from 'rehype-highlight';
 import rehypeRaw from 'rehype-raw';
 import { motion } from 'framer-motion';
 import { Edit3, Trash2, Eye, Plus } from 'lucide-react';
+import { myArticles } from '../seeds/blogs.seed';
 
 // MyArticlesPage (updated)
 // Improvements made in this revision:
@@ -49,41 +50,7 @@ export default function MyArticlesPage() {
             console.error(err);
             setError(err.message || 'Something went wrong');
             // fallback demo content
-            setArticles([
-                {
-                    id: 'demo-1',
-                    title: 'How I build Kenshi Webspace — a developer diary',
-                    excerpt: 'A short tour through architecture, design choices and the lessons I learned while building Kenshi Webspace end-to-end. This demo excerpt is intentionally long to show truncation.',
-                    status: 'published',
-                    cover: null,
-                    content: '# Hello from Kenshi\n\nThis is a demo article used as fallback when the API fails.',
-                    readTime: 4,
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString(),
-                },
-                {
-                    id: 'demo-2',
-                    title: 'Draft: Ghibli-inspired community art',
-                    excerpt: 'Ideas for a Ghibli-style hero image that represents community growth and tech with storytelling elements to make it feel warm and adventurous.',
-                    status: 'draft',
-                    cover: null,
-                    content: '## Ideas\n- Community tree\n- Neon circuits',
-                    readTime: 2,
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString(),
-                },
-                {
-                    id: 'demo-3',
-                    title: 'Draft: Ghibli-inspired community art',
-                    excerpt: 'Ideas for a Ghibli-style hero image that represents community growth and tech with storytelling elements to make it feel warm and adventurous.',
-                    status: 'draft',
-                    cover: null,
-                    content: '## Ideas\n- Community tree\n- Neon circuits',
-                    readTime: 2,
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString(),
-                },
-            ]);
+            setArticles(myArticles);
         } finally {
             setLoading(false);
         }
@@ -174,9 +141,10 @@ export default function MyArticlesPage() {
                             <div className="flex items-center gap-2">
                                 <Tabs defaultValue="all" onValueChange={(v) => setFilter(v)} className="bg-white/5 rounded-full p-1">
                                     <TabsList className="flex gap-1">
-                                        <TabsTrigger value="all" className={`px-3 py-1 data-[state=active]:bg-black rounded-full ${filter === 'all' ? 'bg-indigo-500 text-white' : ''}`}>All</TabsTrigger>
-                                        <TabsTrigger value="published" className={`px-3 py-1 data-[state=active]:bg-black rounded-full ${filter === 'published' ? 'bg-emerald-500 text-white' : ''}`}>Published</TabsTrigger>
-                                        <TabsTrigger value="draft" className={`px-3 py-1 data-[state=active]:bg-black rounded-full ${filter === 'draft' ? 'bg-yellow-500 text-white' : ''}`}>Drafts</TabsTrigger>
+                                        <TabsTrigger value="all" className={`px-3 py-1 rounded-full ${filter === 'all' ? 'data-[state=active]:bg-black text-white' : ''}`}>All</TabsTrigger>
+                                        <TabsTrigger value="published" className={`px-3 py-1 rounded-full ${filter === 'published' ? 'data-[state=active]:bg-emerald-500 text-white' : ''}`}>Published</TabsTrigger>
+                                        <TabsTrigger value="draft" className={`px-3 py-1 rounded-full ${filter === 'draft' ? 'data-[state=active]:bg-yellow-500 text-white' : ''}`}>Drafts</TabsTrigger>
+                                        <TabsTrigger value="rejected" className={`px-3 py-1 rounded-full ${filter === 'rejected' ? 'data-[state=active]:bg-red-500 text-white' : ''}`}>Rejected</TabsTrigger>
                                     </TabsList>
                                 </Tabs>
                             </div>
@@ -213,12 +181,12 @@ export default function MyArticlesPage() {
 
                                                 <div className="mt-2 flex items-center justify-between gap-3">
                                                     <div className="flex items-center gap-3">
-                                                        <div className="text-sm text-gray-300">{article.readTime} min read</div>
+                                                        <div className="text-xs text-gray-300 line-clamp-2">{article.readTime} min read</div>
                                                         <div className="hidden sm:block text-xs text-gray-400">· {new Date(article.createdAt).toLocaleDateString()}</div>
                                                     </div>
 
                                                     <div className="flex items-center gap-1">
-                                                        <Badge className={`px-2 py-1 rounded-full text-sm ${article.status === 'published' ? 'bg-emerald-600' : article.status === 'draft' ? 'bg-yellow-400 text-black' : 'bg-gray-500 text-white'}`}>{article.status}</Badge>
+                                                        <Badge className={`px-2 py-1 rounded-full text-sm ${article.status === 'published' ? 'bg-emerald-600' : article.status === 'draft' ? 'bg-yellow-400 text-black' : article.status === 'rejected' ? 'bg-red-500 text-white' : 'bg-gray-500 text-white'}`}>{article.status}</Badge>
 
                                                         <div className="flex items-center gap-1">
                                                             <TooltipProvider>

@@ -61,3 +61,16 @@ Prisma Client is connected: true
 Server is running on http://localhost:3000
 Prisma Client is connected: true
 [32m[nodemon] clean exit - waiting for changes before restart[39m
+
+> server@1.0.0 dev
+> nodemon src/index.js --color
+
+[33m[nodemon] 3.1.7[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): *.*[39m
+[33m[nodemon] watching extensions: js,mjs,cjs,json[39m
+[32m[nodemon] starting `node src/index.js --color`[39m
+[dotenv@17.2.1] injecting env (1) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
+Server is running on http://localhost:3000
+Prisma Client is connected: true
+[32m[nodemon] clean exit - waiting for changes before restart[39m
