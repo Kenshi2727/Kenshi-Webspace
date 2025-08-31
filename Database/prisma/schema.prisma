@@ -15,8 +15,9 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  name      String
+  id        String   @id @default(uuid())
+  firstName String
+  lastName  String
   email     String   @unique
   password  String // hashed
   role      Role     @default(USER)
@@ -33,7 +34,7 @@ enum Role {
 }
 
 model Post {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   title     String
   content   String
   authorId  String

@@ -5,12 +5,21 @@ const instance = axios.create({
     timeout: 10000,//10 seconds
     headers: {
         "Content-Type": "application/json",
-        Accept: "application/json",
     }
 });
 
 const createUser = (data) => instance.post('/users/create', data);
 
+const deleteUser = (data) => instance.delete('/users/delete',
+    {
+        data,
+        headers: {
+            Authorization: `Bearer ${data.token}`,
+        },
+        withCredentials: true,//sending auth token
+    });
+
 export {
-    createUser
+    createUser,
+    deleteUser
 };

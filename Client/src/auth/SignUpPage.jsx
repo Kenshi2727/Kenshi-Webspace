@@ -7,12 +7,12 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { Users, ShieldCheck, FileText, Layers, Smartphone, Moon, Sparkles } from "lucide-react";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 import { FcGoogle } from 'react-icons/fc';
 import { useSignIn } from "@clerk/clerk-react";
-import { createUser } from '../services/GlobalApi.js';
+import { createUser, deleteUser } from '../services/GlobalApi.js';
+import { useAuth } from "@clerk/clerk-react";
 
 export default function CustomSignUpPage() {
     const { signUp, setActive, isLoaded } = useSignUp();
@@ -27,6 +27,7 @@ export default function CustomSignUpPage() {
     const [error, setError] = useState("");
     const [info, setInfo] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    const { getToken } = useAuth();
 
     const validate = () => {
         if (!email) return "Please enter an email.";
@@ -57,6 +58,14 @@ export default function CustomSignUpPage() {
             className: "bg-white text-[#0A66C2] border border-[#0A66C2] hover:bg-[#0A66C2] hover:text-white",
         },
     ];
+
+    const handleDeleteUser = async () => {
+        const token = await getToken();
+        const res = await deleteUser({ "msg": "hello delete from client via useEffect!", token: token });
+        if (res.status === 401) {
+            window.location.href = "/";
+        }
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -98,7 +107,12 @@ export default function CustomSignUpPage() {
                 }
                 setInfo("Signed up successfully — redirecting...");
                 //user creation in database
-                await createUser({ "msg": "hello from client via clerk!" });
+                await createUser({
+                    email,
+                    password,
+                    firstName,
+                    lastName,
+                });
                 window.location.href = "/";
                 return;
             }
@@ -109,6 +123,7 @@ export default function CustomSignUpPage() {
             );
         } catch (err) {
             console.error(err);
+            await deleteUser({ "msg": "hello delete from client via clerk!" });
             setError(err?.errors?.[0]?.message || err?.message || "Sign-up failed.");
         } finally {
             setLoading(false);
@@ -223,6 +238,10 @@ export default function CustomSignUpPage() {
                             <Badge className="bg-white/6 text-white">Beta</Badge>
                             <div className="text-xs text-white/70">Early access features enabled</div>
                         </div>
+
+                        <button onClick={handleDeleteUser}>
+                            temp
+                        </button>
                     </motion.aside>
 
                     {/* RIGHT: Sign-up form */}

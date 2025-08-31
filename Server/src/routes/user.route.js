@@ -1,8 +1,10 @@
 import express from 'express';
-import { createUser } from '../controllers/user.controller.js';
+import { createUser, deleteUser } from '../controllers/user.controller.js';
+import { protectRoute } from '../middlewares/auth.middleware.js';
 
 const router = express.Router();
 
 router.post('/create', createUser);
+router.delete('/delete', protectRoute, deleteUser);
 
 export default router;

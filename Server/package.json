@@ -28,6 +28,7 @@
     "typescript": "^5.9.2"
   },
   "dependencies": {
+    "@clerk/express": "^1.7.26",
     "axios": "^1.11.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
