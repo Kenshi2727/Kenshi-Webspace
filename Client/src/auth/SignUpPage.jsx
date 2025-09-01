@@ -13,6 +13,7 @@ import { FcGoogle } from 'react-icons/fc';
 import { useSignIn } from "@clerk/clerk-react";
 import { createUser, deleteUser } from '../services/GlobalApi.js';
 import { useAuth } from "@clerk/clerk-react";
+import toast from "react-hot-toast";
 
 export default function CustomSignUpPage() {
     const { signUp, setActive, isLoaded } = useSignUp();
@@ -60,10 +61,25 @@ export default function CustomSignUpPage() {
     ];
 
     const handleDeleteUser = async () => {
-        const token = await getToken();
-        const res = await deleteUser({ "msg": "hello delete from client via useEffect!", token: token });
-        if (res.status === 401) {
-            window.location.href = "/";
+        try {
+            const token = await getToken();
+            await deleteUser({ "msg": "Delete Request(IMPORTANT!) for failed database registry!", token: token });
+        } catch (error) {
+            if (error?.response?.status === 401) {
+                toast.promise(
+                    new Promise((resolve) => setTimeout(() => {
+                        resolve();
+                        window.location.href = "/auth/login";
+                    }
+                        , 2000)),
+                    {
+                        loading: 'Unauthorized Access! Redirecting to login page...',
+                        success: <b>Please sign in!</b>,
+                        error: <b>Internal Server Error.</b>,
+                    }
+                );
+
+            }
         }
     }
 
@@ -123,7 +139,7 @@ export default function CustomSignUpPage() {
             );
         } catch (err) {
             console.error(err);
-            await deleteUser({ "msg": "hello delete from client via clerk!" });
+            handleDeleteUser(); // delete user immediately on error
             setError(err?.errors?.[0]?.message || err?.message || "Sign-up failed.");
         } finally {
             setLoading(false);
@@ -131,9 +147,10 @@ export default function CustomSignUpPage() {
     };
 
     const handleSocial = (provider) => {
+        /* use webhook for database user insertion */
         signIn.authenticateWithRedirect({
             strategy: provider, // e.g., "oauth_google"
-            // redirectUrl: "/auth/sso-callback", // Your callback page(for production)
+            redirectUrl: "/auth/sso-callback", // callback page(for production)
             redirectUrlComplete: "/", // After successful login
         });
     };
@@ -238,10 +255,6 @@ export default function CustomSignUpPage() {
                             <Badge className="bg-white/6 text-white">Beta</Badge>
                             <div className="text-xs text-white/70">Early access features enabled</div>
                         </div>
-
-                        <button onClick={handleDeleteUser}>
-                            temp
-                        </button>
                     </motion.aside>
 
                     {/* RIGHT: Sign-up form */}

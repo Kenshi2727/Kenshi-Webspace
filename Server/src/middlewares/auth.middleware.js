@@ -3,18 +3,20 @@ import { getAuth } from '@clerk/express';
 export const protectRoute = (req, res, next) => {
     try {
         const auth = getAuth(req);
-        if (!auth.userId) {
+        console.log('protectRoute getAuth =>', auth);
+        if (!auth?.userId) {
             return res.status(401).json({
                 success: false,
                 message: "Unauthorized access"
             });
         }
+        res.locals.userId = auth.userId;
         next();
     } catch (error) {
         console.error("Authentication middleware error:", error);
-        res.status(401).json({
+        res.status(500).json({
             success: false,
-            message: "Authentication failed"
+            message: "Internal Server Error: Authentication failed"
         });
     }
 };

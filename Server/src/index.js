@@ -4,7 +4,6 @@ import prisma from "../../Database/prisma.client.js";
 import cors from "cors";
 import userRoutes from "./routes/user.route.js";
 import { clerkMiddleware } from '@clerk/express';
-import { requireAuth } from '@clerk/express';
 
 dotenv.config();
 
@@ -22,7 +21,6 @@ app.use(cors(
     }
 ));
 app.use(clerkMiddleware());
-app.use(requireAuth());
 app.use("/users", userRoutes);
 
 app.listen(port, async () => {

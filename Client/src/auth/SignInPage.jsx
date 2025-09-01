@@ -76,7 +76,7 @@ export default function CustomSignInPage() {
     const handleSocial = (provider) => {
         signIn.authenticateWithRedirect({
             strategy: provider, // e.g., "oauth_google"
-            // redirectUrl: "/auth/sso-callback", // Your callback page(for production)
+            redirectUrl: "/auth/sso-callback", // callback page(for production)
             redirectUrlComplete: "/", // After successful login
         });
     };
