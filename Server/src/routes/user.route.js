@@ -5,6 +5,7 @@ import { protectRoute } from '../middlewares/auth.middleware.js';
 const router = express.Router();
 
 router.post('/create', createUser);
-router.delete('/delete', protectRoute, deleteUser);
+// express.json() used in other routes 
+router.delete('/delete', express.json(), protectRoute, deleteUser);
 
 export default router;
