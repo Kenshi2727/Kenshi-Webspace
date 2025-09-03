@@ -80,7 +80,7 @@ const HomePage = () => {
             {/* ---------- HERO ---------- */}
             <motion.section
                 variants={itemVariants}
-                className="min-h-[92vh] relative flex items-start sm:items-center hero-section overflow-hidden bg-gradient-to-r from-indigo-600 to-purple-600"
+                className="min-h-[92vh] relative flex items-center hero-section overflow-hidden bg-gradient-to-r from-indigo-600 to-purple-600"
             >
                 <FloatingOrbs />
                 <AnimatedDots />
@@ -88,7 +88,7 @@ const HomePage = () => {
                 <AnimatedFloatingSquares />
 
                 {/*Hero Content*/}
-                <div className="max-w-7xl mx-auto px-4 py-12">
+                <div className="max-w-7xl mx-auto px-4 py-4">
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
                         {/* LEFT: Messaging (bigger) */}
                         <motion.div variants={itemVariants} className="md:col-span-7 text-center md:text-left">
