@@ -15,6 +15,7 @@ import MouseGlow from '../components/MouseGlow';
 import { Edit3, ArrowRight } from "lucide-react";
 import { useUser } from '@clerk/clerk-react';
 import toast from 'react-hot-toast';
+import Notice from '../components/banners/Notice';
 
 const containerVariants = {
     hidden: { opacity: 0, y: 30 },
@@ -68,6 +69,11 @@ const HomePage = () => {
     function handleCancel() {
         setOpen(false);
     }
+
+    useEffect(() => {
+        {/* Notice Banner */ }
+        Notice();
+    }, []);
 
     // Decorative helpers
     return (
