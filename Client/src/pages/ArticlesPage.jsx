@@ -52,7 +52,7 @@ const cardVariants = {
 
 // Floating particles component
 const FloatingParticles = () => {
-    const particles = Array.from({ length: 120 }, (_, i) => i);
+    const particles = Array.from({ length: 60 }, (_, i) => i);
 
     return (
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
