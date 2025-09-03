@@ -1,3 +1,16 @@
+## Tech stack to be added-
+
+```
+1) Web Sockets
+2) Cloudinary
+3) Compression algos
+4) Render Postgres deployment
+5) finally block retry logic
+6) More Webhook services for extended features
+```
+
+## Prposed Structure-
+
 ```
 backend/
 ├─ package.json        (type:"module", scripts: dev/start/migrate/seed)
