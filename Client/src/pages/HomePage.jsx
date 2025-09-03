@@ -88,7 +88,7 @@ const HomePage = () => {
                 <AnimatedFloatingSquares />
 
                 {/*Hero Content*/}
-                <div className="max-w-7xl mx-auto px-4 py-4">
+                <div className="max-w-7xl mx-auto px-4 py-8">
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
                         {/* LEFT: Messaging (bigger) */}
                         <motion.div variants={itemVariants} className="md:col-span-7 text-center md:text-left">
