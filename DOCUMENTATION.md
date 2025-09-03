@@ -9,7 +9,7 @@
 6) More Webhook services for extended features
 ```
 
-## Prposed Structure-
+## Proposed Structure-
 
 ```
 backend/

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, act } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 // Enhanced Neural Network Background Component with exclusion zones
 const NeuralNetwork = ({ excludeZones = [] }) => {
@@ -449,15 +450,25 @@ const AboutPage = () => {
             active: true,
             level: 5
         },
+        // {
+        //     id: 2,
+        //     name: "Hrishikesh Shukla",
+        //     role: "Contributor & Editor",
+        //     bio: "Specializes in Machine Learning and AI. Driving innovation in artificial intelligence content and research.",
+        //     img: "rishikesh.jpg",
+        //     available: false,
+        //     active: true,
+        //     level: 4
+        // },
         {
             id: 2,
-            name: "Hrishikesh Shukla",
-            role: "Contributor & Editor",
-            bio: "Specializes in Machine Learning and AI. Driving innovation in artificial intelligence content and research.",
-            img: "rishikesh.jpg",
+            name: "Soon to be added...",
+            role: "Unallocated",
+            bio: "Some amazing tech content is on the way!",
+            img: "https://placehold.co/600x420/6366f1/ffffff?text=Waiting...",
             available: false,
-            active: true,
-            level: 4
+            active: false,
+            level: 1
         },
         {
             id: 3,
@@ -474,7 +485,7 @@ const AboutPage = () => {
             name: "Soon to be added..",
             role: "Unallocated",
             bio: "Some amazing tech content is on the way!",
-            img: "https://placehold.co/600x420/8b5cf6/ffffff?text=Waiting...",
+            img: "https://placehold.co/600x420/6366f1/ffffff?text=Waiting...",
             available: false,
             active: false,
             level: 1
@@ -485,12 +496,12 @@ const AboutPage = () => {
         {
             title: "Quality First",
             description: "Every article undergoes rigorous technical review to ensure accuracy and depth. We implement industry-standard practices and never compromise on quality standards.",
-            icon: "⚡"
+            icon: "🛡️"
         },
         {
             title: "Community Focused",
             description: "Our content ecosystem is shaped by community needs. We actively listen to feedback and prioritize topics that solve real-world developer challenges.",
-            icon: "🤝"
+            icon: "🌐"
         },
         {
             title: "Always Learning",
@@ -555,10 +566,10 @@ const AboutPage = () => {
                         transition={{ delay: 0.8 }}
                     >
                         {[
-                            { name: 'Web Dev', progress: 95, color: 'from-blue-500 to-cyan-500' },
-                            { name: 'AI/ML', progress: 87, color: 'from-purple-500 to-pink-500' },
-                            { name: 'Cloud', progress: 82, color: 'from-green-500 to-emerald-500' },
-                            { name: 'DevOps', progress: 78, color: 'from-orange-500 to-red-500' }
+                            { name: 'Web Dev', progress: 35, color: 'from-blue-500 to-cyan-500' },
+                            { name: 'AI/ML', progress: 25, color: 'from-purple-500 to-pink-500' },
+                            { name: 'Cloud', progress: 20, color: 'from-green-500 to-emerald-500' },
+                            { name: 'DevOps', progress: 20, color: 'from-orange-500 to-red-500' }
                         ].map((tech, i) => (
                             <motion.div
                                 key={tech.name}
@@ -576,7 +587,7 @@ const AboutPage = () => {
                                         ]
                                     }}
                                     transition={{
-                                        rotateY: { duration: 3, delay: i * 0.5, repeat: Infinity },
+                                        rotateY: { duration: 3, delay: i * 0.5, repeat: Infinity, repeatDelay: 2 },
                                         boxShadow: { duration: 2, delay: i * 0.3, repeat: Infinity }
                                     }}
                                 >
@@ -883,60 +894,64 @@ const AboutPage = () => {
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ delay: 0.6, type: "spring", stiffness: 100 }}
                         >
-                            <motion.button
-                                className="bg-white text-gray-900 hover:bg-gray-100 font-bold px-4 sm:px-6 md:px-8 lg:px-10 py-3 sm:py-4 rounded-lg sm:rounded-xl md:rounded-2xl shadow-xl border-2 border-white/20 relative overflow-hidden group font-mono text-sm sm:text-base"
-                                whileHover={{
-                                    scale: 1.05,
-                                    boxShadow: '0 0 40px rgba(255,255,255,0.6)'
-                                }}
-                                whileTap={{ scale: 0.95 }}
-                            >
-                                <span className="relative z-10 flex items-center justify-center gap-2 sm:gap-3">
-                                    <span className="hidden sm:inline">git clone community</span>
-                                    <span className="sm:hidden">Join Community</span>
-                                    <motion.span
-                                        animate={{ rotate: [0, 360] }}
-                                        transition={{ duration: 2, repeat: Infinity }}
-                                        className="text-indigo-600"
-                                    >
-                                        ⚡
-                                    </motion.span>
-                                </span>
-                                <motion.div
-                                    className="absolute inset-0 bg-gradient-to-r from-indigo-600/10 to-purple-600/10"
-                                    initial={{ x: '-100%' }}
-                                    whileHover={{ x: '100%' }}
-                                    transition={{ duration: 0.6 }}
-                                />
-                            </motion.button>
+                            <Link to="/auth/sign-up">
+                                <motion.button
+                                    className="bg-white text-gray-900 hover:bg-gray-100 font-bold px-4 sm:px-6 md:px-8 lg:px-10 py-3 sm:py-4 rounded-lg sm:rounded-xl md:rounded-2xl shadow-xl border-2 border-white/20 relative overflow-hidden group font-mono text-sm sm:text-base"
+                                    whileHover={{
+                                        scale: 1.05,
+                                        boxShadow: '0 0 40px rgba(255,255,255,0.6)'
+                                    }}
+                                    whileTap={{ scale: 0.95 }}
+                                >
+                                    <span className="relative z-10 flex items-center justify-center gap-2 sm:gap-3">
+                                        <span className="hidden sm:inline">git clone community</span>
+                                        <span className="sm:hidden">Join Community</span>
+                                        <motion.span
+                                            animate={{ rotate: [0, 360] }}
+                                            transition={{ duration: 2, repeat: Infinity }}
+                                            className="text-indigo-600"
+                                        >
+                                            ⚡
+                                        </motion.span>
+                                    </span>
+                                    <motion.div
+                                        className="absolute inset-0 bg-gradient-to-r from-indigo-600/10 to-purple-600/10"
+                                        initial={{ x: '-100%' }}
+                                        whileHover={{ x: '100%' }}
+                                        transition={{ duration: 0.6 }}
+                                    />
+                                </motion.button>
+                            </Link>
 
-                            <motion.button
-                                className="bg-transparent hover:bg-white/10 text-white font-bold px-4 sm:px-6 md:px-8 lg:px-10 py-3 sm:py-4 rounded-lg sm:rounded-xl md:rounded-2xl shadow-xl border-2 border-white/30 relative overflow-hidden group font-mono text-sm sm:text-base"
-                                whileHover={{
-                                    scale: 1.05,
-                                    borderColor: 'rgba(147, 197, 253, 0.8)',
-                                    boxShadow: '0 0 40px rgba(147, 197, 253, 0.4)'
-                                }}
-                                whileTap={{ scale: 0.95 }}
-                            >
-                                <span className="relative z-10 flex items-center justify-center gap-2 sm:gap-3">
-                                    <span className="hidden md:inline">npm install @kenshi/dev</span>
-                                    <span className="md:hidden">Get Started</span>
-                                    <motion.span
-                                        animate={{ x: [0, 8, 0] }}
-                                        transition={{ duration: 1.5, repeat: Infinity }}
-                                        className="text-cyan-400"
-                                    >
-                                        →
-                                    </motion.span>
-                                </span>
-                                <motion.div
-                                    className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-blue-500/20"
-                                    initial={{ scale: 0, borderRadius: '100%' }}
-                                    whileHover={{ scale: 1, borderRadius: '1rem' }}
-                                    transition={{ duration: 0.4 }}
-                                />
-                            </motion.button>
+                            <a href="https://github.com/Kenshi2727/Kenshi-Webspace" target="_blank" rel="noopener noreferrer">
+                                <motion.button
+                                    className="bg-transparent hover:bg-white/10 text-white font-bold px-4 sm:px-6 md:px-8 lg:px-10 py-3 sm:py-4 rounded-lg sm:rounded-xl md:rounded-2xl shadow-xl border-2 border-white/30 relative overflow-hidden group font-mono text-sm sm:text-base"
+                                    whileHover={{
+                                        scale: 1.05,
+                                        borderColor: 'rgba(147, 197, 253, 0.8)',
+                                        boxShadow: '0 0 40px rgba(147, 197, 253, 0.4)'
+                                    }}
+                                    whileTap={{ scale: 0.95 }}
+                                >
+                                    <span className="relative z-10 flex items-center justify-center gap-2 sm:gap-3">
+                                        <span className="hidden md:inline">npm install @kenshi/dev</span>
+                                        <span className="md:hidden">Get Started</span>
+                                        <motion.span
+                                            animate={{ x: [0, 8, 0] }}
+                                            transition={{ duration: 1.5, repeat: Infinity }}
+                                            className="text-cyan-400"
+                                        >
+                                            →
+                                        </motion.span>
+                                    </span>
+                                    <motion.div
+                                        className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-blue-500/20"
+                                        initial={{ scale: 0, borderRadius: '100%' }}
+                                        whileHover={{ scale: 1, borderRadius: '1rem' }}
+                                        transition={{ duration: 0.4 }}
+                                    />
+                                </motion.button>
+                            </a>
                         </motion.div>
 
                         {/* Terminal-style footer - responsive */}
