@@ -76,14 +76,20 @@ export const deleteUser = async (req, res) => {
     console.log("User deletion initiated");
     try {
         const userId = res.locals.userId;
+
+        if (!userId) {
+            console.warn("⚠️ No userId provided in res.locals");
+            return res.status(400).json({ message: "User ID is required" });
+        }
+
         const response = await clerkClient.users.deleteUser(userId);
         console.log("User deleted:", response);
-        res.status(200).json({
+        return res.status(200).json({
             message: "User deleted successfully",
             data: response
         });
     } catch (error) {
         console.error("Error deleting user:", error);
-        res.status(500).json({ message: "Internal Server Error: Failed to delete user" });
+        return res.status(500).json({ message: "Internal Server Error: Failed to delete user" });
     }
 };

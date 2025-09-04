@@ -5,6 +5,7 @@ import cors from "cors";
 import userRoutes from "./routes/user.route.js";
 import { clerkMiddleware } from '@clerk/express';
 import bodyParser from 'body-parser';
+import helmet from "helmet";
 
 dotenv.config();
 
@@ -12,6 +13,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 //middlewares
+app.use(helmet());// security middleware for setting various HTTP response headers
 app.use(cors(
     {
         origin: process.env.CORS_ORIGIN,
@@ -28,6 +30,18 @@ app.use(express.json());
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
+    console.log(`Current Process ID: ${process.pid}`);
     console.log(`CORS is enabled for: ${process.env.CORS_ORIGIN}`);
-    console.log(`Prisma Client is connected: ${prisma !== null}`);
+    console.log(`Prisma Client is connected: ${prisma !== null && prisma !== undefined}`);
+});
+
+//graceful shutdown
+process.on("SIGINT", () => {
+    console.log("🔴 SIGINT signal received: closing Server");
+    process.exit(0);
+});
+
+process.on("SIGTERM", () => {
+    console.log("🟠 SIGTERM signal received: closing Server");
+    process.exit(0);
 });
