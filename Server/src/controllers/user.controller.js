@@ -5,8 +5,63 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-export const createUser = async (req, res) => {
+// helper functions
+const createUser = async (req, res, evt, id) => {
     console.log("User creation initiated");
+    try {
+        const { email_addresses, primary_email_address_id, first_name, last_name } = evt.data;
+        console.log("Email Addresses:", email_addresses);
+        console.log("Primary Email Address ID:", primary_email_address_id);
+
+        // Simulating an error for testing purposes
+        // throw new Error("Test error");
+
+        const primaryEmail = email_addresses.find(email => email.id === primary_email_address_id);
+
+        if (!primaryEmail) {
+            console.error("Primary email not found");
+            return res.status(400).send("Bad Request: Primary email not found");
+        }
+
+        //creating user in Database
+        await prisma.user.create({
+            data: {
+                id,
+                firstName: first_name,
+                lastName: last_name,
+                email: primaryEmail.email_address,
+            }
+        })
+        console.log("User created in database with ID:", id);
+    } catch (error) {
+        console.error("Error creating user in database:", error);
+        //deleting user from db
+        res.locals.userId = id;
+        // res.status(500).send("Internal Server Error: Failed to create user");
+        return deleteUser(req, res);
+    }
+    return res.status(201).json({ message: "User created successfully" });
+};
+
+const deleteUserWebhook = async (req, res, evt, id) => {
+    console.log("User deletion via webhook initiated");
+    try {
+        console.log("User ID to delete:", id);
+        //deleting user from db
+        await prisma.user.delete({
+            where: { id }
+        });
+        console.log("User deleted from database with ID:", id);
+        return res.status(200).json({ message: "User deleted successfully" });
+    } catch (error) {
+        console.error("Error deleting user from database:", error);
+        return res.status(500).json({ message: "Internal Server Error: Failed to delete user from database" });
+    }
+};
+
+
+// export functions
+export const handleWebhook = (req, res) => {
     const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
 
     if (!WEBHOOK_SECRET) {
@@ -49,33 +104,15 @@ export const createUser = async (req, res) => {
     console.log("Event ID:", id);
     console.log("Event Type:", eventType);
 
-    if (eventType === "user.created") {
-        try {
-            const { email_addresses, primary_email_address_id } = evt.data;
-            console.log("Email Addresses:", email_addresses);
-            console.log("Primary Email Address ID:", primary_email_address_id);
-
-            // Simulating an error for testing purposes
-            // throw new Error("Test error");
-
-            const primaryEmail = email_addresses.find(email => email.id === primary_email_address_id);
-
-            if (!primaryEmail) {
-                console.error("Primary email not found");
-                return res.status(400).send("Bad Request: Primary email not found");
-            }
-
-            //creating user in Database
-            // todo:logic
-        } catch (error) {
-            console.error("Error creating user in database:", error);
-            //deleting user from db
-            deleteUser(req, res);
-            return res.status(500).send("Internal Server Error: Failed to create user");
-        }
+    switch (eventType) {
+        case "user.created": createUser(req, res, evt, id);
+            break;
+        case "user.deleted": deleteUserWebhook(req, res, evt, id);
+            break;
+        default:
+            console.log(`Unhandled event type: ${eventType}`);
+            return res.status(500).send(`Internal Server Error: Event type ${eventType} not handled`);
     }
-
-    return res.status(201).json({ message: "User created successfully" });
 };
 
 export const deleteUser = async (req, res) => {

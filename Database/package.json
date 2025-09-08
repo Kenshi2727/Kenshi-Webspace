@@ -7,7 +7,13 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "generate": "npx prisma generate",
+    "migrate": "npx prisma migrate dev --name init",
+    "reset": "npx prisma migrate reset",
+    "deploy": "npx prisma migrate deploy",
+    "studio": "npx prisma studio",
+    "pull": "npx prisma db pull",
+    "push": "npx prisma db push"
   },
   "dependencies": {
     "@prisma/client": "^6.14.0"

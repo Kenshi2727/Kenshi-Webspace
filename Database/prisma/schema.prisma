@@ -19,7 +19,6 @@ model User {
   firstName String
   lastName  String
   email     String   @unique
-  password  String // hashed
   role      Role     @default(USER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

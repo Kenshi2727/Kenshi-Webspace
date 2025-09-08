@@ -129,6 +129,7 @@ export default function CustomSignUpPage() {
                 //     firstName,
                 //     lastName,
                 // });
+                // using webhook for database user insertion
                 window.location.href = "/";
                 return;
             }
@@ -147,7 +148,7 @@ export default function CustomSignUpPage() {
     };
 
     const handleSocial = (provider) => {
-        /* use webhook for database user insertion */
+        /* using webhook for database user insertion */
         signIn.authenticateWithRedirect({
             strategy: provider, // e.g., "oauth_google"
             redirectUrl: "/auth/sso-callback", // callback page(for production)
