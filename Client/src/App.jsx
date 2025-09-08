@@ -28,6 +28,7 @@ import ProfilePage from './pages/ProfilePage';
 import MaintainerPage from './super-admin/MaintainerPage';
 import { Toaster } from 'react-hot-toast'
 import { useUser } from '@clerk/clerk-react';
+import NotFoundPage from './pages/NotFoundPage';
 
 function App() {
   const isMaintenanceMode = false;
@@ -72,6 +73,9 @@ function App() {
             <Route path="/profile" element={isMaintenanceMode ? <MaintenancePage /> : isSignedIn ? <ProfilePage /> : <SignInPage />} />
             <Route path="/super-admin/maintainer" element={isMaintenanceMode ? <MaintenancePage /> : isSignedIn ? <MaintainerPage /> : <SignInPage />} />
             {/* Add more routes as needed */}
+
+            {/*Invalid route Handling*/}
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         )}
 

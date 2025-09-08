@@ -2,6 +2,8 @@ import React from 'react'
 import toast from 'react-hot-toast'
 
 const Notice = () => {
+    const progress = 30;
+
     return (
         toast.custom((t) => (
             <div
@@ -51,9 +53,9 @@ const Notice = () => {
                             {/* Progress indicator */}
                             <div className="mt-3 flex items-center gap-2">
                                 <div className="flex-1 h-1 bg-slate-700/50 rounded-full overflow-hidden">
-                                    <div className="h-full bg-white rounded-full animate-pulse" style={{ width: '25%' }}></div>
+                                    <div className="h-full bg-white rounded-full animate-pulse" style={{ width: `${progress}%` }}></div>
                                 </div>
-                                <span className="text-xs text-slate-200 font-medium">25%</span>
+                                <span className="text-xs text-slate-200 font-medium">{progress}%</span>
                             </div>
                         </div>
 
@@ -76,7 +78,7 @@ const Notice = () => {
                 <div className="absolute bottom-3 left-6 w-1 h-1 bg-pink-300 rounded-full animate-ping opacity-50" style={{ animationDelay: '2s' }}></div>
             </div>
         ), {
-            duration: 6000,
+            duration: 5000,
             position: 'top-center'
         })
     )

@@ -466,7 +466,9 @@ const HomePage = () => {
                                     alt="User 4"
                                     className="w-8 h-8 rounded-full border-2 border-white"
                                 />
-                                <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-teal-500 rounded-full border-2 border-white/20 flex items-center justify-center text-xs font-bold text-white">+</div>
+                                <Link to="/auth/sign-up">
+                                    <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-teal-500 rounded-full border-2 border-white/20 hover:border-white flex items-center justify-center text-xs font-bold text-white hover:scale-110 hover:text-sm text-center leading-none cursor-pointer">+</div>
+                                </Link>
                             </div>
                             <span>Join the community</span>
                         </div>

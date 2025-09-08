@@ -20,6 +20,7 @@ export const createUser = async (req, res) => {
 
     //validation
     if (!svixId || !svixTimestamp || !svixSignature) {
+        console.log("User creation failed: Missing Svix headers");
         return res.status(400).send("Bad Request: Missing required Svix headers");
     }
 
@@ -54,6 +55,9 @@ export const createUser = async (req, res) => {
             console.log("Email Addresses:", email_addresses);
             console.log("Primary Email Address ID:", primary_email_address_id);
 
+            // Simulating an error for testing purposes
+            // throw new Error("Test error");
+
             const primaryEmail = email_addresses.find(email => email.id === primary_email_address_id);
 
             if (!primaryEmail) {
@@ -62,14 +66,16 @@ export const createUser = async (req, res) => {
             }
 
             //creating user in Database
-            res.status(201).json({ message: "User created successfully" });
+            // todo:logic
         } catch (error) {
             console.error("Error creating user in database:", error);
+            //deleting user from db
+            deleteUser(req, res);
             return res.status(500).send("Internal Server Error: Failed to create user");
         }
     }
 
-    return res.status(200).send("Webhook received successfully");
+    return res.status(201).json({ message: "User created successfully" });
 };
 
 export const deleteUser = async (req, res) => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useSignUp } from "@clerk/clerk-react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
@@ -123,12 +123,12 @@ export default function CustomSignUpPage() {
                 }
                 setInfo("Signed up successfully — redirecting...");
                 //user creation in database
-                await createUser({
-                    email,
-                    password,
-                    firstName,
-                    lastName,
-                });
+                // await createUser({
+                //     email,
+                //     password,
+                //     firstName,
+                //     lastName,
+                // });
                 window.location.href = "/";
                 return;
             }
@@ -139,7 +139,7 @@ export default function CustomSignUpPage() {
             );
         } catch (err) {
             console.error(err);
-            handleDeleteUser(); // delete user immediately on error
+            // handleDeleteUser(); // delete user immediately on error
             setError(err?.errors?.[0]?.message || err?.message || "Sign-up failed.");
         } finally {
             setLoading(false);

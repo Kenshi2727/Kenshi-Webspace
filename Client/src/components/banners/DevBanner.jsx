@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { Globe, X, AlertTriangle, Bug } from "lucide-react";
+import { Globe, X, Bug } from "lucide-react";
 
 const REPORT_URL = "https://github.com/Kenshi2727";
 

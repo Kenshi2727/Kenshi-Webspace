@@ -23,7 +23,8 @@
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
     "log": "npm run dev -- --color 2>&1 | tee -a logs.txt",
-    "expose": "lt --port 3000"
+    "tunnel": "lt --port 3000",
+    "ngrok": "ngrok http http://localhost:3000"
   },
   "devDependencies": {
     "typescript": "^5.9.2"
