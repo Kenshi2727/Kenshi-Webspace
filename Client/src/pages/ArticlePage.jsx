@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { Facebook, Twitter, Linkedin, Pencil, Clock, Eye, Heart, Bookmark, Share2 } from 'lucide-react';
 import MarkdownRenderer from '@/components/MarkdownRenderer';
+import NotFoundPage from './NotFoundPage';
 
 const related = [
     { id: 2, title: 'Mastering Tailwind CSS', readTime: '8 min', category: 'CSS' },
@@ -46,18 +47,7 @@ export default function ArticlePage() {
     }, [article?.content]);
 
     if (!article) {
-        return (
-            <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="min-h-screen bg-gradient-to-br from-purple-950 to-purple-800 flex items-center justify-center"
-            >
-                <Card className="bg-white/10 backdrop-blur-lg border border-white/20 p-8 rounded-2xl">
-                    <h1 className="text-3xl font-bold text-white text-center">Article not found</h1>
-                    <p className="text-gray-300 text-center mt-4">The article you're looking for doesn't exist.</p>
-                </Card>
-            </motion.div>
-        );
+        return <NotFoundPage />;
     }
 
     const containerVariants = {

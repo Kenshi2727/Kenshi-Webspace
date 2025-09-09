@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Clock, Eye, Calendar, Filter, Search, BookOpen, TrendingUp, Star, Heart, Share2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const containerVariants = {
     hidden: { opacity: 0 },
@@ -450,12 +451,14 @@ const ArticlesPage = () => {
                                                         whileHover={{ scale: 1.05 }}
                                                         whileTap={{ scale: 0.95 }}
                                                     >
-                                                        <Button
-                                                            size="sm"
-                                                            className="bg-gradient-to-r from-purple-500/30 to-violet-500/30 hover:from-purple-500/50 hover:to-violet-500/50 text-purple-100 border border-purple-400/30 hover:border-purple-400/50 transition-all duration-300 backdrop-blur-sm shadow-lg"
-                                                        >
-                                                            Read More
-                                                        </Button>
+                                                        <Link to={`/articles/${article.id}`}>
+                                                            <Button
+                                                                size="sm"
+                                                                className="bg-gradient-to-r from-purple-500/30 to-violet-500/30 hover:from-purple-500/50 hover:to-violet-500/50 text-purple-100 border border-purple-400/30 hover:border-purple-400/50 transition-all duration-300 backdrop-blur-sm shadow-lg"
+                                                            >
+                                                                Read More
+                                                            </Button>
+                                                        </Link>
                                                     </motion.div>
                                                 </div>
                                             </div>

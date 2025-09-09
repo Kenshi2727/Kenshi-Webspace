@@ -6,8 +6,8 @@ export default function NotFoundPage() {
     const [showExtendedOptions, setShowExtendedOptions] = useState(false);
 
     useEffect(() => {
-        // Show additional navigation options after 5 seconds
-        const timer = setTimeout(() => setShowExtendedOptions(true), 5000);
+        // Show additional navigation options after 2 seconds
+        const timer = setTimeout(() => setShowExtendedOptions(true), 2000);
         return () => clearTimeout(timer);
     }, []);
 

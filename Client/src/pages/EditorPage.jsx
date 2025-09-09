@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
 import { Separator } from '@/components/ui/separator';
@@ -12,58 +15,72 @@ import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
 import rehypeRaw from 'rehype-raw';
 import 'highlight.js/styles/github-dark.css';
-import { Pencil, Eye, Send } from 'lucide-react';
+import { Pencil, Eye, Send, FileText, Clock, Tag, Image, Upload } from 'lucide-react';
 
 export default function EditorPage() {
-    const [markdown, setMarkdown] = useState(`# GitHub Flavored Markdown Example
+    const [formData, setFormData] = useState({
+        title: '',
+        excerpt: '',
+        category: '',
+        readTime: '',
+        thumbnail: '',
+        coverImage: '',
+        content: `# Your Article Title
 
-## Features
+## Introduction
+Write your introduction here...
+
+## Main Content
 - **Bold**, *Italic*, ~~Strikethrough~~
 - Task List:
   - [x] Done
   - [ ] Pending
 
-## Table
-| Name | Value |
-|------|-------|
-| One  | 1     |
-| Two  | 2     |
-
-## Code Block
+## Code Example
 \`\`\`js
 console.log('Hello, world!');
 \`\`\`
-`);
 
-    // custom renderers to ensure heading sizes/colors are explicit
+## Conclusion
+Wrap up your article here...`
+    });
+
+    const handleInputChange = (field, value) => {
+        setFormData(prev => ({ ...prev, [field]: value }));
+    };
+
+    const categories = [
+        "Technology", "Web Development", "Mobile Development", "Data Science",
+        "AI & Machine Learning", "DevOps", "Design", "Business", "Tutorial", "News"
+    ];
+
+    // Custom renderers for markdown
     const mdComponents = {
-        h1: ({ node, ...props }) => <h1 className="text-4xl md:text-5xl font-extrabold mt-2 mb-4 text-white" {...props} />,
-        h2: ({ node, ...props }) => <h2 className="text-3xl md:text-4xl font-semibold mt-4 mb-3 text-white" {...props} />,
-        h3: ({ node, ...props }) => <h3 className="text-2xl md:text-3xl font-semibold mt-3 mb-2 text-white" {...props} />,
-        h4: ({ node, ...props }) => <h4 className="text-xl font-medium mt-3 mb-2 text-white" {...props} />,
-        h5: ({ node, ...props }) => <h5 className="text-lg font-medium mt-2 mb-1 text-white" {...props} />,
-        h6: ({ node, ...props }) => <h6 className="text-base font-medium mt-2 mb-1 text-white" {...props} />,
-        p: ({ node, ...props }) => <p className="text-gray-200 leading-relaxed mb-3" {...props} />,
+        h1: ({ node, ...props }) => <h1 className="text-2xl md:text-4xl lg:text-5xl font-extrabold mt-2 mb-4 text-white" {...props} />,
+        h2: ({ node, ...props }) => <h2 className="text-xl md:text-3xl lg:text-4xl font-semibold mt-4 mb-3 text-white" {...props} />,
+        h3: ({ node, ...props }) => <h3 className="text-lg md:text-2xl lg:text-3xl font-semibold mt-3 mb-2 text-white" {...props} />,
+        h4: ({ node, ...props }) => <h4 className="text-base md:text-xl font-medium mt-3 mb-2 text-white" {...props} />,
+        h5: ({ node, ...props }) => <h5 className="text-sm md:text-lg font-medium mt-2 mb-1 text-white" {...props} />,
+        h6: ({ node, ...props }) => <h6 className="text-sm md:text-base font-medium mt-2 mb-1 text-white" {...props} />,
+        p: ({ node, ...props }) => <p className="text-gray-200 leading-relaxed mb-3 text-sm md:text-base" {...props} />,
         strong: ({ node, ...props }) => <strong className="font-semibold text-white" {...props} />,
         em: ({ node, ...props }) => <em className="italic text-gray-200" {...props} />,
         a: ({ node, ...props }) => <a className="text-indigo-300 hover:underline" {...props} />,
-        // inline code
         code: ({ inline, className, children, ...props }) => {
             if (inline) {
-                return <code className="bg-white/10 px-1 py-[0.08rem] rounded text-sm text-indigo-200" {...props}>{children}</code>;
+                return <code className="bg-white/10 px-1 py-[0.08rem] rounded text-xs md:text-sm text-indigo-200" {...props}>{children}</code>;
             }
-            // block code handled by pre below (react-markdown gives className to code)
             return <code className={className} {...props}>{children}</code>;
         },
         pre: ({ node, children, ...props }) => (
-            <pre className="bg-[#0b1220] rounded-lg p-4 overflow-auto text-sm" {...props}>
+            <pre className="bg-[#0b1220] rounded-lg p-3 md:p-4 overflow-auto text-xs md:text-sm" {...props}>
                 {children}
             </pre>
         ),
-        table: ({ node, ...props }) => <table className="w-full text-left border-collapse mb-4" {...props} />,
-        th: ({ node, ...props }) => <th className="border-b border-white/10 px-3 py-2 bg-white/5 text-sm text-white" {...props} />,
-        td: ({ node, ...props }) => <td className="border-b border-white/10 px-3 py-2 text-sm text-gray-200" {...props} />,
-        blockquote: ({ node, ...props }) => <blockquote className="border-l-4 border-indigo-400 pl-4 italic text-gray-200 my-3" {...props} />
+        table: ({ node, ...props }) => <div className="overflow-x-auto"><table className="w-full text-left border-collapse mb-4" {...props} /></div>,
+        th: ({ node, ...props }) => <th className="border-b border-white/10 px-2 md:px-3 py-2 bg-white/5 text-xs md:text-sm text-white" {...props} />,
+        td: ({ node, ...props }) => <td className="border-b border-white/10 px-2 md:px-3 py-2 text-xs md:text-sm text-gray-200" {...props} />,
+        blockquote: ({ node, ...props }) => <blockquote className="border-l-4 border-indigo-400 pl-4 italic text-gray-200 my-3 text-sm md:text-base" {...props} />
     };
 
     return (
@@ -71,74 +88,279 @@ console.log('Hello, world!');
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="min-h-screen bg-gradient-to-br from-purple-950 to-purple-800 py-16 px-6 lg:px-16"
+            className="min-h-screen bg-gradient-to-br from-purple-950 via-purple-900 to-indigo-900 py-4 md:py-8 lg:py-16 px-4 md:px-6 lg:px-16"
         >
-            <Card className="max-w-5xl mx-auto rounded-3xl shadow-2xl bg-white/20 border border-white/30 backdrop-blur-lg">
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-3 text-white text-3xl font-extrabold">
-                        <Pencil size={28} /> Write a New Article
-                    </CardTitle>
-                </CardHeader>
+            <div className="max-w-7xl mx-auto">
+                <Card className="rounded-2xl md:rounded-3xl shadow-2xl bg-white/10 border border-white/20 backdrop-blur-xl">
+                    <CardHeader className="p-4 md:p-6 lg:p-8">
+                        <CardTitle className="flex items-center gap-2 md:gap-3 text-white text-xl md:text-2xl lg:text-3xl font-extrabold">
+                            <FileText size={20} className="md:hidden" />
+                            <FileText size={28} className="hidden md:block" />
+                            <span className="truncate">Create New Article</span>
+                        </CardTitle>
+                    </CardHeader>
 
-                <CardContent className="p-8 space-y-6">
-                    <Tabs defaultValue="write" className="h-full">
-                        <TabsList className="mb-4 flex gap-2 bg-white/10 p-1 rounded-xl">
-                            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                                <TabsTrigger value="write" className="flex items-center gap-2">
-                                    <Pencil size={18} /> Write
-                                </TabsTrigger>
-                            </motion.div>
-                            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                                <TabsTrigger value="preview" className="flex items-center gap-2">
-                                    <Eye size={18} /> Preview
-                                </TabsTrigger>
-                            </motion.div>
-                        </TabsList>
-
-                        <TabsContent value="write">
-                            <Textarea
-                                value={markdown}
-                                onChange={(e) => setMarkdown(e.target.value)}
-                                placeholder="Write your markdown content here..."
-                                className="min-h-[300px] p-4 font-mono bg-white/5 text-white border-white/20"
-                            />
-                        </TabsContent>
-
-                        <TabsContent value="preview" className="h-full">
-                            <ScrollArea className="h-[400px] max-w-none bg-white/5 p-6 rounded-xl border border-white/20">
-                                <div className="px-1">
-                                    <ReactMarkdown
-                                        remarkPlugins={[remarkGfm]}
-                                        rehypePlugins={[rehypeRaw, rehypeHighlight]}
-                                        components={mdComponents}
-                                    >
-                                        {markdown || '_Nothing to preview_'}
-                                    </ReactMarkdown>
+                    <CardContent className="p-4 md:p-6 lg:p-8 space-y-4 md:space-y-6">
+                        {/* Article Metadata Form */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 0.1 }}
+                            className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6"
+                        >
+                            {/* Left Column */}
+                            <div className="space-y-4">
+                                <div>
+                                    <Label htmlFor="title" className="text-white font-medium text-sm md:text-base mb-2 block">
+                                        Article Title *
+                                    </Label>
+                                    <Input
+                                        id="title"
+                                        value={formData.title}
+                                        onChange={(e) => handleInputChange('title', e.target.value)}
+                                        placeholder="Enter your article title..."
+                                        className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 text-sm md:text-base"
+                                    />
                                 </div>
-                            </ScrollArea>
-                        </TabsContent>
-                    </Tabs>
 
-                    <Separator className="bg-white/30" />
+                                <div>
+                                    <Label htmlFor="excerpt" className="text-white font-medium text-sm md:text-base mb-2 block">
+                                        Excerpt
+                                    </Label>
+                                    <Textarea
+                                        id="excerpt"
+                                        value={formData.excerpt}
+                                        onChange={(e) => handleInputChange('excerpt', e.target.value)}
+                                        placeholder="Brief description of your article..."
+                                        rows={3}
+                                        className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 resize-none text-sm md:text-base"
+                                    />
+                                </div>
 
-                    <div className="flex justify-end">
-                        <TooltipProvider>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                                        <Button className="bg-indigo-500 hover:bg-indigo-600 text-white flex items-center gap-2 transition-transform">
-                                            <Send size={18} /> Publish
-                                        </Button>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
+                                    <div>
+                                        <Label className="text-white font-medium text-sm md:text-base mb-2 block">
+                                            <Tag size={16} className="inline mr-1" />
+                                            Category
+                                        </Label>
+                                        <Select value={formData.category} onValueChange={(value) => handleInputChange('category', value)}>
+                                            <SelectTrigger className="bg-white/5 border-white/20 text-white text-sm md:text-base">
+                                                <SelectValue placeholder="Select category" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {categories.map((cat) => (
+                                                    <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+
+                                    <div>
+                                        <Label htmlFor="readTime" className="text-white font-medium text-sm md:text-base mb-2 block">
+                                            <Clock size={16} className="inline mr-1" />
+                                            Read Time (min)
+                                        </Label>
+                                        <Input
+                                            id="readTime"
+                                            type="number"
+                                            value={formData.readTime}
+                                            onChange={(e) => handleInputChange('readTime', e.target.value)}
+                                            placeholder="5"
+                                            min="1"
+                                            className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 text-sm md:text-base"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Right Column */}
+                            <div className="space-y-4">
+                                <div>
+                                    <Label htmlFor="thumbnail" className="text-white font-medium text-sm md:text-base mb-2 block">
+                                        <Image size={16} className="inline mr-1" />
+                                        Thumbnail URL
+                                    </Label>
+                                    <div className="flex gap-2">
+                                        <Input
+                                            id="thumbnail"
+                                            value={formData.thumbnail}
+                                            onChange={(e) => handleInputChange('thumbnail', e.target.value)}
+                                            placeholder="https://example.com/thumbnail.jpg"
+                                            className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 text-sm md:text-base"
+                                        />
+                                        <TooltipProvider>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <Button size="sm" className="bg-white/10 hover:bg-white/20 text-white border-white/20 px-2 md:px-3">
+                                                        <Upload size={16} />
+                                                    </Button>
+                                                </TooltipTrigger>
+                                                <TooltipContent>Upload image</TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <Label htmlFor="coverImage" className="text-white font-medium text-sm md:text-base mb-2 block">
+                                        <Image size={16} className="inline mr-1" />
+                                        Cover Image URL
+                                    </Label>
+                                    <div className="flex gap-2">
+                                        <Input
+                                            id="coverImage"
+                                            value={formData.coverImage}
+                                            onChange={(e) => handleInputChange('coverImage', e.target.value)}
+                                            placeholder="https://example.com/cover.jpg"
+                                            className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 text-sm md:text-base"
+                                        />
+                                        <TooltipProvider>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <Button size="sm" className="bg-white/10 hover:bg-white/20 text-white border-white/20 px-2 md:px-3">
+                                                        <Upload size={16} />
+                                                    </Button>
+                                                </TooltipTrigger>
+                                                <TooltipContent>Upload image</TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>
+                                    </div>
+                                </div>
+
+                                {/* Image Preview */}
+                                {(formData.thumbnail || formData.coverImage) && (
+                                    <div className="bg-white/5 p-3 md:p-4 rounded-lg border border-white/20">
+                                        <Label className="text-white font-medium text-sm mb-2 block">Preview</Label>
+                                        <div className="space-y-2">
+                                            {formData.thumbnail && (
+                                                <div>
+                                                    <p className="text-xs text-gray-300 mb-1">Thumbnail</p>
+                                                    <img
+                                                        src={formData.thumbnail}
+                                                        alt="Thumbnail preview"
+                                                        className="w-full max-w-[200px] h-20 object-cover rounded border border-white/20"
+                                                        onError={(e) => {
+                                                            e.target.style.display = 'none';
+                                                        }}
+                                                    />
+                                                </div>
+                                            )}
+                                            {formData.coverImage && (
+                                                <div>
+                                                    <p className="text-xs text-gray-300 mb-1">Cover Image</p>
+                                                    <img
+                                                        src={formData.coverImage}
+                                                        alt="Cover preview"
+                                                        className="w-full max-w-[300px] h-24 object-cover rounded border border-white/20"
+                                                        onError={(e) => {
+                                                            e.target.style.display = 'none';
+                                                        }}
+                                                    />
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </motion.div>
+
+                        <Separator className="bg-white/20" />
+
+                        {/* Markdown Editor */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 0.2 }}
+                        >
+                            <Tabs defaultValue="write" className="h-full">
+                                <TabsList className="mb-4 flex gap-1 md:gap-2 bg-white/10 p-1 rounded-xl w-full sm:w-auto">
+                                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="flex-1 sm:flex-initial">
+                                        <TabsTrigger value="write" className="flex items-center gap-2 w-full text-xs md:text-sm">
+                                            <Pencil size={14} className="md:w-4 md:h-4" />
+                                            <span className="hidden sm:inline">Write</span>
+                                            <span className="sm:hidden">Editor</span>
+                                        </TabsTrigger>
                                     </motion.div>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    <p>Click to publish your article</p>
-                                </TooltipContent>
-                            </Tooltip>
-                        </TooltipProvider>
-                    </div>
-                </CardContent>
-            </Card>
+                                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="flex-1 sm:flex-initial">
+                                        <TabsTrigger value="preview" className="flex items-center gap-2 w-full text-xs md:text-sm">
+                                            <Eye size={14} className="md:w-4 md:h-4" />
+                                            Preview
+                                        </TabsTrigger>
+                                    </motion.div>
+                                </TabsList>
+
+                                <TabsContent value="write">
+                                    <Textarea
+                                        value={formData.content}
+                                        onChange={(e) => handleInputChange('content', e.target.value)}
+                                        placeholder="Write your markdown content here..."
+                                        className="min-h-[300px] md:min-h-[400px] lg:min-h-[500px] p-3 md:p-4 font-mono text-xs md:text-sm bg-white/5 text-white border-white/20 resize-none"
+                                    />
+                                </TabsContent>
+
+                                <TabsContent value="preview" className="h-full">
+                                    <ScrollArea className="h-[300px] md:h-[400px] lg:h-[500px] max-w-none bg-white/5 p-4 md:p-6 rounded-xl border border-white/20">
+                                        <div className="px-1">
+                                            <ReactMarkdown
+                                                remarkPlugins={[remarkGfm]}
+                                                rehypePlugins={[rehypeRaw, rehypeHighlight]}
+                                                components={mdComponents}
+                                            >
+                                                {formData.content || '_Nothing to preview_'}
+                                            </ReactMarkdown>
+                                        </div>
+                                    </ScrollArea>
+                                </TabsContent>
+                            </Tabs>
+                        </motion.div>
+
+                        <Separator className="bg-white/20" />
+
+                        {/* Action Buttons */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 0.3 }}
+                            className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-between items-start sm:items-center"
+                        >
+                            <div className="text-xs md:text-sm text-gray-300 order-2 sm:order-1">
+                                <span className="block sm:inline">Characters: {formData.content.length}</span>
+                                <span className="hidden sm:inline"> • </span>
+                                <span className="block sm:inline">Words: {formData.content.split(/\s+/).filter(word => word.length > 0).length}</span>
+                            </div>
+
+                            <div className="flex gap-2 md:gap-3 w-full sm:w-auto order-1 sm:order-2">
+                                <Button
+                                    variant="outline"
+                                    className="flex-1 sm:flex-initial bg-white/10 hover:bg-white/20 text-white border-white/20 text-sm md:text-base"
+                                >
+                                    Save Draft
+                                </Button>
+                                <TooltipProvider>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <motion.div
+                                                whileHover={{ scale: 1.05 }}
+                                                whileTap={{ scale: 0.95 }}
+                                                className="flex-1 sm:flex-initial"
+                                            >
+                                                <Button className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white flex items-center justify-center gap-2 transition-all duration-200 text-sm md:text-base">
+                                                    <Send size={16} className="md:w-4 md:h-4" />
+                                                    <span className="hidden sm:inline">Submit for Review</span>
+                                                    <span className="sm:hidden">Submit</span>
+                                                </Button>
+                                            </motion.div>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            <p>Submit your article for review and publication</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
+                            </div>
+                        </motion.div>
+                    </CardContent>
+                </Card>
+            </div>
         </motion.div>
     );
 }

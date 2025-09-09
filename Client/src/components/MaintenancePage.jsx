@@ -4,8 +4,7 @@ import { AlertTriangle } from "lucide-react";
 
 function MaintenancePage() {
     return (
-
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-tr from-purple-900 via-indigo-900 to-slate-900 p-6 text-white">
+        <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900 p-6 text-white">
             <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
