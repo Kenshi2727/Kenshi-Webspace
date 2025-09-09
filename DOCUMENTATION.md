@@ -3,11 +3,11 @@
 ```
 1) Web Sockets --> for realtime broadcasting for admin approval 
 2) In browser notification service --> manifest.json
-3) Cloudinary
-4) Compression algos
-5) Render Postgres deployment
-6) finally block retry logic
-7) More Webhook services for extended features
+3) Compression algos
+4) Render Postgres deployment---> Aiven
+5) finally block retry logic
+6) geoip-lite ---> for logs.csv
+
 ```
 
 ## Proposed Structure-

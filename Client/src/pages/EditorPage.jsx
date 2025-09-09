@@ -193,6 +193,13 @@ Wrap up your article here...`
                                                 <TooltipTrigger asChild>
                                                     <Button size="sm" className="bg-white/10 hover:bg-white/20 text-white border-white/20 px-2 md:px-3">
                                                         <Upload size={16} />
+                                                        <input
+                                                            type="file"
+                                                            id="imageUpload"
+                                                            accept="image/*"
+                                                            className='hidden'
+                                                        />
+                                                        <label htmlFor="imageUpload">Upload Image</label>
                                                     </Button>
                                                 </TooltipTrigger>
                                                 <TooltipContent>Upload image</TooltipContent>
@@ -219,6 +226,13 @@ Wrap up your article here...`
                                                 <TooltipTrigger asChild>
                                                     <Button size="sm" className="bg-white/10 hover:bg-white/20 text-white border-white/20 px-2 md:px-3">
                                                         <Upload size={16} />
+                                                        <input
+                                                            type="file"
+                                                            id="imageUpload"
+                                                            accept="image/*"
+                                                            className='hidden'
+                                                        />
+                                                        <label htmlFor="imageUpload">Upload Image</label>
                                                     </Button>
                                                 </TooltipTrigger>
                                                 <TooltipContent>Upload image</TooltipContent>
