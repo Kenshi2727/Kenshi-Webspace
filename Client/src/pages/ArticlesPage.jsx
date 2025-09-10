@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Clock, Eye, Calendar, Filter, Search, BookOpen, TrendingUp, Star, Heart, Share2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { articles } from '../seeds/blogs.seed.js'
 
 const containerVariants = {
     hidden: { opacity: 0 },
@@ -108,82 +109,15 @@ const ArticlesPage = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [likedArticles, setLikedArticles] = useState(new Set());
 
-    const articles = [
-        {
-            id: 1,
-            title: "React Best Practices for Modern Development",
-            category: "React",
-            date: "July 10, 2023",
-            readTime: "7 min read",
-            excerpt: "Discover the essential patterns and practices that will make your React applications more maintainable, performant, and scalable for production environments.",
-            image: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=400&h=250&fit=crop",
-            trending: true,
-            likes: 234,
-            views: 1520
-        },
-        {
-            id: 2,
-            title: "CSS Grid vs Flexbox: Complete Guide",
-            category: "CSS",
-            date: "July 5, 2023",
-            readTime: "6 min read",
-            excerpt: "A comprehensive comparison of CSS Grid and Flexbox layout systems to help you choose the perfect solution for your responsive design challenges.",
-            image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=250&fit=crop",
-            likes: 189,
-            views: 987
-        },
-        {
-            id: 3,
-            title: "JavaScript Design Patterns Mastery",
-            category: "JavaScript",
-            date: "June 28, 2023",
-            readTime: "9 min read",
-            excerpt: "Explore advanced design patterns in JavaScript that will transform your code architecture and make you a more effective developer.",
-            image: "https://images.unsplash.com/photo-1579468118864-1b9ea3c0db4a?w=400&h=250&fit=crop",
-            trending: true,
-            likes: 312,
-            views: 2045
-        },
-        {
-            id: 4,
-            title: "State Management Solutions Compared",
-            category: "React",
-            date: "June 20, 2023",
-            readTime: "8 min read",
-            excerpt: "Deep dive into modern state management solutions for React applications and discover which approach fits your project's needs.",
-            image: "https://images.unsplash.com/photo-1551650975-87deedd944c3?w=400&h=250&fit=crop",
-            likes: 156,
-            views: 1234
-        },
-        {
-            id: 5,
-            title: "Responsive Design with Modern CSS",
-            category: "CSS",
-            date: "June 15, 2023",
-            readTime: "5 min read",
-            excerpt: "Master responsive design with cutting-edge CSS techniques including container queries, fluid typography, and advanced grid layouts.",
-            image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=250&fit=crop",
-            likes: 98,
-            views: 765
-        },
-        {
-            id: 6,
-            title: "Modern Web Security Essentials",
-            category: "Security",
-            date: "June 10, 2023",
-            readTime: "10 min read",
-            excerpt: "Comprehensive guide to protecting your web applications from modern security threats with practical implementation strategies.",
-            image: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=400&h=250&fit=crop",
-            likes: 278,
-            views: 1876
-        },
+    const categories = [
+        "Trending", "Technology", "Geopolitics", "History", "Astronomy", "Religion & Culture", "Anime", "Literature", "Travel"
     ];
 
-    const categories = ['All', 'React', 'CSS', 'JavaScript', 'Security'];
-
     const filteredArticles = articles.filter(article => {
-        const matchesCategory = selectedCategory === 'All' || article.category === selectedCategory;
-        const matchesSearch = article.title.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesCategory = selectedCategory === 'All' || article.category === selectedCategory || (selectedCategory === "Trending" && article.trending);
+        const matchesSearch = (searchTerm.toLowerCase() === "trending") === article.trending
+            || searchTerm.toLowerCase() === article.category.toLowerCase()
+            || article.title.toLowerCase().includes(searchTerm.toLowerCase());
         return matchesCategory && matchesSearch;
     });
 
@@ -274,9 +208,9 @@ const ArticlesPage = () => {
                     <motion.div variants={itemVariants} className="mb-16">
                         <Card className="bg-gradient-to-r from-purple-500/10 to-violet-500/10 backdrop-blur-xl border border-purple-300/20 rounded-3xl shadow-2xl overflow-hidden">
                             <CardContent className="p-8">
-                                <div className="flex flex-col lg:flex-row gap-8 items-center">
+                                <div className="flex flex-col gap-8 items-center">
                                     {/* Search Bar */}
-                                    <div className="relative flex-1 w-full lg:max-w-lg">
+                                    <div className="relative flex-1 w-full">
                                         <motion.div
                                             whileHover={{ scale: 1.02 }}
                                             className="relative"
@@ -303,7 +237,13 @@ const ArticlesPage = () => {
                                                 key={category}
                                                 whileHover={{ scale: 1.05, y: -2 }}
                                                 whileTap={{ scale: 0.95 }}
-                                                onClick={() => setSelectedCategory(category)}
+                                                onClick={() => {
+                                                    if (selectedCategory === category) {
+                                                        setSelectedCategory('All')
+                                                    }
+                                                    else
+                                                        setSelectedCategory(category)
+                                                }}
                                                 className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 backdrop-blur-sm ${selectedCategory === category
                                                     ? 'bg-gradient-to-r from-purple-500 to-violet-500 text-white shadow-lg shadow-purple-500/30 border border-purple-400/50'
                                                     : 'bg-purple-500/20 text-purple-200 hover:bg-purple-500/30 hover:text-white border border-purple-400/20 hover:border-purple-400/40'

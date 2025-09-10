@@ -1,4 +1,4 @@
-## Tech stack to be added-
+# Tech stack to be added-
 
 ```
 1) Web Sockets --> for realtime broadcasting for admin approval 

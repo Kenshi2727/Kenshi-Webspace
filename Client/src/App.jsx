@@ -63,7 +63,10 @@ function App() {
             <Route path="/auth/sign-up" element={isMaintenanceMode ? <MaintenancePage /> : <SignUpPage />} />
             <Route path="/auth/sso-callback" element={isMaintenanceMode ? <MaintenancePage /> : <SsoCallback />} />
             <Route path="/articles/:id" element={isMaintenanceMode ? <MaintenancePage /> : <ArticlePage />} />
-            <Route path="/articles/:id/edit" element={isMaintenanceMode ? <MaintenancePage /> : isSignedIn ? <EditorPage /> : <SignInPage />} />
+            <Route path="/articles/edit" >
+              <Route path='new' element={isMaintenanceMode ? <MaintenancePage /> : isSignedIn ? <EditorPage type='new' /> : <SignInPage />} />
+              <Route path=':id' element={isMaintenanceMode ? <MaintenancePage /> : isSignedIn ? <EditorPage type='edit' /> : <SignInPage />} />
+            </Route>
             <Route path="/auth/forgot-password" element={isMaintenanceMode ? <MaintenancePage /> : <ForgotPasswordPage />} />
             <Route path="/my-articles" element={isMaintenanceMode ? <MaintenancePage /> : isSignedIn ? <MyArticlesPage /> : <SignInPage />} />
             <Route path="/dark" element={isMaintenanceMode ? <MaintenancePage /> : <DarkHomePage />} />

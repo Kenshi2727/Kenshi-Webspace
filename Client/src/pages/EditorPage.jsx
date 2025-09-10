@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
@@ -17,12 +17,12 @@ import rehypeRaw from 'rehype-raw';
 import 'highlight.js/styles/github-dark.css';
 import { Pencil, Eye, Send, FileText, Clock, Tag, Image, Upload } from 'lucide-react';
 
-export default function EditorPage() {
+export default function EditorPage({ type }) {
     const [formData, setFormData] = useState({
         title: '',
         excerpt: '',
         category: '',
-        readTime: '',
+        readTime: 0,
         thumbnail: '',
         coverImage: '',
         content: `# Your Article Title
@@ -49,9 +49,66 @@ Wrap up your article here...`
         setFormData(prev => ({ ...prev, [field]: value }));
     };
 
+    // for handling image uploads
+    const [thumbFile, setThumbFile] = useState(null);
+    const [thumbPreview, setThumbPreview] = useState(null);
+    const [coverFile, setCoverFile] = useState(null);
+    const [coverPreview, setCoverPreview] = useState(null);
+
+    // cleanup object URLs to avoid memory leaks
+    useEffect(() => {
+        return () => {
+            if (thumbPreview) URL.revokeObjectURL(thumbPreview);
+            if (coverPreview) URL.revokeObjectURL(coverPreview);
+        };
+    }, [thumbPreview, coverPreview]);
+
+    const handleImageUpload = (e, type) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+
+        if (file) {
+            console.log(`Selected ${type}:`, file);
+            if (type === "thumbnail") {
+                // removing previous preview
+                if (thumbPreview) URL.revokeObjectURL(thumbPreview);
+
+                const previewUrl = URL.createObjectURL(file);
+                setThumbFile(file);
+                setThumbPreview(previewUrl);
+                setFormData(prev => ({ ...prev, thumbnail: '' }));
+
+                // appending thumbnail image to form data apart from other article data  
+                const formData = new FormData();
+                formData.append('thumbFile', file);
+            }
+            else if (type === "cover") {
+                // removing previous preview
+                if (coverPreview) URL.revokeObjectURL(coverPreview);
+
+                const previewUrl = URL.createObjectURL(file);
+                setCoverFile(file);
+                setCoverPreview(previewUrl);
+                setFormData(prev => ({ ...prev, coverImage: '' }));
+
+                // appending cover image to form data apart from other article data
+                const formData = new FormData();
+                formData.append('coverFile', file);
+            }
+        }
+    };
+
+    const handleSubmit = () => {
+        if (type === 'new') {
+            // handle new article submission
+        }
+        if (type === 'edit') {
+            // handle article update submission
+        }
+    }
+
     const categories = [
-        "Technology", "Web Development", "Mobile Development", "Data Science",
-        "AI & Machine Learning", "DevOps", "Design", "Business", "Tutorial", "News"
+        "Technology", "Geopolitics", "History", "Astronomy", "Religion & Culture", "Anime", "Literature", "Travel"
     ];
 
     // Custom renderers for markdown
@@ -96,7 +153,7 @@ Wrap up your article here...`
                         <CardTitle className="flex items-center gap-2 md:gap-3 text-white text-xl md:text-2xl lg:text-3xl font-extrabold">
                             <FileText size={20} className="md:hidden" />
                             <FileText size={28} className="hidden md:block" />
-                            <span className="truncate">Create New Article</span>
+                            <span className="truncate">{type === 'new' ? 'Create New' : 'Edit your'} Article</span>
                         </CardTitle>
                     </CardHeader>
 
@@ -112,7 +169,7 @@ Wrap up your article here...`
                             <div className="space-y-4">
                                 <div>
                                     <Label htmlFor="title" className="text-white font-medium text-sm md:text-base mb-2 block">
-                                        Article Title *
+                                        Article Title <span className="text-red-500">*</span>
                                     </Label>
                                     <Input
                                         id="title"
@@ -125,7 +182,7 @@ Wrap up your article here...`
 
                                 <div>
                                     <Label htmlFor="excerpt" className="text-white font-medium text-sm md:text-base mb-2 block">
-                                        Excerpt
+                                        Excerpt <span className="text-red-500">*</span>
                                     </Label>
                                     <Textarea
                                         id="excerpt"
@@ -141,7 +198,7 @@ Wrap up your article here...`
                                     <div>
                                         <Label className="text-white font-medium text-sm md:text-base mb-2 block">
                                             <Tag size={16} className="inline mr-1" />
-                                            Category
+                                            Category <span className="text-red-500">*</span>
                                         </Label>
                                         <Select value={formData.category} onValueChange={(value) => handleInputChange('category', value)}>
                                             <SelectTrigger className="bg-white/5 border-white/20 text-white text-sm md:text-base">
@@ -158,7 +215,7 @@ Wrap up your article here...`
                                     <div>
                                         <Label htmlFor="readTime" className="text-white font-medium text-sm md:text-base mb-2 block">
                                             <Clock size={16} className="inline mr-1" />
-                                            Read Time (min)
+                                            Read Time (min) <span className="text-red-500">*</span>
                                         </Label>
                                         <Input
                                             id="readTime"
@@ -184,22 +241,28 @@ Wrap up your article here...`
                                         <Input
                                             id="thumbnail"
                                             value={formData.thumbnail}
-                                            onChange={(e) => handleInputChange('thumbnail', e.target.value)}
+                                            onChange={(e) => {
+                                                setThumbPreview(null)
+                                                setThumbFile(null)
+                                                delete formData.thumbFile
+                                                handleInputChange('thumbnail', e.target.value)
+                                            }}
                                             placeholder="https://example.com/thumbnail.jpg"
                                             className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 text-sm md:text-base"
                                         />
                                         <TooltipProvider>
                                             <Tooltip>
                                                 <TooltipTrigger asChild>
-                                                    <Button size="sm" className="bg-white/10 hover:bg-white/20 text-white border-white/20 px-2 md:px-3">
+                                                    <Button htmlFor="thumbUpload" size="sm" className="bg-white/10 hover:bg-white/20 text-white border-white/20 px-2 md:px-3">
                                                         <Upload size={16} />
                                                         <input
                                                             type="file"
-                                                            id="imageUpload"
+                                                            id="thumbUpload"
                                                             accept="image/*"
                                                             className='hidden'
+                                                            onChange={(e) => handleImageUpload(e, "thumbnail")}
                                                         />
-                                                        <label htmlFor="imageUpload">Upload Image</label>
+                                                        <label htmlFor="thumbUpload">Upload Image</label>
                                                     </Button>
                                                 </TooltipTrigger>
                                                 <TooltipContent>Upload image</TooltipContent>
@@ -217,22 +280,28 @@ Wrap up your article here...`
                                         <Input
                                             id="coverImage"
                                             value={formData.coverImage}
-                                            onChange={(e) => handleInputChange('coverImage', e.target.value)}
+                                            onChange={(e) => {
+                                                setCoverPreview(null)
+                                                setCoverFile(null)
+                                                delete formData.coverFile
+                                                handleInputChange('coverImage', e.target.value)
+                                            }}
                                             placeholder="https://example.com/cover.jpg"
                                             className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 text-sm md:text-base"
                                         />
                                         <TooltipProvider>
                                             <Tooltip>
                                                 <TooltipTrigger asChild>
-                                                    <Button size="sm" className="bg-white/10 hover:bg-white/20 text-white border-white/20 px-2 md:px-3">
+                                                    <Button size="sm" htmlFor="coverUpload" className="bg-white/10 hover:bg-white/20 text-white border-white/20 px-2 md:px-3">
                                                         <Upload size={16} />
                                                         <input
                                                             type="file"
-                                                            id="imageUpload"
+                                                            id="coverUpload"
                                                             accept="image/*"
                                                             className='hidden'
+                                                            onChange={(e) => handleImageUpload(e, "cover")}
                                                         />
-                                                        <label htmlFor="imageUpload">Upload Image</label>
+                                                        <label htmlFor="coverUpload">Upload Image</label>
                                                     </Button>
                                                 </TooltipTrigger>
                                                 <TooltipContent>Upload image</TooltipContent>
@@ -242,39 +311,40 @@ Wrap up your article here...`
                                 </div>
 
                                 {/* Image Preview */}
-                                {(formData.thumbnail || formData.coverImage) && (
-                                    <div className="bg-white/5 p-3 md:p-4 rounded-lg border border-white/20">
-                                        <Label className="text-white font-medium text-sm mb-2 block">Preview</Label>
-                                        <div className="space-y-2">
-                                            {formData.thumbnail && (
-                                                <div>
-                                                    <p className="text-xs text-gray-300 mb-1">Thumbnail</p>
-                                                    <img
-                                                        src={formData.thumbnail}
-                                                        alt="Thumbnail preview"
-                                                        className="w-full max-w-[200px] h-20 object-cover rounded border border-white/20"
-                                                        onError={(e) => {
-                                                            e.target.style.display = 'none';
-                                                        }}
-                                                    />
-                                                </div>
-                                            )}
-                                            {formData.coverImage && (
-                                                <div>
-                                                    <p className="text-xs text-gray-300 mb-1">Cover Image</p>
-                                                    <img
-                                                        src={formData.coverImage}
-                                                        alt="Cover preview"
-                                                        className="w-full max-w-[300px] h-24 object-cover rounded border border-white/20"
-                                                        onError={(e) => {
-                                                            e.target.style.display = 'none';
-                                                        }}
-                                                    />
-                                                </div>
-                                            )}
+                                <div className="bg-white/5 p-3 md:p-4 rounded-lg border border-white/20">
+                                    <Label className="text-white font-medium text-sm mb-2 block">Preview</Label>
+                                    <div className="grid grid-cols-2 gap-2 space-y-2">
+
+                                        {/* Thumbnail */}
+                                        <div>
+                                            <p className="text-xs text-gray-300 mb-1">Thumbnail</p>
+                                            <img
+                                                src={thumbPreview ? thumbPreview : formData.thumbnail === '' ? '/placeholder.png' : formData.thumbnail}
+                                                onError={(e) => {
+                                                    e.target.onerror = null;//prevent loop if placeholder fails
+                                                    e.target.src = '/placeholder.png';
+                                                }}
+                                                alt="Thumbnail preview"
+                                                className="w-full h-40 object-fill rounded border shadow-sm border-white/20"
+                                            />
                                         </div>
+
+                                        {/* Cover Image */}
+                                        <div>
+                                            <p className="text-xs text-gray-300 mb-1">Cover Image</p>
+                                            <img
+                                                src={coverPreview ? coverPreview : formData.coverImage === '' ? '/placeholder.png' : formData.coverImage}
+                                                onError={(e) => {
+                                                    e.target.onerror = null;//prevent loop if placeholder fails
+                                                    e.target.src = '/placeholder.png';
+                                                }}
+                                                alt="Cover preview"
+                                                className="w-full h-40 object-fill rounded border shadow-sm border-white/20"
+                                            />
+                                        </div>
+
                                     </div>
-                                )}
+                                </div>
                             </div>
                         </motion.div>
 
@@ -358,7 +428,7 @@ Wrap up your article here...`
                                                 whileTap={{ scale: 0.95 }}
                                                 className="flex-1 sm:flex-initial"
                                             >
-                                                <Button className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white flex items-center justify-center gap-2 transition-all duration-200 text-sm md:text-base">
+                                                <Button onClick={() => handleSubmit()} className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white flex items-center justify-center gap-2 transition-all duration-200 text-sm md:text-base">
                                                     <Send size={16} className="md:w-4 md:h-4" />
                                                     <span className="hidden sm:inline">Submit for Review</span>
                                                     <span className="sm:hidden">Submit</span>

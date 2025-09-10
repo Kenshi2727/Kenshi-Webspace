@@ -357,7 +357,7 @@ export default function ArticlePage() {
                                         whileHover={{ scale: 1.05 }}
                                         whileTap={{ scale: 0.95 }}
                                     >
-                                        <Link to={`/articles/${article.id}/edit`}>
+                                        <Link to={`/articles/edit/${article.id}`}>
                                             <Button
                                                 variant="outline"
                                                 size="sm"

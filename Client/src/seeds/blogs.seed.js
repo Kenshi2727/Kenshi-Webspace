@@ -268,3 +268,119 @@ export const myArticles = [
     updatedAt: new Date().toISOString(),
   },
 ];
+
+export const articles = [
+  {
+    id: 1,
+    title: "React Best Practices for Modern Development",
+    category: "Technology",
+    date: "July 10, 2023",
+    readTime: "7 min read",
+    excerpt: "Discover the essential patterns and practices that will make your React applications more maintainable, performant, and scalable for production environments.",
+    image: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=400&h=250&fit=crop",
+    trending: true,
+    likes: 234,
+    views: 1520
+  },
+  {
+    id: 2,
+    title: "CSS Grid vs Flexbox: Complete Guide",
+    category: "Technology",
+    date: "July 5, 2023",
+    readTime: "6 min read",
+    excerpt: "A comprehensive comparison of CSS Grid and Flexbox layout systems to help you choose the perfect solution for your responsive design challenges.",
+    image: "https://dqy38fnwh4fqs.cloudfront.net/blog/tailwindcss/grid-columns.webp",
+    likes: 189,
+    views: 987
+  },
+  {
+    id: 3,
+    title: "Shifting Power in Global Geopolitics",
+    category: "Geopolitics",
+    date: "July 2, 2023",
+    readTime: "8 min read",
+    excerpt: "An analysis of how shifting alliances and global economic strategies are reshaping international power balances in the 21st century.",
+    image: "https://www.whitehouse.gov/wp-content/uploads/2025/01/Donald-J-Trump.jpg",
+    likes: 140,
+    views: 1110
+  },
+  {
+    id: 4,
+    title: "The Rise and Fall of Ancient Civilizations",
+    category: "History",
+    date: "June 28, 2023",
+    readTime: "9 min read",
+    excerpt: "A journey through the stories of ancient civilizations, their rise to power, cultural achievements, and eventual decline.",
+    image: "https://images.unsplash.com/photo-1533669955142-6a73332af4db?w=400&h=250&fit=crop",
+    trending: true,
+    likes: 305,
+    views: 1900
+  },
+  {
+    id: 5,
+    title: "Exploring the Mysteries of Black Holes",
+    category: "Astronomy",
+    date: "June 22, 2023",
+    readTime: "10 min read",
+    excerpt: "Unveiling what scientists know about black holes, event horizons, and the role they play in shaping the universe.",
+    image: "https://images.unsplash.com/photo-1517976487492-5750f3195933?w=400&h=250&fit=crop",
+    likes: 276,
+    views: 1654
+  },
+  {
+    id: 6,
+    title: "Cultural Significance of Rituals Across Religions",
+    category: "Religion & Culture",
+    date: "June 18, 2023",
+    readTime: "6 min read",
+    excerpt: "Understanding the shared meanings behind diverse rituals across different faiths and how they shape communities.",
+    image: "https://images.unsplash.com/photo-1504609813442-a8924e83f76e?w=400&h=250&fit=crop",
+    likes: 120,
+    views: 845
+  },
+  {
+    id: 7,
+    title: "Top 10 Anime Series to Watch in 2025",
+    category: "Anime",
+    date: "June 12, 2023",
+    readTime: "5 min read",
+    excerpt: "A list of must-watch anime series spanning genres from action and fantasy to slice of life and drama.",
+    image: "https://tierragamer.com/wp-content/uploads/2023/02/High-School-DxD-Anime-01.jpg",
+    trending: true,
+    likes: 400,
+    views: 2500
+  },
+  {
+    id: 8,
+    title: "The Evolution of Modern Literature",
+    category: "Literature",
+    date: "June 7, 2023",
+    readTime: "7 min read",
+    excerpt: "Tracing the evolution of literature from classical masterpieces to contemporary digital storytelling.",
+    image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&h=250&fit=crop",
+    likes: 142,
+    views: 920
+  },
+  {
+    id: 9,
+    title: "Top Destinations for Adventure Travel",
+    category: "Travel",
+    date: "June 2, 2023",
+    readTime: "6 min read",
+    excerpt: "Explore breathtaking destinations around the world perfect for adventure seekers and nature enthusiasts.",
+    image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&h=250&fit=crop",
+    likes: 198,
+    views: 1320
+  }
+];
+
+export const categories = [
+  "Technology",
+  "Geopolitics",
+  "History",
+  "Astronomy",
+  "Religion & Culture",
+  "Anime",
+  "Literature",
+  "Travel"
+];
