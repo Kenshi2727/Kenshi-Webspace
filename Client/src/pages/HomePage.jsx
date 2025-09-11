@@ -16,7 +16,6 @@ import { Edit3, ArrowRight } from "lucide-react";
 import { useUser } from '@clerk/clerk-react';
 import toast from 'react-hot-toast';
 import Notice from '../components/banners/Notice';
-import { GoogleOneTap } from '@clerk/clerk-react'
 
 const containerVariants = {
     hidden: { opacity: 0, y: 30 },
@@ -84,10 +83,6 @@ const HomePage = () => {
             variants={containerVariants}
             className="min-h-screen bg-gray-50"
         >
-
-            {/*Google One Tap Sign-in */}
-            <GoogleOneTap />
-
             {/* ---------- HERO ---------- */}
             <motion.section
                 variants={itemVariants}
