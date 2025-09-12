@@ -1,5 +1,10 @@
-# TO DO--> GOOGLE ONE TAP
+# TO DO-->AFTER COGGS
+```
+1> Security-->Research Encryption Algorithms
+2> Smart Capctha---> Resolve the widget issue on sign up with one tap
+3> roll out protoype with very limited features(most prolly just post creation without review)
 
+```
 
 ## Tech stack to be added-
 
