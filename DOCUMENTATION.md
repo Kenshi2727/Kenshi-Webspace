@@ -1,9 +1,15 @@
-# TO DO-->AFTER COGGS
+# TO DO-->DELAYED ACTION>>
 ```
 1> Security-->Research Encryption Algorithms
 2> Smart Capctha---> Resolve the widget issue on sign up with one tap
 3> roll out protoype with very limited features(most prolly just post creation without review)
+4> Documenting the current codebase
 
+```
+
+## Errors-
+```
+client:75 [GSI_LOGGER]: FedCM get() rejects with IdentityCredentialError: Error retrieving a token.
 ```
 
 ## Tech stack to be added-
