@@ -1,4 +1,17 @@
 # 🌌 Kenshi WebSpace – Prototype Release 🚀
+---
+
+### 📢 Disclaimer
+
+Kenshi Webspace is built entirely with **original code authored and maintained by Abhishek Mathur (GitHub: [Kenshi2727](https://github.com/Kenshi2727))**.
+
+* No third-party or external contributor code is used in the current version of this project.
+* Any code that may have been authored by others in the past has been **completely removed** from the repository and is **no longer part of the project**.
+* As of now, **Abhishek Mathur (Kenshi2727) is the sole contributor** to Kenshi Webspace.
+
+This guarantees that Kenshi Webspace is a clean, independent project with no external ownership or claims.
+
+---
 
 ## Structure(Planned)-
 
