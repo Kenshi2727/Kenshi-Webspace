@@ -124,7 +124,7 @@ export default function Navbar() {
                         </Link>
                     </div>
                     {/* Desktop links */}
-                    <div className="hidden md:flex space-x-8">
+                    <div className="hidden [@media(min-width:840px)]:flex space-x-8">
                         {navLinks.map(({ to, label }) => (
                             <Link
                                 key={to}

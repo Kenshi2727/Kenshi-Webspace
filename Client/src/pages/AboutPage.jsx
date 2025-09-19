@@ -223,9 +223,6 @@ const TeamCard = ({ member, index }) => {
                 transition={{ duration: 0.4, type: "spring" }}
                 className="bg-white rounded-lg sm:rounded-xl md:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden h-full flex flex-col"
             >
-                {/* Tech circuit header pattern */}
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
-
                 {/* Binary code background pattern - hidden on small screens */}
                 {/* <div className="absolute inset-0 opacity-5 font-mono text-xs leading-none hidden md:block">
                     <div className="grid grid-cols-8 gap-0 h-full">
@@ -246,6 +243,9 @@ const TeamCard = ({ member, index }) => {
                     transition={{ duration: 0.3 }}
                     className="relative z-10 p-3 sm:p-4 md:p-6 flex flex-col h-full"
                 >
+                    {/* Tech circuit header pattern */}
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
+
                     {/* Image container with fixed responsive aspect ratio */}
                     <div className="relative mb-3 sm:mb-4 h-28 sm:h-32 md:h-40 w-full flex-shrink-0">
                         <img
@@ -555,7 +555,7 @@ const AboutPage = () => {
                     >
                         The digital realm of <span className="font-mono text-indigo-600">Abhishek Mathur</span> and
                         <span className="font-mono text-purple-600"> contributors</span> — where we decode complex technologies,
-                        share breakthrough insights, and build the future of web development.
+                        share breakthrough insights, and where technology, creativity, history, and storytelling meet.
                     </motion.p>
 
                     {/* Enhanced tech indicators with responsive design */}

@@ -16,6 +16,11 @@ import { Edit3, ArrowRight } from "lucide-react";
 import { useUser } from '@clerk/clerk-react';
 import toast from 'react-hot-toast';
 import Notice from '../components/banners/Notice';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 const containerVariants = {
     hidden: { opacity: 0, y: 30 },
@@ -467,7 +472,14 @@ const HomePage = () => {
                                     className="w-8 h-8 rounded-full border-2 border-white"
                                 />
                                 <Link to="/auth/sign-up">
-                                    <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-teal-500 rounded-full border-2 border-white/20 hover:border-white flex items-center justify-center text-xs font-bold text-white hover:scale-110 hover:text-sm text-center leading-none cursor-pointer">+</div>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-teal-500 rounded-full border-2 border-white/20 hover:border-white flex items-center justify-center text-xs font-bold text-white hover:scale-110 hover:text-sm text-center leading-none cursor-pointer">+</div>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            <p>Join !</p>
+                                        </TooltipContent>
+                                    </Tooltip>
                                 </Link>
                             </div>
                             <span>Join the community</span>
