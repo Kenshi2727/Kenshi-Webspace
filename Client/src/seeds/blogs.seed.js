@@ -311,7 +311,7 @@ export const articles = [
     date: "June 28, 2023",
     readTime: "9 min read",
     excerpt: "A journey through the stories of ancient civilizations, their rise to power, cultural achievements, and eventual decline.",
-    image: "https://images.unsplash.com/photo-1533669955142-6a73332af4db?w=400&h=250&fit=crop",
+    image: "https://upload.wikimedia.org/wikipedia/commons/6/64/Cole_Thomas_The_Course_of_Empire_Destruction_1836.jpg",
     trending: true,
     likes: 305,
     views: 1900

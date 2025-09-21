@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import prisma from "../../Database/prisma.client.js";
 import cors from "cors";
 import userRoutes from "./routes/user.route.js";
+import postRoutes from "./routes/post.route.js";
+import mediaRoutes from "./routes/media.route.js";
 import { clerkMiddleware } from '@clerk/express';
 import bodyParser from 'body-parser';
 import helmet from "helmet";
@@ -27,6 +29,8 @@ app.use(clerkMiddleware());
 app.use("/users", bodyParser.raw({ type: "application/json" }), userRoutes);
 app.use(express.json());
 // rest middlewares for json type
+app.use("/posts", postRoutes);
+app.use("/media", mediaRoutes);
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);

@@ -16,6 +16,9 @@ import rehypeHighlight from 'rehype-highlight';
 import rehypeRaw from 'rehype-raw';
 import 'highlight.js/styles/github-dark.css';
 import { Pencil, Eye, Send, FileText, Clock, Tag, Image, Upload } from 'lucide-react';
+import { createPost, uploadMedia } from '../services/GlobalApi';
+import toast from 'react-hot-toast';
+import { useAuth } from '@clerk/clerk-react';
 
 export default function EditorPage({ type }) {
     const [formData, setFormData] = useState({
@@ -55,6 +58,8 @@ Wrap up your article here...`
     const [coverFile, setCoverFile] = useState(null);
     const [coverPreview, setCoverPreview] = useState(null);
 
+    const { getToken, userId } = useAuth();
+
     // cleanup object URLs to avoid memory leaks
     useEffect(() => {
         return () => {
@@ -77,10 +82,6 @@ Wrap up your article here...`
                 setThumbFile(file);
                 setThumbPreview(previewUrl);
                 setFormData(prev => ({ ...prev, thumbnail: '' }));
-
-                // appending thumbnail image to form data apart from other article data  
-                const formData = new FormData();
-                formData.append('thumbFile', file);
             }
             else if (type === "cover") {
                 // removing previous preview
@@ -90,20 +91,101 @@ Wrap up your article here...`
                 setCoverFile(file);
                 setCoverPreview(previewUrl);
                 setFormData(prev => ({ ...prev, coverImage: '' }));
-
-                // appending cover image to form data apart from other article data
-                const formData = new FormData();
-                formData.append('coverFile', file);
             }
         }
     };
 
-    const handleSubmit = () => {
-        if (type === 'new') {
-            // handle new article submission
+    function formValidate() {
+        if (formData.title.trim() === '') {
+            toast.error("Title is required !");
+            return false;
         }
-        if (type === 'edit') {
-            // handle article update submission
+        if (formData.excerpt.trim() === '') {
+            toast.error("Excerpt is required !");
+            return false;
+        }
+        if (formData.category.trim() === '') {
+            toast.error("Category is required !");
+            return false;
+        }
+        if (formData.readTime <= 0) {
+            toast.error("Read time must be a positive number !");
+            return false;
+        }
+        return true;
+    }
+
+    const handleSubmit = async () => {
+        if (!formValidate()) return;
+        try {
+            if (type === 'new') {
+                // handle new article submission
+
+                // uploading uploaded images to cloudinary
+                if (thumbFile || coverFile) {
+                    const token = await getToken();
+                    const imageUploads = new FormData();
+                    if (thumbFile) imageUploads.append('imageUploads', thumbFile);
+                    if (coverFile) imageUploads.append('imageUploads', coverFile);
+                    const uploadResponse = await uploadMedia(imageUploads, token);
+
+                    // setting thumnail and coverImage URLs from response
+                }
+
+                const res = await createPost(formData, userId);
+                if (res && res.status === 201) {
+                    toast.success("Draft sent for review successfully!");
+                } else {
+                    toast.error("Failed to create post !");
+                }
+            }
+            if (type === 'edit') {
+                // handle article update submission
+            }
+        } catch (error) {
+            toast.error("An error occurred while processing your request.");
+            console.error("Submission error:", error);
+        }
+        finally {
+            // cleanup object URLs
+            if (thumbPreview) {
+                URL.revokeObjectURL(thumbPreview);
+                setThumbPreview(null);
+                setThumbFile(null);
+            }
+            if (coverPreview) {
+                URL.revokeObjectURL(coverPreview);
+                setCoverPreview(null);
+                setCoverFile(null);
+            }
+
+            // resetting form data
+            setFormData({
+                title: '',
+                excerpt: '',
+                category: '',
+                readTime: 0,
+                thumbnail: '',
+                coverImage: '',
+                content: `# Your Article Title
+
+## Introduction
+Write your introduction here...
+
+## Main Content
+- **Bold**, *Italic*, ~~Strikethrough~~
+- Task List:
+  - [x] Done
+  - [ ] Pending
+
+## Code Example
+\`\`\`js
+console.log('Hello, world!');
+\`\`\`
+
+## Conclusion
+Wrap up your article here...`
+            })
         }
     }
 
@@ -244,7 +326,6 @@ Wrap up your article here...`
                                             onChange={(e) => {
                                                 setThumbPreview(null)
                                                 setThumbFile(null)
-                                                delete formData.thumbFile
                                                 handleInputChange('thumbnail', e.target.value)
                                             }}
                                             placeholder="https://example.com/thumbnail.jpg"
@@ -283,7 +364,6 @@ Wrap up your article here...`
                                             onChange={(e) => {
                                                 setCoverPreview(null)
                                                 setCoverFile(null)
-                                                delete formData.coverFile
                                                 handleInputChange('coverImage', e.target.value)
                                             }}
                                             placeholder="https://example.com/cover.jpg"

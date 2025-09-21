@@ -8,6 +8,7 @@ const instance = axios.create({
     }
 });
 
+// User APIs
 const createUser = (data) => instance.post('/users/create', data);
 
 const deleteUser = (data) => instance.delete('/users/delete',
@@ -19,7 +20,21 @@ const deleteUser = (data) => instance.delete('/users/delete',
         withCredentials: true,//sending auth token
     });
 
+// Post APIs
+const createPost = (data, authorId) => instance.post(`/posts/new/${authorId}`, data);
+
+// Media APIs
+const uploadMedia = (data, token) => instance.post('/media/upload/image', data, {
+    headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${token}`,
+    },
+    withCredentials: true,
+});
+
 export {
     createUser,
-    deleteUser
+    deleteUser,
+    createPost,
+    uploadMedia
 };

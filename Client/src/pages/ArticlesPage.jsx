@@ -280,8 +280,12 @@ const ArticlesPage = () => {
                                         {/* Article Image */}
                                         <div className="relative overflow-hidden h-52 bg-gradient-to-br from-purple-400/20 to-violet-600/20">
                                             <motion.img
-                                                src={article.image}
+                                                src={article.image ? article.image : '/placeholder.png'}
                                                 alt={article.title}
+                                                onError={(e) => {
+                                                    e.target.onerror = null;
+                                                    e.target.src = '/placeholder.png';
+                                                }}
                                                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                                                 loading="lazy"
                                             />
