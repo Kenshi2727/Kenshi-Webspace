@@ -15,12 +15,13 @@ import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
 import rehypeRaw from 'rehype-raw';
 import 'highlight.js/styles/github-dark.css';
-import { Pencil, Eye, Send, FileText, Clock, Tag, Image, Upload } from 'lucide-react';
+import { Pencil, Eye, Send, FileText, Clock, Tag, Image, Upload, LoaderCircle } from 'lucide-react';
 import { createPost, uploadMedia } from '../services/GlobalApi';
 import toast from 'react-hot-toast';
 import { useAuth } from '@clerk/clerk-react';
 
 export default function EditorPage({ type }) {
+    const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         title: '',
         excerpt: '',
@@ -116,7 +117,12 @@ Wrap up your article here...`
     }
 
     const handleSubmit = async () => {
-        if (!formValidate()) return;
+        setLoading(true);
+        if (!formValidate()) {
+            setLoading(false);
+            return;
+        };
+
         try {
             if (type === 'new') {
                 // handle new article submission
@@ -125,16 +131,21 @@ Wrap up your article here...`
                 if (thumbFile || coverFile) {
                     const token = await getToken();
                     const imageUploads = new FormData();
-                    if (thumbFile) imageUploads.append('imageUploads', thumbFile);
-                    if (coverFile) imageUploads.append('imageUploads', coverFile);
+                    if (thumbFile) imageUploads.append('thumbnail', thumbFile);
+                    if (coverFile) imageUploads.append('coverImage', coverFile);
                     const uploadResponse = await uploadMedia(imageUploads, token);
 
                     // setting thumnail and coverImage URLs from response
+                    if (uploadResponse && uploadResponse.status === 201) {
+                        const { thumbnail, coverImage } = uploadResponse.data;
+                        handleInputChange('thumbnail', thumbnail);
+                        handleInputChange('coverImage', coverImage);
+                    }
                 }
 
                 const res = await createPost(formData, userId);
                 if (res && res.status === 201) {
-                    toast.success("Draft sent for review successfully!");
+                    toast.success("Draft sent for review successfully !");
                 } else {
                     toast.error("Failed to create post !");
                 }
@@ -143,7 +154,7 @@ Wrap up your article here...`
                 // handle article update submission
             }
         } catch (error) {
-            toast.error("An error occurred while processing your request.");
+            toast.error("An error occurred while processing your request !");
             console.error("Submission error:", error);
         }
         finally {
@@ -186,6 +197,9 @@ console.log('Hello, world!');
 ## Conclusion
 Wrap up your article here...`
             })
+
+            // set loading to false
+            setLoading(false);
         }
     }
 
@@ -496,6 +510,7 @@ Wrap up your article here...`
                             <div className="flex gap-2 md:gap-3 w-full sm:w-auto order-1 sm:order-2">
                                 <Button
                                     variant="outline"
+                                    onClick={() => toast.error("Feature not implemented yet !")}
                                     className="flex-1 sm:flex-initial bg-white/10 hover:bg-white/20 text-white border-white/20 text-sm md:text-base"
                                 >
                                     Save Draft
@@ -509,14 +524,14 @@ Wrap up your article here...`
                                                 className="flex-1 sm:flex-initial"
                                             >
                                                 <Button onClick={() => handleSubmit()} className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white flex items-center justify-center gap-2 transition-all duration-200 text-sm md:text-base">
-                                                    <Send size={16} className="md:w-4 md:h-4" />
-                                                    <span className="hidden sm:inline">Submit for Review</span>
+                                                    {loading ? <LoaderCircle className='animate-spin' /> : <Send size={16} className="md:w-4 md:h-4" />}
+                                                    <span className="hidden sm:inline">{loading ? 'Submitting...' : 'Submit for Review'}</span>
                                                     <span className="sm:hidden">Submit</span>
                                                 </Button>
                                             </motion.div>
                                         </TooltipTrigger>
                                         <TooltipContent>
-                                            <p>Submit your article for review and publication</p>
+                                            <p>{loading ? 'Submitting...' : 'Submit your article for review and publication'}</p>
                                         </TooltipContent>
                                     </Tooltip>
                                 </TooltipProvider>
