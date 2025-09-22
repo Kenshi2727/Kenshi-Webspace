@@ -126,7 +126,7 @@ Wrap up your article here...`
         try {
             if (type === 'new') {
                 // handle new article submission
-
+                let updatedFormData = { ...formData };
                 // uploading uploaded images to cloudinary
                 if (thumbFile || coverFile) {
                     const token = await getToken();
@@ -137,13 +137,14 @@ Wrap up your article here...`
 
                     // setting thumnail and coverImage URLs from response
                     if (uploadResponse && uploadResponse.status === 201) {
-                        const { thumbnail, coverImage } = uploadResponse.data;
-                        handleInputChange('thumbnail', thumbnail);
-                        handleInputChange('coverImage', coverImage);
+                        const { thumbnail, coverImage, message } = uploadResponse.data;
+                        updatedFormData.thumbnail = thumbnail || formData.thumbnail;
+                        updatedFormData.coverImage = coverImage || formData.coverImage;
+                        console.log(message);
                     }
                 }
 
-                const res = await createPost(formData, userId);
+                const res = await createPost(updatedFormData, userId);
                 if (res && res.status === 201) {
                     toast.success("Draft sent for review successfully !");
                 } else {
@@ -154,7 +155,10 @@ Wrap up your article here...`
                 // handle article update submission
             }
         } catch (error) {
-            toast.error("An error occurred while processing your request !");
+            if (error.code === "ECONNABORTED")
+                toast.error("Request timed out. Please check 'Your Articles' and retry if post not created.");
+            else
+                toast.error("An error occurred while processing your request !");
             console.error("Submission error:", error);
         }
         finally {

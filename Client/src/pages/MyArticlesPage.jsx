@@ -138,7 +138,7 @@ export default function MyArticlesPage() {
                                 </div>
                             </div>
 
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2 overflow-x-auto">
                                 <Tabs defaultValue="all" onValueChange={(v) => setFilter(v)} className="bg-white/5 rounded-full p-1">
                                     <TabsList className="flex gap-1">
                                         <TabsTrigger value="all" className={`px-3 py-1 rounded-full ${filter === 'all' ? 'data-[state=active]:bg-black text-white' : ''}`}>All</TabsTrigger>
