@@ -34,22 +34,23 @@ enum Role {
 }
 
 model Post {
-  id        String   @id @default(uuid())
-  title     String
-  excerpt   String
-  category  String
-  readTime  Int
-  content   String
-  authorId  String
-  author    User     @relation(fields: [authorId], references: [id])
-  thumbnail String?
-  authorImg String?
-  coverImg  String?
-  trending  Boolean  @default(false)
-  likes     Int      @default(0)
-  views     Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(uuid())
+  title       String
+  excerpt     String
+  category    String
+  readTime    Int
+  content     String
+  authorId    String
+  author      User     @relation(fields: [authorId], references: [id])
+  thumbnail   String?
+  authorImage String?
+  coverImage  String?
+  trending    Boolean  @default(false)
+  featured    Boolean  @default(false)
+  likes       Int      @default(0)
+  views       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@unique([id, authorId]) // Composite primary key
 }

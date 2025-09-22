@@ -2,7 +2,7 @@ import React from 'react'
 import toast from 'react-hot-toast'
 
 const Notice = () => {
-    const progress = 40;
+    const progress = 50;
 
     return (
         toast.custom((t) => (
