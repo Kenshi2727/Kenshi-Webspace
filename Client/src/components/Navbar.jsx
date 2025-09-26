@@ -67,7 +67,7 @@ export default function Navbar() {
                             aria-pressed={open}
                             onClick={() => setOpen((s) => !s)}
                             title={open ? "Close menu" : "Open menu"}
-                            className="md:hidden inline-flex items-center justify-center p-2.5"
+                            className="[@media(min-width:840px)]:hidden inline-flex items-center justify-center p-2.5"
                         >
                             <span className="sr-only">{open ? "Close menu" : "Open menu"}</span>
 
@@ -167,7 +167,7 @@ export default function Navbar() {
                         animate="visible"
                         exit="exit"
                         variants={listVariants}
-                        className="md:hidden absolute left-0 right-0 top-full px-4 z-50"
+                        className="[@media(min-width:840px)]:hidden absolute left-0 right-0 top-full px-4 z-50"
                     >
                         {/* ghost / glass surface */}
                         <div

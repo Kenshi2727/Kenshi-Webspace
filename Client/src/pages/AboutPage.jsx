@@ -148,7 +148,7 @@ const NeuralNetwork = ({ excludeZones = [] }) => {
     );
 };
 
-// Enhanced Floating Tech Elements - Responsive
+// Enhanced Floating Tech Elements
 const FloatingTechElements = () => {
     const techElements = [
         { symbol: '{ }', type: 'code' },
@@ -191,7 +191,7 @@ const FloatingTechElements = () => {
     );
 };
 
-// Enhanced Team Card with Fixed Responsive Dimensions
+// Enhanced Team Card 
 const TeamCard = ({ member, index }) => {
     const [isHovered, setIsHovered] = useState(false);
 
@@ -317,7 +317,7 @@ const TeamCard = ({ member, index }) => {
     );
 };
 
-// Enhanced Value Card with Fixed Responsive Dimensions
+// Enhanced Value Card
 const ValueCard = ({ title, description, index, icon }) => {
     const [isHovered, setIsHovered] = useState(false);
 
@@ -342,8 +342,8 @@ const ValueCard = ({ title, description, index, icon }) => {
                 }}
                 className="bg-white rounded-lg sm:rounded-xl md:rounded-2xl p-4 sm:p-6 md:p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 relative overflow-hidden h-full flex flex-col"
             >
-                {/* Tech grid background - simplified for mobile */}
-                <div className="absolute inset-0 opacity-5 hidden sm:block">
+                {/* Tech grid background */}
+                {/* <div className="absolute inset-0 opacity-50">
                     <div className="grid grid-cols-4 sm:grid-cols-6 grid-rows-4 sm:grid-rows-6 h-full w-full gap-1">
                         {Array.from({ length: window.innerWidth < 640 ? 16 : 36 }).map((_, i) => (
                             <motion.div
@@ -356,13 +356,13 @@ const ValueCard = ({ title, description, index, icon }) => {
                             />
                         ))}
                     </div>
-                </div>
+                </div> */}
 
                 {/* Animated background gradient */}
                 <motion.div
                     animate={{
                         scale: isHovered ? 2 : 1,
-                        opacity: isHovered ? 0.15 : 0,
+                        opacity: isHovered ? 0.4 : 0,
                         rotate: isHovered ? 180 : 0,
                     }}
                     transition={{ duration: 1.2 }}
@@ -514,11 +514,6 @@ const AboutPage = () => {
         <div className="min-h-screen bg-gray-50 relative overflow-hidden">
             {/* Enhanced animated background */}
             <div className="fixed inset-0 z-0">
-                <motion.div
-                    style={{ y: backgroundY }}
-                    className="absolute inset-0 bg-gradient-to-br from-slate-900 via-indigo-900 to-purple-900 opacity-10"
-                />
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(99,102,241,0.1),transparent_50%)]"></div>
                 <NeuralNetwork excludeZones={storyRef.current ? [storyRef.current] : []} />
                 <FloatingTechElements />
             </div>
@@ -529,7 +524,7 @@ const AboutPage = () => {
                 animate="show"
                 className="relative z-10 max-w-7xl mx-auto py-4 sm:py-8 md:py-12 px-4 sm:px-6 lg:px-8"
             >
-                {/* Enhanced Hero Section - Responsive */}
+                {/* Enhanced Hero Section */}
                 <motion.div variants={itemVariants} className="text-center mb-8 sm:mb-12 md:mb-20 relative">
                     <motion.h1
                         className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-gray-900 relative font-mono px-4"
@@ -614,7 +609,7 @@ const AboutPage = () => {
                     </motion.div>
                 </motion.div>
 
-                {/* Our Story Section with Responsive Design */}
+                {/* Our Story Section */}
                 <motion.div
                     ref={storyRef}
                     variants={itemVariants}
@@ -750,7 +745,7 @@ const AboutPage = () => {
                     </div>
                 </motion.div>
 
-                {/* Enhanced Values Section - Responsive */}
+                {/* Enhanced Values Section */}
                 <motion.div variants={itemVariants} className="mb-8 sm:mb-12 md:mb-20">
                     <motion.div
                         className="text-center mb-6 sm:mb-8 md:mb-12"
@@ -787,7 +782,7 @@ const AboutPage = () => {
                     </motion.div>
                 </motion.div>
 
-                {/* Enhanced Team Section - Responsive */}
+                {/* Enhanced Team Section */}
                 <motion.div variants={itemVariants} className="mb-8 sm:mb-12 md:mb-20">
                     <motion.div
                         className="text-center mb-6 sm:mb-8 md:mb-12"
@@ -814,15 +809,15 @@ const AboutPage = () => {
                     </motion.div>
                 </motion.div>
 
-                {/* Enhanced CTA Section with Responsive Design */}
+                {/* Enhanced CTA Section */}
                 <motion.div
                     variants={itemVariants}
                     className="relative overflow-hidden rounded-xl sm:rounded-2xl md:rounded-3xl bg-gradient-to-br from-gray-900 via-indigo-900 to-purple-900 p-4 sm:p-6 md:p-8 lg:p-12 xl:p-16 shadow-2xl border border-indigo-500/20"
                 >
-                    {/* Matrix-style background - simplified for mobile */}
-                    <div className="absolute inset-0 opacity-10 hidden sm:block">
+                    {/* Matrix-style background */}
+                    <div className="absolute inset-0 opacity-10">
                         <div className="grid grid-cols-10 sm:grid-cols-15 md:grid-cols-20 grid-rows-6 sm:grid-rows-8 md:grid-rows-10 h-full w-full gap-px">
-                            {Array.from({ length: window.innerWidth < 640 ? 60 : window.innerWidth < 1024 ? 120 : 200 }).map((_, i) => (
+                            {Array.from({ length: window.innerWidth < 640 ? 30 : window.innerWidth < 1024 ? 60 : 100 }).map((_, i) => (
                                 <motion.div
                                     key={i}
                                     className="bg-green-400 rounded-sm"
@@ -988,10 +983,10 @@ const AboutPage = () => {
                     </div>
                 </motion.div>
 
-                {/* Enhanced Tech Stack Visualization - Responsive */}
+                {/* Enhanced Tech Stack Visualization */}
                 <motion.div
                     variants={itemVariants}
-                    className="mb-6 sm:mb-8 md:mb-16 mt-6 text-center relative"
+                    className="mb-6 sm:mb-8 md:mb-16 mt-12 text-center relative"
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
                     viewport={{ once: true }}
@@ -1003,72 +998,79 @@ const AboutPage = () => {
                     {/* Tech stack with responsive grid */}
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 md:gap-6 max-w-5xl mx-auto px-4">
                         {[
-                            { name: 'React', version: '18.x', color: 'from-blue-500 to-cyan-500', icon: '⚛️' },
-                            { name: 'Next.js', version: '14.x', color: 'from-gray-700 to-gray-900', icon: '▲' },
-                            { name: 'TypeScript', version: '5.x', color: 'from-blue-600 to-blue-800', icon: 'TS' },
-                            { name: 'Tailwind', version: '3.x', color: 'from-teal-500 to-green-500', icon: '🎨' },
-                            { name: 'Node.js', version: '20.x', color: 'from-green-600 to-green-800', icon: '🟢' },
-                            { name: 'MongoDB', version: '7.x', color: 'from-green-500 to-green-700', icon: '🍃' }
-                        ].map((tech, i) => (
-                            <motion.div
-                                key={tech.name}
-                                className="group relative"
-                                whileHover={{ scale: 1.1, y: -5 }}
-                                animate={{
-                                    y: [0, -8, 0],
-                                }}
-                                transition={{
-                                    y: { duration: 3, delay: i * 0.3, repeat: Infinity },
-                                    hover: { duration: 0.2 }
-                                }}
-                            >
-                                <div className={`h-14 sm:h-16 md:h-20 lg:h-24 w-full bg-gradient-to-br ${tech.color} text-white rounded-lg sm:rounded-xl md:rounded-2xl flex flex-col items-center justify-center shadow-lg relative overflow-hidden`}>
-                                    {/* Circuit pattern - simplified for mobile */}
-                                    <div className="absolute inset-0 opacity-20 hidden sm:block">
-                                        <svg className="w-full h-full" viewBox="0 0 100 100">
-                                            <motion.path
-                                                d="M20,20 L80,20 L80,80 L20,80 Z M40,40 L60,40 M40,60 L60,60"
-                                                stroke="currentColor"
-                                                strokeWidth="1"
-                                                fill="none"
-                                                initial={{ pathLength: 0 }}
-                                                animate={{ pathLength: 1 }}
-                                                transition={{ duration: 2, delay: i * 0.2, repeat: Infinity }}
-                                            />
-                                        </svg>
-                                    </div>
+                            { name: 'React', version: '19.0.0', color: 'from-blue-500 to-cyan-500', icon: '⚛️' },
+                            { name: 'Tailwind', version: '4.1.11', color: 'from-teal-500 to-green-500', icon: '🎨' },
+                            { name: 'shadcn/ui', version: 'latest', color: 'from-stone-400 to-stone-600', icon: '🧩' },
+                            { name: 'Framer Motion', version: 'latest', color: 'from-purple-600 to-indigo-600', icon: '⚡' },
+                            { name: 'Postgres', version: 'latest', color: 'from-gray-700 to-gray-900', icon: '🐘' },
+                            { name: 'Prisma', version: 'latest', color: 'from-sky-500 to-blue-700', icon: '⃤' },
+                            { name: 'Node.js', version: '22.17.1', color: 'from-green-600 to-green-800', icon: '🟢' },
+                            { name: 'Express', version: '5.1.0', color: 'from-yellow-400 to-yellow-700', icon: '🚂' },
+                            { name: 'Clerk', version: 'latest', color: 'from-purple-500 to-purple-900', icon: '🔐' },
+                            { name: 'Helmet', version: '8.1.0', color: 'from-amber-500 to-amber-700', icon: '🛡️' },
+                            { name: 'Multer', version: '2.0.2', color: 'from-red-400 to-red-600', icon: '📦' },
+                            { name: 'Vercel', version: 'latest', color: 'from-black to-gray-800', icon: '▲' }
+                        ]
+                            .map((tech, i) => (
+                                <motion.div
+                                    key={tech.name}
+                                    className="group relative"
+                                    whileHover={{ scale: 1.1, y: -5 }}
+                                    animate={{
+                                        y: [0, -8, 0],
+                                    }}
+                                    transition={{
+                                        y: { duration: 3, delay: i * 0.3, repeat: Infinity },
+                                        hover: { duration: 0.2 }
+                                    }}
+                                >
+                                    <div className={`h-14 sm:h-16 md:h-20 lg:h-24 w-full bg-gradient-to-br ${tech.color} text-white rounded-lg sm:rounded-xl md:rounded-2xl flex flex-col items-center justify-center shadow-lg relative overflow-hidden`}>
+                                        {/* Circuit pattern - simplified for mobile */}
+                                        <div className="absolute inset-0 opacity-20 hidden sm:block">
+                                            <svg className="w-full h-full" viewBox="0 0 100 100">
+                                                <motion.path
+                                                    d="M20,20 L80,20 L80,80 L20,80 Z M40,40 L60,40 M40,60 L60,60"
+                                                    stroke="currentColor"
+                                                    strokeWidth="1"
+                                                    fill="none"
+                                                    initial={{ pathLength: 0 }}
+                                                    animate={{ pathLength: 1 }}
+                                                    transition={{ duration: 2, delay: i * 0.2, repeat: Infinity }}
+                                                />
+                                            </svg>
+                                        </div>
 
-                                    <div className="relative z-10 text-center">
+                                        <div className="relative z-10 text-center">
+                                            <motion.div
+                                                className="text-base sm:text-lg md:text-xl lg:text-2xl mb-1"
+                                                animate={{ rotate: [0, 360] }}
+                                                transition={{ duration: 4, delay: i * 0.5, repeat: Infinity }}
+                                            >
+                                                {tech.icon}
+                                            </motion.div>
+                                            <div className="font-bold text-xs sm:text-sm">{tech.name}</div>
+                                            <div className="text-xs opacity-80 font-mono hidden sm:block">{tech.version}</div>
+                                        </div>
+
+                                        {/* Data flow effect */}
                                         <motion.div
-                                            className="text-base sm:text-lg md:text-xl lg:text-2xl mb-1"
-                                            animate={{ rotate: [0, 360] }}
-                                            transition={{ duration: 4, delay: i * 0.5, repeat: Infinity }}
-                                        >
-                                            {tech.icon}
-                                        </motion.div>
-                                        <div className="font-bold text-xs sm:text-sm">{tech.name}</div>
-                                        <div className="text-xs opacity-80 font-mono hidden sm:block">{tech.version}</div>
+                                            className="absolute top-0 left-0 w-full h-1 bg-white/50"
+                                            animate={{
+                                                x: ['-100%', '100%'],
+                                                opacity: [0, 1, 0],
+                                            }}
+                                            transition={{
+                                                duration: 2,
+                                                delay: i * 0.4,
+                                                repeat: Infinity,
+                                            }}
+                                        />
                                     </div>
-
-                                    {/* Data flow effect */}
-                                    <motion.div
-                                        className="absolute top-0 left-0 w-full h-1 bg-white/50"
-                                        animate={{
-                                            x: ['-100%', '100%'],
-                                            opacity: [0, 1, 0],
-                                        }}
-                                        transition={{
-                                            duration: 2,
-                                            delay: i * 0.4,
-                                            repeat: Infinity,
-                                        }}
-                                    />
-                                </div>
-                            </motion.div>
-                        ))}
+                                </motion.div>
+                            ))}
                     </div>
 
-                    {/* Terminal command showcase - responsive */}
+                    {/* Terminal command showcase */}
                     <motion.div
                         className="mt-6 sm:mt-8 md:mt-12 max-w-4xl mx-auto"
                         initial={{ opacity: 0, y: 20 }}
@@ -1085,7 +1087,7 @@ const AboutPage = () => {
                             </div>
                             <div className="text-green-400 font-mono text-xs sm:text-sm space-y-1 sm:space-y-2">
                                 <div>
-                                    <span className="text-blue-400">❯</span> npm create kenshi-project my-app
+                                    <span className="text-blue-400">❯</span> npm create kenshi-webspace/my-space
                                 </div>
                                 <motion.div
                                     initial={{ opacity: 0 }}
@@ -1105,7 +1107,7 @@ const AboutPage = () => {
                                     animate={{ opacity: [0, 1] }}
                                     transition={{ duration: 0.5, delay: 3, repeat: Infinity, repeatType: "reverse" }}
                                 >
-                                    <span className="text-blue-400">❯</span> <span className="bg-green-400 text-black px-1">█</span>
+                                    <span className="text-blue-400">❯</span> <span className="bg-green-400 text-black px-1">█Onboarding...</span>
                                 </motion.div>
                             </div>
                         </div>
