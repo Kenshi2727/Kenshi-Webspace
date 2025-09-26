@@ -13,6 +13,8 @@ import NotFoundPage from './NotFoundPage';
 import LoadingPage from './LoadingPage';
 import { getSinglePost } from '../services/GlobalApi.js';
 import toast from 'react-hot-toast';
+import { formatMessageTime } from '../lib/dateFormatter.js';
+import { useUser } from '@clerk/clerk-react';
 
 const related = [
     { id: 2, title: 'Mastering Tailwind CSS', readTime: '8 min', category: 'CSS' },
@@ -22,8 +24,8 @@ const related = [
 
 export default function ArticlePage() {
     const { id } = useParams();
+    const { user } = useUser();
     const { getPost } = usePosts();
-    const [readingTime, setReadingTime] = useState(0);
     const [isLiked, setIsLiked] = useState(false);
     const [isBookmarked, setIsBookmarked] = useState(false);
     const [article, setArticle] = useState(null);
@@ -61,13 +63,6 @@ export default function ArticlePage() {
         const unsubscribe = readingProgress.on('change', setProgress);
         return unsubscribe;
     }, [readingProgress]);
-
-    useEffect(() => {
-        if (article?.content) {
-            const words = article.content.split(/\s+/).filter(Boolean).length;
-            setReadingTime(Math.ceil(words / 200));
-        }
-    }, [article?.content]);
 
     if (loading) {
         return <LoadingPage />
@@ -307,9 +302,9 @@ export default function ArticlePage() {
                                 transition={{ delay: 0.5, duration: 0.6 }}
                                 className="absolute bottom-6 left-6 z-20"
                             >
-                                <Badge className="bg-indigo-500/80 text-white border-0 backdrop-blur-sm">
+                                {article.featured && <Badge className="bg-indigo-500/80 text-white border-0 backdrop-blur-sm">
                                     Featured Article
-                                </Badge>
+                                </Badge>}
                             </motion.div>
                         </motion.div>
 
@@ -354,14 +349,14 @@ export default function ArticlePage() {
                                             className="flex items-center gap-2"
                                         >
                                             <Clock size={16} className="text-indigo-300" />
-                                            <span>{article.date}</span>
+                                            <span>{formatMessageTime(article.updatedAt)}</span>
                                         </motion.div>
                                         <motion.div
                                             whileHover={{ scale: 1.05 }}
                                             className="flex items-center gap-2"
                                         >
                                             <Eye size={16} className="text-indigo-300" />
-                                            <span>{readingTime} min read</span>
+                                            <span>{article.readTime} min read</span>
                                         </motion.div>
                                     </div>
                                 </motion.div>
@@ -377,11 +372,11 @@ export default function ArticlePage() {
                                         {article.title}
                                     </motion.h1>
 
-                                    <motion.div
+                                    {user && (user.id === article.authorId) && <motion.div
                                         initial={{ opacity: 0, scale: 0.8 }}
                                         animate={{ opacity: 1, scale: 1 }}
-                                        transition={{ delay: 0.6, duration: 0.5 }}
-                                        whileHover={{ scale: 1.05 }}
+                                        transition={{ delay: 0.2, duration: 0.2 }}
+                                        whileHover={{ scale: 1.1 }}
                                         whileTap={{ scale: 0.95 }}
                                     >
                                         <Link to={`/articles/edit/${article.id}`}>
@@ -394,7 +389,7 @@ export default function ArticlePage() {
                                                 <span className="hidden sm:inline">Edit</span>
                                             </Button>
                                         </Link>
-                                    </motion.div>
+                                    </motion.div>}
                                 </motion.div>
 
                                 {/* Enhanced Author Section */}
@@ -404,9 +399,9 @@ export default function ArticlePage() {
                                         transition={{ type: "spring", stiffness: 300 }}
                                     >
                                         <Avatar className="ring-2 ring-white/30 ring-offset-2 ring-offset-transparent">
-                                            <AvatarImage src={article.authorImg} />
+                                            <AvatarImage src={article.authorImage} />
                                             <AvatarFallback className="bg-indigo-500 text-white">
-                                                {article.author}
+                                                {article.author.firstName.charAt(0)}{article.author.lastName.charAt(0)}
                                             </AvatarFallback>
                                         </Avatar>
                                     </motion.div>
@@ -415,12 +410,12 @@ export default function ArticlePage() {
                                         animate={{ opacity: 1, x: 0 }}
                                         transition={{ delay: 0.7, duration: 0.5 }}
                                     >
-                                        <p className="text-base text-gray-200">
+                                        <p className="text-base text-gray-200 line-clamp-2">
                                             By <span className="font-medium text-white hover:text-indigo-200 transition-colors duration-200 cursor-pointer">
-                                                {article.author}
+                                                {article.author.firstName} {article.author.lastName}
                                             </span>
                                         </p>
-                                        <p className="text-sm text-gray-400">Published author & tech enthusiast</p>
+                                        <p className="text-sm text-gray-400">{article.author.tagline || 'Some wild author !'}</p>
                                     </motion.div>
                                 </motion.div>
 

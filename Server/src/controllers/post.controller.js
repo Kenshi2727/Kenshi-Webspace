@@ -42,7 +42,10 @@ export const getSinglePost = async (req, res) => {
         const post = await prisma.post.findUnique({
             where: {
                 id: postId
-            }
+            },
+            include: {
+                author: true,
+            },
         });
 
         if (!post) {
