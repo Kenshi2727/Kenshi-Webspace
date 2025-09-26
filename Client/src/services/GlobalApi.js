@@ -2,7 +2,7 @@ import axios from "axios";
 
 const instance = axios.create({
     baseURL: import.meta.env.VITE_BASE_URL,
-    timeout: 60000,//60 seconds
+    // timeout: 60000,//60 seconds
     headers: {
         "Content-Type": "application/json",
     }
@@ -13,7 +13,7 @@ const createUser = (data) => instance.post('/users/create', data);
 
 const deleteUser = (data) => instance.delete('/users/delete',
     {
-        data,
+        data,// data field in CONFIG only for delete method
         headers: {
             Authorization: `Bearer ${data.token}`,
         },
@@ -21,7 +21,14 @@ const deleteUser = (data) => instance.delete('/users/delete',
     });
 
 // Post APIs
-const createPost = (data, authorId) => instance.post(`/posts/new/${authorId}`, data);
+const createPost = (data, authorId, token) => instance.post(`/posts/new/${authorId}`, data, {
+    headers: {
+        Authorization: `Bearer ${token}`,
+    },
+    withCredentials: true,
+});
+
+const getSinglePost = (postId) => instance.get(`/posts/${postId}`);
 
 // Media APIs
 const uploadMedia = (data, token) => instance.post('/media/upload/image', data, {
@@ -36,5 +43,6 @@ export {
     createUser,
     deleteUser,
     createPost,
-    uploadMedia
+    uploadMedia,
+    getSinglePost
 };

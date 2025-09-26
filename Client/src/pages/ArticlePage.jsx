@@ -10,6 +10,9 @@ import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { Facebook, Twitter, Linkedin, Pencil, Clock, Eye, Heart, Bookmark, Share2 } from 'lucide-react';
 import MarkdownRenderer from '@/components/MarkdownRenderer';
 import NotFoundPage from './NotFoundPage';
+import LoadingPage from './LoadingPage';
+import { getSinglePost } from '../services/GlobalApi.js';
+import toast from 'react-hot-toast';
 
 const related = [
     { id: 2, title: 'Mastering Tailwind CSS', readTime: '8 min', category: 'CSS' },
@@ -23,6 +26,8 @@ export default function ArticlePage() {
     const [readingTime, setReadingTime] = useState(0);
     const [isLiked, setIsLiked] = useState(false);
     const [isBookmarked, setIsBookmarked] = useState(false);
+    const [article, setArticle] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     // Fixed scroll hook
     const { scrollYProgress, scrollY } = useScroll();
@@ -32,10 +37,28 @@ export default function ArticlePage() {
     const opacity = useTransform(scrollY, [0, 300], [1, 0]);
     const scale = useTransform(scrollY, [0, 300], [1, 0.8]);
     const y = useTransform(scrollY, [0, 300], [0, -50]);
-    const article = getPost(id);
+    // const article = getPost(id);
 
     useEffect(() => {
-        const unsubscribe = readingProgress.onChange(setProgress);
+
+        async function fetchPost() {
+            setLoading(true);
+            try {
+                const res = await getSinglePost(id);
+                setArticle(res.data);
+            } catch (error) {
+                toast.error(error?.response?.data?.error || "Failed to fetch the article");
+                console.log(error);
+            }
+
+            setLoading(false);
+        }
+        fetchPost();
+
+    }, []);
+
+    useEffect(() => {
+        const unsubscribe = readingProgress.on('change', setProgress);
         return unsubscribe;
     }, [readingProgress]);
 
@@ -45,6 +68,10 @@ export default function ArticlePage() {
             setReadingTime(Math.ceil(words / 200));
         }
     }, [article?.content]);
+
+    if (loading) {
+        return <LoadingPage />
+    }
 
     if (!article) {
         return <NotFoundPage />;
@@ -264,7 +291,7 @@ export default function ArticlePage() {
                         >
                             <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent z-10" />
                             <motion.img
-                                src={article.coverImg}
+                                src={(!article.coverImage) || article.coverImage.trim() === '' ? '/placeholder.png' : article.coverImage}
                                 onError={(e) => {
                                     e.target.onerror = null;//prevent loop if placeholder fails
                                     e.target.src = '/placeholder.png';

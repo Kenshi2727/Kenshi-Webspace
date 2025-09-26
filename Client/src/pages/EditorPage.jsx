@@ -124,12 +124,12 @@ Wrap up your article here...`
         };
 
         try {
+            const token = await getToken();
             if (type === 'new') {
                 // handle new article submission
                 let updatedFormData = { ...formData };
                 // uploading uploaded images to cloudinary
                 if (thumbFile || coverFile) {
-                    const token = await getToken();
                     const imageUploads = new FormData();
                     if (thumbFile) imageUploads.append('thumbnail', thumbFile);
                     if (coverFile) imageUploads.append('coverImage', coverFile);
@@ -144,7 +144,7 @@ Wrap up your article here...`
                     }
                 }
 
-                const res = await createPost(updatedFormData, userId);
+                const res = await createPost(updatedFormData, userId, token);
                 if (res && res.status === 201) {
                     toast.success("Draft sent for review successfully !");
                 } else {

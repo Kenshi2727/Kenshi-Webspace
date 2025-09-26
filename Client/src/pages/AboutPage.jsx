@@ -1007,7 +1007,7 @@ const AboutPage = () => {
                             { name: 'Node.js', version: '22.17.1', color: 'from-green-600 to-green-800', icon: '🟢' },
                             { name: 'Express', version: '5.1.0', color: 'from-yellow-400 to-yellow-700', icon: '🚂' },
                             { name: 'Clerk', version: 'latest', color: 'from-purple-500 to-purple-900', icon: '🔐' },
-                            { name: 'Helmet', version: '8.1.0', color: 'from-amber-500 to-amber-700', icon: '🛡️' },
+                            { name: 'Helmet', version: '8.1.0', color: 'from-blue-500 to-blue-700', icon: '🛡️' },
                             { name: 'Multer', version: '2.0.2', color: 'from-red-400 to-red-600', icon: '📦' },
                             { name: 'Vercel', version: 'latest', color: 'from-black to-gray-800', icon: '▲' }
                         ]
