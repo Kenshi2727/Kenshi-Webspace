@@ -116,6 +116,15 @@ Wrap up your article here...`
         return true;
     }
 
+    const copyToClipboard = async (text) => {
+        try {
+            await navigator.clipboard.writeText(text);
+            toast.success("Link to post copied to clipboard !");
+        } catch (err) {
+            console.error('Failed to copy link to clipboard !', err);
+        }
+    };
+
     const handleSubmit = async () => {
         setLoading(true);
         if (!formValidate()) {
@@ -147,6 +156,7 @@ Wrap up your article here...`
                 const res = await createPost(updatedFormData, userId, token);
                 if (res && res.status === 201) {
                     toast.success("Draft sent for review successfully !");
+                    copyToClipboard(`${window.location.origin}/articles/${res.data.postId}`);
                 } else {
                     toast.error("Failed to create post !");
                 }

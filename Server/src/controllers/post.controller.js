@@ -14,7 +14,7 @@ export const createNewPost = async (req, res) => {
     const { title, excerpt, category, thumbnail, coverImage, content } = req.body;
 
     try {
-        await prisma.post.create({
+        const newPost = await prisma.post.create({
             data: {
                 title,
                 excerpt,
@@ -26,12 +26,17 @@ export const createNewPost = async (req, res) => {
                 authorId: req.params.authorId
             }
         });
+
         console.log("Post created successfully for author ID:", req.params.authorId);
+
+        return res.status(201).json({
+            message: "New post created!",
+            postId: newPost.id
+        });
     } catch (error) {
         console.error("Error creating post:", error);
         return res.status(500).json({ error: "Failed to create post" });
     }
-    return res.status(201).json({ message: "New post created!" });
 }
 
 export const getSinglePost = async (req, res) => {
