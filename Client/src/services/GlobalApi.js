@@ -8,34 +8,6 @@ const instance = axios.create({
     }
 });
 
-
-// interceptor for downloading data(central place to handle download progress)
-let progressHandler = null;
-
-instance.interceptors.request.use(
-    (config) => {
-        // modify the request configif needed
-        config.onDownloadProgress = (progressEvent) => {
-            const { loaded, total } = progressEvent;
-            if (total && progressHandler) {
-                const percentage = Math.floor((loaded * 100) / total);
-                console.log(`Download Progress: ${percentage}%`);
-                progressHandler(percentage);
-            }
-            else {
-                progressHandler && progressHandler(0);
-            }
-
-        };
-        return config;
-    }
-);
-
-// progress handler for React components to set
-export const setProgressHandler = (handler) => {
-    progressHandler = handler;
-}
-
 // User APIs
 const createUser = (data) => instance.post('/users/create', data);
 

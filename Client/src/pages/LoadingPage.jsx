@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Rocket, Wifi, Zap } from "lucide-react";
-import { setProgressHandler } from "../services/GlobalApi";
 
 export default function LoadingPage() {
     const [progress, setProgress] = useState(0);
@@ -21,8 +20,19 @@ export default function LoadingPage() {
     ];
 
     useEffect(() => {
-        setProgressHandler(setProgress);
-        return () => setProgressHandler(null);
+        // Simulate loading progress
+        const progressInterval = setInterval(() => {
+            setProgress(prev => {
+                const newProgress = prev + Math.random() * 15;
+                if (newProgress >= 100) {
+                    clearInterval(progressInterval);
+                    return 100;
+                }
+                return newProgress;
+            });
+        }, 400);
+
+        return () => clearInterval(progressInterval);
     }, []);
 
     useEffect(() => {
