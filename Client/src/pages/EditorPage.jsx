@@ -21,6 +21,13 @@ import toast from 'react-hot-toast';
 import { useAuth } from '@clerk/clerk-react';
 
 export default function EditorPage({ type }) {
+
+    if (type === 'edit') {
+        toast.error("Edit feature not implemented yet ! Create a new post instead.");
+        setTimeout(() => window.location.href = '/articles/edit/new', 3000);
+        return <div className='h-[400px] flex justify-center items-center'><LoaderCircle className='animate-spin' />   Redirecting...</div>;
+    }
+
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         title: '',

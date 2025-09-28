@@ -75,10 +75,10 @@ const HomePage = () => {
         setOpen(false);
     }
 
-    useEffect(() => {
-        {/* Notice Banner */ }
-        Notice();
-    }, []);
+    // useEffect(() => {
+    //     {/* Notice Banner */ }
+    //     Notice();
+    // }, []);
 
     // Decorative helpers
     return (
