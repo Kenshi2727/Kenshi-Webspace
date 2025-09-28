@@ -100,9 +100,9 @@ const HomePage = () => {
 
                 {/*Hero Content*/}
                 <div className="max-w-7xl mx-auto px-4 py-8">
-                    <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:pl-8 items-center">
                         {/* LEFT: Messaging (bigger) */}
-                        <motion.div variants={itemVariants} className="md:col-span-7 text-center md:text-left">
+                        <motion.div variants={itemVariants} className="md:col-span-7 text-center lg:text-left">
                             <div className="inline-flex items-center gap-3 mb-4">
                                 <span className="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-sm font-medium text-white/90">✨ Featured</span>
                                 <span className="text-sm text-white/80">Curated posts from the Kenshi community</span>
@@ -117,11 +117,11 @@ const HomePage = () => {
                                 Share your ideas — <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-100 to-pink-300">write boldly</span> and connect with readers.
                             </motion.h1>
 
-                            <motion.p className="mt-6 text-lg sm:text-xl max-w-2xl text-indigo-100/95" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.18 }}>
+                            <motion.p className="mt-6 text-lg sm:text-xl mx-4 lg:mx-0 lg:max-w-2xl text-indigo-100/95" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.18 }}>
                                 Kenshi Webspace is a shared journey between me and my friends — writing blogs, exchanging ideas, and connecting with readers who love to think, learn, and create.
                             </motion.p>
 
-                            <motion.div className="mt-8 sm:mt-10 flex flex-col md:flex-row items-center md:items-start gap-3 md:gap-4 justify-center md:justify-start" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+                            <motion.div className="mt-8 sm:mt-10 flex flex-col lg:flex-row items-center lg:items-start gap-3 lg:gap-4 justify-center lg:justify-start" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
                                 <motion.div whileHover={{ scale: 1.03 }}>
                                     <Button asChild className="px-6 py-3">
                                         <Link to="/articles">Start Reading</Link>
@@ -139,7 +139,7 @@ const HomePage = () => {
                                 </div>
                             </motion.div>
 
-                            <motion.ul className="mt-8 sm:mt-10 flex flex-col md:flex-row gap-4 text-sm text-indigo-100/80" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.45 }}>
+                            <motion.ul className="mt-8 sm:mt-10 flex flex-col lg:flex-row gap-4 text-sm text-indigo-100/80" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.45 }}>
                                 <li className="inline-flex items-center gap-2">
                                     <span className="w-2 h-2 rounded-full bg-white/70" />
                                     <span>Fast, simple editor</span>
@@ -177,7 +177,7 @@ const HomePage = () => {
                                 </div> */}
 
                                 {/* Desktop: stacked cards (visible on sm+) */}
-                                <div className="relative hidden sm:block w-full max-w-[340px] mx-auto h-[380px]">
+                                <div className="relative hidden lg:block w-full max-w-[340px] mx-auto h-[380px]">
                                     {featuredPosts.map((p, i) => {
                                         const xOffset = i === 0 ? -12 : i === 1 ? 0 : 12;
                                         const topOffsetPx = i * 30;
