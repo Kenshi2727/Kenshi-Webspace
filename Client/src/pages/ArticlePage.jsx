@@ -343,7 +343,7 @@ export default function ArticlePage() {
                                         </Badge>
                                     </motion.div>
 
-                                    <div className="flex items-center gap-4 text-sm text-gray-300">
+                                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-0.5 sm:gap-4 text-xs sm:text-sm text-gray-300">
                                         <motion.div
                                             whileHover={{ scale: 1.05 }}
                                             className="flex items-center gap-2"
