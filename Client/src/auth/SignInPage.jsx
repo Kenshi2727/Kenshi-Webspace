@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Users, ShieldCheck, FileText, Layers, Smartphone, Moon, Sparkles } from "lucide-react";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 import { FcGoogle } from 'react-icons/fc';
+import { useAuth } from "@clerk/clerk-react";
 
 /**
  * CustomSignInPage
@@ -23,6 +24,7 @@ import { FcGoogle } from 'react-icons/fc';
  */
 
 export default function CustomSignInPage() {
+    const { isSignedIn } = useAuth();
     const { signIn, setActive, isLoaded } = useSignIn();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -100,6 +102,11 @@ export default function CustomSignInPage() {
             className: "bg-white text-[#0A66C2] border border-[#0A66C2] hover:bg-[#0A66C2] hover:text-white",
         },
     ];
+
+    if (isSignedIn) {
+        window.location.href = "/?toast=already-signed-in";
+        return null;
+    }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 flex items-center justify-center p-6">

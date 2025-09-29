@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Routes, Route, useSearchParams } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import ArticlesPage from './pages/ArticlesPage';
 import CategoriesPage from './pages/CategoriesPage';
@@ -26,7 +26,7 @@ import ScrollToTop from './navigate/ScrollToTop';
 import ReviewPage from './pages/ReviewPage';
 import ProfilePage from './pages/ProfilePage';
 import MaintainerPage from './super-admin/MaintainerPage';
-import { Toaster } from 'react-hot-toast'
+import toast, { Toaster } from 'react-hot-toast'
 import { useUser } from '@clerk/clerk-react';
 import NotFoundPage from './pages/NotFoundPage';
 
@@ -34,6 +34,13 @@ function App() {
   const isMaintenanceMode = false;
   const [showDarkPrompt, setShowDarkPrompt] = useState(false);
   const { isSignedIn } = useUser();
+  const [params] = useSearchParams();
+
+  useEffect(() => {
+    if (params.get("toast") === "already-signed-in") {
+      toast.success("You are already signed in. Redirecting...");
+    }
+  }, [params]);
 
   // useEffect(() => {
   //   // show dialog immediately on first render
@@ -43,7 +50,7 @@ function App() {
   // }, []);
 
   return (
-    <Router>
+    <>
       <Navbar />
       <Progress />
       <ScrollToTop />
@@ -93,7 +100,7 @@ function App() {
         />
       </main>
       <Footer />
-    </Router>
+    </>
   );
 }
 

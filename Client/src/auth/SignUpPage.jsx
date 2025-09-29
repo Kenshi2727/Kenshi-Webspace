@@ -16,6 +16,7 @@ import { useAuth } from "@clerk/clerk-react";
 import toast from "react-hot-toast";
 
 export default function CustomSignUpPage() {
+    const { isSignedIn } = useAuth();
     const { signUp, setActive, isLoaded } = useSignUp();
     const { signIn } = useSignIn();
     const [firstName, setFirstName] = useState("");
@@ -155,6 +156,11 @@ export default function CustomSignUpPage() {
             redirectUrlComplete: "/", // After successful login
         });
     };
+
+    if (isSignedIn) {
+        window.location.href = "/?toast=already-signed-in";
+        return null;
+    }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 flex items-center justify-center p-6">
