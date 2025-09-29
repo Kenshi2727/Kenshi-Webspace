@@ -8,3 +8,13 @@ export function formatMessageTime(date) {
         hour12: true,
     });
 }
+
+export function formatDate(date_input) {
+    const date = new Date(date_input);
+    const options = {
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+    };
+    return date.toLocaleDateString("en-US", options);
+}

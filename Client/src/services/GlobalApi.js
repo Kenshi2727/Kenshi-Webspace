@@ -20,6 +20,7 @@ const deleteUser = (data) => instance.delete('/users/delete',
         withCredentials: true,//sending auth token
     });
 
+
 // Post APIs
 const createPost = (data, authorId, token) => instance.post(`/posts/new/${authorId}`, data, {
     headers: {
@@ -29,6 +30,9 @@ const createPost = (data, authorId, token) => instance.post(`/posts/new/${author
 });
 
 const getSinglePost = (postId) => instance.get(`/posts/${postId}`);
+
+const getAllPosts = () => instance.get('/posts?populate=*');
+
 
 // Media APIs
 const uploadMedia = (data, token) => instance.post('/media/upload/image', data, {
@@ -44,5 +48,6 @@ export {
     deleteUser,
     createPost,
     uploadMedia,
-    getSinglePost
+    getSinglePost,
+    getAllPosts
 };

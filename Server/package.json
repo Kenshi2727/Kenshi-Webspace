@@ -21,7 +21,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/index.js",
-    "start": "node src/index.js",
+    "start": "cd Server && node src/index.js",
     "build": "cd Database && npm install && npm run generate && cd ../Server && npm install",
     "log": "npm run dev -- --color 2>&1 | tee -a logs.txt",
     "tunnel": "lt --port 3000",

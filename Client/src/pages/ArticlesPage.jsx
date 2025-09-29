@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Clock, Eye, Calendar, Filter, Search, BookOpen, TrendingUp, Star, Heart, Share2 } from 'lucide-react';
+import { Clock, Eye, Calendar, Filter, Search, BookOpen, TrendingUp, Star, Heart, Share2, LoaderCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { articles } from '../seeds/blogs.seed.js'
+import { getAllPosts } from '../services/GlobalApi';
+import toast from 'react-hot-toast';
+import { formatDate } from '../lib/dateFormatter';
 
 const containerVariants = {
     hidden: { opacity: 0 },
@@ -108,6 +110,33 @@ const ArticlesPage = () => {
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [searchTerm, setSearchTerm] = useState('');
     const [likedArticles, setLikedArticles] = useState(new Set());
+    const [articles, setArticles] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [averageReadTime, setAverageReadTime] = useState(0);
+
+    useEffect(() => {
+        const fetchArticles = async () => {
+            setLoading(true);
+            try {
+                const response = await getAllPosts();
+                setArticles(response.data.posts);
+            } catch (error) {
+                console.error("Error fetching articles:", error);
+                toast.error("Failed to load articles.");
+            }
+            finally {
+                setLoading(false);
+            }
+        };
+        fetchArticles();
+    }, []);
+
+    useEffect(() => {
+        if (articles.length > 0) {
+            const totalReadTime = articles.reduce((sum, article) => sum + (article.readTime || 0), 0);
+            setAverageReadTime(Math.round(totalReadTime / articles.length));
+        }
+    }, [articles]);
 
     const categories = [
         "Trending", "Technology", "Geopolitics", "History", "Astronomy", "Religion & Culture", "Anime", "Literature", "Travel"
@@ -259,7 +288,7 @@ const ArticlesPage = () => {
                     </motion.div>
 
                     {/* Articles Grid */}
-                    <AnimatePresence mode="wait">
+                    {!loading && articles.length > 0 && (<AnimatePresence mode="wait">
                         <motion.div
                             key={selectedCategory + searchTerm}
                             variants={containerVariants}
@@ -369,11 +398,11 @@ const ArticlesPage = () => {
                                                     <div className="flex items-center gap-4 text-xs text-purple-300/80">
                                                         <div className="flex items-center gap-1">
                                                             <Calendar size={12} className="text-violet-400" />
-                                                            <span>{article.date}</span>
+                                                            <span>{formatDate(article.createdAt)}</span>
                                                         </div>
                                                         <div className="flex items-center gap-1">
                                                             <Clock size={12} className="text-violet-400" />
-                                                            <span>{article.readTime}</span>
+                                                            <span>{article.readTime} min read</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -420,7 +449,32 @@ const ArticlesPage = () => {
                                 </motion.div>
                             ))}
                         </motion.div>
-                    </AnimatePresence>
+                    </AnimatePresence>)}
+
+                    {/*Fallback */}
+                    {!loading && articles.length === 0 && (
+                        <motion.div
+                            className="mt-10 text-center flex justify-center items-center"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 0.5 }}
+                        >
+                            <p className="text-gray-500">No articles found.</p>
+                        </motion.div>
+                    )}
+
+                    {loading && (
+                        <motion.div
+                            className="mt-10 flex justify-center items-center"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 0.5 }}
+                        >
+                            <p className="text-gray-500 flex justify-center items-center gap-2">
+                                <LoaderCircle className='animate-spin' /> Loading articles...
+                            </p>
+                        </motion.div>
+                    )}
 
                     {/* Load More Section */}
                     <motion.div
@@ -433,9 +487,10 @@ const ArticlesPage = () => {
                         >
                             <Button
                                 size="lg"
+                                onClick={() => toast('Feature coming soon!', { icon: '🔍' })}
                                 className="bg-gradient-to-r from-purple-500/20 to-violet-500/20 hover:from-purple-500/30 hover:to-violet-500/30 text-white border border-purple-300/30 hover:border-purple-300/50 backdrop-blur-xl px-10 py-4 rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl hover:shadow-purple-500/20"
                             >
-                                <span className="bg-gradient-to-r from-white via-purple-200 to-violet-200 bg-clip-text text-transparent font-bold text-lg">
+                                <span className="bg-gradient-to-r from-white via-purple-200 to-violet-200 bg-clip-text text-transparent font-bold text-xs sm:text-lg">
                                     Discover More Articles
                                 </span>
                             </Button>
@@ -459,14 +514,14 @@ const ArticlesPage = () => {
                         {[
                             { label: 'Total Articles', value: articles.length, icon: BookOpen, color: 'from-purple-400 to-violet-500' },
                             { label: 'Categories', value: categories.length - 1, icon: Filter, color: 'from-violet-400 to-indigo-500' },
-                            { label: 'Avg. Read Time', value: '7 min', icon: Clock, color: 'from-indigo-400 to-purple-500' },
+                            { label: 'Avg. Read Time', value: averageReadTime, icon: Clock, color: 'from-indigo-400 to-purple-500' },
                             { label: 'Trending', value: articles.filter(a => a.trending).length, icon: TrendingUp, color: 'from-purple-500 to-violet-400' }
                         ].map((stat, index) => (
                             <motion.div
                                 key={stat.label}
                                 initial={{ opacity: 0, y: 30 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 2 + index * 0.15, duration: 0.6 }}
+                                transition={{ delay: 0.5 + index * 0.15, duration: 0.6 }}
                                 whileHover={{ scale: 1.05, y: -8 }}
                                 className="group"
                             >

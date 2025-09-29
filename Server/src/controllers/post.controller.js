@@ -64,3 +64,36 @@ export const getSinglePost = async (req, res) => {
         return res.status(500).json({ error: "Failed to fetch post" });
     }
 }
+
+export const getAllPosts = async (req, res) => {
+    console.log("Fetching all posts");
+    try {
+        if (req.query.populate === '*') {
+            const posts = await prisma.post.findMany({
+                orderBy: {
+                    createdAt: 'desc'
+                }
+            });
+
+            console.log(`Fetched ${posts.length} posts`);
+            return res.status(200).json({
+                params: req.query,
+                posts
+            });
+
+            // Simulating network delay for testing loading states
+            // setTimeout(() => {
+            //     return res.status(200).json({
+            //         params: req.query,
+            //         posts
+            //     });
+            // }, 2000);
+        }
+        else {
+            return res.status(400).json({ error: "Invalid query parameter" });
+        }
+    } catch (error) {
+        console.error("Error fetching all posts:", error);
+        return res.status(500).json({ error: "Failed to fetch all posts" });
+    }
+}
