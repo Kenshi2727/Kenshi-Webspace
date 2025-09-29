@@ -14,6 +14,7 @@ import { useSignIn } from "@clerk/clerk-react";
 import { createUser, deleteUser } from '../services/GlobalApi.js';
 import { useAuth } from "@clerk/clerk-react";
 import toast from "react-hot-toast";
+import LoadingPage from "../pages/LoadingPage";
 
 export default function CustomSignUpPage() {
     const { isSignedIn } = useAuth();
@@ -159,7 +160,7 @@ export default function CustomSignUpPage() {
 
     if (isSignedIn) {
         window.location.href = "/?toast=already-signed-in";
-        return;
+        return <LoadingPage />;
     }
 
     return (

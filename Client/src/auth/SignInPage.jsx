@@ -11,6 +11,7 @@ import { Users, ShieldCheck, FileText, Layers, Smartphone, Moon, Sparkles } from
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 import { FcGoogle } from 'react-icons/fc';
 import { useAuth } from "@clerk/clerk-react";
+import LoadingPage from "../pages/LoadingPage";
 
 /**
  * CustomSignInPage
@@ -105,7 +106,7 @@ export default function CustomSignInPage() {
 
     if (isSignedIn) {
         window.location.href = "/?toast=already-signed-in";
-        return;
+        return <LoadingPage />;
     }
 
     return (
