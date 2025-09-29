@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kenshi Webspace - Backend Services</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div class="matrix-bg"></div>
+    
+    <div class="container">
+        <header class="header">
+            <div class="logo-section">
+                <div class="terminal-window">
+                    <div class="terminal-header">
+                        <span class="terminal-dot red"></span>
+                        <span class="terminal-dot yellow"></span>
+                        <span class="terminal-dot green"></span>
+                    </div>
+                    <div class="terminal-body">
+                        <span class="prompt">$</span> <span class="command">echo "Kenshi Webspace"</span>
+                        <div class="cursor"></div>
+                    </div>
+                </div>
+                <h1><span class="code-bracket">&lt;</span>Kenshi Webspace<span class="code-bracket">/&gt;</span></h1>
+                <p class="subtitle">// Backend Services Dashboard</p>
+            </div>
+            <div class="status-section">
+                <div class="status-badge">
+                    <span class="status-dot"></span>
+                    <span>All Systems Online</span>
+                </div>
+                <div class="system-info">
+                    <span class="info-item">⚡ uptime: 99.9%</span>
+                    <span class="info-item">🔧 services: 5</span>
+                    <span class="info-item" id="live-time">🕐 loading...</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="welcome-section">
+            <div class="code-editor">
+                <div class="editor-header">
+                    <span class="file-tab active">dashboard.jsx</span>
+                    <span class="file-tab">services.config</span>
+                    <span class="file-tab">README.md</span>
+                </div>
+                <div class="editor-content">
+                    <div class="line-numbers">
+                        <span>1</span>
+                        <span>2</span>
+                        <span>3</span>
+                        <span>4</span>
+                    </div>
+                    <div class="code-content">
+                        <div><span class="keyword">const</span> <span class="variable">greeting</span> = <span class="string">"Welcome, Developer!"</span>;</div>
+                        <div><span class="keyword">const</span> <span class="variable">message</span> = <span class="string">"Access all your development consoles and documentation"</span>;</div>
+                        <div><span class="comment">// Quick access to all backend services</span></div>
+                        <div><span class="keyword">export default</span> <span class="function">Dashboard</span>;</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="services-grid">
+            <!-- Frontend Section -->
+            <section class="service-card" data-category="frontend">
+                <div class="card-glow"></div>
+                <div class="card-header">
+                    <div class="header-left">
+                        <div class="icon-wrapper vercel-icon">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2L2 22h20L12 2z" fill="currentColor"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3>Frontend Deployment</h3>
+                            <span class="tech-stack">Next.js • React • Vercel</span>
+                        </div>
+                    </div>
+                    <span class="badge frontend">DEPLOY</span>
+                </div>
+                <p class="card-description">Manage deployment pipelines, edge functions, and domain configurations.</p>
+                <div class="button-group">
+                    <a href="https://vercel.com/kenshis-projects-7cf5e01d/kenshi-webspace" target="_blank" class="console-btn vercel">
+                        <span class="btn-icon">▲</span>
+                        <span>Open Console</span>
+                        <span class="btn-arrow">→</span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Database Section -->
+            <section class="service-card" data-category="database">
+                <div class="card-glow"></div>
+                <div class="card-header">
+                    <div class="header-left">
+                        <div class="icon-wrapper aiven-icon">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
+                                <path d="M3 9h18M9 9v12" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3>Database Management</h3>
+                            <span class="tech-stack">PostgreSQL • Aiven Cloud</span>
+                        </div>
+                    </div>
+                    <span class="badge database">DATA</span>
+                </div>
+                <p class="card-description">Monitor queries, backups, and database performance metrics.</p>
+                <div class="button-group">
+                    <a href="https://console.aiven.io/account/a55aaa94f37d/project/abhishekmathurofficial-9ce7/services/kenshi-webspace/overview" target="_blank" class="console-btn aiven">
+                        <span class="btn-icon">◆</span>
+                        <span>Open Console</span>
+                        <span class="btn-arrow">→</span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Backend Section -->
+            <section class="service-card" data-category="backend">
+                <div class="card-glow"></div>
+                <div class="card-header">
+                    <div class="header-left">
+                        <div class="icon-wrapper render-icon">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
+                                <path d="M12 3v18M3 12h18" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3>Backend Services</h3>
+                            <span class="tech-stack">Node.js • Express • Render</span>
+                        </div>
+                    </div>
+                    <span class="badge backend">API</span>
+                </div>
+                <p class="card-description">Manage API endpoints, webhooks, and server configurations.</p>
+                <div class="button-group">
+                    <a href="https://dashboard.render.com/web/srv-d3bc5cumcj7s73epo0i0/logs" target="_blank" class="console-btn render">
+                        <span class="btn-icon">◉</span>
+                        <span>Open Console</span>
+                        <span class="btn-arrow">→</span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Authentication Section -->
+            <section class="service-card" data-category="auth">
+                <div class="card-glow"></div>
+                <div class="card-header">
+                    <div class="header-left">
+                        <div class="icon-wrapper clerk-icon">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="5" y="11" width="14" height="10" rx="2" stroke="currentColor" stroke-width="2"/>
+                                <path d="M12 11V7a4 4 0 0 1 8 0v4" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3>Authentication</h3>
+                            <span class="tech-stack">OAuth • JWT • Clerk</span>
+                        </div>
+                    </div>
+                    <span class="badge auth">AUTH</span>
+                </div>
+                <p class="card-description">Manage user sessions, authentication flows, and security policies.</p>
+                <div class="button-group">
+                    <a href="https://dashboard.clerk.com/apps/app_31Bx68rTqqXHuWFboHeNmg6hDVV/instances/ins_31Bx69pSYubjIgGJlswQheeBCtF" target="_blank" class="console-btn clerk">
+                        <span class="btn-icon">◐</span>
+                        <span>Open Console</span>
+                        <span class="btn-arrow">→</span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Media Storage Section -->
+            <section class="service-card" data-category="storage">
+                <div class="card-glow"></div>
+                <div class="card-header">
+                    <div class="header-left">
+                        <div class="icon-wrapper cloudinary-icon">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M18 10h-1.26A8 8 0 1 0 9 17h9a4 4 0 0 0 0-8z" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3>Media Storage</h3>
+                            <span class="tech-stack">CDN • Image Opt • Cloudinary</span>
+                        </div>
+                    </div>
+                    <span class="badge storage">MEDIA</span>
+                </div>
+                <p class="card-description">Manage assets, transformations, and CDN delivery configurations.</p>
+                <div class="button-group">
+                    <a href="https://console.cloudinary.com/app/c-0db7aa4ff9b57ba334de641d91fe26/assets/media_library/search?q=&view_mode=mosaic" target="_blank" class="console-btn cloudinary">
+                        <span class="btn-icon">☁</span>
+                        <span>Open Console</span>
+                        <span class="btn-arrow">→</span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Documentation Section -->
+            <section class="service-card documentation" data-category="docs">
+                <div class="card-glow"></div>
+                <div class="card-header">
+                    <div class="header-left">
+                        <div class="icon-wrapper docs-icon">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z" stroke="currentColor" stroke-width="2"/>
+                                <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3>Documentation Hub</h3>
+                            <span class="tech-stack">API Docs • Guides • Resources</span>
+                        </div>
+                    </div>
+                    <span class="badge docs">DOCS</span>
+                </div>
+                <p class="card-description">Access technical documentation, API references, and development guides.</p>
+                <div class="button-group">
+                    <a href="#" class="console-btn docs">
+                        <span class="btn-icon">📖</span>
+                        <span>API Reference</span>
+                        <span class="btn-arrow">→</span>
+                    </a>
+                    <a href="#" class="console-btn docs">
+                        <span class="btn-icon">📚</span>
+                        <span>Developer Guides</span>
+                        <span class="btn-arrow">→</span>
+                    </a>
+                    <a href="https://github.com/Kenshi2727/Kenshi-Webspace" class="console-btn docs">
+                        <span class="btn-icon">🔗</span>
+                        <span>Repository Link</span>
+                        <span class="btn-arrow">→</span>
+                    </a>
+                </div>
+            </section>
+        </div>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-left">
+                    <p class="footer-title">⚔️ Kenshi Webspace Backend</p>
+                    <p class="footer-subtitle">For authorized developers and contributors</p>
+                </div>
+                <div class="footer-right">
+                    <span class="footer-badge">v2.0.1</span>
+                    <span class="footer-badge">Secure</span>
+                    <span class="footer-badge">Developer Edition</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

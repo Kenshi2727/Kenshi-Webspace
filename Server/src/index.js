@@ -8,9 +8,12 @@ import mediaRoutes from "./routes/media.route.js";
 import { clerkMiddleware } from '@clerk/express';
 import bodyParser from 'body-parser';
 import helmet from "helmet";
+import { dirname } from "path";
+import { fileURLToPath } from "url";
 
 dotenv.config();
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -31,6 +34,13 @@ app.use(express.json());
 // rest middlewares for json type
 app.use("/posts", postRoutes);
 app.use("/media", mediaRoutes);
+
+
+app.use(express.static('public'));// do not place above cors, cors will not work
+//BACKEND HOME PAGE
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + "/public/index.html");
+});
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
