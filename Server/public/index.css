@@ -524,3 +524,105 @@ h1 {
     h1 { font-size: 1.5rem; }
     .subtitle { font-size: 0.9rem; }
 }
+
+.documentation-section {
+            margin: 3rem 0 2rem 0;
+            padding: 2rem;
+            background: rgba(15, 15, 35, 0.6);
+            border: 1px solid rgba(100, 255, 218, 0.1);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .docs-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .docs-header h2 {
+            margin: 0;
+            color: #64ffda;
+            font-size: 1.8rem;
+        }
+
+        .docs-header p {
+            margin: 0.5rem 0 0 0;
+            color: #8892b0;
+            font-size: 0.95rem;
+        }
+
+        .docs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .doc-card {
+            position: relative;
+            padding: 1.5rem;
+            background: rgba(20, 20, 45, 0.8);
+            border: 1px solid rgba(100, 255, 218, 0.15);
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .doc-card:hover {
+            border-color: #64ffda;
+            box-shadow: 0 0 20px rgba(100, 255, 218, 0.2);
+        }
+
+        .doc-card .doc-icon {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .doc-card h3 {
+            margin: 0 0 0.5rem 0;
+            color: #ccd6f6;
+            font-size: 1.1rem;
+        }
+
+        .doc-card p {
+            margin: 0;
+            color: #8892b0;
+            font-size: 0.9rem;
+        }
+
+        .doc-card .doc-arrow {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            color: #64ffda;
+            font-size: 1.5rem;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .doc-card:hover .doc-arrow {
+            opacity: 1;
+            transform: translateX(5px);
+        }
+
+        .cron-icon {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .badge.cron {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .console-btn.cron {
+            background: linear-gradient(135deg, rgba(240, 147, 251, 0.1) 0%, rgba(245, 87, 108, 0.1) 100%);
+            border-color: rgba(240, 147, 251, 0.3);
+        }
+
+        .console-btn.cron:hover {
+            background: linear-gradient(135deg, rgba(240, 147, 251, 0.2) 0%, rgba(245, 87, 108, 0.2) 100%);
+            border-color: #f093fb;
+            box-shadow: 0 0 20px rgba(240, 147, 251, 0.3);
+        }

@@ -202,43 +202,75 @@
                 </div>
             </section>
 
-            <!-- Documentation Section -->
-            <section class="service-card documentation" data-category="docs">
+            <!-- Cron Jobs Section -->
+            <section class="service-card" data-category="cron">
                 <div class="card-glow"></div>
                 <div class="card-header">
                     <div class="header-left">
-                        <div class="icon-wrapper docs-icon">
+                        <div class="icon-wrapper cron-icon">
                             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z" stroke="currentColor" stroke-width="2"/>
-                                <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" stroke="currentColor" stroke-width="2"/>
+                                <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
+                                <path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                             </svg>
                         </div>
                         <div>
-                            <h3>Documentation Hub</h3>
-                            <span class="tech-stack">API Docs • Guides • Resources</span>
+                            <h3>Cron Job Console</h3>
+                            <span class="tech-stack">Scheduled Tasks • Automation</span>
                         </div>
                     </div>
-                    <span class="badge docs">DOCS</span>
+                    <span class="badge cron">CRON</span>
                 </div>
-                <p class="card-description">Access technical documentation, API references, and development guides.</p>
+                <p class="card-description">Monitor scheduled jobs, task execution logs, and automated workflows.</p>
                 <div class="button-group">
-                    <a href="#" class="console-btn docs">
-                        <span class="btn-icon">📖</span>
-                        <span>API Reference</span>
-                        <span class="btn-arrow">→</span>
-                    </a>
-                    <a href="#" class="console-btn docs">
-                        <span class="btn-icon">📚</span>
-                        <span>Developer Guides</span>
-                        <span class="btn-arrow">→</span>
-                    </a>
-                    <a href="https://github.com/Kenshi2727/Kenshi-Webspace" class="console-btn docs">
-                        <span class="btn-icon">🔗</span>
-                        <span>Repository Link</span>
+                    <a href="https://console.cron-job.org/jobs/6652217/history" target="_blank" class="console-btn cron">
+                        <span class="btn-icon">⏰</span>
+                        <span>Open Console</span>
                         <span class="btn-arrow">→</span>
                     </a>
                 </div>
             </section>
+        </div>
+
+        <!-- Documentation Hub Section -->
+        <div class="documentation-section">
+            <div class="docs-header">
+                <div class="icon-wrapper docs-icon">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z" stroke="currentColor" stroke-width="2"/>
+                        <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </div>
+                <div>
+                    <h2>📚 Documentation Hub</h2>
+                    <p>Access technical documentation, API references, and development guides</p>
+                </div>
+            </div>
+            <div class="docs-grid">
+                <a href="#" class="doc-card">
+                    <span class="doc-icon">📖</span>
+                    <h3>API Reference</h3>
+                    <p>Complete API endpoints documentation</p>
+                    <span class="doc-arrow">→</span>
+                </a>
+                <a href="#" class="doc-card">
+                    <span class="doc-icon">📚</span>
+                    <h3>Developer Guides</h3>
+                    <p>Step-by-step development tutorials</p>
+                    <span class="doc-arrow">→</span>
+                </a>
+                <a href="https://github.com/Kenshi2727/Kenshi-Webspace" target="_blank" class="doc-card">
+                    <span class="doc-icon">🔗</span>
+                    <h3>Repository Link</h3>
+                    <p>View source code on GitHub</p>
+                    <span class="doc-arrow">→</span>
+                </a>
+                <a href="#" class="doc-card">
+                    <span class="doc-icon">🛠️</span>
+                    <h3>Architecture Docs</h3>
+                    <p>System design and infrastructure</p>
+                    <span class="doc-arrow">→</span>
+                </a>
+            </div>
         </div>
 
         <footer class="footer">
