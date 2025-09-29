@@ -159,7 +159,7 @@ export default function CustomSignUpPage() {
 
     if (isSignedIn) {
         window.location.href = "/?toast=already-signed-in";
-        return null;
+        return;
     }
 
     return (
