@@ -309,7 +309,7 @@ const ArticlesPage = () => {
                                         {/* Article Image */}
                                         <div className="relative overflow-hidden h-52 bg-gradient-to-br from-purple-400/20 to-violet-600/20">
                                             <motion.img
-                                                src={article.image ? article.image : '/placeholder.png'}
+                                                src={(article.thumbnail && article.thumbnail.trim() !== '') ? article.thumbnail : '/placeholder.png'}
                                                 alt={article.title}
                                                 onError={(e) => {
                                                     e.target.onerror = null;
