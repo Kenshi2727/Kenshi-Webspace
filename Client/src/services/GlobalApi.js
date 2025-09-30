@@ -1,4 +1,5 @@
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const instance = axios.create({
     baseURL: import.meta.env.VITE_BASE_URL,
@@ -7,6 +8,24 @@ const instance = axios.create({
         "Content-Type": "application/json",
     }
 });
+
+// Pinging Server
+const pingServer = async () => {
+    const startTime = Date.now();
+    // retrying for 60 seconds
+    toast.loading("Waking up server, please wait...", { duration: 60000 });
+    while (Date.now() - startTime <= 60000) {
+        try {
+            const response = await instance.get('/ping');
+            toast.dismiss();
+            return response;
+        } catch (error) {
+            console.log("Retry failed");
+            continue;
+        }
+    }
+    toast.error("Server is down, please try again later.");
+}
 
 // User APIs
 const createUser = (data) => instance.post('/users/create', data);
@@ -45,6 +64,7 @@ const uploadMedia = (data, token) => instance.post('/media/upload/image', data, 
 });
 
 export {
+    pingServer,
     createUser,
     deleteUser,
     createPost,
