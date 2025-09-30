@@ -7,7 +7,7 @@
 
 **Type this Konami code on backend service**
 
-## [Backend Serice](https://kenshi-webspace.onrender.com)
+## [Backend Serice](https://kenshi-webspace-uhyg.vercel.app/)
 
 ---
 
@@ -15,4 +15,4 @@
 
 **Clerk Console** - [for Dev and Production (Authorized)](https://dashboard.clerk.com/apps/app_31Bx68rTqqXHuWFboHeNmg6hDVV/instances/ins_31Bx69pSYubjIgGJlswQheeBCtF)
 
-**Render Console** -[Only for Production (Authorized)](https://dashboard.render.com/web/srv-d3bc5cumcj7s73epo0i0/logs)
+**Vercel Console** -[Only for Production (Authorized)](https://vercel.com/kenshis-projects-7cf5e01d/kenshi-webspace-uhyg)
