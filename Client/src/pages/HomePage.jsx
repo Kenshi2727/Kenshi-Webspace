@@ -21,6 +21,7 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { getFeaturedPosts } from '../services/GlobalApi';
+import { formatDate } from '../lib/dateFormatter.js';
 
 const containerVariants = {
     hidden: { opacity: 0, y: 30 },
@@ -82,6 +83,8 @@ const HomePage = () => {
                             'The world could be a better place with your words. Start writing and become the first featured author on Kenshi Webspace !',
                         category: 'Crying Kitty',
                         thumbnail: '/placeholder2.png',
+                        createdAt: new Date(),
+                        readTime: 0
                     })));
                     setErrorFlag(true);
                     toast.error("No featured posts available !");
@@ -258,10 +261,12 @@ const HomePage = () => {
                                                             className="w-full h-full object-cover"
                                                         />
                                                     </div>
-                                                    <CardContent className="p-4">
+                                                    <CardContent className="p-4 space-y-6">
                                                         <p className="text-xs font-semibold text-indigo-200">{p.category}</p>
-                                                        <h3 className="mt-1 text-base font-semibold text-white/95 line-clamp-2">{p.title}</h3>
-                                                        <p className="mt-2 text-xs text-indigo-100/70 line-clamp-3">{p.excerpt}</p>
+                                                        <div className='space-y-4'>
+                                                            <h3 className="mt-1 text-base font-semibold text-white/95 line-clamp-1">{p.title}</h3>
+                                                            <p className="mt-2 text-xs text-indigo-100/70 line-clamp-1">{p.excerpt}</p>
+                                                        </div>
                                                     </CardContent>
                                                 </Link>
                                             </motion.div>
@@ -351,15 +356,15 @@ const HomePage = () => {
                                             <p className="text-sm font-medium text-indigo-600">{post.category}</p>
 
                                             <motion.h3
-                                                className="text-xl font-semibold text-gray-900 line-clamp-2"
+                                                className="text-xl font-semibold text-gray-900 min-h-20 line-clamp-3"
                                                 whileHover={{ color: '#4f46e5' }}
                                             >
                                                 {post.title}
                                             </motion.h3>
                                             <p className="text-gray-500 mt-2 line-clamp-3">{post.excerpt}</p>
 
-                                            <div className="flex justify-between items-center pt-4">
-                                                <span className="text-sm text-gray-400">{post.date} · {post.readTime}</span>
+                                            <div className="flex justify-between items-center gap-1 pt-4">
+                                                <span className="text-sm text-gray-400">{formatDate(post.createdAt)} · {post.readTime} min read</span>
                                                 <Link
                                                     to={errorFlag || loading ? '#' : `/articles/${post.id}`}
                                                     className="text-indigo-600 hover:underline text-sm"
