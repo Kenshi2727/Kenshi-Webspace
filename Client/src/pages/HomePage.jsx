@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
-import { featuredPosts } from '../seeds/blogs.seed';
 import {
     Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter
 } from "@/components/ui/dialog";
@@ -21,6 +20,7 @@ import {
     TooltipContent,
     TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { getFeaturedPosts } from '../services/GlobalApi';
 
 const containerVariants = {
     hidden: { opacity: 0, y: 30 },
@@ -57,6 +57,48 @@ const HomePage = () => {
     const [submitting, setSubmitting] = useState(false);
     const [open, setOpen] = useState(false);
     const { isSignedIn } = useUser();
+    const [loading, setLoading] = useState(false);
+    const [featuredPosts, setFeaturedPosts] = useState(Array.from({ length: 3 }, (_, index) => ({
+        id: index,
+        title: 'Loading...',
+        excerpt:
+            'Loading...',
+        category: 'Loading...',
+        thumbnail: '/placeholder.png',
+    })));
+    const [errorFlag, setErrorFlag] = useState(false);
+
+    useEffect(() => {
+        async function fetchFeaturedPosts() {
+            try {
+                setLoading(true);
+                setErrorFlag(false);
+                const response = await getFeaturedPosts();
+                if (response.data.featuredPosts.length === 0) {
+                    setFeaturedPosts(Array.from({ length: 3 }, (_, index) => ({
+                        id: index,
+                        title: 'No Featured Posts Available !',
+                        excerpt:
+                            'The world could be a better place with your words. Start writing and become the first featured author on Kenshi Webspace !',
+                        category: 'Crying Kitty',
+                        thumbnail: '/placeholder2.png',
+                    })));
+                    setErrorFlag(true);
+                    toast.error("No featured posts available !");
+                }
+                else
+                    setFeaturedPosts(response.data.featuredPosts);
+            } catch (error) {
+                console.error("Error fetching featured posts:", error);
+                setErrorFlag(true);
+                toast.error("Failed to load featured posts !");
+            }
+            finally {
+                setLoading(false);
+            }
+        }
+        fetchFeaturedPosts();
+    }, []);
 
     async function handleConfirm() {
         try {
@@ -196,9 +238,25 @@ const HomePage = () => {
                                                     zIndex: 30 - i
                                                 }}
                                             >
-                                                <Link to={`/articles/${p.id}`} className="block">
+                                                <Link
+                                                    to={errorFlag || loading ? '#' : `/articles/${p.id}`}
+                                                    className="block"
+                                                    onClick={() => {
+                                                        loading && toast.loading("Loading article, Please wait...", { duration: 1000 });
+                                                        errorFlag && toast.error("Failed to load article ! Try again later.");
+                                                    }}
+                                                >
                                                     <div className="h-44 overflow-hidden rounded-t-2xl">
-                                                        <img src={p.thumbnail} alt={p.title} className="w-full h-full object-cover" />
+                                                        <img
+                                                            src={(!p.thumbnail || p.thumbnail.trim() === '') ? '/placeholder.png' : p.thumbnail}
+                                                            onError={(e) => {
+                                                                e.target.onerror = null;
+                                                                e.target.src = '/placeholder.png';
+
+                                                            }}
+                                                            alt={p.title}
+                                                            className="w-full h-full object-cover"
+                                                        />
                                                     </div>
                                                     <CardContent className="p-4">
                                                         <p className="text-xs font-semibold text-indigo-200">{p.category}</p>
@@ -274,7 +332,13 @@ const HomePage = () => {
                                 className="flex flex-col"
                             >
                                 <Card className="p-0 flex flex-col h-full transition-shadow">
-                                    <Link to={`/articles/${post.id}`}>
+                                    <Link
+                                        to={errorFlag || loading ? '#' : `/articles/${post.id}`}
+                                        onClick={() => {
+                                            loading && toast.loading("Loading article, Please wait...", { duration: 1000 });
+                                            errorFlag && toast.error("Failed to load article ! Try again later.");
+                                        }}
+                                    >
                                         <motion.div className="h-48 w-full overflow-hidden rounded-t-xl">
                                             <img
                                                 src={post.thumbnail}
@@ -297,7 +361,7 @@ const HomePage = () => {
                                             <div className="flex justify-between items-center pt-4">
                                                 <span className="text-sm text-gray-400">{post.date} · {post.readTime}</span>
                                                 <Link
-                                                    to={`/articles/${post.id}`}
+                                                    to={errorFlag || loading ? '#' : `/articles/${post.id}`}
                                                     className="text-indigo-600 hover:underline text-sm"
                                                 >
                                                     Read more →

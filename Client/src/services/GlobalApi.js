@@ -33,6 +33,7 @@ const getSinglePost = (postId) => instance.get(`/posts/${postId}`);
 
 const getAllPosts = () => instance.get('/posts?populate=*');
 
+const getFeaturedPosts = () => instance.get('/posts?isFeatured=true');
 
 // Media APIs
 const uploadMedia = (data, token) => instance.post('/media/upload/image', data, {
@@ -49,5 +50,6 @@ export {
     createPost,
     uploadMedia,
     getSinglePost,
-    getAllPosts
+    getAllPosts,
+    getFeaturedPosts
 };

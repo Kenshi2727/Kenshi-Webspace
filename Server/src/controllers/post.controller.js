@@ -65,9 +65,14 @@ export const getSinglePost = async (req, res) => {
     }
 }
 
-export const getAllPosts = async (req, res) => {
+export const getAllPosts = async (req, res, next) => {
     console.log("Fetching all posts");
     try {
+        if (req.query.isFeatured === 'true') {
+            console.log("Request for featured posts");
+            return next();
+        }
+
         if (req.query.populate === '*') {
             const posts = await prisma.post.findMany({
                 orderBy: {
@@ -95,5 +100,20 @@ export const getAllPosts = async (req, res) => {
     } catch (error) {
         console.error("Error fetching all posts:", error);
         return res.status(500).json({ error: "Failed to fetch all posts" });
+    }
+}
+
+export const getFeaturedPosts = async (req, res) => {
+    console.log("Fetching featured posts");
+    try {
+        const featuredPosts = await prisma.post.findMany({
+            where: {
+                featured: true
+            }
+        });
+        return res.status(200).json({ message: "Featured posts fetched successfully", featuredPosts });
+    } catch (error) {
+        console.error("Error fetching featured posts:", error);
+        return res.status(500).json({ error: "Failed to fetch featured posts" });
     }
 }
