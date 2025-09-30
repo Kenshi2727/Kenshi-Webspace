@@ -30,6 +30,13 @@ const pingServer = async () => {
 // User APIs
 const createUser = (data) => instance.post('/users/create', data);
 
+const getUser = (userId, token) => instance.get(`/users/${userId}`, {
+    headers: {
+        Authorization: `Bearer ${token}`,
+    },
+    withCredentials: true,
+});
+
 const deleteUser = (data) => instance.delete('/users/delete',
     {
         data,// data field in CONFIG only for delete method
@@ -66,6 +73,7 @@ const uploadMedia = (data, token) => instance.post('/media/upload/image', data, 
 export {
     pingServer,
     createUser,
+    getUser,
     deleteUser,
     createPost,
     uploadMedia,

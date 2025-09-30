@@ -136,3 +136,21 @@ export const deleteUser = async (req, res) => {
         return res.status(500).json({ message: "Internal Server Error: Failed to delete user" });
     }
 };
+
+export const getUser = async (req, res) => {
+    console.log("User info request for id:", req.params.userId);
+    try {
+        const user = await prisma.user.findUnique({
+            where: { id: req.params.userId },
+        });
+        if (!user) {
+            console.warn("⚠️ User not found with ID:", req.params.userId);
+            return res.status(404).json({ message: "User not found[SECURITY BREACH!]" });
+        }
+        return res.status(200).json({ user });
+    } catch (error) {
+        console.error("Error retrieving user:", error);
+        return res.status(500).json({ message: "Internal Server Error: Failed to retrieve user" });
+    }
+
+}

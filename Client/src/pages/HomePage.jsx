@@ -20,8 +20,9 @@ import {
     TooltipContent,
     TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { getFeaturedPosts } from '../services/GlobalApi';
+import { getFeaturedPosts, getUser } from '../services/GlobalApi';
 import { formatDate } from '../lib/dateFormatter.js';
+import { useAuth } from '@clerk/clerk-react';
 
 const containerVariants = {
     hidden: { opacity: 0, y: 30 },
@@ -68,6 +69,8 @@ const HomePage = () => {
         thumbnail: '/placeholder.png',
     })));
     const [errorFlag, setErrorFlag] = useState(false);
+    const [role, setRole] = useState('USER');
+    const { userId, getToken } = useAuth();
 
     useEffect(() => {
         async function fetchFeaturedPosts() {
@@ -100,7 +103,22 @@ const HomePage = () => {
                 setLoading(false);
             }
         }
+
+        async function fetchUserInfo() {
+            try {
+                if (!isSignedIn) return;
+                const token = await getToken();
+                const response = await getUser(userId, token);
+                if (response.data) {
+                    setRole(response.data.role);
+                }
+            } catch (error) {
+                console.error("Error fetching user info:", error);
+            }
+        }
+
         fetchFeaturedPosts();
+        fetchUserInfo();
     }, []);
 
     async function handleConfirm() {
@@ -174,9 +192,11 @@ const HomePage = () => {
                                 </motion.div>
 
                                 <motion.div whileHover={{ scale: 1.03 }}>
-                                    <Button onClick={() => setOpen(true)} asChild variant="outline" className="px-6 py-3">
-                                        <span>Contribute Now</span>
-                                    </Button>
+                                    <Link to={(role === 'USER') ? "#" : "/my-articles"}>
+                                        <Button onClick={() => (role === 'USER') && setOpen(true)} asChild variant="outline" className="px-6 py-3">
+                                            <span>{role === 'USER' ? 'Contribute Now' : 'Your Articles'}</span>
+                                        </Button>
+                                    </Link>
                                 </motion.div>
 
                                 <div className="mt-3 sm:mt-0 text-sm text-indigo-100/80 pl-1 lg:py-1.5">
