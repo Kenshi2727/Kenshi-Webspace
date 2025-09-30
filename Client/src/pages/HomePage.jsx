@@ -69,7 +69,7 @@ const HomePage = () => {
         thumbnail: '/placeholder.png',
     })));
     const [errorFlag, setErrorFlag] = useState(false);
-    const [role, setRole] = useState('USER');
+    const [role, setRole] = useState(null);
     const { userId, getToken } = useAuth();
 
     useEffect(() => {
@@ -104,9 +104,15 @@ const HomePage = () => {
             }
         }
 
+        fetchFeaturedPosts();
+
+    }, []);
+
+
+    useEffect(() => {
         async function fetchUserInfo() {
             try {
-                if (!isSignedIn) return;
+                if (!isSignedIn || !userId) return;
                 const token = await getToken();
                 const response = await getUser(userId, token);
                 if (response.data) {
@@ -117,7 +123,6 @@ const HomePage = () => {
             }
         }
 
-        fetchFeaturedPosts();
         fetchUserInfo();
     }, []);
 
@@ -194,7 +199,7 @@ const HomePage = () => {
                                 <motion.div whileHover={{ scale: 1.03 }}>
                                     <Link to={(role === 'USER') ? "#" : "/my-articles"}>
                                         <Button onClick={() => (role === 'USER') && setOpen(true)} asChild variant="outline" className="px-6 py-3">
-                                            <span>{role === 'USER' ? 'Contribute Now' : 'Your Articles'}</span>
+                                            <span>{isSignedIn ? (role !== 'USER') ? 'Your Articles' : 'Contribute Now' : 'Contribute Now'}</span>
                                         </Button>
                                     </Link>
                                 </motion.div>
