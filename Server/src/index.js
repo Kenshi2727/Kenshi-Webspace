@@ -8,7 +8,7 @@ import mediaRoutes from "./routes/media.route.js";
 import { clerkMiddleware } from '@clerk/express';
 import bodyParser from 'body-parser';
 import helmet from "helmet";
-import { dirname } from "path";
+import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 
 dotenv.config();
@@ -36,10 +36,14 @@ app.use("/posts", postRoutes);
 app.use("/media", mediaRoutes);
 
 
-app.use(express.static('public'));// do not place above cors, cors will not work
+// app.use(express.static('public'));// do not place above cors, cors will not work
+const publicPath = join(__dirname, "public");
+app.use(express.static(publicPath));
+
 //BACKEND HOME PAGE
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + "/public/index.html");
+    // res.sendFile(__dirname + "/public/index.html");
+    res.sendFile(join(publicPath, "index.html"));
 });
 
 //ping route
