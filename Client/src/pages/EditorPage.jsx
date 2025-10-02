@@ -16,18 +16,14 @@ import rehypeHighlight from 'rehype-highlight';
 import rehypeRaw from 'rehype-raw';
 import 'highlight.js/styles/github-dark.css';
 import { Pencil, Eye, Send, FileText, Clock, Tag, Image, Upload, LoaderCircle } from 'lucide-react';
-import { createPost, uploadMedia } from '../services/GlobalApi';
+import { createPost, getSinglePost, uploadMedia } from '../services/GlobalApi';
 import toast from 'react-hot-toast';
 import { useAuth } from '@clerk/clerk-react';
+import dummyContent from '../constants/dummyContent.md?raw'
+import { useParams } from 'react-router-dom';
+import LoadingPage from './LoadingPage'
 
 export default function EditorPage({ type }) {
-
-    if (type === 'edit') {
-        toast.error("Edit feature not implemented yet ! Create a new post instead.");
-        setTimeout(() => window.location.href = '/articles/edit/new', 3000);
-        return <div className='h-[400px] flex justify-center items-center'><LoaderCircle className='animate-spin' />   Redirecting...</div>;
-    }
-
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         title: '',
@@ -36,24 +32,7 @@ export default function EditorPage({ type }) {
         readTime: 0,
         thumbnail: '',
         coverImage: '',
-        content: `# Your Article Title
-
-## Introduction
-Write your introduction here...
-
-## Main Content
-- **Bold**, *Italic*, ~~Strikethrough~~
-- Task List:
-  - [x] Done
-  - [ ] Pending
-
-## Code Example
-\`\`\`js
-console.log('Hello, world!');
-\`\`\`
-
-## Conclusion
-Wrap up your article here...`
+        content: dummyContent
     });
 
     const handleInputChange = (field, value) => {
@@ -65,6 +44,7 @@ Wrap up your article here...`
     const [thumbPreview, setThumbPreview] = useState(null);
     const [coverFile, setCoverFile] = useState(null);
     const [coverPreview, setCoverPreview] = useState(null);
+    const params = useParams();
 
     const { getToken, userId } = useAuth();
 
@@ -75,6 +55,27 @@ Wrap up your article here...`
             if (coverPreview) URL.revokeObjectURL(coverPreview);
         };
     }, [thumbPreview, coverPreview]);
+
+    useEffect(() => {
+        if (type === "new" && localStorage.getItem("draft")) setFormData(JSON.parse(localStorage.getItem("draft")));
+        if (type === "edit") {
+            async function fetchPost() {
+                try {
+                    setLoading(true);
+                    const post = await getSinglePost(params.id);
+                    setFormData(post.data);
+                } catch (error) {
+                    console.error(error);
+                    toast.loading("Error editing post, redirecting...", { duration: 3000 });
+                    window.history.back();
+                }
+                finally {
+                    setLoading(false);
+                }
+            }
+            fetchPost();
+        }
+    }, [])
 
     const handleImageUpload = (e, type) => {
         const file = e.target.files && e.target.files[0];
@@ -199,29 +200,17 @@ Wrap up your article here...`
                 readTime: 0,
                 thumbnail: '',
                 coverImage: '',
-                content: `# Your Article Title
-
-## Introduction
-Write your introduction here...
-
-## Main Content
-- **Bold**, *Italic*, ~~Strikethrough~~
-- Task List:
-  - [x] Done
-  - [ ] Pending
-
-## Code Example
-\`\`\`js
-console.log('Hello, world!');
-\`\`\`
-
-## Conclusion
-Wrap up your article here...`
+                content: dummyContent
             })
 
             // set loading to false
             setLoading(false);
         }
+    }
+
+    const saveDraft = () => {
+        localStorage.setItem("draft", JSON.stringify(formData));
+        toast.success("Draft is saved locally. Saving to cloud will be enabled in future soon...", { duration: 7000 })
     }
 
     const categories = [
@@ -256,6 +245,10 @@ Wrap up your article here...`
         td: ({ node, ...props }) => <td className="border-b border-white/10 px-2 md:px-3 py-2 text-xs md:text-sm text-gray-200" {...props} />,
         blockquote: ({ node, ...props }) => <blockquote className="border-l-4 border-indigo-400 pl-4 italic text-gray-200 my-3 text-sm md:text-base" {...props} />
     };
+
+
+
+    { type === "edit" && loading && <LoadingPage /> }
 
     return (
         <motion.div
@@ -531,7 +524,8 @@ Wrap up your article here...`
                             <div className="flex gap-2 md:gap-3 w-full sm:w-auto order-1 sm:order-2">
                                 <Button
                                     variant="outline"
-                                    onClick={() => toast.error("Feature not implemented yet !")}
+                                    // onClick={() => toast.error("Feature not implemented yet !")}
+                                    onClick={saveDraft}
                                     className="flex-1 sm:flex-initial bg-white/10 hover:bg-white/20 text-white border-white/20 text-sm md:text-base"
                                 >
                                     Save Draft
