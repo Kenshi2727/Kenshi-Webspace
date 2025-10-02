@@ -171,6 +171,7 @@ export default function EditorPage({ type }) {
             }
             if (type === 'edit') {
                 // handle article update submission
+                toast.error("Edit functionality still under testing!")
             }
         } catch (error) {
             if (error.code === "ECONNABORTED")
