@@ -178,7 +178,9 @@ export default function EditorPage({ type }) {
                 toast.error("Request timed out. Please check 'Your Articles' and retry if post not created.");
             else
                 toast.error("An error occurred while processing your request !");
+
             console.error("Submission error:", error);
+            // delete media if uploaded
         }
         finally {
             // cleanup object URLs

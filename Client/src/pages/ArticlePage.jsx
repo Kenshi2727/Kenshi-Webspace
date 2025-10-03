@@ -14,6 +14,9 @@ import { getSinglePost } from '../services/GlobalApi.js';
 import toast from 'react-hot-toast';
 import { formatDate, formatMessageTime, formatOnlyNumericDate } from '../lib/dateFormatter.js';
 import { useUser } from '@clerk/clerk-react';
+import {
+    Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter
+} from "@/components/ui/dialog";
 
 const related = [
     { id: 2, title: 'Mastering Tailwind CSS', readTime: '8 min', category: 'CSS' },
@@ -28,6 +31,8 @@ export default function ArticlePage() {
     const [isBookmarked, setIsBookmarked] = useState(false);
     const [article, setArticle] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [open, setOpen] = useState(false);
+    const [deleting, setDeleting] = useState(false);
 
     // Fixed scroll hook
     const { scrollYProgress, scrollY } = useScroll();
@@ -89,6 +94,13 @@ export default function ArticlePage() {
             transition: { duration: 0.6, ease: "easeOut" }
         }
     };
+
+    const handleDelete = async () => {
+        setDeleting(true);
+        toast.success("Article deleted successfully");
+        setDeleting(false);
+        setOpen(false);
+    }
 
     return (
         <>
@@ -383,11 +395,36 @@ export default function ArticlePage() {
                                         <Button
                                             variant="outline"
                                             size="sm"
+                                            onClick={() => setOpen(true)}
                                             className="flex items-center gap-2 bg-white/5 border-white/30 hover:bg-white/30 hover:border-white/50 text-white transition-all duration-300 backdrop-blur-sm"
                                         >
                                             <Trash size={16} />
                                             <span className="hidden sm:inline">Delete</span>
                                         </Button>
+
+                                        <Dialog open={open} onOpenChange={setOpen}>
+                                            <DialogContent className="max-w-md w-full sm:mx-4 rounded-2xl shadow-xl border border-white/10 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white p-0 overflow-hidden">
+                                                <motion.div initial={{ opacity: 0, scale: 0.95, y: 10 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 10 }} transition={{ duration: 0.2, ease: "easeOut" }}>
+                                                    <div className="px-6 pt-6 pb-4 border-b border-white/10">
+                                                        <DialogHeader>
+                                                            <DialogTitle className="text-xl font-bold tracking-wide bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent">
+                                                                Are you sure you want to delete?
+                                                            </DialogTitle>
+                                                        </DialogHeader>
+                                                        <p className="text-sm text-gray-300 mt-1">This action cannot be undone. Do you want to proceed?</p>
+                                                    </div>
+
+                                                    <DialogFooter className="px-6 py-4 flex-row items-center justify-end gap-3 bg-gray-800/40">
+                                                        <Button variant="ghost" onClick={() => setOpen(false)} disabled={deleting} className="hover:bg-gray-700/50 text-gray-300">No, thanks</Button>
+
+                                                        <Button onClick={handleDelete} disabled={deleting} className="bg-gradient-to-r from-indigo-500 to-pink-500 hover:from-indigo-400 hover:to-pink-400 text-white shadow-md">
+                                                            {deleting ? "Deleting…" : "Yes, delete it"}
+                                                        </Button>
+
+                                                    </DialogFooter>
+                                                </motion.div>
+                                            </DialogContent>
+                                        </Dialog>
 
                                         <Link to={`/articles/edit/${article.id}`}>
                                             <Button

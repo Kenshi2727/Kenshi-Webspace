@@ -117,3 +117,9 @@ export const getFeaturedPosts = async (req, res) => {
         return res.status(500).json({ error: "Failed to fetch featured posts" });
     }
 }
+
+export const deletePost = async (req, res) => {
+    const { postId } = req.params;
+    console.log("Deleting post with ID:", postId);
+    res.status(200).json({ message: "Post deleted successfully" });
+}

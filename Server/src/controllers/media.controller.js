@@ -1,4 +1,27 @@
 import cloudinary from "../utils/cloudinary.js";
+import prisma from "../../../Database/prisma.client.js";
+
+// helper functions
+const setServiceRef = async (id, type) => {
+    try {
+        if (!ServiceType[type]) throw new Error("Invalid service type");
+
+        const ServiceRef = await prisma.serviceRef.create({
+            data: {
+                id,
+                type: ServiceType[type],
+            }
+        });
+        return ServiceRef;//success
+    } catch (error) {
+        console.error("Error creating service reference:", error);
+        return null;// failure
+    }
+}
+
+const setMediaMetaData = async (publicId, mediaType, serviceType, options) => {
+    // to be implemented later
+}
 
 // optimiztion algorithms---->
 // q_auto:good => for cover image
@@ -52,4 +75,8 @@ export const uploadImage = async (req, res) => {
         console.error("Error uploading to Cloudinary:", error);
         return res.status(500).json({ message: "Error uploading images." });
     }
+}
+
+export const deleteMedia = async (req, res) => {
+    // to be implemented later
 }

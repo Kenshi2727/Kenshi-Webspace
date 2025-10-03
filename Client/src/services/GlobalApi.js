@@ -61,6 +61,14 @@ const getAllPosts = () => instance.get('/posts?populate=*');
 
 const getFeaturedPosts = () => instance.get('/posts?isFeatured=true');
 
+const deletePost = (postId, token) => instance.delete(`/posts/${postId}`, {
+    headers: {
+        Authorization: `Bearer ${token}`,
+    },
+    withCredentials: true,
+});
+
+
 // Media APIs
 const uploadMedia = (data, token) => instance.post('/media/upload/image', data, {
     headers: {

@@ -11,4 +11,5 @@ router.post('/upload/image', protectRoute, upload.fields([
     { name: 'coverImage', maxCount: 1 }
 ]), uploadImage);
 
+
 export default router;
