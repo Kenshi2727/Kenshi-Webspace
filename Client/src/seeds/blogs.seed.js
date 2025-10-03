@@ -258,7 +258,7 @@ export const myArticles = [
   },
   {
     id: 'demo-4',
-    title: 'Ha ha ha ha wo dekho bihari ka ladka',
+    title: 'Ha ha ha ha wo dekho racism ka ladka',
     excerpt: 'Harmony in Racism:a weird concept',
     status: 'rejected',
     cover: null,

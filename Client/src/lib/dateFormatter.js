@@ -18,3 +18,11 @@ export function formatDate(date_input) {
     };
     return date.toLocaleDateString("en-US", options);
 }
+
+export function formatOnlyNumericDate(date) {
+    return new Date(date).toLocaleDateString("en-US", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+    });
+}

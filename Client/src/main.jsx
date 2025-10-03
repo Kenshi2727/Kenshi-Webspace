@@ -2,7 +2,6 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
-import { PostsProvider } from './context/PostsContext.jsx'
 import { ClerkProvider } from '@clerk/clerk-react'
 import { GoogleOneTap } from '@clerk/clerk-react'
 import { BrowserRouter } from 'react-router-dom'
@@ -20,12 +19,10 @@ pingServer();
 createRoot(document.getElementById('root')).render(
   <>
     <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
-      <PostsProvider>
-        <GoogleOneTap />
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </PostsProvider>
+      <GoogleOneTap />
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
     </ClerkProvider>
   </>,
 )

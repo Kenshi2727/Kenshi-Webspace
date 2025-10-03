@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { usePosts } from '@/context/PostsContext';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
-import { Facebook, Twitter, Linkedin, Pencil, Clock, Eye, Heart, Bookmark, Share2 } from 'lucide-react';
+import { Facebook, Twitter, Linkedin, Pencil, Clock, Eye, Heart, Bookmark, Share2, Delete, DeleteIcon, Trash } from 'lucide-react';
 import MarkdownRenderer from '@/components/MarkdownRenderer';
 import NotFoundPage from './NotFoundPage';
 import LoadingPage from './LoadingPage';
 import { getSinglePost } from '../services/GlobalApi.js';
 import toast from 'react-hot-toast';
-import { formatMessageTime } from '../lib/dateFormatter.js';
+import { formatDate, formatMessageTime, formatOnlyNumericDate } from '../lib/dateFormatter.js';
 import { useUser } from '@clerk/clerk-react';
 
 const related = [
@@ -25,7 +24,6 @@ const related = [
 export default function ArticlePage() {
     const { id } = useParams();
     const { user } = useUser();
-    const { getPost } = usePosts();
     const [isLiked, setIsLiked] = useState(false);
     const [isBookmarked, setIsBookmarked] = useState(false);
     const [article, setArticle] = useState(null);
@@ -349,7 +347,9 @@ export default function ArticlePage() {
                                             className="flex items-center gap-2"
                                         >
                                             <Clock size={16} className="text-indigo-300" />
-                                            <span>{formatMessageTime(article.updatedAt)}</span>
+                                            <span className='hidden [@media(min-width:422px)]:block'>{formatMessageTime(article.updatedAt)}</span>
+                                            {/* <span className='block [@media(min-width:422px)]:hidden'>{formatDate(article.updatedAt)}</span> */}
+                                            <span className='block [@media(min-width:422px)]:hidden'>{formatOnlyNumericDate(article.updatedAt)}</span>
                                         </motion.div>
                                         <motion.div
                                             whileHover={{ scale: 1.05 }}
@@ -378,7 +378,17 @@ export default function ArticlePage() {
                                         transition={{ delay: 0.2, duration: 0.2 }}
                                         whileHover={{ scale: 1.1 }}
                                         whileTap={{ scale: 0.95 }}
+                                        className='flex flex-col [@media(min-width:364px)]:flex-row gap-2'
                                     >
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="flex items-center gap-2 bg-white/5 border-white/30 hover:bg-white/30 hover:border-white/50 text-white transition-all duration-300 backdrop-blur-sm"
+                                        >
+                                            <Trash size={16} />
+                                            <span className="hidden sm:inline">Delete</span>
+                                        </Button>
+
                                         <Link to={`/articles/edit/${article.id}`}>
                                             <Button
                                                 variant="outline"
