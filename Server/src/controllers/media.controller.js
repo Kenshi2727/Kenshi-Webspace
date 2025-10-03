@@ -4,7 +4,7 @@ import prisma from "../../../Database/prisma.client.js";
 // helper functions
 const setServiceRef = async (id, type) => {
     try {
-        if (!ServiceType[type]) throw new Error("Invalid service type");
+        if (!prisma.ServiceType[type]) throw new Error("Invalid service type");
 
         const ServiceRef = await prisma.serviceRef.create({
             data: {
@@ -15,18 +15,52 @@ const setServiceRef = async (id, type) => {
         return ServiceRef;//success
     } catch (error) {
         console.error("Error creating service reference:", error);
+        await deleteMediaMetaData();
         return null;// failure
     }
 }
 
 const setMediaMetaData = async (publicId, mediaType, serviceType, options) => {
-    // to be implemented later
+    try {
+        if (!prisma.MediaType[mediaType]) throw new Error("Invalid media type");
+        if (!prisma.ServiceType[serviceType]) throw new Error("Invalid service type");
+
+        const mediaMetaData = await prisma.mediaMetadata.create({
+            data: {
+                publicId,
+                mediaType,
+                ...options
+            }
+        });
+
+        if (options) {
+            const { serviceRefId } = options;
+            const serviceRef = await setServiceRef(serviceRefId, serviceType);
+            console.log("Service reference created:", serviceRef);
+        }
+        return mediaMetaData;//success
+    } catch (error) {
+        console.error("Error creating media metadata:", error);
+        // delete uploaded media from cloudinary
+        await deleteMedia(publicId);
+        return null;// failure
+    }
 }
 
-// optimiztion algorithms---->
-// q_auto:good => for cover image
-// q_auto => for thumbnail
-// q_auto:low => for minor author images
+const deleteMediaMetaData = async () => {
+    // to be implemented later
+    console.log("Delete media metadata called");
+}
+
+
+// Export controller functions
+
+/* 
+optimiztion algorithms---->
+q_auto:good => for cover image
+q_auto => for thumbnail
+q_auto:low => for minor author images
+*/
 export const uploadImage = async (req, res) => {
     console.log("Files received:", req.files);
 
@@ -48,6 +82,11 @@ export const uploadImage = async (req, res) => {
                 }
             );
             thumbnail = uploadResponse.secure_url;
+            // console.log(uploadResponse);
+            const { public_id } = uploadResponse;
+            const { serviceRefId, userId } = req.body;//options
+            const thumbnailMetaData = await setMediaMetaData(public_id, prisma.MediaType.IMAGE, prisma.ServiceType.POST, { serviceRefId, userId });
+            console.log("Thumbnail metadata saved:", thumbnailMetaData);
         }
         if (req.files.coverImage) {
             const uploadResponse = await cloudinary.uploader.upload(
@@ -62,6 +101,10 @@ export const uploadImage = async (req, res) => {
                 }
             );
             coverImage = uploadResponse.secure_url;
+            const { public_id } = uploadResponse;
+            const { serviceRefId, userId } = req.body;//options
+            const coverImageMetaData = await setMediaMetaData(public_id, prisma.MediaType.IMAGE, prisma.ServiceType.POST, { serviceRefId, userId });
+            console.log("Cover image metadata saved:", coverImageMetaData);
         }
 
         console.log("Upload response:", { thumbnail, coverImage });
