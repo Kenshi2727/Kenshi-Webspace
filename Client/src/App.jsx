@@ -31,7 +31,7 @@ import { useUser } from '@clerk/clerk-react';
 import NotFoundPage from './pages/NotFoundPage';
 
 function App() {
-  const isMaintenanceMode = false;
+  const isMaintenanceMode = true;
   const [showDarkPrompt, setShowDarkPrompt] = useState(false);
   const { isSignedIn } = useUser();
   const [params] = useSearchParams();
