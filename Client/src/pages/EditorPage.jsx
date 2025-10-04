@@ -33,7 +33,8 @@ export default function EditorPage({ type }) {
         readTime: 0,
         thumbnail: '',
         coverImage: '',
-        content: dummyContent
+        content: dummyContent,
+        referenceStatus: false
     });
 
     const handleInputChange = (field, value) => {
@@ -168,7 +169,8 @@ export default function EditorPage({ type }) {
                         updatedFormData = {
                             ...updatedFormData,
                             thumb_id,
-                            cover_id
+                            cover_id,
+                            referenceStatus: true
                         }
                     }
                 }
@@ -215,7 +217,8 @@ export default function EditorPage({ type }) {
                 readTime: 0,
                 thumbnail: '',
                 coverImage: '',
-                content: dummyContent
+                content: dummyContent,
+                referenceStatus: false
             })
 
             // set loading to false

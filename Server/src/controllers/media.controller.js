@@ -106,8 +106,16 @@ export const uploadImage = async (req, res) => {
     }
 }
 
-export const deleteMedia = async (req, res) => {
-    // to be implemented later
+export const deleteMedia = async (public_id) => {
+    console.log("Destroying media with public_id from cloudinary:", public_id);
+    try {
+        const response = await cloudinary.uploader.destroy(public_id);
+        console.log("Media deleted successfully:", response);
+        return response;//success
+    } catch (error) {
+        console.error("Error deleting media:", error);
+        return null;// failure
+    }
 }
 
 export const setServiceRef = async (id, type) => {
@@ -128,11 +136,51 @@ export const setServiceRef = async (id, type) => {
 }
 
 export const deleteMediaMetaData = async (publicId) => {
-    // to be implemented later
-    console.log("Delete media metadata called");
+    console.log("Deleting media metadata for publicId:", publicId);
+    try {
+        const deletedMediaMetaData = await prisma.mediaMetaData.delete({
+            where: {
+                publicId
+            }
+        });
+        console.log("Media metadata deleted successfully:", deletedMediaMetaData);
+        return deletedMediaMetaData;//success
+    } catch (error) {
+        console.error("Error deleting media metadata:", error);
+        return null;// failure
+    }
 }
 
-export const deleteServiceRef = async (id) => {
-    // to be implemented later
-    console.log("Delete service reference called");
+export const deleteServiceRef = async (id, type) => {
+    console.log(`Deleting service reference for ID: ${id} and type: ${type}`);
+    try {
+        const deletedServiceRef = await prisma.serviceRef.delete({
+            where: {
+                id,
+                type
+            }
+        });
+        console.log("Service reference deleted successfully:", deletedServiceRef);
+        return deletedServiceRef;//success
+    } catch (error) {
+        console.error("Error deleting service reference:", error);
+        return null;// failure
+    }
+}
+
+export const getPublicIds = async (serviceRefId) => {
+    try {
+        const publicIds = await prisma.mediaMetaData.findMany({
+            where: {
+                serviceRefId
+            },
+            select: {
+                publicId: true
+            }
+        });
+        return publicIds;//success
+    } catch (error) {
+        console.error("Error fetching public IDs:", error);
+        return null;// failure
+    }
 }

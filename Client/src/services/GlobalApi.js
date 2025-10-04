@@ -87,5 +87,6 @@ export {
     uploadMedia,
     getSinglePost,
     getAllPosts,
-    getFeaturedPosts
+    getFeaturedPosts,
+    deletePost
 };

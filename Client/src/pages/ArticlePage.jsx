@@ -10,13 +10,14 @@ import { Facebook, Twitter, Linkedin, Pencil, Clock, Eye, Heart, Bookmark, Share
 import MarkdownRenderer from '@/components/MarkdownRenderer';
 import NotFoundPage from './NotFoundPage';
 import LoadingPage from './LoadingPage';
-import { getSinglePost } from '../services/GlobalApi.js';
+import { getSinglePost, deletePost } from '../services/GlobalApi.js';
 import toast from 'react-hot-toast';
 import { formatDate, formatMessageTime, formatOnlyNumericDate } from '../lib/dateFormatter.js';
 import { useUser } from '@clerk/clerk-react';
 import {
     Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter
 } from "@/components/ui/dialog";
+import { useAuth } from '@clerk/clerk-react';
 
 const related = [
     { id: 2, title: 'Mastering Tailwind CSS', readTime: '8 min', category: 'CSS' },
@@ -27,6 +28,7 @@ const related = [
 export default function ArticlePage() {
     const { id } = useParams();
     const { user } = useUser();
+    const { getToken } = useAuth();
     const [isLiked, setIsLiked] = useState(false);
     const [isBookmarked, setIsBookmarked] = useState(false);
     const [article, setArticle] = useState(null);
@@ -45,7 +47,6 @@ export default function ArticlePage() {
     // const article = getPost(id);
 
     useEffect(() => {
-
         async function fetchPost() {
             setLoading(true);
             try {
@@ -96,10 +97,20 @@ export default function ArticlePage() {
     };
 
     const handleDelete = async () => {
-        setDeleting(true);
-        toast.success("Article deleted successfully");
-        setDeleting(false);
-        setOpen(false);
+        try {
+            setDeleting(true);
+            const token = await getToken();
+            await deletePost(article.id, token);
+            toast.success("Article deleted successfully");
+            window.location.href = '/articles';
+        } catch (error) {
+            toast.error("Failed to delete the article ! Try again later.");
+            console.log(error);
+        }
+        finally {
+            setDeleting(false);
+            setOpen(false);
+        }
     }
 
     return (

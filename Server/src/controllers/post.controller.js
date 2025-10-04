@@ -1,5 +1,5 @@
 import prisma from "../../../Database/prisma.client.js";
-import { setServiceRef, deleteMediaMetaData, deleteServiceRef, deleteMedia } from "./media.controller.js";
+import { setServiceRef, deleteMediaMetaData, deleteServiceRef, deleteMedia, getPublicIds } from "./media.controller.js";
 
 // Note-
 /* 
@@ -12,7 +12,7 @@ This is called a Mass Assignment vulnerability.
 export const createNewPost = async (req, res) => {
     console.log("Request body:", req.body);
     console.log("Creating a new post for author ID:", req.params.authorId);
-    const { title, excerpt, category, thumbnail, coverImage, content, thumb_id, cover_id } = req.body;
+    const { title, excerpt, category, thumbnail, coverImage, content, readTime, thumb_id, cover_id, referenceStatus } = req.body;
 
     try {
         const newPost = await prisma.post.create({
@@ -23,43 +23,48 @@ export const createNewPost = async (req, res) => {
                 thumbnail,
                 coverImage,
                 content,
-                readTime: Number(req.body.readTime),
-                authorId: req.params.authorId
+                readTime: Number(readTime),
+                authorId: req.params.authorId,
+                referenceStatus: Boolean(referenceStatus)
             }
         });
 
-        // setting service reference for media
-        const serviceRef = await setServiceRef(newPost.id, prisma.ServiceType.POST);
-        console.log("Service reference created for media:", serviceRef);
-        if (serviceRef) {
-            if (thumb_id) {
-                // update media meta data
-                const updatedThumbMetaData = await prisma.mediaMetaData.update({
-                    where: {
-                        publicId: thumb_id
-                    },
-                    data: {
-                        serviceRefId: serviceRef.id
-                    }
-                });
-                console.log("Thumbnail metadata updated with serviceRefId:", updatedThumbMetaData);
-            }
+        if (referenceStatus) {
 
-            if (cover_id) {
-                // update media meta data
-                const updatedCoverMetaData = await prisma.mediaMetaData.update({
-                    where: {
-                        publicId: cover_id
-                    },
-                    data: {
-                        serviceRefId: serviceRef.id
-                    }
-                });
-                console.log("Cover image metadata updated with serviceRefId:", updatedCoverMetaData);
+            // setting service reference for media
+            const serviceRef = await setServiceRef(newPost.id, prisma.ServiceType.POST);
+            console.log("Service reference created for media:", serviceRef);
+            if (serviceRef) {
+                if (thumb_id) {
+                    // update media meta data
+                    const updatedThumbMetaData = await prisma.mediaMetaData.update({
+                        where: {
+                            publicId: thumb_id
+                        },
+                        data: {
+                            serviceRefId: serviceRef.id
+                        }
+                    });
+                    console.log("Thumbnail metadata updated with serviceRefId:", updatedThumbMetaData);
+                }
+
+                if (cover_id) {
+                    // update media meta data
+                    const updatedCoverMetaData = await prisma.mediaMetaData.update({
+                        where: {
+                            publicId: cover_id
+                        },
+                        data: {
+                            serviceRefId: serviceRef.id
+                        }
+                    });
+                    console.log("Cover image metadata updated with serviceRefId:", updatedCoverMetaData);
+                }
             }
-        }
-        else {
-            throw new Error("Service reference is null");
+            else {
+                await deletePost(newPost.id);
+                throw new Error("Service reference is null");
+            }
         }
 
         console.log("Post created successfully for author ID:", req.params.authorId);
@@ -156,8 +161,59 @@ export const getFeaturedPosts = async (req, res) => {
 export const deletePost = async (req, res) => {
     const { postId } = req.params;
     console.log("Deleting post with ID:", postId);
-    await deleteServiceRef();
-    await deleteMediaMetaData();
-    await deleteMedia();
-    res.status(200).json({ message: "Post deleted successfully" });
+
+    try {
+        // checking reference status
+        const referenceStatus = await prisma.post.findUnique({
+            where: { id: postId },
+            select: { referenceStatus: true }
+        });
+
+        // fetch public ids
+        const publicIds = await getPublicIds(postId);
+        console.log("Public IDs associated with the post:", publicIds);
+
+        if (publicIds === null) {
+            throw new Error("Failed to fetch public IDs");
+        }
+
+        // delete all meta data first to avoid foreign key constraint error(many to one relation)
+        publicIds.forEach(async (publicId) => {
+            const deletedMediaMetaData = await deleteMediaMetaData(publicId.publicId);
+            if (deletedMediaMetaData === null) {
+                throw new Error("Failed to delete media metadata");
+            }
+        });
+
+        // delete service reference
+        if (referenceStatus && referenceStatus.referenceStatus === true) {
+            const deletedServiceRef = await deleteServiceRef(postId, prisma.ServiceType.POST);
+            if (deletedServiceRef === null) {
+                throw new Error("Failed to delete service reference");
+            }
+        }
+
+        // delete all media from cloudinary
+        publicIds.forEach(async (publicId) => {
+            const response = await deleteMedia(publicId.publicId);
+            if (response === null) {
+                throw new Error("Failed to delete media from cloudinary");
+            }
+            if (response.result === 'not found') {
+                console.warn(`Media with public ID ${publicId.publicId} not found in Cloudinary.`);
+                throw new Error("Media not found in Cloudinary");
+            }
+        });
+
+        // delete the post
+        const deletedPost = await prisma.post.delete({
+            where: { id: postId }
+        });
+        console.log("Post deleted successfully:", deletedPost);
+
+        return res.status(200).json({ message: "Post deleted successfully" });
+    } catch (error) {
+        console.error("Error deleting post:", error);
+        return res.status(500).json({ error: "Failed to delete post" });
+    }
 }
