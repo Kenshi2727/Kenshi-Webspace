@@ -2,56 +2,23 @@ import cloudinary from "../utils/cloudinary.js";
 import prisma from "../../../Database/prisma.client.js";
 
 // helper functions
-const setServiceRef = async (id, type) => {
-    try {
-        if (!prisma.ServiceType[type]) throw new Error("Invalid service type");
-
-        const ServiceRef = await prisma.serviceRef.create({
-            data: {
-                id,
-                type: ServiceType[type],
-            }
-        });
-        return ServiceRef;//success
-    } catch (error) {
-        console.error("Error creating service reference:", error);
-        await deleteMediaMetaData();
-        return null;// failure
-    }
-}
-
-const setMediaMetaData = async (publicId, mediaType, serviceType, options) => {
+const setMediaMetaData = async (publicId, mediaType, options) => {
     try {
         if (!prisma.MediaType[mediaType]) throw new Error("Invalid media type");
-        if (!prisma.ServiceType[serviceType]) throw new Error("Invalid service type");
 
-        const mediaMetaData = await prisma.mediaMetadata.create({
+        const mediaMetaData = await prisma.mediaMetaData.create({
             data: {
                 publicId,
                 mediaType,
                 ...options
             }
         });
-
-        if (options) {
-            const { serviceRefId } = options;
-            const serviceRef = await setServiceRef(serviceRefId, serviceType);
-            console.log("Service reference created:", serviceRef);
-        }
         return mediaMetaData;//success
     } catch (error) {
         console.error("Error creating media metadata:", error);
-        // delete uploaded media from cloudinary
-        await deleteMedia(publicId);
         return null;// failure
     }
 }
-
-const deleteMediaMetaData = async () => {
-    // to be implemented later
-    console.log("Delete media metadata called");
-}
-
 
 // Export controller functions
 
@@ -68,7 +35,10 @@ export const uploadImage = async (req, res) => {
 
     try {
         let thumbnail = '';
+        let thumb_id = null;
         let coverImage = '';
+        let cover_id = null;
+
         if (req.files.thumbnail) {
             const uploadResponse = await cloudinary.uploader.upload(
                 `data:${req.files.thumbnail[0].mimetype};base64,${req.files.thumbnail[0].buffer.toString('base64')}`,
@@ -85,8 +55,15 @@ export const uploadImage = async (req, res) => {
             // console.log(uploadResponse);
             const { public_id } = uploadResponse;
             const { serviceRefId, userId } = req.body;//options
-            const thumbnailMetaData = await setMediaMetaData(public_id, prisma.MediaType.IMAGE, prisma.ServiceType.POST, { serviceRefId, userId });
+            const thumbnailMetaData = await setMediaMetaData(public_id, prisma.MediaType.IMAGE, { serviceRefId, userId });
             console.log("Thumbnail metadata saved:", thumbnailMetaData);
+            thumb_id = public_id;
+
+            if (thumbnailMetaData === null) {
+                // delete media
+                await deleteMedia(public_id);
+                throw new Error("Thumbnail meta data is null")
+            }
         }
         if (req.files.coverImage) {
             const uploadResponse = await cloudinary.uploader.upload(
@@ -103,8 +80,15 @@ export const uploadImage = async (req, res) => {
             coverImage = uploadResponse.secure_url;
             const { public_id } = uploadResponse;
             const { serviceRefId, userId } = req.body;//options
-            const coverImageMetaData = await setMediaMetaData(public_id, prisma.MediaType.IMAGE, prisma.ServiceType.POST, { serviceRefId, userId });
+            const coverImageMetaData = await setMediaMetaData(public_id, prisma.MediaType.IMAGE, { serviceRefId, userId });
             console.log("Cover image metadata saved:", coverImageMetaData);
+            cover_id = public_id;
+
+            if (coverImageMetaData === null) {
+                // delete media
+                await deleteMedia(public_id);
+                throw new Error("CoverImage meta data is null")
+            }
         }
 
         console.log("Upload response:", { thumbnail, coverImage });
@@ -112,7 +96,9 @@ export const uploadImage = async (req, res) => {
         return res.status(201).json({
             message: "Image uploaded successfully!",
             thumbnail,
-            coverImage
+            coverImage,
+            thumb_id,
+            cover_id
         });
     } catch (error) {
         console.error("Error uploading to Cloudinary:", error);
@@ -122,4 +108,31 @@ export const uploadImage = async (req, res) => {
 
 export const deleteMedia = async (req, res) => {
     // to be implemented later
+}
+
+export const setServiceRef = async (id, type) => {
+    try {
+        if (!prisma.ServiceType[type]) throw new Error("Invalid service type");
+
+        const ServiceRef = await prisma.serviceRef.create({
+            data: {
+                id,
+                type,
+            }
+        });
+        return ServiceRef;//success
+    } catch (error) {
+        console.error("Error creating service reference:", error);
+        return null;// failure
+    }
+}
+
+export const deleteMediaMetaData = async (publicId) => {
+    // to be implemented later
+    console.log("Delete media metadata called");
+}
+
+export const deleteServiceRef = async (id) => {
+    // to be implemented later
+    console.log("Delete service reference called");
 }

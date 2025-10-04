@@ -22,6 +22,7 @@ import { useAuth } from '@clerk/clerk-react';
 import dummyContent from '../constants/dummyContent.md?raw'
 import { useParams } from 'react-router-dom';
 import LoadingPage from './LoadingPage'
+import { useUser } from '@clerk/clerk-react';
 
 export default function EditorPage({ type }) {
     const [loading, setLoading] = useState(false);
@@ -45,6 +46,7 @@ export default function EditorPage({ type }) {
     const [coverFile, setCoverFile] = useState(null);
     const [coverPreview, setCoverPreview] = useState(null);
     const params = useParams();
+    const { user } = useUser();
 
     const { getToken, userId } = useAuth();
 
@@ -150,6 +152,8 @@ export default function EditorPage({ type }) {
                     const imageUploads = new FormData();
                     if (thumbFile) imageUploads.append('thumbnail', thumbFile);
                     if (coverFile) imageUploads.append('coverImage', coverFile);
+                    //appending user id
+                    imageUploads.append('userId', user.id);
                     const uploadResponse = await uploadMedia(imageUploads, token);
 
                     // setting thumnail and coverImage URLs from response
@@ -158,6 +162,14 @@ export default function EditorPage({ type }) {
                         updatedFormData.thumbnail = thumbnail || formData.thumbnail;
                         updatedFormData.coverImage = coverImage || formData.coverImage;
                         console.log(message);
+
+                        // sending public ids for reference
+                        const { thumb_id, cover_id } = uploadResponse.data;
+                        updatedFormData = {
+                            ...updatedFormData,
+                            thumb_id,
+                            cover_id
+                        }
                     }
                 }
 

@@ -1,4 +1,5 @@
 import prisma from "../../../Database/prisma.client.js";
+import { setServiceRef, deleteMediaMetaData, deleteServiceRef, deleteMedia } from "./media.controller.js";
 
 // Note-
 /* 
@@ -11,7 +12,7 @@ This is called a Mass Assignment vulnerability.
 export const createNewPost = async (req, res) => {
     console.log("Request body:", req.body);
     console.log("Creating a new post for author ID:", req.params.authorId);
-    const { title, excerpt, category, thumbnail, coverImage, content } = req.body;
+    const { title, excerpt, category, thumbnail, coverImage, content, thumb_id, cover_id } = req.body;
 
     try {
         const newPost = await prisma.post.create({
@@ -26,6 +27,40 @@ export const createNewPost = async (req, res) => {
                 authorId: req.params.authorId
             }
         });
+
+        // setting service reference for media
+        const serviceRef = await setServiceRef(newPost.id, prisma.ServiceType.POST);
+        console.log("Service reference created for media:", serviceRef);
+        if (serviceRef) {
+            if (thumb_id) {
+                // update media meta data
+                const updatedThumbMetaData = await prisma.mediaMetaData.update({
+                    where: {
+                        publicId: thumb_id
+                    },
+                    data: {
+                        serviceRefId: serviceRef.id
+                    }
+                });
+                console.log("Thumbnail metadata updated with serviceRefId:", updatedThumbMetaData);
+            }
+
+            if (cover_id) {
+                // update media meta data
+                const updatedCoverMetaData = await prisma.mediaMetaData.update({
+                    where: {
+                        publicId: cover_id
+                    },
+                    data: {
+                        serviceRefId: serviceRef.id
+                    }
+                });
+                console.log("Cover image metadata updated with serviceRefId:", updatedCoverMetaData);
+            }
+        }
+        else {
+            throw new Error("Service reference is null");
+        }
 
         console.log("Post created successfully for author ID:", req.params.authorId);
 
@@ -121,5 +156,8 @@ export const getFeaturedPosts = async (req, res) => {
 export const deletePost = async (req, res) => {
     const { postId } = req.params;
     console.log("Deleting post with ID:", postId);
+    await deleteServiceRef();
+    await deleteMediaMetaData();
+    await deleteMedia();
     res.status(200).json({ message: "Post deleted successfully" });
 }

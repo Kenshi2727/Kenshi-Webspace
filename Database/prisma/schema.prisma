@@ -56,9 +56,9 @@ model Post {
   @@unique([id, authorId]) // Composite primary key
 }
 
-model MediaMetadata {
+model MediaMetaData {
   id           Int         @id @default(autoincrement())
-  publicId     String // Cloudinary public_id (required for deletion)
+  publicId     String      @unique // Cloudinary public_id (required for deletion)
   mediaType    MediaType
   serviceRefId String?
   serviceRef   ServiceRef? @relation(fields: [serviceRefId], references: [id])
@@ -80,5 +80,5 @@ enum ServiceType {
 model ServiceRef {
   id    String          @id
   type  ServiceType // e.g. "POST", "PROFILE"
-  media MediaMetadata[]
+  media MediaMetaData[]
 }
