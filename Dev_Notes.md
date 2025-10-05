@@ -15,16 +15,20 @@
 * Uptime Karma
 
 ### AI Workflow-
-* AI model integration 
+* AI model integration
+   ``` 
    ├─ langchain
    ├─ copilot kit
    └─ open source models
+   ```
 * Image generation
+   ```
    ├─ Clipdrop api
    ├─ Other open source models like banana
    ├─ Stable Diffusion
    ├─ DALL-E
    └─ Midjourney
+   ```
 * n8n
 * MCP Servers
 
