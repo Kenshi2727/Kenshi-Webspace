@@ -75,7 +75,7 @@ const AvatarDropdown = () => {
         {
             icon: PenTool,
             label: 'Start Writing',
-            to: '/articles/:id/edit',
+            to: '/articles/edit/new',
             description: 'Create a new article'
         }
     ];
