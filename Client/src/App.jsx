@@ -29,6 +29,7 @@ import MaintainerPage from './super-admin/MaintainerPage';
 import toast, { Toaster } from 'react-hot-toast'
 import { useUser } from '@clerk/clerk-react';
 import NotFoundPage from './pages/NotFoundPage';
+import { Analytics } from '@vercel/analytics/react';
 
 function App() {
   const isMaintenanceMode = false;
@@ -98,6 +99,7 @@ function App() {
           position="top-center"
           reverseOrder={false}
         />
+        <Analytics />
       </main>
       <Footer />
     </>
