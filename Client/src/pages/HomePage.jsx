@@ -520,7 +520,7 @@ const HomePage = () => {
                             asChild
                             className="group relative overflow-hidden rounded-2xl px-8 py-4 bg-white text-purple-600 hover:bg-gray-50 shadow-2xl transform transition-all duration-300 hover:scale-105 hover:shadow-white/25 focus:outline-none focus:ring-4 focus:ring-white/30 font-bold text-lg"
                         >
-                            <Link to="/auth/sign-up" aria-label="Create your free account">
+                            <Link to={isSignedIn ? "/articles/edit/new" : "/auth/sign-up"} aria-label="Create your free account">
                                 <span className="relative z-10 inline-flex items-center">
                                     <Edit3 className="mr-3 h-5 w-5 transition-transform group-hover:rotate-12" />
                                     Start Writing Now

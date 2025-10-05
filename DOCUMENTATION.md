@@ -1,70 +1,35 @@
-# ANALYTICS -
-```
-* Vercel Tools
-* Posthemus
-* Uptime Karma
-```
-
-## TO DO-->DELAYED ACTION>>
-```
-1> Security-->Research Encryption Algorithms
-2> roll out protoype with very limited features(most prolly just post creation without review)
-3> Documenting the current codebase
+## Current Server Structure (as of 5 October 2025 )-
 
 ```
-
-## Tech stack to be added-
-
-```
-1) Web Sockets --> for realtime broadcasting for admin approval 
-2) In browser notification service --> manifest.json
-3) Render Postgres deployment---> Aiven
-4) finally block retry logic
-5) geoip-lite ---> for logs.csv
-
-```
-
-## Proposed Structure-
-
-```
-backend/
-├─ package.json        (type:"module", scripts: dev/start/migrate/seed)
-├─ .env                (DATABASE_URL, CLERK_*, S3 creds, etc.)
+Server/
+├─ package.json        (type:"module", scripts: dev/start/build/log/tunnel/ngrok)
+├─ package-lock.json   (auto-generated dependency lock file)
+├─ .gitignore          (ignored: node_modules, .env, .next, etc.)
+├─ logs.csv            (ip, timestamp, route, etc. visitor info for analytics)
+├─ logs.txt            (app logs, errors, etc.)
+├─ vercel.json         (Vercel deployment config)
+├─ .env                (DATABASE_URL, CLERK_*, etc.)
+├─ node_modules/       (auto-generated dependencies files and folders)
 ├─ src/
-│  ├─ index.js         -> app bootstrap (Express)
-│  ├─ app.js           -> express app, global middlewares
-│  ├─ lib/
-│  │  ├─ db.client.js        -> exports Prisma client
-│  │  ├─ logger.js           -> pino/winston wrapper
-│  │  ├─ errors.js           -> custom Error classes
-│  │  └─ storage.js          -> S3 helper (optional)
-│  ├─ middlewares/
-│  │  ├─ clerk.middleware.js -> use @clerk/express (attach req.auth)
-│  │  ├─ error.handler.js
-│  │  ├─ validation.js
-│  │  └─ rateLimit.js
-│  ├─ services/          -> business logic, talk to DB
-│  │  ├─ profile.service.js
-│  │  ├─ post.service.js
-│  │  └─ project.service.js
-│  ├─ controllers/        -> parse req/res, call services
-│  │  ├─ profile.controller.js
-│  │  ├─ post.controller.js
-│  │  └─ project.controller.js
-│  ├─ routes/
-│  │  ├─ index.js         -> mounts routes
-│  │  ├─ profile.routes.js
-│  │  ├─ post.routes.js
-│  │  └─ project.routes.js
-│  ├─ jobs/
-│  │  └─ email.job.js     -> background worker hookups (BullMQ)
-│  └─ utils/
-│     ├─ response.js      -> standard API envelope
-│     └─ validators.js
-├─ prisma/
-│  ├─ schema.prisma
-│  ├─ seed.js
-│  └─ migrations/
+│  ├─ index.js         (app entry point (Express))
+│  ├─ controllers/     (functions(logic) for handling requests)
+|  |   ├─ media.controller.js  -> media-related request handlers
+|  |   ├─ post.controller.js   -> post-related request handlers
+|  |   └─ user.controller.js   -> user-related request handlers
+│  ├─ middlewares/     (middleware functions for request processing)
+│  |   └─ auth.middleware.js   -> authentication middleware
+│  ├─ public/          (static files (html, css, js))
+|  |   ├─ index.html           -> HTML file
+|  |   ├─ styles.css           -> CSS file
+|  |   └─ script.js            -> JavaScript file
+│  ├─ routes/          (API route definitions)
+│  |   ├─ media.route.js      -> media-related routes
+│  |   ├─ post.route.js       -> post-related routes
+│  |   └─ user.route.js       -> user-related routes
+│  ├─ services/        (external service integrations (not used yet))
+│  └─ utils/           (utility functions/helpers)
+|      └─ cloudinary.js        -> Cloudinary config and helper functions
+│  
 └─ README.md
 
 ```
