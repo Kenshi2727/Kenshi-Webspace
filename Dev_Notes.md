@@ -9,6 +9,8 @@
 3. Security-->Research Encryption Algorithms
 4. geoip-lite ---> for logs.csv
 5. tagging users
+6. Download blogs as pdf
+   
 ### Analytics -
 * Vercel Tools
 * Posthemus
