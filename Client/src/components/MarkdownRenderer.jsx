@@ -3,17 +3,24 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import rehypeHighlight from 'rehype-highlight';
-import 'highlight.js/styles/github-dark.css';
+// import 'highlight.js/styles/github-dark.css';
+// import 'highlight.js/styles/rose-pine-moon.css';
+import 'highlight.js/styles/tokyo-night-dark.css';
 
 const mdComponents = {
-    h1: ({ node, ...props }) => <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mt-2 mb-4 text-white" {...props} />,
-    h2: ({ node, ...props }) => <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold mt-4 mb-3 text-white" {...props} />,
-    h3: ({ node, ...props }) => <h3 className="text-xl sm:text-2xl md:text-3xl font-semibold mt-3 mb-2 text-white" {...props} />,
+    h1: ({ node, ...props }) => <h1 className="text-2xl md:text-4xl lg:text-5xl font-extrabold mt-2 mb-4 text-white" {...props} />,
+    h2: ({ node, ...props }) => <h2 className="text-xl md:text-3xl lg:text-4xl font-semibold mt-4 mb-3 text-white" {...props} />,
+    h3: ({ node, ...props }) => <h3 className="text-lg md:text-2xl lg:text-3xl font-semibold mt-3 mb-2 text-white" {...props} />,
+    h4: ({ node, ...props }) => <h4 className="text-base md:text-xl font-medium mt-3 mb-2 text-white" {...props} />,
+    h5: ({ node, ...props }) => <h5 className="text-sm md:text-lg font-medium mt-2 mb-1 text-white" {...props} />,
+    h6: ({ node, ...props }) => <h6 className="text-sm md:text-base font-medium mt-2 mb-1 text-white" {...props} />,
     p: ({ node, ...props }) => <p className="text-gray-200 leading-relaxed mb-4" {...props} />,
-    a: ({ node, ...props }) => <a className="text-indigo-300 hover:underline" target="_blank" rel="noopener noreferrer" {...props} />,
+    a: ({ node, ...props }) => <a className="text-indigo-300 hover:underline cursor-pointer" target="_blank" rel="noopener noreferrer" {...props} />,
     ul: ({ node, ...props }) => <ul className="list-disc pl-6 space-y-2 mb-4" {...props} />,
     ol: ({ node, ...props }) => <ol className="list-decimal pl-6 space-y-2 mb-4" {...props} />,
     li: ({ node, ...props }) => <li className="text-gray-200" {...props} />,
+    strong: ({ node, ...props }) => <strong className="font-semibold text-white" {...props} />,
+    em: ({ node, ...props }) => <em className="italic text-gray-200" {...props} />,
     blockquote: ({ node, ...props }) => <blockquote className="border-l-4 border-indigo-400 pl-4 italic text-gray-200 my-4" {...props} />,
     img: ({ node, ...props }) => (
         <figure className="my-4">
@@ -34,7 +41,7 @@ const mdComponents = {
         }
         return <code className={className} {...props}>{children}</code>;
     },
-    pre: ({ node, children, ...props }) => <pre className="rounded-lg bg-[#0b1220] p-4 overflow-auto text-sm" {...props}>{children}</pre>,
+    pre: ({ node, children, ...props }) => <pre className="rounded-lg bg-[#191724]/10 my-2 text-indigo-200 p-2 md:p-4 overflow-auto text-sm" {...props}>{children}</pre>,
 };
 
 export default function MarkdownRenderer({ content = '' }) {

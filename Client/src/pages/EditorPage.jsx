@@ -10,11 +10,6 @@ import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/comp
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { motion } from 'framer-motion';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import rehypeHighlight from 'rehype-highlight';
-import rehypeRaw from 'rehype-raw';
-import 'highlight.js/styles/github-dark.css';
 import { Pencil, Eye, Send, FileText, Clock, Tag, Image, Upload, LoaderCircle } from 'lucide-react';
 import { createPost, getSinglePost, uploadMedia } from '../services/GlobalApi';
 import toast from 'react-hot-toast';
@@ -23,9 +18,11 @@ import dummyContent from '../constants/dummyContent.md?raw'
 import { useParams } from 'react-router-dom';
 import LoadingPage from './LoadingPage'
 import { useUser } from '@clerk/clerk-react';
+import MarkdownRenderer from '../components/MarkdownRenderer';
 
 export default function EditorPage({ type }) {
     const [loading, setLoading] = useState(false);
+    const [oldData, setOldData] = useState(null); // for storing old data in edit mode
     const [formData, setFormData] = useState({
         title: '',
         excerpt: '',
@@ -67,6 +64,7 @@ export default function EditorPage({ type }) {
                     setLoading(true);
                     const post = await getSinglePost(params.id);
                     setFormData(post.data);
+                    setOldData(post.data);
                 } catch (error) {
                     console.error(error);
                     toast.loading("Error editing post, redirecting...", { duration: 3000 });
@@ -234,37 +232,6 @@ export default function EditorPage({ type }) {
     const categories = [
         "Technology", "Geopolitics", "History", "Astronomy", "Religion & Culture", "Anime", "Literature", "Travel"
     ];
-
-    // Custom renderers for markdown
-    const mdComponents = {
-        h1: ({ node, ...props }) => <h1 className="text-2xl md:text-4xl lg:text-5xl font-extrabold mt-2 mb-4 text-white" {...props} />,
-        h2: ({ node, ...props }) => <h2 className="text-xl md:text-3xl lg:text-4xl font-semibold mt-4 mb-3 text-white" {...props} />,
-        h3: ({ node, ...props }) => <h3 className="text-lg md:text-2xl lg:text-3xl font-semibold mt-3 mb-2 text-white" {...props} />,
-        h4: ({ node, ...props }) => <h4 className="text-base md:text-xl font-medium mt-3 mb-2 text-white" {...props} />,
-        h5: ({ node, ...props }) => <h5 className="text-sm md:text-lg font-medium mt-2 mb-1 text-white" {...props} />,
-        h6: ({ node, ...props }) => <h6 className="text-sm md:text-base font-medium mt-2 mb-1 text-white" {...props} />,
-        p: ({ node, ...props }) => <p className="text-gray-200 leading-relaxed mb-3 text-sm md:text-base" {...props} />,
-        strong: ({ node, ...props }) => <strong className="font-semibold text-white" {...props} />,
-        em: ({ node, ...props }) => <em className="italic text-gray-200" {...props} />,
-        a: ({ node, ...props }) => <a className="text-indigo-300 hover:underline" {...props} />,
-        code: ({ inline, className, children, ...props }) => {
-            if (inline) {
-                return <code className="bg-white/10 px-1 py-[0.08rem] rounded text-xs md:text-sm text-indigo-200" {...props}>{children}</code>;
-            }
-            return <code className={className} {...props}>{children}</code>;
-        },
-        pre: ({ node, children, ...props }) => (
-            <pre className="bg-[#0b1220] rounded-lg p-3 md:p-4 overflow-auto text-xs md:text-sm" {...props}>
-                {children}
-            </pre>
-        ),
-        table: ({ node, ...props }) => <div className="overflow-x-auto"><table className="w-full text-left border-collapse mb-4" {...props} /></div>,
-        th: ({ node, ...props }) => <th className="border-b border-white/10 px-2 md:px-3 py-2 bg-white/5 text-xs md:text-sm text-white" {...props} />,
-        td: ({ node, ...props }) => <td className="border-b border-white/10 px-2 md:px-3 py-2 text-xs md:text-sm text-gray-200" {...props} />,
-        blockquote: ({ node, ...props }) => <blockquote className="border-l-4 border-indigo-400 pl-4 italic text-gray-200 my-3 text-sm md:text-base" {...props} />
-    };
-
-
 
     { type === "edit" && loading && <LoadingPage /> }
 
@@ -511,13 +478,7 @@ export default function EditorPage({ type }) {
                                 <TabsContent value="preview" className="h-full">
                                     <ScrollArea className="h-[300px] md:h-[400px] lg:h-[500px] max-w-none bg-white/5 p-4 md:p-6 rounded-xl border border-white/20">
                                         <div className="px-1">
-                                            <ReactMarkdown
-                                                remarkPlugins={[remarkGfm]}
-                                                rehypePlugins={[rehypeRaw, rehypeHighlight]}
-                                                components={mdComponents}
-                                            >
-                                                {formData.content || '_Nothing to preview_'}
-                                            </ReactMarkdown>
+                                            <MarkdownRenderer content={formData.content || '_Nothing to preview_'} />
                                         </div>
                                     </ScrollArea>
                                 </TabsContent>
