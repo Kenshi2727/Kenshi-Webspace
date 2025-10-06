@@ -8,7 +8,7 @@
 2. In browser notification service --> manifest.json
 3. Security-->Research Encryption Algorithms
 4. geoip-lite ---> for logs.csv
-
+5. tagging users
 ### Analytics -
 * Vercel Tools
 * Posthemus
