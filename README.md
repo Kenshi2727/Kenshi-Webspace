@@ -49,5 +49,3 @@ This is just the **beginning**. Your **feedback, ideas, and suggestions** will h
 ✨ Dedicated development & feature expansions begin **late 2025** – watch this space!
 
 ---
-
-Do you want me to also make a **"Quick Start" section** (with clone, install, run commands) so contributors/testers can already try the prototype setup?
