@@ -19,6 +19,7 @@ import { useParams } from 'react-router-dom';
 import LoadingPage from './LoadingPage'
 import { useUser } from '@clerk/clerk-react';
 import MarkdownRenderer from '../components/MarkdownRenderer';
+import { diffeningFunction } from '../lib/utility.functions.js';
 
 export default function EditorPage({ type }) {
     const [loading, setLoading] = useState(false);
@@ -143,36 +144,37 @@ export default function EditorPage({ type }) {
 
         try {
             const token = await getToken();
-            if (type === 'new') {
-                // handle new article submission
-                let updatedFormData = { ...formData };
-                // uploading uploaded images to cloudinary
-                if (thumbFile || coverFile) {
-                    const imageUploads = new FormData();
-                    if (thumbFile) imageUploads.append('thumbnail', thumbFile);
-                    if (coverFile) imageUploads.append('coverImage', coverFile);
-                    //appending user id
-                    imageUploads.append('userId', user.id);
-                    const uploadResponse = await uploadMedia(imageUploads, token);
+            let updatedFormData = { ...formData };
 
-                    // setting thumnail and coverImage URLs from response
-                    if (uploadResponse && uploadResponse.status === 201) {
-                        const { thumbnail, coverImage, message } = uploadResponse.data;
-                        updatedFormData.thumbnail = thumbnail || formData.thumbnail;
-                        updatedFormData.coverImage = coverImage || formData.coverImage;
-                        console.log(message);
+            // uploading uploaded images to cloudinary
+            if (thumbFile || coverFile) {
+                const imageUploads = new FormData();
+                if (thumbFile) imageUploads.append('thumbnail', thumbFile);
+                if (coverFile) imageUploads.append('coverImage', coverFile);
+                //appending user id
+                imageUploads.append('userId', user.id);
+                const uploadResponse = await uploadMedia(imageUploads, token);
 
-                        // sending public ids for reference
-                        const { thumb_id, cover_id } = uploadResponse.data;
-                        updatedFormData = {
-                            ...updatedFormData,
-                            thumb_id,
-                            cover_id,
-                            referenceStatus: true
-                        }
+                // setting thumnail and coverImage URLs from response
+                if (uploadResponse && uploadResponse.status === 201) {
+                    const { thumbnail, coverImage, message } = uploadResponse.data;
+                    updatedFormData.thumbnail = thumbnail || formData.thumbnail;
+                    updatedFormData.coverImage = coverImage || formData.coverImage;
+                    console.log(message);
+
+                    // sending public ids for reference
+                    const { thumb_id, cover_id } = uploadResponse.data;
+                    updatedFormData = {
+                        ...updatedFormData,
+                        thumb_id,
+                        cover_id,
+                        referenceStatus: true
                     }
                 }
+            }
 
+            if (type === 'new') {
+                // handle new article submission
                 const res = await createPost(updatedFormData, userId, token);
                 if (res && res.status === 201) {
                     toast.success("Draft sent for review successfully !");
@@ -183,6 +185,8 @@ export default function EditorPage({ type }) {
             }
             if (type === 'edit') {
                 // handle article update submission
+                const patchData = diffeningFunction(oldData, updatedFormData);
+                console.log("Patch data:", patchData);
                 toast.error("Edit functionality still under testing!")
             }
         } catch (error) {
@@ -208,16 +212,22 @@ export default function EditorPage({ type }) {
             }
 
             // resetting form data
-            setFormData({
-                title: '',
-                excerpt: '',
-                category: '',
-                readTime: 0,
-                thumbnail: '',
-                coverImage: '',
-                content: dummyContent,
-                referenceStatus: false
-            })
+            if (type === "new") {
+                setFormData({
+                    title: '',
+                    excerpt: '',
+                    category: '',
+                    readTime: 0,
+                    thumbnail: '',
+                    coverImage: '',
+                    content: dummyContent,
+                    referenceStatus: false
+                })
+            }
+            else if (type === "edit") {
+                setOldData(formData);
+                setFormData(oldData);
+            }
 
             // set loading to false
             setLoading(false);
