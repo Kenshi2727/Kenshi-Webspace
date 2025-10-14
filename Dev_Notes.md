@@ -34,8 +34,12 @@
    ├─ DALL-E
    └─ Midjourney
    ```
-* n8n
-* MCP Servers
+* AI Automation
+   ``` 
+   ├─ n8n
+   ├─ MCP Servers
+   └─ Apache Kafka
+   ```
 
 ### Future Plans-
 * Integration with whatsapp and telegram
