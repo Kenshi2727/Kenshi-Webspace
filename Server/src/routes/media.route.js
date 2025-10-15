@@ -1,5 +1,5 @@
 import express from 'express';
-import { uploadImage } from '../controllers/media.controller.js';
+import { uploadImage, deleteMediaEntry } from '../controllers/media.controller.js';
 import { protectRoute } from '../middlewares/auth.middleware.js';
 import multer from 'multer';
 
@@ -11,5 +11,6 @@ router.post('/upload/image', protectRoute, upload.fields([
     { name: 'coverImage', maxCount: 1 }
 ]), uploadImage);
 
+router.delete('/', protectRoute, deleteMediaEntry);
 
 export default router;

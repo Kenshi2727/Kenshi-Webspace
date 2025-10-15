@@ -11,7 +11,7 @@ import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { motion } from 'framer-motion';
 import { Pencil, Eye, Send, FileText, Clock, Tag, Image, Upload, LoaderCircle } from 'lucide-react';
-import { createPost, getSinglePost, uploadMedia } from '../services/GlobalApi';
+import { createPost, getSinglePost, uploadMedia, deleteMedia, updatePost } from '../services/GlobalApi';
 import toast from 'react-hot-toast';
 import { useAuth } from '@clerk/clerk-react';
 import dummyContent from '../constants/dummyContent.md?raw'
@@ -186,8 +186,53 @@ export default function EditorPage({ type }) {
             if (type === 'edit') {
                 // handle article update submission
                 const patchData = diffeningFunction(oldData, updatedFormData);
+
+                // check referenceStatus and prepare patch data
+                if (oldData.referenceStatus && !updatedFormData.thumb_id && !updatedFormData.cover_id) {
+                    if (!patchData.thumbnail && !patchData.coverImage) {
+                        updatedFormData.referenceStatus = true;
+                        patchData.referenceStatus = true;
+                    }
+                    else {
+                        if ((patchData.thumbnail && !patchData.coverImage && oldData.coverImage.includes(userId))) {
+                            updatedFormData.referenceStatus = true;
+                            patchData.referenceStatus = true;
+                        }
+                        if ((patchData.coverImage && !patchData.thumbnail && oldData.thumbnail.includes(userId))) {
+                            updatedFormData.referenceStatus = true;
+                            patchData.referenceStatus = true;
+                        }
+                    }
+                }
+
+                // handling old media deletion if changed
+                if (oldData.referenceStatus && (patchData.thumb_id || patchData.cover_id)) {
+                    if (patchData.thumbnail && oldData.thumbnail.includes(userId)) {
+                        const oldThumbId = 'kenshi_webspace' + oldData.thumbnail.split('kenshi_webspace')[1].split('.')[0];
+                        await deleteMedia({ publicId: oldThumbId }, token);
+                    }
+
+                    if (patchData.coverImage && oldData.coverImage.includes(userId)) {
+                        const oldCoverId = 'kenshi_webspace' + oldData.coverImage.split('kenshi_webspace')[1].split('.')[0];
+                        await deleteMedia({ publicId: oldCoverId }, token);
+                    }
+                }
+
+                // handling service reference deletion if changed
+                if (patchData.referenceStatus === false && oldData.referenceStatus === true) {
+                    patchData.del_req = true;// flag for deleting service reference
+                }
+
                 console.log("Patch data:", patchData);
-                toast.error("Edit functionality still under testing!")
+
+                const res = await updatePost(params.id, patchData, token);
+
+                if (res && res.status === 200) {
+                    toast.success("Post updated successfully!");
+                }
+                else {
+                    toast.error("Failed to update post !");
+                }
             }
         } catch (error) {
             if (error.code === "ECONNABORTED")
@@ -196,7 +241,6 @@ export default function EditorPage({ type }) {
                 toast.error("An error occurred while processing your request !");
 
             console.error("Submission error:", error);
-            // delete media if uploaded
         }
         finally {
             // cleanup object URLs

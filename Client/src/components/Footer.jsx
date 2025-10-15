@@ -98,11 +98,12 @@ export default function Footer() {
                                         whileHover="hover"
                                         className="flex items-center w-fit gap-2 sm:gap-3"
                                     >
-                                        <div className="flex items-center justify-center h-8 w-8 sm:h-10 sm:w-10 rounded-lg sm:rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 shadow-lg">
-                                            <svg viewBox="0 0 24 24" className="h-4 w-4 sm:h-6 sm:w-6" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                                        <div className="flex items-center justify-center shadow-lg">
+                                            {/* <svg viewBox="0 0 24 24" className="h-4 w-4 sm:h-6 sm:w-6" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
                                                 <path d="M4 12c0 4.418 3.582 8 8 8s8-3.582 8-8" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                                                 <path d="M12 4v8l4 2" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                            </svg>
+                                            </svg> */}
+                                            <img src="/logo-min.png" alt="Kenshi Webspace Logo" className="h-8 w-8 sm:h-10 sm:w-10 rounded-sm" />
                                         </div>
                                         <div>
                                             <h2 className="text-sm sm:text-base font-bold tracking-tight bg-gradient-to-r from-white to-indigo-200 bg-clip-text text-transparent">

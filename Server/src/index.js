@@ -22,7 +22,7 @@ app.use(helmet());// security middleware for setting various HTTP response heade
 app.use(cors(
     {
         origin: process.env.CORS_ORIGIN,
-        methods: ["GET", "POST", "PUT", "DELETE"],
+        methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
         credentials: true,
     }
 ));

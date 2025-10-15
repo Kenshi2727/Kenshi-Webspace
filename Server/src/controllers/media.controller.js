@@ -151,6 +151,28 @@ export const deleteMediaMetaData = async (publicId) => {
     }
 }
 
+export const deleteMediaEntry = async (req, res) => {
+    const { publicId } = req.body;
+    try {
+        // delete media metadata 
+        const deletedMediaMetaData = await deleteMediaMetaData(publicId);
+        if (deletedMediaMetaData === null) {
+            throw new Error("Failed to delete media metadata");
+        }
+
+        // delete media from cloudinary
+        const deletedMedia = await deleteMedia(publicId);
+        if (deletedMedia === null) {
+            throw new Error("Failed to delete media from cloudinary");
+        }
+
+        return res.status(200).json({ message: "Media entry deleted successfully." });
+    } catch (error) {
+        console.error("Error deleting media entry:", error);
+        return res.status(500).json({ message: "Error deleting media entry." });
+    }
+}
+
 export const deleteServiceRef = async (id, type) => {
     console.log(`Deleting service reference for ID: ${id} and type: ${type}`);
     try {

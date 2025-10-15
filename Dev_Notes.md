@@ -2,6 +2,8 @@
 * Testing the current client and server architecture for potential bugs.
 * Documenting the current codebase before starting further development
 * Exploring custom Webhooks and custom React hooks for better client and server management.
+* Database rollback and optimization mechanism.
+* Automated error detection in logs using automated AI scripts. 
 
 ## IMMEDIATE AI INTEGRATION PLANS-
 * Vercel AI SDK [Auto Complete Example](https://ai-sdk.dev/docs/ai-sdk-ui/completion)

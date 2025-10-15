@@ -229,26 +229,12 @@ export default function CustomSignInPage() {
                             <Card className="rounded-2xl bg-[#071020] border border-white/6 shadow-2xl">
                                 <CardContent className="p-6">
                                     <div className="mb-4 text-center">
+                                        <img src="/logo.png" alt="Kenshi Webspace Logo" className="h-24 mb-4 w-full rounded-md" />
                                         <h2 className="text-2xl font-extrabold text-white">Welcome back</h2>
                                         <p className="text-sm text-white/70 mt-2">Sign in to continue to Kenshi WebSpace</p>
                                     </div>
 
-                                    {/* Social Sign-in Icons Row */}
-                                    <div className="m-4 grid grid-cols-3 gap-3">
-                                        {providers.map((provider, idx) => (
-                                            <motion.button
-                                                key={provider.name}
-                                                initial={{ opacity: 0, y: 15 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                transition={{ delay: idx * 0.08, duration: 0.3 }}
-                                                onClick={() => handleSocial(provider.strategy)}
-                                                className={`flex items-center justify-center p-3 h-9 rounded-lg shadow-md border hover:scale-105 active:scale-95 transition-transform ${provider.className}`}
-                                                title={`Sign in with ${provider.name}`}
-                                            >
-                                                {provider.icon}
-                                            </motion.button>
-                                        ))}
-                                    </div>
+
 
 
                                     <form onSubmit={handleSubmit} className="space-y-4">
@@ -309,9 +295,25 @@ export default function CustomSignInPage() {
                                     <Separator className="my-4" />
 
                                     <div className="text-sm text-white/70 text-center">
-                                        <div>Or use Google, GitHub, or LinkedIn to quickly sign in or sign up—no password needed!</div>
+                                        <div>Or use Google, GitHub, or LinkedIn to quickly sign in—no password needed!</div>
                                     </div>
 
+                                    {/* Social Sign-in Icons Row */}
+                                    <div className="m-4 grid grid-cols-3 gap-3">
+                                        {providers.map((provider, idx) => (
+                                            <motion.button
+                                                key={provider.name}
+                                                initial={{ opacity: 0, y: 15 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                transition={{ delay: idx * 0.08, duration: 0.3 }}
+                                                onClick={() => handleSocial(provider.strategy)}
+                                                className={`flex items-center justify-center p-3 h-9 rounded-lg shadow-md border hover:scale-105 active:scale-95 transition-transform ${provider.className}`}
+                                                title={`Sign in with ${provider.name}`}
+                                            >
+                                                {provider.icon}
+                                            </motion.button>
+                                        ))}
+                                    </div>
 
                                     <div className="mt-4 flex items-center justify-center gap-3">
                                         <a

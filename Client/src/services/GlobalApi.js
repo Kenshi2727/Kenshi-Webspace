@@ -68,11 +68,26 @@ const deletePost = (postId, token) => instance.delete(`/posts/${postId}`, {
     withCredentials: true,
 });
 
+const updatePost = (postId, data, token) => instance.patch(`/posts/${postId}`, data, {
+    headers: {
+        Authorization: `Bearer ${token}`,
+    },
+    withCredentials: true,
+});
+
 
 // Media APIs
 const uploadMedia = (data, token) => instance.post('/media/upload/image', data, {
     headers: {
         'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${token}`,
+    },
+    withCredentials: true,
+});
+
+const deleteMedia = (data, token) => instance.delete('/media', {
+    data,
+    headers: {
         Authorization: `Bearer ${token}`,
     },
     withCredentials: true,
@@ -85,8 +100,10 @@ export {
     deleteUser,
     createPost,
     uploadMedia,
+    deleteMedia,
     getSinglePost,
     getAllPosts,
     getFeaturedPosts,
-    deletePost
+    deletePost,
+    updatePost
 };

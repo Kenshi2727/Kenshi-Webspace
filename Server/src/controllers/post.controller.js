@@ -217,3 +217,34 @@ export const deletePost = async (req, res) => {
         return res.status(500).json({ error: "Failed to delete post" });
     }
 }
+
+export const updatePost = async (req, res) => {
+    console.log("Update post request body:", req.body);
+    const { del_req } = req.body;
+    const { postId } = req.params;
+
+    // delete service reference if del_req is true
+    if (del_req && Boolean(del_req) === true) {
+        console.log("Service reference deletion requested");
+        const deletedServiceRef = await deleteServiceRef(postId, prisma.ServiceType.POST);
+        if (deletedServiceRef === null) {
+            console.error("Failed to delete service reference");
+        }
+        console.log("Service reference deleted:", deletedServiceRef);
+    }
+
+    // proceed to update post
+    const updatedData = req.body;
+
+    try {
+        const updatedPost = await prisma.post.update({
+            where: { id: postId },
+            data: updatedData
+        });
+        console.log("Post updated successfully:", updatedPost);
+        return res.status(200).json({ message: "Post updated successfully" });
+    } catch (error) {
+        console.error("Error updating post:", error);
+        return res.status(500).json({ error: "Failed to update post" });
+    }
+}

@@ -271,6 +271,7 @@ export default function CustomSignUpPage() {
                             <Card className="rounded-2xl bg-[#071020] border border-white/6 shadow-2xl">
                                 <CardContent className="p-6">
                                     <div className="mb-4 text-center">
+                                        <img src="/logo.png" alt="Kenshi Webspace Logo" className="h-24 mb-4 w-full rounded-md" />
                                         <h2 className="text-2xl font-extrabold text-white">Create your account</h2>
                                         <p className="text-sm text-white/70 mt-2">Sign up to start your journey with Kenshi WebSpace</p>
                                     </div>
@@ -385,7 +386,7 @@ export default function CustomSignUpPage() {
 
                                     <Separator className="my-4" />
 
-                                    <div className="text-sm text-white/70 text-center">Or use Google, GitHub, or LinkedIn to quickly sign in or sign up—no password needed!</div>
+                                    <div className="text-sm text-white/70 text-center">Or use Google, GitHub, or LinkedIn to quickly sign up—no password needed!</div>
 
                                     <div className="mt-4 flex items-center justify-center gap-3">
                                         <a href="/auth/login" className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-white/6 text-white hover:bg-white/8 transition">Sign in instead</a>
