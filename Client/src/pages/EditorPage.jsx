@@ -223,6 +223,9 @@ export default function EditorPage({ type }) {
                     patchData.del_req = true;// flag for deleting service reference
                 }
 
+                // delete thumb_id and cover_id in patch data for transmission
+                delete patchData.thumb_id;
+                delete patchData.cover_id;
                 console.log("Patch data:", patchData);
 
                 const res = await updatePost(params.id, patchData, token);
@@ -270,7 +273,7 @@ export default function EditorPage({ type }) {
             }
             else if (type === "edit") {
                 setOldData(formData);
-                setFormData(oldData);
+                setFormData(formData);
             }
 
             // set loading to false
@@ -389,7 +392,7 @@ export default function EditorPage({ type }) {
                                     <div className="flex gap-2">
                                         <Input
                                             id="thumbnail"
-                                            value={formData.thumbnail}
+                                            value={(formData.thumbnail && !formData.thumbnail.includes(userId)) ? formData.thumbnail : ''}
                                             onChange={(e) => {
                                                 setThumbPreview(null)
                                                 setThumbFile(null)
@@ -427,7 +430,7 @@ export default function EditorPage({ type }) {
                                     <div className="flex gap-2">
                                         <Input
                                             id="coverImage"
-                                            value={formData.coverImage}
+                                            value={(formData.coverImage && !formData.coverImage.includes(userId)) ? formData.coverImage : ''}
                                             onChange={(e) => {
                                                 setCoverPreview(null)
                                                 setCoverFile(null)
@@ -558,6 +561,7 @@ export default function EditorPage({ type }) {
                                 <Button
                                     variant="outline"
                                     // onClick={() => toast.error("Feature not implemented yet !")}
+                                    disabled={type === "edit"}
                                     onClick={saveDraft}
                                     className="flex-1 sm:flex-initial bg-white/10 hover:bg-white/20 text-white border-white/20 text-sm md:text-base"
                                 >
