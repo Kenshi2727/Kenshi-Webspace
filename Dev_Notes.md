@@ -1,4 +1,5 @@
 ## IMMEDIATE ACTIONS-
+* CRUD OPERATIONS TESTING [! IMPORTANT]
 * Testing the current client and server architecture for potential bugs.
 * Documenting the current codebase before starting further development
 * Exploring custom Webhooks and custom React hooks for better client and server management.
