@@ -31,7 +31,7 @@
     "typescript": "^5.9.2"
   },
   "dependencies": {
-    "@clerk/express": "^1.7.26",
+    "@clerk/express": "^1.7.40",
     "axios": "^1.11.0",
     "cloudinary": "^2.7.0",
     "cors": "^2.8.5",
