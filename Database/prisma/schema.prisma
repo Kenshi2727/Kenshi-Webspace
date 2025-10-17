@@ -79,7 +79,9 @@ enum ServiceType {
 }
 
 model ServiceRef {
-  id    String          @id
-  type  ServiceType // e.g. "POST", "PROFILE"
-  media MediaMetaData[]
+  id        String          @id
+  type      ServiceType // e.g. "POST", "PROFILE"
+  media     MediaMetaData[]
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt // manual updation required becoz of custom nature of ServiceRef ID
 }

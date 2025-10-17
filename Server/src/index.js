@@ -27,7 +27,9 @@ app.use(cors(
     }
 ));
 app.use(express.urlencoded({ extended: true }));
-app.use(clerkMiddleware());
+app.use(clerkMiddleware({
+    audience: process.env.CORS_ORIGIN
+}));
 // sending raw buffer to /users/create instead of json as webhook verify expects raw buffer
 app.use("/users", bodyParser.raw({ type: "application/json" }), userRoutes);
 app.use(express.json());

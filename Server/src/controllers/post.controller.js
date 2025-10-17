@@ -236,7 +236,76 @@ export const updatePost = async (req, res) => {
     // proceed to update post
     const updatedData = req.body;
 
+    // delete thumb_id and cover_id from patch data (NOT PART OF DATABASE SCHEMA)
+    delete updatedData.thumb_id;
+    delete updatedData.cover_id;
+
     try {
+        // checking service reference
+        const { thumb_id, cover_id } = req.body;
+        if (thumb_id || cover_id) {
+            const checkRef = await prisma.serviceRef.findUnique({
+                where: {
+                    id: postId
+                }
+            });
+
+            if (checkRef) {
+                console.log("Service Reference already exists!", checkRef);
+
+                console.log("Updating timestamp...");
+                const updatedServiceRef = await prisma.serviceRef.update({
+                    where: {
+                        id: postId
+                    },
+                    data: {
+                        updatedAt: new Date()
+                    }
+                });
+
+                console.log("Updated Service Reference:", updatedServiceRef);
+            } else {
+                console.log("No Service Reference exits! Initiating Service Reference creation");
+                const newServiceRef = await setServiceRef(postId, prisma.ServiceType.POST);
+
+                if (newServiceRef) {
+                    console.log("New Service Reference created! Appending ServiceRefId to Media Meta data...");
+
+                    // media meta data update
+                    if (thumb_id) {
+                        // update media meta data
+                        const updatedThumbMetaData = await prisma.mediaMetaData.update({
+                            where: {
+                                publicId: thumb_id
+                            },
+                            data: {
+                                serviceRefId: postId
+                            }
+                        });
+                        console.log("Thumbnail metadata updated with serviceRefId:", updatedThumbMetaData);
+                    }
+
+                    if (cover_id) {
+                        // update media meta data
+                        const updatedCoverMetaData = await prisma.mediaMetaData.update({
+                            where: {
+                                publicId: cover_id
+                            },
+                            data: {
+                                serviceRefId: postId
+                            }
+                        });
+                        console.log("Cover image metadata updated with serviceRefId:", updatedCoverMetaData);
+                    }
+
+                }
+                else {
+                    console.error("Service Reference creation failed!");
+                    throw new Error("New Service Refrence Creation failed!");
+                }
+            }
+        }
+
         const updatedPost = await prisma.post.update({
             where: { id: postId },
             data: updatedData

@@ -224,8 +224,8 @@ export default function EditorPage({ type }) {
                 }
 
                 // delete thumb_id and cover_id in patch data for transmission
-                delete patchData.thumb_id;
-                delete patchData.cover_id;
+                // delete patchData.thumb_id;
+                // delete patchData.cover_id;
                 console.log("Patch data:", patchData);
 
                 const res = await updatePost(params.id, patchData, token);

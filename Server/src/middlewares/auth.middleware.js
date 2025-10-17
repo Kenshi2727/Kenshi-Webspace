@@ -2,7 +2,7 @@ import { getAuth } from '@clerk/express';
 
 export const protectRoute = (req, res, next) => {
     try {
-        console.log("Header containing token:", req.headers);
+        // console.log("Header containing token:", req.headers);
         const auth = getAuth(req);
         console.log('protectRoute getAuth =>', auth);
         if (!auth?.userId) {

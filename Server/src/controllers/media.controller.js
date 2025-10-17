@@ -126,6 +126,7 @@ export const setServiceRef = async (id, type) => {
             data: {
                 id,
                 type,
+                updatedAt: new Date(), // <-- explicitly set
             }
         });
         return ServiceRef;//success
