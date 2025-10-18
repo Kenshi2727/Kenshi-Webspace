@@ -26,8 +26,10 @@ System clock was inaccurate, causing JWT validation errors in Clerk.
 
 ## 2. `<a>` Nested Inside `<a>` Hydration Error
 
-**Date:** 2025-10-18 
-**Environment:** Prouction - React, likely during client hydration after SSR
+**Date:**  2025-10-18 
+<br>
+**Environment:**  Prouction - React, likely during client hydration after SSR
+<br>
 **Error Message:** 
 
 ```bash
@@ -81,9 +83,13 @@ Corrected example:
 ## 3. [Your next error here]
 
 **Date:**  
+<br>
 **Environment:**  
+<br>
 **Error Message:**  
 
 **Cause:**  
 
 **Solution:** 
+
+---
