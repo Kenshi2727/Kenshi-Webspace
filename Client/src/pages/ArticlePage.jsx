@@ -395,59 +395,70 @@ export default function ArticlePage() {
                                         {article.title}
                                     </motion.h1>
 
-                                    {user && (user.id === article.authorId) && <motion.div
-                                        initial={{ opacity: 0, scale: 0.8 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        transition={{ delay: 0.2, duration: 0.2 }}
-                                        whileHover={{ scale: 1.1 }}
-                                        whileTap={{ scale: 0.95 }}
-                                        className='flex flex-col [@media(min-width:364px)]:flex-row gap-2'
-                                    >
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            onClick={() => setOpen(true)}
-                                            className="flex items-center gap-2 bg-white/5 border-white/30 hover:bg-white/30 hover:border-white/50 text-white transition-all duration-300 backdrop-blur-sm"
-                                        >
-                                            <Trash size={16} />
-                                            <span className="hidden sm:inline">Delete</span>
-                                        </Button>
-
-                                        <Dialog open={open} onOpenChange={setOpen}>
-                                            <DialogContent className="max-w-md w-full sm:mx-4 rounded-2xl shadow-xl border border-white/10 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white p-0 overflow-hidden">
-                                                <motion.div initial={{ opacity: 0, scale: 0.95, y: 10 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 10 }} transition={{ duration: 0.2, ease: "easeOut" }}>
-                                                    <div className="px-6 pt-6 pb-4 border-b border-white/10">
-                                                        <DialogHeader>
-                                                            <DialogTitle className="text-xl font-bold tracking-wide bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent">
-                                                                Are you sure you want to delete?
-                                                            </DialogTitle>
-                                                        </DialogHeader>
-                                                        <p className="text-sm text-gray-300 mt-1">This action cannot be undone. Do you want to proceed?</p>
-                                                    </div>
-
-                                                    <DialogFooter className="px-6 py-4 flex-row items-center justify-end gap-3 bg-gray-800/40">
-                                                        <Button variant="ghost" onClick={() => setOpen(false)} disabled={deleting} className="hover:bg-gray-700/50 text-gray-300">No, thanks</Button>
-
-                                                        <Button onClick={handleDelete} disabled={deleting} className="bg-gradient-to-r from-indigo-500 to-pink-500 hover:from-indigo-400 hover:to-pink-400 text-white shadow-md">
-                                                            {deleting ? "Deleting…" : "Yes, delete it"}
-                                                        </Button>
-
-                                                    </DialogFooter>
-                                                </motion.div>
-                                            </DialogContent>
-                                        </Dialog>
-
-                                        <Link to={`/articles/edit/${article.id}`}>
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                className="flex items-center gap-2 bg-white/5 border-white/30 hover:bg-white/30 hover:border-white/50 text-white transition-all duration-300 backdrop-blur-sm"
+                                    {user && (user.id === article.authorId) &&
+                                        <div className='flex flex-col [@media(min-width:364px)]:flex-row gap-2'>
+                                            <motion.div
+                                                initial={{ opacity: 0, scale: 0.8 }}
+                                                animate={{ opacity: 1, scale: 1 }}
+                                                transition={{ delay: 0.2, duration: 0.2 }}
+                                                whileHover={{ scale: 1.1 }}
+                                                whileTap={{ scale: 0.95 }}
                                             >
-                                                <Pencil size={16} />
-                                                <span className="hidden sm:inline">Edit</span>
-                                            </Button>
-                                        </Link>
-                                    </motion.div>}
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    onClick={() => setOpen(true)}
+                                                    className="flex items-center gap-2 bg-white/5 border-white/30 hover:bg-white/30 hover:border-white/50 text-white transition-all duration-300 backdrop-blur-sm"
+                                                >
+                                                    <Trash size={16} />
+                                                    <span className="hidden sm:inline">Delete</span>
+                                                </Button>
+                                            </motion.div>
+
+
+                                            <Dialog open={open} onOpenChange={setOpen}>
+                                                <DialogContent className="max-w-md w-full sm:mx-4 rounded-2xl shadow-xl border border-white/10 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white p-0 overflow-hidden">
+                                                    <motion.div initial={{ opacity: 0, scale: 0.95, y: 10 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 10 }} transition={{ duration: 0.2, ease: "easeOut" }}>
+                                                        <div className="px-6 pt-6 pb-4 border-b border-white/10">
+                                                            <DialogHeader>
+                                                                <DialogTitle className="text-xl font-bold tracking-wide bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent">
+                                                                    Are you sure you want to delete?
+                                                                </DialogTitle>
+                                                            </DialogHeader>
+                                                            <p className="text-sm text-gray-300 mt-1">This action cannot be undone. Do you want to proceed?</p>
+                                                        </div>
+
+                                                        <DialogFooter className="px-6 py-4 flex-row items-center justify-end gap-3 bg-gray-800/40">
+                                                            <Button variant="ghost" onClick={() => setOpen(false)} disabled={deleting} className="hover:bg-gray-700/50 text-gray-300">No, thanks</Button>
+
+                                                            <Button onClick={handleDelete} disabled={deleting} className="bg-gradient-to-r from-indigo-500 to-pink-500 hover:from-indigo-400 hover:to-pink-400 text-white shadow-md">
+                                                                {deleting ? "Deleting…" : "Yes, delete it"}
+                                                            </Button>
+
+                                                        </DialogFooter>
+                                                    </motion.div>
+                                                </DialogContent>
+                                            </Dialog>
+
+                                            <Link to={`/articles/edit/${article.id}`}>
+                                                <motion.div
+                                                    initial={{ opacity: 0, scale: 0.8 }}
+                                                    animate={{ opacity: 1, scale: 1 }}
+                                                    transition={{ delay: 0.2, duration: 0.2 }}
+                                                    whileHover={{ scale: 1.1 }}
+                                                    whileTap={{ scale: 0.95 }}
+                                                >
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        className="flex items-center gap-2 bg-white/5 border-white/30 hover:bg-white/30 hover:border-white/50 text-white transition-all duration-300 backdrop-blur-sm"
+                                                    >
+                                                        <Pencil size={16} />
+                                                        <span className="hidden sm:inline">Edit</span>
+                                                    </Button>
+                                                </motion.div>
+                                            </Link>
+                                        </div>}
                                 </motion.div>
 
                                 {/* Enhanced Author Section */}

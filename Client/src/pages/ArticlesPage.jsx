@@ -173,6 +173,7 @@ const ArticlesPage = () => {
                 {
                     Array.from({ length: 3 }, (_, i) => (
                         <FluidBlob
+                            key={i}
                             className="w-96 h-96 bg-gradient-to-br from-purple-400/10 to-violet-600/10 -top-48 -right-48"
                             duration={30}
                         />
@@ -518,7 +519,7 @@ const ArticlesPage = () => {
                             { label: 'Trending', value: articles.filter(a => a.trending).length, icon: TrendingUp, color: 'from-purple-500 to-violet-400' }
                         ].map((stat, index) => (
                             <motion.div
-                                key={stat.label}
+                                key={index}
                                 initial={{ opacity: 0, y: 30 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.5 + index * 0.15, duration: 0.6 }}

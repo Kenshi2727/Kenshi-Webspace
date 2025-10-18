@@ -234,7 +234,7 @@ export const updatePost = async (req, res) => {
     }
 
     // proceed to update post
-    const updatedData = req.body;
+    const updatedData = { ...req.body };
 
     // delete thumb_id and cover_id from patch data (NOT PART OF DATABASE SCHEMA)
     delete updatedData.thumb_id;

@@ -390,12 +390,9 @@ const HomePage = () => {
 
                                             <div className="flex justify-between items-center gap-1 pt-4">
                                                 <span className="text-sm text-gray-400">{formatDate(post.createdAt)} · {post.readTime} min read</span>
-                                                <Link
-                                                    to={errorFlag || loading ? '#' : `/articles/${post.id}`}
-                                                    className="text-indigo-600 hover:underline text-sm"
-                                                >
+                                                <div className="text-indigo-600 hover:underline text-sm">
                                                     Read more →
-                                                </Link>
+                                                </div>
                                             </div>
                                         </CardContent>
                                     </Link>
