@@ -1,3 +1,7 @@
+# PATCH recommendations during TESTING-
+- Add a delete button for uploaded and locally seved media whille creation and updation of post.
+- handle deletion media meta dtaa on media deletion during update
+
 ## IMMEDIATE ACTIONS-
 * CRUD OPERATIONS TESTING [! IMPORTANT]
 * Testing the current client and server architecture for potential bugs.

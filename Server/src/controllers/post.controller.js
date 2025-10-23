@@ -1,6 +1,6 @@
 import prisma from "../../../Database/prisma.client.js";
 import { setServiceRef, deleteMediaMetaData, deleteServiceRef, deleteMedia, getPublicIds } from "./media.controller.js";
-
+import { parseDataTypes } from "../lib/typeParser.js";
 // Note-
 /* 
 if req.body passed directly-
@@ -62,7 +62,12 @@ export const createNewPost = async (req, res) => {
                 }
             }
             else {
-                await deletePost(newPost.id);
+                console.log("Service Refrence creation failed! Deleting post...");
+
+                const deletedPost = await prisma.post.delete({
+                    where: { id: newPost.id }
+                });
+                console.log("Post deleted successfully:", deletedPost);
                 throw new Error("Service reference is null");
             }
         }
@@ -220,27 +225,34 @@ export const deletePost = async (req, res) => {
 
 export const updatePost = async (req, res) => {
     console.log("Update post request body:", req.body);
-    const { del_req } = req.body;
-    const { postId } = req.params;
-
-    // delete service reference if del_req is true
-    if (del_req && Boolean(del_req) === true) {
-        console.log("Service reference deletion requested");
-        const deletedServiceRef = await deleteServiceRef(postId, prisma.ServiceType.POST);
-        if (deletedServiceRef === null) {
-            console.error("Failed to delete service reference");
-        }
-        console.log("Service reference deleted:", deletedServiceRef);
-    }
-
-    // proceed to update post
-    const updatedData = { ...req.body };
-
-    // delete thumb_id and cover_id from patch data (NOT PART OF DATABASE SCHEMA)
-    delete updatedData.thumb_id;
-    delete updatedData.cover_id;
 
     try {
+        const { del_req } = req.body;
+        const { postId } = req.params;
+        // delete service reference if del_req is true
+        if (del_req && Boolean(del_req) === true) {
+            console.log("Service reference deletion requested(del_req request)");
+            const deletedServiceRef = await deleteServiceRef(postId, prisma.ServiceType.POST);
+            if (deletedServiceRef === null) {
+                console.error("Failed to delete service reference");
+            }
+            console.log("Service reference deleted:", deletedServiceRef);
+        }
+
+        // proceed to update post
+        const updatedData = { ...req.body };
+
+        // delete thumb_id and cover_id from patch data (NOT PART OF DATABASE SCHEMA)
+        delete updatedData.thumb_id;
+        delete updatedData.cover_id;
+        if (del_req) delete updatedData.del_req;
+
+        // handling parsing of data types
+        parseDataTypes(updatedData, {
+            readTime: Number,
+            referenceStatus: Boolean,
+        });
+
         // checking service reference
         const { thumb_id, cover_id } = req.body;
         if (thumb_id || cover_id) {
@@ -262,6 +274,33 @@ export const updatePost = async (req, res) => {
                         updatedAt: new Date()
                     }
                 });
+
+                // media meta data update
+                if (thumb_id) {
+                    // update media meta data
+                    const updatedThumbMetaData = await prisma.mediaMetaData.update({
+                        where: {
+                            publicId: thumb_id
+                        },
+                        data: {
+                            serviceRefId: postId
+                        }
+                    });
+                    console.log("Thumbnail metadata updated with serviceRefId:", updatedThumbMetaData);
+                }
+
+                if (cover_id) {
+                    // update media meta data
+                    const updatedCoverMetaData = await prisma.mediaMetaData.update({
+                        where: {
+                            publicId: cover_id
+                        },
+                        data: {
+                            serviceRefId: postId
+                        }
+                    });
+                    console.log("Cover image metadata updated with serviceRefId:", updatedCoverMetaData);
+                }
 
                 console.log("Updated Service Reference:", updatedServiceRef);
             } else {

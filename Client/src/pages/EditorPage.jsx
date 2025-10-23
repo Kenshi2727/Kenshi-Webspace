@@ -193,15 +193,17 @@ export default function EditorPage({ type }) {
                         updatedFormData.referenceStatus = true;
                         patchData.referenceStatus = true;
                     }
-                    else {
-                        if ((patchData.thumbnail && !patchData.coverImage && oldData.coverImage.includes(userId))) {
-                            updatedFormData.referenceStatus = true;
-                            patchData.referenceStatus = true;
-                        }
-                        if ((patchData.coverImage && !patchData.thumbnail && oldData.thumbnail.includes(userId))) {
-                            updatedFormData.referenceStatus = true;
-                            patchData.referenceStatus = true;
-                        }
+                    if ((patchData.thumbnail && !patchData.coverImage && oldData.coverImage.includes(userId))) {
+                        updatedFormData.referenceStatus = true;
+                        patchData.referenceStatus = true;
+                    }
+                    if ((patchData.coverImage && !patchData.thumbnail && oldData.thumbnail.includes(userId))) {
+                        updatedFormData.referenceStatus = true;
+                        patchData.referenceStatus = true;
+                    }
+                    if (patchData.thumbnail && patchData.coverImage) {
+                        updatedFormData.referenceStatus = false;
+                        patchData.referenceStatus = false;
                     }
                 }
 
