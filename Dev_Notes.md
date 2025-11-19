@@ -1,5 +1,6 @@
 ## Web Analytics
 - Sentry Service Integration
+- Server Log Monitoring setup left
 
 ## PATCH recommendations during TESTING-
 - Add a delete button for uploaded and locally seved media whille creation and updation of post.
