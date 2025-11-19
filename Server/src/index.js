@@ -1,3 +1,6 @@
+// IMPORTANT: Make sure to import `instrument.js` at the top of your file.
+import "./instrument.js";
+// All other imports below
 import express from "express";
 import dotenv from "dotenv";
 import prisma from "../../Database/prisma.client.js";
@@ -51,6 +54,11 @@ app.get('/', (req, res) => {
 //ping route
 app.get('/ping', (req, res) => {
     res.status(200).json({ message: "Pong 🏓" });
+});
+
+// A route that triggers a Sentry error for testing purposes
+app.get("/debug-sentry", function mainHandler(req, res) {
+    throw new Error("My first Sentry error!");
 });
 
 app.listen(port, () => {

@@ -51,6 +51,12 @@ function App() {
   //   }
   // }, []);
 
+
+  // simulating error for Sentry testing
+  // useEffect(() => {
+  //   throw new Error("Test Sentry Error from App.jsx");
+  // })
+
   return (
     <>
       <Navbar />
