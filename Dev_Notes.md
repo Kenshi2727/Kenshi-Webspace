@@ -1,4 +1,7 @@
-# PATCH recommendations during TESTING-
+## Web Analytics
+- Sentry Service Integration
+
+## PATCH recommendations during TESTING-
 - Add a delete button for uploaded and locally seved media whille creation and updation of post.
 - handle deletion media meta data on media deletion during update
 - add a user visit info in .csv file
