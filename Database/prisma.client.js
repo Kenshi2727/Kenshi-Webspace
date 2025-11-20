@@ -1,4 +1,4 @@
-const { PrismaClient, MediaType, ServiceType } = require('./generated/prisma');
+import { PrismaClient, MediaType, ServiceType } from './generated/prisma/index.js';
 
 const prisma = new PrismaClient();
 
@@ -22,5 +22,8 @@ try {
     console.error("Error disconnecting Prisma:", error);
 }
 
-
-module.exports = { ...prisma, MediaType, ServiceType };
+export default {
+    ...prisma,
+    MediaType,
+    ServiceType
+};
