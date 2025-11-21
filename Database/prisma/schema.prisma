@@ -5,13 +5,14 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client-js" // for js
+  // provider = "prisma-client" // for ts
   output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
-  // url      = env("DATABASE_URL")// DEPRECATED SINCE V7 
+  // url      = env("DATABASE_URL") // DEPRECATED SINCE V7 
 }
 
 model User {

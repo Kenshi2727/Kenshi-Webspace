@@ -4,7 +4,7 @@
   "description": "Separate codebase for Prisma ORM",
   "license": "ISC",
   "author": "",
-  "type": "module",
+  "type": "commonjs",
   "main": "index.js",
   "scripts": {
     "generate": "npx prisma generate",
@@ -17,7 +17,9 @@
   },
   "dependencies": {
     "@prisma/client": "^7.0.0",
-    "dotenv": "^17.2.3",
+    "dotenv": "^17.2.3"
+  },
+  "devDependencies": {
     "prisma": "^7.0.0"
   }
 }
