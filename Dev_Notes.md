@@ -22,10 +22,14 @@
 ### Planned Features-  
 1. Web Sockets --> for realtime broadcasting for admin approval 
 2. In browser notification service --> manifest.json
+                                  |--> author/topic specific notifications
 3. Security-->Research Encryption Algorithms
 4. geoip-lite ---> for logs.csv
 5. tagging users --> react-mentions
 6. Download blogs as pdf
+7. Wikipedia API integration for content enrichment
+8. Grammarly API integration for content enhancement
+9. Shareable link beautification
    
 ### Analytics -
 * Vercel Tools

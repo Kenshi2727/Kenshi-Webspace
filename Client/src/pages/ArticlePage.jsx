@@ -113,6 +113,45 @@ export default function ArticlePage() {
         }
     }
 
+    const handleShareSocial = (social) => {
+        const url = encodeURIComponent(window.location.href);
+        let shareUrl;
+
+        if (social === 'Facebook') {
+            shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+        }
+        else if (social === 'Twitter') {
+            shareUrl = `https://twitter.com/intent/tweet?url=${url}`;
+        }
+        else if (social === 'LinkedIn') {
+            shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
+        }
+        else {
+            toast.error("Sharing not supported for this platform.");
+            return; // Exit early
+        }
+
+        window.open(shareUrl, '_blank', 'noopener,noreferrer');
+    }
+
+    const handleShare = () => {
+        const shareData = {
+            title: article.title,
+            text: `Check out this article: ${article.title}`,
+            url: window.location.href
+        };
+        try {
+            if (navigator.canShare && navigator.canShare(shareData)) {
+                navigator.share(shareData);
+            } else {
+                toast.error("Sharing not supported on this browser.");
+            }
+        } catch (error) {
+            toast.error("Failed to share the article ! Contact support.");
+            console.log(error);
+        }
+    }
+
     return (
         <>
             {/* Beautiful Enhanced Progress Bar */}
@@ -232,6 +271,7 @@ export default function ArticlePage() {
                 <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
+                    onClick={handleShare}
                     className="p-3 rounded-full bg-white/10 text-gray-300 hover:bg-white/20 backdrop-blur-lg border border-white/20 transition-all duration-300"
                 >
                     <Share2 size={20} />
@@ -533,11 +573,12 @@ export default function ArticlePage() {
                                                     variant="outline"
                                                     size="icon"
                                                     asChild
+                                                    onClick={() => handleShareSocial(social.label)}
                                                     className={`bg-white/10 border-white/20 text-white backdrop-blur-sm transition-all duration-300 ${social.color} hover:border-white/40 hover:shadow-lg hover:shadow-white/10`}
                                                 >
-                                                    <a href={social.url} target="_blank" rel="noopener noreferrer" aria-label={`Share on ${social.label}`}>
+                                                    <div>
                                                         {social.icon}
-                                                    </a>
+                                                    </div>
                                                 </Button>
                                             </motion.div>
                                         ))}

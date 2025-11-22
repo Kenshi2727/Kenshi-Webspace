@@ -85,8 +85,13 @@ function App() {
             <Route path="/auth/forgot-password" element={isMaintenanceMode ? <MaintenancePage /> : <ForgotPasswordPage />} />
             <Route path="/my-articles" element={isMaintenanceMode ? <MaintenancePage /> : isSignedIn ? <MyArticlesPage /> : <SignInPage />} />
             <Route path="/dark" element={isMaintenanceMode ? <MaintenancePage /> : <DarkHomePage />} />
-            <Route path="/research" element={isMaintenanceMode ? <MaintenancePage /> : <ResearchBrewery />} />
-            <Route path="/code" element={isMaintenanceMode ? <MaintenancePage /> : <CodePage />} />
+
+            {/* <Route path="/research" element={isMaintenanceMode ? <MaintenancePage /> : <ResearchBrewery />} />
+            <Route path="/code" element={isMaintenanceMode ? <MaintenancePage /> : <CodePage />} /> */}
+
+            <Route path="/research" element={true ? <MaintenancePage /> : <ResearchBrewery />} />
+            <Route path="/code" element={true ? <MaintenancePage /> : <CodePage />} />
+
             <Route path="/review" element={isMaintenanceMode ? <MaintenancePage /> : isSignedIn ? <ReviewPage /> : <SignInPage />} />
             <Route path="/profile" element={isMaintenanceMode ? <MaintenancePage /> : isSignedIn ? <ProfilePage /> : <SignInPage />} />
             <Route path="/super-admin/maintainer" element={isMaintenanceMode ? <MaintenancePage /> : isSignedIn ? <MaintainerPage /> : <SignInPage />} />
