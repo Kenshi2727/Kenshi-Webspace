@@ -22,7 +22,7 @@ try {
     console.error("Error disconnecting Prisma:", error);
 }
 
-module.exports = {
+module.exports={
     ...prisma,
     MediaType,
     ServiceType
