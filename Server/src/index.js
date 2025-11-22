@@ -56,11 +56,6 @@ app.get('/ping', (req, res) => {
     res.status(200).json({ message: "Pong 🏓" });
 });
 
-// A route that triggers a Sentry error for testing purposes
-app.get("/debug-sentry", function mainHandler(req, res) {
-    throw new Error("My first Sentry error!");
-});
-
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
     console.log(`Current Process ID: ${process.pid}`);
