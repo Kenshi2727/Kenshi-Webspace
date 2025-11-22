@@ -15,11 +15,11 @@
     "pull": "npx prisma db pull",
     "push": "npx prisma db push"
   },
-  "dependencies": {
-    "@prisma/client": "^7.0.0",
-    "dotenv": "^17.2.3"
-  },
   "devDependencies": {
-    "prisma": "^7.0.0"
+    "prisma": "^6.19.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.0",
+    "dotenv": "^17.2.3"
   }
 }

@@ -27,9 +27,6 @@
     "tunnel": "lt --port 3000",
     "ngrok": "ngrok http http://localhost:3000"
   },
-  "devDependencies": {
-    "typescript": "^5.9.2"
-  },
   "dependencies": {
     "@clerk/express": "^1.7.40",
     "@sentry/node": "^10.25.0",
