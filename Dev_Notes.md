@@ -30,6 +30,10 @@
 8. Grammarly API integration for content enhancement
 9. Shareable link beautification
 10. Add a clear content button in markdown editor
+11. Copy code button in code blocks
+12. Attached files option in blog posts
+13. Image upload ctrl c+v / normal user expectation --> medium style
+14. Manual Tab addition in markdown editor
    
 ### Analytics -
 * Posthemus
