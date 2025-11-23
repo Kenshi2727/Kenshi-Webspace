@@ -508,7 +508,7 @@ export default function EditorPage({ type }) {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.5, delay: 0.2 }}
                         >
-                            <Tabs defaultValue="write" className="h-full">
+                            <Tabs defaultValue="preview" className="h-full">
                                 <TabsList className="mb-4 flex gap-1 md:gap-2 bg-white/10 p-1 rounded-xl w-full sm:w-auto">
                                     <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="flex-1 sm:flex-initial">
                                         <TabsTrigger value="write" className="flex items-center gap-2 w-full text-xs md:text-sm">

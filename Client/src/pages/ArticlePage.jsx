@@ -20,9 +20,9 @@ import {
 import { useAuth } from '@clerk/clerk-react';
 
 const related = [
-    { id: 2, title: 'Mastering Tailwind CSS', readTime: '8 min', category: 'CSS' },
-    { id: 3, title: 'React Hooks in Depth', readTime: '12 min', category: 'React' },
-    { id: 4, title: 'Building Accessible UIs', readTime: '6 min', category: 'Accessibility' }
+    { id: 2, title: 'Coming soon...', readTime: '0 min', category: 'Crying Kitty' },
+    { id: 4, title: 'Coming soon...', readTime: '0 min', category: 'Crying Kitty' },
+    { id: 3, title: 'Coming soon...', readTime: '0 min', category: 'Crying Kitty' },
 ];
 
 export default function ArticlePage() {
@@ -574,7 +574,7 @@ export default function ArticlePage() {
                                                     size="icon"
                                                     asChild
                                                     onClick={() => handleShareSocial(social.label)}
-                                                    className={`bg-white/10 border-white/20 text-white backdrop-blur-sm transition-all duration-300 ${social.color} hover:border-white/40 hover:shadow-lg hover:shadow-white/10`}
+                                                    className={`bg-white/10 border-white/20 text-white backdrop-blur-sm transition-all duration-300 ${social.color} hover:border-white/40 hover:shadow-lg hover:shadow-white/10 cursor-pointer`}
                                                 >
                                                     <div>
                                                         {social.icon}
@@ -607,7 +607,7 @@ export default function ArticlePage() {
                                         key={item.id}
                                         initial={{ opacity: 0, y: 50 }}
                                         animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: 1.7 + index * 0.2, duration: 0.6 }}
+                                        transition={{ delay: 1.0 + index * 0.2, duration: 0.6 }}
                                         whileHover={{ y: -8, scale: 1.02 }}
                                         className="group"
                                     >
