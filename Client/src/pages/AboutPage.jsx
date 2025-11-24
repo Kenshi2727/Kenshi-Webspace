@@ -443,7 +443,7 @@ const AboutPage = () => {
         {
             id: 1,
             name: "Abhishek Mathur",
-            role: "Founder & Editor",
+            role: "Moderator",
             bio: "Specializes in web development and technology. Leading the vision and technical direction of Kenshi Webspace.",
             img: "abhishek.jpg",
             available: true,
