@@ -22,6 +22,7 @@
 ### Planned Features-  
 1. Web Sockets --> for realtime broadcasting for admin approval 
 2. In browser notification service --> manifest.json
+                                  |--> web push npm package
                                   |--> author/topic specific notifications
 3. Security-->Research Encryption Algorithms
 4. geoip-lite ---> for logs.csv
