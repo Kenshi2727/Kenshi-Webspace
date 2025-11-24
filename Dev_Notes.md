@@ -1,12 +1,13 @@
+## PATCH recommendations during TESTING-
+- Add a delete button for uploaded and locally seved media(photos at cloudinary) while creation and updation of post.
+- handle deletion media meta data on media deletion during update
+- add a user visit info in .csv file
+- new line character handling in markdown editor preview mode
+
 ## Web Analytics
 - Sentry Service Integration
 - Server Log Monitoring setup left
 - Aiven Analytics
-
-## PATCH recommendations during TESTING-
-- Add a delete button for uploaded and locally seved media whille creation and updation of post.
-- handle deletion media meta data on media deletion during update
-- add a user visit info in .csv file
 
 ## IMMEDIATE ACTIONS-
 * CRUD OPERATIONS TESTING [! IMPORTANT]
@@ -32,8 +33,12 @@
 10. Add a clear content button in markdown editor
 11. Copy code button in code blocks
 12. Attached files option in blog posts
+              |--> downloadable resources
+              |--> code snippets
+              |--> links
 13. Image upload ctrl c+v / normal user expectation --> medium style
 14. Manual Tab addition in markdown editor
+15. blog tagginng and filtering
    
 ### Analytics -
 * Posthemus
