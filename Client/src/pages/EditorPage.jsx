@@ -10,7 +10,7 @@ import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/comp
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { motion } from 'framer-motion';
-import { Pencil, Eye, Send, FileText, Clock, Tag, Image, Upload, LoaderCircle } from 'lucide-react';
+import { Pencil, Eye, Send, FileText, Clock, Tag, Image, Upload, LoaderCircle, Trash } from 'lucide-react';
 import { createPost, getSinglePost, uploadMedia, deleteMedia, updatePost } from '../services/GlobalApi';
 import toast from 'react-hot-toast';
 import { useAuth } from '@clerk/clerk-react';
@@ -105,6 +105,15 @@ export default function EditorPage({ type }) {
             }
         }
     };
+
+    const handleImageDelete = (type) => {
+        if (type === "thumbnail") {
+            toast.success("Thumbnail removed !");
+        }
+        else if (type === "cover") {
+            toast.success("Cover image removed !");
+        }
+    }
 
     function formValidate() {
         if (formData.title.trim() === '') {
@@ -415,10 +424,25 @@ export default function EditorPage({ type }) {
                                                             className='hidden'
                                                             onChange={(e) => handleImageUpload(e, "thumbnail")}
                                                         />
-                                                        <label htmlFor="thumbUpload">Upload Image</label>
+                                                        <label htmlFor="thumbUpload" className='hidden sm:block'>Upload Image</label>
                                                     </Button>
                                                 </TooltipTrigger>
                                                 <TooltipContent>Upload image</TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>
+
+                                        <TooltipProvider>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <Button
+                                                        size="sm"
+                                                        className="bg-white/10 hover:bg-white/20 text-white border-white/20 px-2 md:px-3"
+                                                        onClick={() => handleImageDelete("thumbnail")}
+                                                    >
+                                                        <Trash size={16} />
+                                                    </Button>
+                                                </TooltipTrigger>
+                                                <TooltipContent>Remove</TooltipContent>
                                             </Tooltip>
                                         </TooltipProvider>
                                     </div>
@@ -453,10 +477,25 @@ export default function EditorPage({ type }) {
                                                             className='hidden'
                                                             onChange={(e) => handleImageUpload(e, "cover")}
                                                         />
-                                                        <label htmlFor="coverUpload">Upload Image</label>
+                                                        <label htmlFor="coverUpload" className='hidden sm:block'>Upload Image</label>
                                                     </Button>
                                                 </TooltipTrigger>
                                                 <TooltipContent>Upload image</TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>
+
+                                        <TooltipProvider>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <Button
+                                                        size="sm"
+                                                        className="bg-white/10 hover:bg-white/20 text-white border-white/20 px-2 md:px-3"
+                                                        onClick={() => handleImageDelete("cover")}
+                                                    >
+                                                        <Trash size={16} />
+                                                    </Button>
+                                                </TooltipTrigger>
+                                                <TooltipContent>Remove</TooltipContent>
                                             </Tooltip>
                                         </TooltipProvider>
                                     </div>
