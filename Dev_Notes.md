@@ -1,7 +1,5 @@
 ## PATCH recommendations during TESTING-
-- Add a delete button for uploaded and locally seved media(photos at cloudinary) while creation and updation of post.
 - handle deletion media meta data on media deletion during update
-- add a user visit info in .csv file
 - new line character handling in markdown editor preview mode
 
 ## Web Analytics
@@ -9,9 +7,7 @@
 - Server Log Monitoring setup left
 - Aiven Analytics
 
-## IMMEDIATE ACTIONS-
-* CRUD OPERATIONS TESTING [! IMPORTANT]
-* Testing the current client and server architecture for potential bugs.
+## AFTER FRONTEND DEV UI FULL FEATURE COMPLETION-
 * Documenting the current codebase before starting further development
 * Exploring custom Webhooks and custom React hooks for better client and server management.
 * Database rollback and optimization mechanism.

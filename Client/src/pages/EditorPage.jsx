@@ -106,12 +106,25 @@ export default function EditorPage({ type }) {
         }
     };
 
-    const handleImageDelete = (type) => {
-        if (type === "thumbnail") {
-            toast.success("Thumbnail removed !");
-        }
-        else if (type === "cover") {
-            toast.success("Cover image removed !");
+    const handleImageDelete = (ImageType) => {
+        try {
+            if (ImageType === "thumbnail") {
+                setThumbPreview(null);
+                setThumbFile(null);
+                URL.revokeObjectURL(thumbPreview);
+                handleInputChange('thumbnail', '');
+                toast.success("Thumbnail removed !");
+            }
+            else if (ImageType === "cover") {
+                setCoverPreview(null);
+                setCoverFile(null);
+                URL.revokeObjectURL(coverPreview);
+                handleInputChange('coverImage', '');
+                toast.success("Cover image removed !");
+            }
+        } catch (error) {
+            toast.error("Error removing image ! Contact support.");
+            console.error("Image removal error:", error);
         }
     }
 
@@ -197,7 +210,7 @@ export default function EditorPage({ type }) {
                 const patchData = diffeningFunction(oldData, updatedFormData);
 
                 // check referenceStatus and prepare patch data
-                if (oldData.referenceStatus && !updatedFormData.thumb_id && !updatedFormData.cover_id) {
+                if (oldData.referenceStatus && (!updatedFormData.thumb_id || updatedFormData.thumb_id === null) && (!updatedFormData.cover_id || updatedFormData.cover_id === null)) {
                     if (!patchData.thumbnail && !patchData.coverImage) {
                         updatedFormData.referenceStatus = true;
                         patchData.referenceStatus = true;
@@ -216,16 +229,34 @@ export default function EditorPage({ type }) {
                     }
                 }
 
-                // handling old media deletion if changed
-                if (oldData.referenceStatus && (patchData.thumb_id || patchData.cover_id)) {
-                    if (patchData.thumbnail && oldData.thumbnail.includes(userId)) {
-                        const oldThumbId = 'kenshi_webspace' + oldData.thumbnail.split('kenshi_webspace')[1].split('.')[0];
-                        await deleteMedia({ publicId: oldThumbId }, token);
-                    }
+                // Set referenceStatus to false when both images are deleted
+                if (patchData.thumbnail === '' && patchData.coverImage === '') {
+                    patchData.referenceStatus = false;
+                }
 
-                    if (patchData.coverImage && oldData.coverImage.includes(userId)) {
-                        const oldCoverId = 'kenshi_webspace' + oldData.coverImage.split('kenshi_webspace')[1].split('.')[0];
-                        await deleteMedia({ publicId: oldCoverId }, token);
+                // handling old media deletion if changed
+                if (oldData.referenceStatus) {
+                    // Case 1: New images uploaded 
+                    if ((patchData.thumb_id && patchData.thumb_id !== null) || (patchData.cover_id && patchData.cover_id !== null)) {
+                        if (patchData.thumbnail && oldData.thumbnail.includes(userId)) {
+                            const oldThumbId = 'kenshi_webspace' + oldData.thumbnail.split('kenshi_webspace')[1].split('.')[0];
+                            await deleteMedia({ publicId: oldThumbId }, token);
+                        }
+                        if (patchData.coverImage && oldData.coverImage.includes(userId)) {
+                            const oldCoverId = 'kenshi_webspace' + oldData.coverImage.split('kenshi_webspace')[1].split('.')[0];
+                            await deleteMedia({ publicId: oldCoverId }, token);
+                        }
+                    }
+                    // Case 2: Images deleted without replacement 
+                    else if (!thumbFile && !coverFile) {
+                        if ((patchData.thumbnail || patchData.thumbnail === '') && oldData.thumbnail.includes(userId)) {
+                            const oldThumbId = 'kenshi_webspace' + oldData.thumbnail.split('kenshi_webspace')[1].split('.')[0];
+                            await deleteMedia({ publicId: oldThumbId }, token);
+                        }
+                        if ((patchData.coverImage || patchData.coverImage === '') && oldData.coverImage.includes(userId)) {
+                            const oldCoverId = 'kenshi_webspace' + oldData.coverImage.split('kenshi_webspace')[1].split('.')[0];
+                            await deleteMedia({ publicId: oldCoverId }, token);
+                        }
                     }
                 }
 
@@ -257,20 +288,20 @@ export default function EditorPage({ type }) {
             console.error("Submission error:", error);
         }
         finally {
-            // cleanup object URLs
-            if (thumbPreview) {
-                URL.revokeObjectURL(thumbPreview);
-                setThumbPreview(null);
-                setThumbFile(null);
-            }
-            if (coverPreview) {
-                URL.revokeObjectURL(coverPreview);
-                setCoverPreview(null);
-                setCoverFile(null);
-            }
-
             // resetting form data
             if (type === "new") {
+                // cleanup object URLs
+                if (thumbPreview) {
+                    URL.revokeObjectURL(thumbPreview);
+                    setThumbPreview(null);
+                    setThumbFile(null);
+                }
+                if (coverPreview) {
+                    URL.revokeObjectURL(coverPreview);
+                    setCoverPreview(null);
+                    setCoverFile(null);
+                }
+
                 setFormData({
                     title: '',
                     excerpt: '',
