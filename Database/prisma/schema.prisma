@@ -25,6 +25,7 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   Posts     Post[]
+  likes     Like[]
 }
 
 enum Role {
@@ -33,6 +34,19 @@ enum Role {
   ADMIN // Reviews posts, cannot demote Admins
   COLLABORATOR // Default contributor/member
   USER // Regular user with limited permissions
+}
+
+model Like {
+  id        String   @id @default(uuid())
+  userId    String
+  postId    String
+  status    Boolean  @default(false) // true = liked, false = unliked  
+  user      User     @relation(fields: [userId], references: [id])
+  post      Post     @relation(fields: [postId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, postId]) // Ensure a user can like a post only once
 }
 
 model Post {
@@ -54,6 +68,7 @@ model Post {
   referenceStatus Boolean  @default(false) // Whether the post has an associated ServiceRef
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  Likes           Like[]
 
   @@unique([id, authorId]) // Composite primary key
 }
