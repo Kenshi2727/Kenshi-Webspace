@@ -75,6 +75,13 @@ const updatePost = (postId, data, token) => instance.patch(`/posts/${postId}`, d
     withCredentials: true,
 });
 
+const updatePostLikes = (postId, data, token) => instance.put(`/posts/likes/${postId}`, data, {
+    headers: {
+        Authorization: `Bearer ${token}`,
+    },
+    withCredentials: true,
+});
+
 
 // Media APIs
 const uploadMedia = (data, token) => instance.post('/media/upload/image', data, {
@@ -105,5 +112,6 @@ export {
     getAllPosts,
     getFeaturedPosts,
     deletePost,
-    updatePost
+    updatePost,
+    updatePostLikes
 };

@@ -9,6 +9,35 @@ you don’t actually want users to control (e.g., role, isAdmin, passwordHash), 
 This is called a Mass Assignment vulnerability.
  */
 
+// Helper functions to add/remove like count
+const countLike = async (postId, likeId, operation) => {
+    try {
+        const post = await prisma.post.update({
+            where: { id: postId },
+            data: {
+                likes: likes + (operation === "increment" ? 1 : -1)
+            }
+        });
+
+        console.log(`Like ${operation}ed to post with ID:`, postId);
+        return post;
+    } catch (error) {
+        console.error(`Error ${operation}ing like to post:`, error);
+
+        // setting back like to previous state
+        try {
+            const likeReset = await prisma.like.update({
+                where: { id: likeId },
+                data: { status: false }
+            });
+            console.log("Like status reset due to error:", likeReset);
+        } catch (error) {
+            console.error("Error resetting like status:", error);
+        }
+        return null;
+    }
+}
+
 export const createNewPost = async (req, res) => {
     console.log("Request body:", req.body);
     console.log("Creating a new post for author ID:", req.params.authorId);
@@ -95,6 +124,7 @@ export const getSinglePost = async (req, res) => {
             },
             include: {
                 author: true,
+                Likes: true,
             },
         });
 
@@ -354,5 +384,67 @@ export const updatePost = async (req, res) => {
     } catch (error) {
         console.error("Error updating post:", error);
         return res.status(500).json({ error: "Failed to update post" });
+    }
+}
+
+export const updatePostLikes = async (req, res) => {
+    try {
+        const { postId } = req.params;
+        const { userId } = req.body;
+        console.log(`Updating like status for post ID: ${postId} by user ID: ${userId}`);
+
+        // Check if the like already exists
+        const existingLike = await prisma.like.findUnique({
+            where: {
+                userId_postId: {
+                    userId,
+                    postId
+                }
+            }
+        });
+
+        if (existingLike) {
+            // update operation - toggle status
+            const updatedLike = await prisma.like.update({
+                where: {
+                    userId_postId: {
+                        userId,
+                        postId
+                    }
+                },
+                data: {
+                    status: !existingLike.status
+                }
+            });
+
+            console.log("Like status updated:", updatedLike);
+
+            const postLikeUpdate = await countLike(postId, updatedLike.id, updatedLike.status ? "increment" : "decrement");
+            if (postLikeUpdate === null) {
+                throw new Error("Failed to update post like count");
+            }
+            console.log("Post succesfully updated with like count:", postLikeUpdate);
+        } else {
+            // If like does not exist, create it (like)
+            const newLike = await prisma.like.create({
+                data: {
+                    postId,
+                    userId,
+                    status: true
+                }
+            });
+
+            console.log("Like created:", newLike);
+
+            const postLikeUpdate = await countLike(postId, newLike.id, newLike.status ? "increment" : "decrement");
+            if (postLikeUpdate === null) {
+                throw new Error("Failed to update post like count");
+            }
+            console.log("Post succesfully updated with like count:", postLikeUpdate);
+        }
+        return res.status(200).json({ message: "Post like status updated successfully" });
+    } catch (error) {
+        console.error("Error updating post likes:", error);
+        return res.status(500).json({ error: "Failed to update post likes" });
     }
 }

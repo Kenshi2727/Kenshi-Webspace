@@ -10,7 +10,7 @@ import { Facebook, Twitter, Linkedin, Pencil, Clock, Eye, Heart, Bookmark, Share
 import MarkdownRenderer from '@/components/MarkdownRenderer';
 import NotFoundPage from './NotFoundPage';
 import LoadingPage from './LoadingPage';
-import { getSinglePost, deletePost } from '../services/GlobalApi.js';
+import { getSinglePost, deletePost, updatePostLikes } from '../services/GlobalApi.js';
 import toast from 'react-hot-toast';
 import { formatDate, formatMessageTime, formatOnlyNumericDate } from '../lib/dateFormatter.js';
 import { useUser } from '@clerk/clerk-react';
@@ -52,6 +52,8 @@ export default function ArticlePage() {
             try {
                 const res = await getSinglePost(id);
                 setArticle(res.data);
+                const likeStatus = res.data.Likes?.find(like => like.userId === user?.id)?.status;
+                likeStatus ? setIsLiked(likeStatus) : setIsLiked(false);
             } catch (error) {
                 toast.error(error?.response?.data?.error || "Failed to fetch the article");
                 console.log(error);
@@ -148,6 +150,21 @@ export default function ArticlePage() {
             }
         } catch (error) {
             toast.error("Failed to share the article ! Contact support.");
+            console.log(error);
+        }
+    }
+
+    const handleLike = async () => {
+        if (!user) {
+            toast.error("You need to be logged in to like articles !");
+            return;
+        }
+        setIsLiked(!isLiked)
+        try {
+            const token = await getToken();
+            await updatePostLikes(article.id, { userId: user.id }, token);
+        } catch (error) {
+            toast.error("Failed to update like status. Please try again.");
             console.log(error);
         }
     }
@@ -250,7 +267,7 @@ export default function ArticlePage() {
                     <motion.button
                         whileHover={{ scale: 1.1, rotate: 5 }}
                         whileTap={{ scale: 0.95 }}
-                        onClick={() => setIsLiked(!isLiked)}
+                        onClick={handleLike}
                         className={`relative p-3 rounded-full backdrop-blur-lg border border-white/20 transition-all duration-300 ${isLiked ? 'bg-red-500/80 text-white' : 'bg-white/10 text-gray-300 hover:bg-white/20'
                             }`}
                     >

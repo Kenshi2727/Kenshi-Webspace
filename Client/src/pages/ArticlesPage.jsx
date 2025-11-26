@@ -5,9 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Clock, Eye, Calendar, Filter, Search, BookOpen, TrendingUp, Star, Heart, Share2, LoaderCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { getAllPosts } from '../services/GlobalApi';
+import { getAllPosts, updatePostLikes } from '../services/GlobalApi';
 import toast from 'react-hot-toast';
 import { formatDate } from '../lib/dateFormatter';
+import { useUser, useAuth } from '@clerk/clerk-react';
 
 const containerVariants = {
     hidden: { opacity: 0 },
@@ -113,6 +114,8 @@ const ArticlesPage = () => {
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [averageReadTime, setAverageReadTime] = useState(0);
+    const { user } = useUser();
+    const { getToken } = useAuth();
 
     useEffect(() => {
         const fetchArticles = async () => {
@@ -161,6 +164,38 @@ const ArticlesPage = () => {
             return newLikes;
         });
     };
+
+    const handleShare = (article) => {
+        const shareData = {
+            title: article.title,
+            text: `Check out this article: ${article.title}`,
+            url: window.location.href + `/${article.id}`
+        };
+        try {
+            if (navigator.canShare && navigator.canShare(shareData)) {
+                navigator.share(shareData);
+            } else {
+                toast.error("Sharing not supported on this browser.");
+            }
+        } catch (error) {
+            toast.error("Failed to share the article ! Contact support.");
+            console.log(error);
+        }
+    }
+
+    const handleLike = async (article) => {
+        if (!user) {
+            toast.error("You need to be logged in to like articles !");
+            return;
+        }
+        try {
+            const token = await getToken();
+            await updatePostLikes(article.id, { userId: user.id }, token);
+        } catch (error) {
+            toast.error("Failed to update like status. Please try again.");
+            console.log(error);
+        }
+    }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-purple-950 to-purple-800 relative overflow-hidden">
@@ -360,17 +395,18 @@ const ArticlesPage = () => {
                                                 <motion.button
                                                     whileHover={{ scale: 1.1 }}
                                                     whileTap={{ scale: 0.9 }}
-                                                    onClick={() => toggleLike(article.id)}
-                                                    className={`p-2 rounded-full backdrop-blur-xl border transition-all duration-300 ${likedArticles.has(article.id)
+                                                    onClick={() => handleLike(article)}
+                                                    className={`p-2 rounded-full backdrop-blur-xl border transition-all duration-300 ${article?.Likes?.find(like => like.userId === user.id)
                                                         ? 'bg-red-500/80 border-red-400/50 text-white'
                                                         : 'bg-white/20 border-white/30 text-white hover:bg-red-500/50'
                                                         }`}
                                                 >
-                                                    <Heart size={14} fill={likedArticles.has(article.id) ? 'currentColor' : 'none'} />
+                                                    <Heart size={14} fill={article?.Likes?.find(like => like.userId === user.id) ? 'currentColor' : 'none'} />
                                                 </motion.button>
                                                 <motion.button
                                                     whileHover={{ scale: 1.1 }}
                                                     whileTap={{ scale: 0.9 }}
+                                                    onClick={() => handleShare(article)}
                                                     className="p-2 rounded-full bg-white/20 backdrop-blur-xl border border-white/30 text-white hover:bg-purple-500/50 transition-all duration-300"
                                                 >
                                                     <Share2 size={14} />
