@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -110,7 +110,6 @@ const FluidBlob = ({ delay = 0, duration = 20, className = "" }) => (
 const ArticlesPage = () => {
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [searchTerm, setSearchTerm] = useState('');
-    const [likedArticles, setLikedArticles] = useState(new Set());
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [averageReadTime, setAverageReadTime] = useState(0);
@@ -153,50 +152,192 @@ const ArticlesPage = () => {
         return matchesCategory && matchesSearch;
     });
 
-    const toggleLike = (articleId) => {
-        setLikedArticles(prev => {
-            const newLikes = new Set(prev);
-            if (newLikes.has(articleId)) {
-                newLikes.delete(articleId);
-            } else {
-                newLikes.add(articleId);
-            }
-            return newLikes;
-        });
-    };
 
-    const handleShare = (article) => {
-        const shareData = {
-            title: article.title,
-            text: `Check out this article: ${article.title}`,
-            url: window.location.href + `/${article.id}`
-        };
-        try {
-            if (navigator.canShare && navigator.canShare(shareData)) {
-                navigator.share(shareData);
-            } else {
-                toast.error("Sharing not supported on this browser.");
+    // Article Card Component
+    const ArticleCard = ({ article, index }) => {
+        const [isLiked, setIsLiked] = useState(article?.PostActions?.find(action => action?.userId === user?.id && action?.likeStatus));
+
+        const handleShare = (article) => {
+            const shareData = {
+                title: article.title,
+                text: `Check out this article: ${article.title}`,
+                url: window.location.href + `/${article.id}`
+            };
+            try {
+                if (navigator.canShare && navigator.canShare(shareData)) {
+                    navigator.share(shareData);
+                } else {
+                    toast.error("Sharing not supported on this browser.");
+                }
+            } catch (error) {
+                toast.error("Failed to share the article ! Contact support.");
+                console.log(error);
             }
-        } catch (error) {
-            toast.error("Failed to share the article ! Contact support.");
-            console.log(error);
         }
+
+        const handleLike = async (article) => {
+            if (!user) {
+                toast.error("You need to be logged in to like articles !");
+                return;
+            }
+            try {
+                const token = await getToken();
+                await updatePostLikes(article.id, { userId: user.id }, token);
+                setIsLiked(!isLiked);
+            } catch (error) {
+                toast.error("Failed to update like status. Please try again.");
+                console.log(error);
+            }
+        }
+
+        return (
+            <Card className="overflow-hidden p-0 bg-gradient-to-br from-purple-500/10 to-violet-500/10 hover:from-purple-500/30 hover:to-violet-500/30 backdrop-blur-xl border border-purple-300/20 hover:border-purple-300/40 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-500/20 h-full">
+                {/* Article Image */}
+                <div className="relative overflow-hidden h-52 bg-gradient-to-br from-purple-400/20 to-violet-600/20">
+                    <motion.img
+                        src={(article.thumbnail && article.thumbnail.trim() !== '') ? article.thumbnail : '/placeholder.png'}
+                        alt={article.title}
+                        onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = '/placeholder.png';
+                        }}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                        loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-purple-950/60 via-purple-950/20 to-transparent" />
+
+                    {/* Trending Badge */}
+                    {article.trending && (
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.8, x: -20 }}
+                            animate={{ opacity: 1, scale: 1, x: 0 }}
+                            className="absolute top-4 left-4"
+                        >
+                            <Badge className="bg-gradient-to-r from-red-500 to-pink-500 text-white border-0 backdrop-blur-sm flex items-center gap-1.5 px-3 py-1.5 shadow-lg">
+                                <motion.div
+                                    animate={{ scale: [1, 1.1, 1] }}
+                                    transition={{ duration: 2, repeat: Infinity }}
+                                >
+                                    <TrendingUp size={12} />
+                                </motion.div>
+                                Trending
+                            </Badge>
+                        </motion.div>
+                    )}
+
+                    {/* Category Badge */}
+                    <motion.div
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className="absolute top-4 right-4"
+                    >
+                        <Badge className="bg-gradient-to-r from-purple-500/80 to-violet-500/80 text-white border border-purple-300/30 backdrop-blur-sm shadow-lg">
+                            {article.category}
+                        </Badge>
+                    </motion.div>
+
+                    {/* Social Actions */}
+                    <motion.div
+                        className="absolute bottom-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                        initial={false}
+                    >
+                        <motion.button
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            onClick={() => handleLike(article)}
+                            className={`p-2 rounded-full backdrop-blur-xl border transition-all duration-300 ${isLiked
+                                ? 'bg-red-500/80 border-red-400/50 text-white'
+                                : 'bg-white/20 border-white/30 text-white hover:bg-red-500/50'
+                                }`}
+                        >
+                            <Heart size={14} fill={isLiked ? 'currentColor' : 'none'} />
+                        </motion.button>
+                        <motion.button
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            onClick={() => handleShare(article)}
+                            className="p-2 rounded-full bg-white/20 backdrop-blur-xl border border-white/30 text-white hover:bg-purple-500/50 transition-all duration-300"
+                        >
+                            <Share2 size={14} />
+                        </motion.button>
+                    </motion.div>
+                </div>
+
+                <CardContent className="p-6 space-y-4">
+                    {/* Article Title */}
+                    <motion.h3
+                        className="h-12 text-xl font-bold text-transparent bg-gradient-to-r from-purple-100 to-violet-100 bg-clip-text leading-tight line-clamp-2 cursor-pointer"
+                        whileHover={{ scale: 1.02 }}
+                        transition={{ type: "spring", stiffness: 300 }}
+                    >
+                        {article.title}
+                    </motion.h3>
+
+                    {/* Article Excerpt */}
+                    <p className="h-24 text-purple-200/80 text-sm leading-relaxed line-clamp-3">
+                        {article.excerpt}
+                    </p>
+
+                    {/* Article Meta */}
+                    <div className="space-y-3 pt-4 border-t border-purple-300/20">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4 text-xs text-purple-300/80">
+                                <div className="flex items-center gap-1">
+                                    <Calendar size={12} className="text-violet-400" />
+                                    <span>{formatDate(article.createdAt)}</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                    <Clock size={12} className="text-violet-400" />
+                                    <span>{article.readTime} min read</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Stats and Action */}
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4 text-xs text-purple-300/70">
+                                <div className="flex items-center gap-1">
+                                    <Heart size={12} className="text-red-400" />
+                                    <span>{article.likes}</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                    <Eye size={12} className="text-blue-400" />
+                                    <span>{article.views}</span>
+                                </div>
+                            </div>
+
+                            <motion.div
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                            >
+                                <Link to={`/articles/${article.id}`}>
+                                    <Button
+                                        size="sm"
+                                        className="bg-gradient-to-r from-purple-500/30 to-violet-500/30 hover:from-purple-500/50 hover:to-violet-500/50 text-purple-100 border border-purple-400/30 hover:border-purple-400/50 transition-all duration-300 backdrop-blur-sm shadow-lg"
+                                    >
+                                        Read More
+                                    </Button>
+                                </Link>
+                            </motion.div>
+                        </div>
+                    </div>
+                </CardContent>
+
+                {/* Animated Border */}
+                <motion.div
+                    className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-purple-400 via-violet-500 to-indigo-500"
+                    initial={{ scaleX: 0, opacity: 0 }}
+                    whileHover={{ scaleX: 1, opacity: 1 }}
+                    transition={{ duration: 0.4, ease: "easeOut" }}
+                    style={{ originX: 0 }}
+                />
+            </Card>
+        )
     }
 
-    const handleLike = async (article) => {
-        if (!user) {
-            toast.error("You need to be logged in to like articles !");
-            return;
-        }
-        try {
-            const token = await getToken();
-            await updatePostLikes(article.id, { userId: user.id }, token);
-        } catch (error) {
-            toast.error("Failed to update like status. Please try again.");
-            console.log(error);
-        }
-    }
 
+    // Main Render
     return (
         <div className="min-h-screen bg-gradient-to-br from-purple-950 to-purple-800 relative overflow-hidden">
             {/* Stable Animated Background */}
@@ -341,148 +482,7 @@ const ArticlesPage = () => {
                                     className="group"
                                     layout
                                 >
-                                    <Card className="overflow-hidden p-0 bg-gradient-to-br from-purple-500/10 to-violet-500/10 hover:from-purple-500/30 hover:to-violet-500/30 backdrop-blur-xl border border-purple-300/20 hover:border-purple-300/40 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-500/20 h-full">
-                                        {/* Article Image */}
-                                        <div className="relative overflow-hidden h-52 bg-gradient-to-br from-purple-400/20 to-violet-600/20">
-                                            <motion.img
-                                                src={(article.thumbnail && article.thumbnail.trim() !== '') ? article.thumbnail : '/placeholder.png'}
-                                                alt={article.title}
-                                                onError={(e) => {
-                                                    e.target.onerror = null;
-                                                    e.target.src = '/placeholder.png';
-                                                }}
-                                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                                                loading="lazy"
-                                            />
-                                            <div className="absolute inset-0 bg-gradient-to-t from-purple-950/60 via-purple-950/20 to-transparent" />
-
-                                            {/* Trending Badge */}
-                                            {article.trending && (
-                                                <motion.div
-                                                    initial={{ opacity: 0, scale: 0.8, x: -20 }}
-                                                    animate={{ opacity: 1, scale: 1, x: 0 }}
-                                                    className="absolute top-4 left-4"
-                                                >
-                                                    <Badge className="bg-gradient-to-r from-red-500 to-pink-500 text-white border-0 backdrop-blur-sm flex items-center gap-1.5 px-3 py-1.5 shadow-lg">
-                                                        <motion.div
-                                                            animate={{ scale: [1, 1.1, 1] }}
-                                                            transition={{ duration: 2, repeat: Infinity }}
-                                                        >
-                                                            <TrendingUp size={12} />
-                                                        </motion.div>
-                                                        Trending
-                                                    </Badge>
-                                                </motion.div>
-                                            )}
-
-                                            {/* Category Badge */}
-                                            <motion.div
-                                                initial={{ opacity: 0, x: 20 }}
-                                                animate={{ opacity: 1, x: 0 }}
-                                                transition={{ delay: index * 0.1 }}
-                                                className="absolute top-4 right-4"
-                                            >
-                                                <Badge className="bg-gradient-to-r from-purple-500/80 to-violet-500/80 text-white border border-purple-300/30 backdrop-blur-sm shadow-lg">
-                                                    {article.category}
-                                                </Badge>
-                                            </motion.div>
-
-                                            {/* Social Actions */}
-                                            <motion.div
-                                                className="absolute bottom-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                                                initial={false}
-                                            >
-                                                <motion.button
-                                                    whileHover={{ scale: 1.1 }}
-                                                    whileTap={{ scale: 0.9 }}
-                                                    onClick={() => handleLike(article)}
-                                                    className={`p-2 rounded-full backdrop-blur-xl border transition-all duration-300 ${article?.Likes?.find(like => like.userId === user.id)
-                                                        ? 'bg-red-500/80 border-red-400/50 text-white'
-                                                        : 'bg-white/20 border-white/30 text-white hover:bg-red-500/50'
-                                                        }`}
-                                                >
-                                                    <Heart size={14} fill={article?.Likes?.find(like => like.userId === user.id) ? 'currentColor' : 'none'} />
-                                                </motion.button>
-                                                <motion.button
-                                                    whileHover={{ scale: 1.1 }}
-                                                    whileTap={{ scale: 0.9 }}
-                                                    onClick={() => handleShare(article)}
-                                                    className="p-2 rounded-full bg-white/20 backdrop-blur-xl border border-white/30 text-white hover:bg-purple-500/50 transition-all duration-300"
-                                                >
-                                                    <Share2 size={14} />
-                                                </motion.button>
-                                            </motion.div>
-                                        </div>
-
-                                        <CardContent className="p-6 space-y-4">
-                                            {/* Article Title */}
-                                            <motion.h3
-                                                className="h-12 text-xl font-bold text-transparent bg-gradient-to-r from-purple-100 to-violet-100 bg-clip-text leading-tight line-clamp-2 cursor-pointer"
-                                                whileHover={{ scale: 1.02 }}
-                                                transition={{ type: "spring", stiffness: 300 }}
-                                            >
-                                                {article.title}
-                                            </motion.h3>
-
-                                            {/* Article Excerpt */}
-                                            <p className="h-24 text-purple-200/80 text-sm leading-relaxed line-clamp-3">
-                                                {article.excerpt}
-                                            </p>
-
-                                            {/* Article Meta */}
-                                            <div className="space-y-3 pt-4 border-t border-purple-300/20">
-                                                <div className="flex items-center justify-between">
-                                                    <div className="flex items-center gap-4 text-xs text-purple-300/80">
-                                                        <div className="flex items-center gap-1">
-                                                            <Calendar size={12} className="text-violet-400" />
-                                                            <span>{formatDate(article.createdAt)}</span>
-                                                        </div>
-                                                        <div className="flex items-center gap-1">
-                                                            <Clock size={12} className="text-violet-400" />
-                                                            <span>{article.readTime} min read</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                {/* Stats and Action */}
-                                                <div className="flex items-center justify-between">
-                                                    <div className="flex items-center gap-4 text-xs text-purple-300/70">
-                                                        <div className="flex items-center gap-1">
-                                                            <Heart size={12} className="text-red-400" />
-                                                            <span>{article.likes}</span>
-                                                        </div>
-                                                        <div className="flex items-center gap-1">
-                                                            <Eye size={12} className="text-blue-400" />
-                                                            <span>{article.views}</span>
-                                                        </div>
-                                                    </div>
-
-                                                    <motion.div
-                                                        whileHover={{ scale: 1.05 }}
-                                                        whileTap={{ scale: 0.95 }}
-                                                    >
-                                                        <Link to={`/articles/${article.id}`}>
-                                                            <Button
-                                                                size="sm"
-                                                                className="bg-gradient-to-r from-purple-500/30 to-violet-500/30 hover:from-purple-500/50 hover:to-violet-500/50 text-purple-100 border border-purple-400/30 hover:border-purple-400/50 transition-all duration-300 backdrop-blur-sm shadow-lg"
-                                                            >
-                                                                Read More
-                                                            </Button>
-                                                        </Link>
-                                                    </motion.div>
-                                                </div>
-                                            </div>
-                                        </CardContent>
-
-                                        {/* Animated Border */}
-                                        <motion.div
-                                            className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-purple-400 via-violet-500 to-indigo-500"
-                                            initial={{ scaleX: 0, opacity: 0 }}
-                                            whileHover={{ scaleX: 1, opacity: 1 }}
-                                            transition={{ duration: 0.4, ease: "easeOut" }}
-                                            style={{ originX: 0 }}
-                                        />
-                                    </Card>
+                                    <ArticleCard article={article} index={index} />
                                 </motion.div>
                             ))}
                         </motion.div>

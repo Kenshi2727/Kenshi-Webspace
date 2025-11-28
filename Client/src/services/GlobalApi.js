@@ -82,6 +82,15 @@ const updatePostLikes = (postId, data, token) => instance.put(`/posts/likes/${po
     withCredentials: true,
 });
 
+const updatePostViews = (postId) => instance.put(`/posts/views/${postId}`);
+
+const updatePostBookmarks = (postId, data, token) => instance.put(`/posts/bookmarks/${postId}`, data, {
+    headers: {
+        Authorization: `Bearer ${token}`,
+    },
+    withCredentials: true,
+});
+
 
 // Media APIs
 const uploadMedia = (data, token) => instance.post('/media/upload/image', data, {
@@ -113,5 +122,7 @@ export {
     getFeaturedPosts,
     deletePost,
     updatePost,
-    updatePostLikes
+    updatePostLikes,
+    updatePostViews,
+    updatePostBookmarks
 };

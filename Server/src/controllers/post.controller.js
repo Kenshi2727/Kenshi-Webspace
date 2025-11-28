@@ -2,20 +2,33 @@ import prisma from "../../../Database/prisma.client.js";
 import { setServiceRef, deleteMediaMetaData, deleteServiceRef, deleteMedia, getPublicIds } from "./media.controller.js";
 import { parseDataTypes } from "../lib/typeParser.js";
 // Note-
-/* 
+/* Reference 1 -
+Be cautious
 if req.body passed directly-
 If someone sends a field that does exist in your schema but 
 you don’t actually want users to control (e.g., role, isAdmin, passwordHash), Prisma will happily write it.
 This is called a Mass Assignment vulnerability.
  */
 
-// Helper functions to add/remove like count
-const countLike = async (postId, likeId, operation) => {
+/*Reference 2 */
+// The [] syntax is a "computed property name" in JavaScript.
+// Whatever expression is inside [] becomes the actual object key.
+// Example:
+// const key = "increment";
+// { [key]: 1 }  // becomes { increment: 1 }
+// We use [] here so the key can be either "increment" or "decrement" dynamically.
+
+
+// Helper functions/ non-exported functions
+const countLike = async (postId, actionId, operation) => {
     try {
         const post = await prisma.post.update({
             where: { id: postId },
             data: {
-                likes: likes + (operation === "increment" ? 1 : -1)
+                // refer to Reference 2
+                likes: {
+                    [operation === "increment" ? "increment" : "decrement"]: 1
+                }
             }
         });
 
@@ -26,13 +39,44 @@ const countLike = async (postId, likeId, operation) => {
 
         // setting back like to previous state
         try {
-            const likeReset = await prisma.like.update({
-                where: { id: likeId },
-                data: { status: false }
+            const likeReset = await prisma.postActions.update({
+                where: { id: actionId },
+                data: { likeStatus: false }
             });
             console.log("Like status reset due to error:", likeReset);
         } catch (error) {
             console.error("Error resetting like status:", error);
+        }
+        return null;
+    }
+}
+
+const countBookmark = async (postId, actionId, operation) => {
+    try {
+        const post = await prisma.post.update({
+            where: { id: postId },
+            data: {
+                // refer to Reference 2
+                bookmarks: {
+                    [operation === "increment" ? "increment" : "decrement"]: 1
+                }
+            }
+        });
+
+        console.log(`Bookmark ${operation}ed to post with ID:`, postId);
+        return post;
+    } catch (error) {
+        console.error(`Error ${operation}ing bookmark to post:`, error);
+
+        // setting back bookmark to previous state
+        try {
+            const bookmarkReset = await prisma.postActions.update({
+                where: { id: actionId },
+                data: { bookmarkStatus: false }
+            });
+            console.log("Bookmark status reset due to error:", bookmarkReset);
+        } catch (error) {
+            console.error("Error resetting bookmark status:", error);
         }
         return null;
     }
@@ -124,7 +168,7 @@ export const getSinglePost = async (req, res) => {
             },
             include: {
                 author: true,
-                Likes: true,
+                PostActions: true,
             },
         });
 
@@ -152,6 +196,9 @@ export const getAllPosts = async (req, res, next) => {
             const posts = await prisma.post.findMany({
                 orderBy: {
                     createdAt: 'desc'
+                },
+                include: {
+                    PostActions: true,
                 }
             });
 
@@ -393,8 +440,8 @@ export const updatePostLikes = async (req, res) => {
         const { userId } = req.body;
         console.log(`Updating like status for post ID: ${postId} by user ID: ${userId}`);
 
-        // Check if the like already exists
-        const existingLike = await prisma.like.findUnique({
+        // Check if a post action already exists
+        const existingAction = await prisma.postActions.findUnique({
             where: {
                 userId_postId: {
                     userId,
@@ -403,9 +450,9 @@ export const updatePostLikes = async (req, res) => {
             }
         });
 
-        if (existingLike) {
+        if (existingAction) {
             // update operation - toggle status
-            const updatedLike = await prisma.like.update({
+            const updatedLike = await prisma.postActions.update({
                 where: {
                     userId_postId: {
                         userId,
@@ -413,30 +460,30 @@ export const updatePostLikes = async (req, res) => {
                     }
                 },
                 data: {
-                    status: !existingLike.status
+                    likeStatus: !existingAction.likeStatus
                 }
             });
 
             console.log("Like status updated:", updatedLike);
 
-            const postLikeUpdate = await countLike(postId, updatedLike.id, updatedLike.status ? "increment" : "decrement");
+            const postLikeUpdate = await countLike(postId, updatedLike.id, updatedLike.likeStatus ? "increment" : "decrement");
             if (postLikeUpdate === null) {
                 throw new Error("Failed to update post like count");
             }
             console.log("Post succesfully updated with like count:", postLikeUpdate);
         } else {
-            // If like does not exist, create it (like)
-            const newLike = await prisma.like.create({
+            // If a post action does not exist, create it (like)
+            const newLike = await prisma.postActions.create({
                 data: {
                     postId,
                     userId,
-                    status: true
+                    likeStatus: true
                 }
             });
 
             console.log("Like created:", newLike);
 
-            const postLikeUpdate = await countLike(postId, newLike.id, newLike.status ? "increment" : "decrement");
+            const postLikeUpdate = await countLike(postId, newLike.id, newLike.likeStatus ? "increment" : "decrement");
             if (postLikeUpdate === null) {
                 throw new Error("Failed to update post like count");
             }
@@ -448,3 +495,89 @@ export const updatePostLikes = async (req, res) => {
         return res.status(500).json({ error: "Failed to update post likes" });
     }
 }
+
+export const countView = async (req, res) => {
+    try {
+        const { postId } = req.params;
+        //todo:implementing unique views using IP tracking or user authentication
+        const post = await prisma.post.update({
+            where: { id: postId },
+            data: {
+                views: {
+                    increment: 1
+                }
+            }
+        });
+        console.log("View count incremented for post ID:", postId);
+        return res.status(200).json({
+            message: "View count updated successfully",
+            viewCount: post.views
+        });
+    } catch (error) {
+        console.log("Error updating view count for post Id", postId);
+        return res.status(500).json({ error: "Failed to update view count" });
+    }
+}
+
+export const updatePostBookmarks = async (req, res) => {
+    try {
+        const { postId } = req.params;
+        const { userId } = req.body;
+        console.log(`Updating bookmark status for post ID: ${postId} by user ID: ${userId}`);
+
+        // Check if a post action already exists
+        const existingAction = await prisma.postActions.findUnique({
+            where: {
+                userId_postId: {
+                    userId,
+                    postId
+                }
+            }
+        });
+
+        if (existingAction) {
+            // update operation - toggle status
+            const updatedBookmark = await prisma.postActions.update({
+                where: {
+                    userId_postId: {
+                        userId,
+                        postId
+                    }
+                },
+                data: {
+                    bookmarkStatus: !existingAction.bookmarkStatus
+                }
+            });
+
+            console.log("Bookmark status updated:", updatedBookmark);
+            const postBookmarkUpdate = await countBookmark(postId, updatedBookmark.id, updatedBookmark.bookmarkStatus ? "increment" : "decrement");
+            if (postBookmarkUpdate === null) {
+                throw new Error("Failed to update post bookmark count");
+            }
+            console.log("Post succesfully updated with bookmark count:", postBookmarkUpdate);
+        } else {
+            // If a post action does not exist, create it (bookmark)
+            const newBookmark = await prisma.postActions.create({
+                data: {
+                    postId,
+                    userId,
+                    bookmarkStatus: true
+                }
+            });
+
+            console.log("Bookmark created:", newBookmark);
+
+            const postBookmarkUpdate = await countBookmark(postId, newBookmark.id, newBookmark.bookmarkStatus ? "increment" : "decrement");
+            if (postBookmarkUpdate === null) {
+                throw new Error("Failed to update post bookmark count");
+            }
+            console.log("Post succesfully updated with bookmark count:", postBookmarkUpdate);
+        }
+        return res.status(200).json({ message: "Post bookmark status updated successfully" });
+    } catch (error) {
+        console.error("Error updating post bookmarks:", error);
+        return res.status(500).json({ error: "Failed to update post bookmarks" });
+    }
+}
+
+

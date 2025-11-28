@@ -1,5 +1,15 @@
 import express from "express";
-import { createNewPost, getAllPosts, getSinglePost, getFeaturedPosts, deletePost, updatePost, updatePostLikes } from "../controllers/post.controller.js";
+import {
+    createNewPost,
+    getAllPosts,
+    getSinglePost,
+    getFeaturedPosts,
+    deletePost,
+    updatePost,
+    updatePostLikes,
+    countView,
+    updatePostBookmarks
+} from "../controllers/post.controller.js";
 import { protectRoute } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
@@ -15,5 +25,9 @@ router.delete('/:postId', protectRoute, deletePost);
 router.patch('/:postId', protectRoute, updatePost);
 
 router.put('/likes/:postId', protectRoute, updatePostLikes);
+
+router.put('/views/:postId', countView);
+
+router.put('/bookmarks/:postId', protectRoute, updatePostBookmarks);
 
 export default router;

@@ -2,6 +2,11 @@
 - handle deletion media meta data on media deletion during update
 - new line character handling in markdown editor preview mode
 
+## UI/UX Improvements-
+- separate page for likes,bookmarks section for user profile
+- adding boomark count,download counts,etc in articles page
+- %age reading progress bar for blogs
+
 ## Web Analytics
 - Sentry Service Integration
 - Server Log Monitoring setup left
@@ -20,7 +25,7 @@
 2. In browser notification service --> manifest.json
                                   |--> web push npm package
                                   |--> author/topic specific notifications
-3. Security-->Research Encryption Algorithms
+3. **Security-->Research Encryption Algorithms**
 4. geoip-lite ---> for logs.csv
 5. tagging users --> react-mentions
 6. Download blogs as pdf
@@ -36,6 +41,7 @@
 13. Image upload ctrl c+v / normal user expectation --> medium style
 14. Manual Tab addition in markdown editor
 15. blog tagginng and filtering
+16. Voice reading of blogs
    
 ### Analytics -
 * Posthemus

@@ -16,16 +16,16 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  firstName String
-  lastName  String
-  email     String   @unique
-  role      Role     @default(USER)
-  tagline   String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  Posts     Post[]
-  likes     Like[]
+  id          String        @id @default(uuid())
+  firstName   String
+  lastName    String
+  email       String        @unique
+  role        Role          @default(USER)
+  tagline     String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  Posts       Post[]
+  PostActions PostActions[]
 }
 
 enum Role {
@@ -36,39 +36,42 @@ enum Role {
   USER // Regular user with limited permissions
 }
 
-model Like {
-  id        String   @id @default(uuid())
-  userId    String
-  postId    String
-  status    Boolean  @default(false) // true = liked, false = unliked  
-  user      User     @relation(fields: [userId], references: [id])
-  post      Post     @relation(fields: [postId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model PostActions {
+  id             String   @id @default(uuid())
+  userId         String
+  postId         String
+  likeStatus     Boolean  @default(false) // true = liked, false = unliked
+  bookmarkStatus Boolean  @default(false) // true = bookmarked, false = unbookmarked  
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post           Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   @@unique([userId, postId]) // Ensure a user can like a post only once
 }
 
 model Post {
-  id              String   @id @default(uuid())
+  id              String        @id @default(uuid())
   title           String
   excerpt         String
   category        String
   readTime        Int
   content         String
   authorId        String
-  author          User     @relation(fields: [authorId], references: [id])
+  author          User          @relation(fields: [authorId], references: [id])
   thumbnail       String?
   authorImage     String?
   coverImage      String?
-  trending        Boolean  @default(false)
-  featured        Boolean  @default(false)
-  likes           Int      @default(0)
-  views           Int      @default(0)
-  referenceStatus Boolean  @default(false) // Whether the post has an associated ServiceRef
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  Likes           Like[]
+  trending        Boolean       @default(false)
+  featured        Boolean       @default(false)
+  likes           Int           @default(0)
+  views           Int           @default(0)
+  bookmarks       Int           @default(0)
+  downloads       Int           @default(0)
+  referenceStatus Boolean       @default(false) // Whether the post has an associated ServiceRef
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  PostActions     PostActions[]
 
   @@unique([id, authorId]) // Composite primary key
 }

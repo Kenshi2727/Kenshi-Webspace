@@ -10,7 +10,7 @@ import { Facebook, Twitter, Linkedin, Pencil, Clock, Eye, Heart, Bookmark, Share
 import MarkdownRenderer from '@/components/MarkdownRenderer';
 import NotFoundPage from './NotFoundPage';
 import LoadingPage from './LoadingPage';
-import { getSinglePost, deletePost, updatePostLikes } from '../services/GlobalApi.js';
+import { getSinglePost, deletePost, updatePostLikes, updatePostViews, updatePostBookmarks } from '../services/GlobalApi.js';
 import toast from 'react-hot-toast';
 import { formatDate, formatMessageTime, formatOnlyNumericDate } from '../lib/dateFormatter.js';
 import { useUser } from '@clerk/clerk-react';
@@ -52,8 +52,14 @@ export default function ArticlePage() {
             try {
                 const res = await getSinglePost(id);
                 setArticle(res.data);
-                const likeStatus = res.data.Likes?.find(like => like.userId === user?.id)?.status;
+
+                // Check if the user has liked the post
+                const likeStatus = res.data.PostActions?.find(action => action.userId === user?.id)?.likeStatus;
                 likeStatus ? setIsLiked(likeStatus) : setIsLiked(false);
+
+                // Check if the user has bookmarked the post
+                const bookmarkStatus = res.data.PostActions?.find(action => action.userId === user?.id)?.bookmarkStatus;
+                bookmarkStatus ? setIsBookmarked(bookmarkStatus) : setIsBookmarked(false);
             } catch (error) {
                 toast.error(error?.response?.data?.error || "Failed to fetch the article");
                 console.log(error);
@@ -63,7 +69,16 @@ export default function ArticlePage() {
         }
         fetchPost();
 
-    }, []);
+        // temporary function for view count update
+        async function updateViews() {
+            try {
+                await updatePostViews(id);
+            } catch (error) {
+                console.error("Failed to update view count", error);
+            }
+        }
+        updateViews();
+    }, [user, id]);
 
     useEffect(() => {
         const unsubscribe = readingProgress.on('change', setProgress);
@@ -165,6 +180,21 @@ export default function ArticlePage() {
             await updatePostLikes(article.id, { userId: user.id }, token);
         } catch (error) {
             toast.error("Failed to update like status. Please try again.");
+            console.log(error);
+        }
+    }
+
+    const handleBookmark = async () => {
+        if (!user) {
+            toast.error("You need to be logged in to bookmark articles !");
+            return;
+        }
+        setIsBookmarked(!isBookmarked)
+        try {
+            const token = await getToken();
+            await updatePostBookmarks(article.id, { userId: user.id }, token);
+        } catch (error) {
+            toast.error("Failed to update bookmark status. Please try again.");
             console.log(error);
         }
     }
@@ -278,7 +308,7 @@ export default function ArticlePage() {
                 <motion.button
                     whileHover={{ scale: 1.1, rotate: -5 }}
                     whileTap={{ scale: 0.95 }}
-                    onClick={() => setIsBookmarked(!isBookmarked)}
+                    onClick={handleBookmark}
                     className={`p-3 rounded-full backdrop-blur-lg border border-white/20 transition-all duration-300 ${isBookmarked ? 'bg-yellow-500/80 text-white' : 'bg-white/10 text-gray-300 hover:bg-white/20'
                         }`}
                 >
