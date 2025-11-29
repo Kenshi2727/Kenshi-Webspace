@@ -1,7 +1,3 @@
-## PATCH recommendations during TESTING-
-- handle deletion media meta data on media deletion during update
-- new line character handling in markdown editor preview mode
-
 ## UI/UX Improvements-
 - separate page for likes,bookmarks section for user profile
 - adding boomark count,download counts,etc in articles page

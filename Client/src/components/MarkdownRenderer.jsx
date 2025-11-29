@@ -1,11 +1,25 @@
 import React from 'react';
+import { useEffect } from 'react';
+import mediumZoom from 'medium-zoom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
+import rehypeKatex from 'rehype-katex'
+import remarkBreaks from 'remark-breaks';
+import remarkMath from 'remark-math';
 import rehypeHighlight from 'rehype-highlight';
+import rehypeStringify from 'rehype-stringify'
+import emoji from 'remark-emoji';
+import rehypeSlug from 'rehype-slug';
+import rehypeAutolinkHeadings from 'rehype-autolink-headings';
+import remarkSmartypants from "remark-smartypants";
+import remarkDirective from "remark-directive";
+import remarkToc from 'remark-toc'
+
 // import 'highlight.js/styles/github-dark.css';
 // import 'highlight.js/styles/rose-pine-moon.css';
 import 'highlight.js/styles/tokyo-night-dark.css';
+
 
 const mdComponents = {
     h1: ({ node, ...props }) => <h1 className="text-2xl md:text-4xl lg:text-5xl font-extrabold mt-2 mb-4 text-white" {...props} />,
@@ -45,10 +59,29 @@ const mdComponents = {
 };
 
 export default function MarkdownRenderer({ content = '' }) {
+    useEffect(() => {
+        mediumZoom('img');
+    }, []);
+
     return (
         <ReactMarkdown
-            remarkPlugins={[remarkGfm]}
-            rehypePlugins={[rehypeRaw, rehypeHighlight]}
+            remarkPlugins={[
+                remarkGfm,
+                remarkBreaks,
+                remarkMath,
+                emoji,
+                remarkSmartypants,
+                remarkDirective,
+                [remarkToc, { heading: 'Contents', maxDepth: 3 }]
+            ]}
+            rehypePlugins={[
+                rehypeRaw,
+                rehypeHighlight,
+                rehypeKatex,
+                rehypeStringify,
+                rehypeSlug,
+                [rehypeAutolinkHeadings, { behavior: "wrap" }],
+            ]}
             components={mdComponents}
         >
             {content}

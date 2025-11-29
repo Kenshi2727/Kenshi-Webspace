@@ -4,7 +4,7 @@ Write **#** before text to change the visual size.
 
 Example:
 
-```markdown
+```
 # Heading 1 (largest)
 ## Heading 2
 ### Heading 3
@@ -115,14 +115,7 @@ This will display:
 
 ### Adding Links
 
-You can add clickable links like this:
-
-```markdown
-[Link Text](https://example.com)
-```
-
-**Example:** 
-[Visit kenshiWebspace](https://kenshi.dev)
+You can add a link by simply typing it and it will automatically convert into a clickable link.
 
 ### Code Example
 
@@ -182,4 +175,77 @@ This will render as:
 |----------|----------|----------|
 | Row 1 A  | Row 1 B  | Row 1 C  |
 | Row 2 A  | Row 2 B  | Row 2 C  |
+
+---
+
+### Math Equations
+
+You can write mathematical formulas using LaTeX syntax in Markdown.
+
+**Example**
+
+```markdown
+Euler's formula is $e^{i\pi} + 1 = 0$.
+```
+
+**This will display as:**
+Euler's formula is $e^{i\pi} + 1 = 0$.
+
+**Block Math**
+```markdown
+$$
+\frac{a}{b} = \frac{c}{d}
+$$
+```
+
+**This will display as:**
+$$
+\frac{a}{b} = \frac{c}{d}
+$$
+
+Tips:
+
+- Use `$...$` for inline formulas.
+- Use `$$...$$` for centered block formulas.
+- Works great for algebra, calculus, matrices, etc.
+
+---
+
+### Emoji
+
+Emojis make your content fun and expressive.
+
+**Syntax:**
+```
+I love coding! :smile: :rocket:
+```
+
+**Displays as:**
+I love coding! :smile: :rocket:
+
+| Code       | Emoji |
+| ---------- | ----- |
+| `:smile:`  | 😄    |
+| `:heart:`  | ❤️    |
+| `:rocket:` | 🚀    |
+| `:fire:`   | 🔥    |
+| `:tada:`   | 🎉    |
+
+---
+### Footnotes in Markdown
+
+Footnotes let you add extra information without cluttering the main text.
+
+**Syntax:**
+
+```markdown
+This is some text with a footnote.[^1]
+
+[^1]: This is the footnote content.
+```
+
+**This will display as:**
+This is some text with a footnote.[^1]
+
+[^1]: This is the footnote content.
 
