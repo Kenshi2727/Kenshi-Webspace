@@ -28,6 +28,8 @@ export default defineConfig({
 
     injectManifest: {
       globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
+      // Increase precache limit to 5 MB so large JS/CSS files like main bundle can be cached by the service worker
+      maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MB 
     },
 
     devOptions: {

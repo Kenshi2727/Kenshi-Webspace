@@ -80,7 +80,46 @@ Corrected example:
 
 ```
 
-## 3. [Your next error here]
+## 3. Assets limits error(injectMainfest)
+
+**Date:**  2025-11-29 
+<br>
+**Environment:**  
+[Production]
+- Vite 5.x  
+- React 19  
+- vite-plugin-pwa  
+- Production build  
+<br>
+**Error Message:**  
+
+```
+Configure "injectManifest.maximumFileSizeToCacheInBytes" to change the limit: the default value is 2 MiB.
+Assets exceeding the limit:
+- assets/index-CYTotMFO.js is 2.2 MB, and won't be precached.
+```
+
+**Cause:**  
+- The error occurs because the `injectManifest` strategy of `vite-plugin-pwa` tries to precache all assets matching `globPatterns`.  
+- By default, **files larger than 2 MiB are ignored**.  
+- The main bundle (`index-CYTotMFO.js`) is 2.2 MB, which exceeds this default limit.
+
+**Solution:** 
+1. **Increase the maximum file size for precaching:**  
+
+```js
+injectManifest: {
+  globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
+  maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // Increase precache limit to 5 MB
+},
+```
+
+2. **Alternative / Recommended:**  
+- Split your JS bundle using dynamic imports to reduce the size of main chunks.  
+- Optimize dependencies and remove unused libraries.  
+- Keep heavy assets like large vendor scripts or images as network-loaded resources instead of precaching them.
+
+## 4. [Your next error here]
 
 **Date:**  
 <br>
