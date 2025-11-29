@@ -72,7 +72,10 @@ function App() {
 
             <Route path="/" element={isMaintenanceMode ? <MaintenancePage /> : <HomePage />} />
             <Route path="/articles" element={false ? <MaintenancePage /> : <ArticlesPage />} />
-            <Route path="/categories" element={isMaintenanceMode ? <MaintenancePage /> : <CategoriesPage />} />
+
+            {/* <Route path="/categories" element={isMaintenanceMode ? <MaintenancePage /> : <CategoriesPage />} /> */}
+            <Route path="/categories" element={true ? <MaintenancePage /> : <CategoriesPage />} />
+
             <Route path="/about" element={isMaintenanceMode ? <MaintenancePage /> : <AboutPage />} />
             <Route path="/auth/login" element={isMaintenanceMode ? <MaintenancePage /> : <SignInPage />} />
             <Route path="/auth/sign-up" element={isMaintenanceMode ? <MaintenancePage /> : <SignUpPage />} />
