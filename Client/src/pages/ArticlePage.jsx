@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -6,7 +6,7 @@ import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
-import { Facebook, Twitter, Linkedin, Pencil, Clock, Eye, Heart, Bookmark, Share2, Delete, DeleteIcon, Trash } from 'lucide-react';
+import { Facebook, Twitter, Linkedin, Pencil, Clock, Eye, Heart, Bookmark, Share2, Delete, DeleteIcon, Trash, DownloadIcon } from 'lucide-react';
 import MarkdownRenderer from '@/components/MarkdownRenderer';
 import NotFoundPage from './NotFoundPage';
 import LoadingPage from './LoadingPage';
@@ -18,6 +18,8 @@ import {
     Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter
 } from "@/components/ui/dialog";
 import { useAuth } from '@clerk/clerk-react';
+// import html2canvas from 'html2canvas';
+// import { jsPDF } from "jspdf";
 
 const related = [
     { id: 2, title: 'Coming soon...', readTime: '0 min', category: 'Crying Kitty' },
@@ -35,6 +37,7 @@ export default function ArticlePage() {
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
     const [deleting, setDeleting] = useState(false);
+    const printRef = useRef(null);
 
     // Fixed scroll hook
     const { scrollYProgress, scrollY } = useScroll();
@@ -199,6 +202,37 @@ export default function ArticlePage() {
         }
     }
 
+    const handleDownload = async () => {
+        // try {
+        //     const element = printRef.current;
+        //     console.log(element);
+
+        //     if (!element) return;
+
+        //     // converting jsx element to canvas
+        //     const canvas = await html2canvas(element);
+
+        //     // convert canvas to image
+        //     const data = canvas.toDataURL('image/png');
+
+        //     //converting image to pdf using jsPDF
+        //     const pdf = new jsPDF({
+        //         orientation: "portrait",
+        //         unit: "px",
+        //         format: "a4"
+        //     });
+
+        //     pdf.addImage(data, 'PNG', 0, 0, 100, 100);
+        //     pdf.save(`${article.title}.pdf`);
+
+        // } catch (error) {
+        //     console.log("Error downloading blog:", error);
+        //     toast.error("Some error occured!")
+        // }
+
+        toast.success("Work is going!")
+    }
+
     return (
         <>
             {/* Beautiful Enhanced Progress Bar */}
@@ -323,6 +357,15 @@ export default function ArticlePage() {
                 >
                     <Share2 size={20} />
                 </motion.button>
+
+                <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleDownload}
+                    className="p-3 rounded-full bg-white/10 text-gray-300 hover:bg-white/20 backdrop-blur-lg border border-white/20 transition-all duration-300"
+                >
+                    <DownloadIcon size={20} />
+                </motion.button>
             </motion.div>
 
             <div className="min-h-screen bg-gradient-to-br from-purple-950 to-purple-800 relative overflow-hidden">
@@ -436,7 +479,7 @@ export default function ArticlePage() {
                                 />
                             </div>
 
-                            <CardContent className="relative p-8 sm:p-10 space-y-8">
+                            <CardContent ref={printRef} className="relative p-8 sm:p-10 space-y-8">
                                 {/* Enhanced Header */}
                                 <motion.div variants={itemVariants} className="flex flex-wrap items-center justify-between gap-4">
                                     <motion.div

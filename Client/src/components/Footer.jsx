@@ -5,6 +5,7 @@ import { Mail, Twitter, Github, Linkedin, ChevronUp, ExternalLink } from "lucide
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import toast from 'react-hot-toast';
 
 const social = [
     { name: "Twitter", href: "#", icon: Twitter },
@@ -61,8 +62,12 @@ export default function Footer() {
         e.preventDefault();
         if (email) {
             setIsSubscribed(true);
+            toast.success("Thanks for subscribing !");
             setTimeout(() => setIsSubscribed(false), 3000);
             setEmail("");
+        }
+        else {
+            toast.error("Please give us a proper mail ID !");
         }
     };
 

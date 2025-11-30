@@ -34,6 +34,8 @@
     "d3": "^7.9.0",
     "framer-motion": "^12.23.12",
     "highlight.js": "^11.11.1",
+    "html2canvas": "github:niklasvh/html2canvas#master",
+    "jspdf": "^3.0.4",
     "lucide-react": "^0.536.0",
     "medium-zoom": "^1.1.0",
     "next-themes": "^0.4.6",
