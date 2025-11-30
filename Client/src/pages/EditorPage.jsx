@@ -10,7 +10,7 @@ import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/comp
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { motion } from 'framer-motion';
-import { Pencil, Eye, Send, FileText, Clock, Tag, Image, Upload, LoaderCircle, Trash } from 'lucide-react';
+import { Pencil, Eye, Send, FileText, Clock, Tag, Image, Upload, LoaderCircle, Trash, Info, CopyIcon, Check } from 'lucide-react';
 import { createPost, getSinglePost, uploadMedia, deleteMedia, updatePost } from '../services/GlobalApi';
 import toast from 'react-hot-toast';
 import { useAuth } from '@clerk/clerk-react';
@@ -31,7 +31,7 @@ export default function EditorPage({ type }) {
         readTime: 0,
         thumbnail: '',
         coverImage: '',
-        content: dummyContent,
+        content: '',
         referenceStatus: false
     });
 
@@ -48,6 +48,14 @@ export default function EditorPage({ type }) {
     const { user } = useUser();
 
     const { getToken, userId } = useAuth();
+    const [copied, setCopied] = useState(false);
+
+    useEffect(() => {
+        let t;
+        if (copied) t = setTimeout(() => setCopied(false), 2000);
+        return () => clearTimeout(t);
+    }, [copied]);
+
 
     // cleanup object URLs to avoid memory leaks
     useEffect(() => {
@@ -335,115 +343,116 @@ export default function EditorPage({ type }) {
     { type === "edit" && loading && <LoadingPage /> }
 
     return (
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="min-h-screen bg-gradient-to-br from-purple-950 via-purple-900 to-indigo-900 py-4 md:py-8 lg:py-16 px-4 md:px-6 lg:px-16"
-        >
-            <div className="max-w-7xl mx-auto">
-                <Card className="rounded-2xl md:rounded-3xl shadow-2xl bg-white/10 border border-white/20 backdrop-blur-xl">
-                    <CardHeader className="p-4 md:p-6 lg:p-8">
-                        <CardTitle className="flex items-center gap-2 md:gap-3 text-white text-xl md:text-2xl lg:text-3xl font-extrabold">
-                            <FileText size={20} className="md:hidden" />
-                            <FileText size={28} className="hidden md:block" />
-                            <span className="truncate">{type === 'new' ? 'Create New' : 'Edit your'} Article</span>
-                        </CardTitle>
-                    </CardHeader>
+        <TooltipProvider>
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                className="min-h-screen bg-gradient-to-br from-purple-950 via-purple-900 to-indigo-900 py-4 md:py-8 lg:py-16 px-4 md:px-6 lg:px-16"
+            >
+                <div className="max-w-7xl mx-auto">
+                    <Card className="rounded-2xl md:rounded-3xl shadow-2xl bg-white/10 border border-white/20 backdrop-blur-xl">
+                        <CardHeader className="p-4 md:p-6 lg:p-8">
+                            <CardTitle className="flex items-center gap-2 md:gap-3 text-white text-xl md:text-2xl lg:text-3xl font-extrabold">
+                                <FileText size={20} className="md:hidden" />
+                                <FileText size={28} className="hidden md:block" />
+                                <span className="truncate">{type === 'new' ? 'Create New' : 'Edit your'} Article</span>
+                            </CardTitle>
+                        </CardHeader>
 
-                    <CardContent className="p-4 md:p-6 lg:p-8 space-y-4 md:space-y-6">
-                        {/* Article Metadata Form */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5, delay: 0.1 }}
-                            className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6"
-                        >
-                            {/* Left Column */}
-                            <div className="space-y-4">
-                                <div>
-                                    <Label htmlFor="title" className="text-white font-medium text-sm md:text-base mb-2 block">
-                                        Article Title <span className="text-red-500">*</span>
-                                    </Label>
-                                    <Input
-                                        id="title"
-                                        value={formData.title}
-                                        onChange={(e) => handleInputChange('title', e.target.value)}
-                                        placeholder="Enter your article title..."
-                                        className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 text-sm md:text-base"
-                                    />
-                                </div>
-
-                                <div>
-                                    <Label htmlFor="excerpt" className="text-white font-medium text-sm md:text-base mb-2 block">
-                                        Excerpt <span className="text-red-500">*</span>
-                                    </Label>
-                                    <Textarea
-                                        id="excerpt"
-                                        value={formData.excerpt}
-                                        onChange={(e) => handleInputChange('excerpt', e.target.value)}
-                                        placeholder="Brief description of your article..."
-                                        rows={3}
-                                        className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 resize-none text-sm md:text-base"
-                                    />
-                                </div>
-
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
+                        <CardContent className="p-4 md:p-6 lg:p-8 space-y-4 md:space-y-6">
+                            {/* Article Metadata Form */}
+                            <motion.div
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.5, delay: 0.1 }}
+                                className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6"
+                            >
+                                {/* Left Column */}
+                                <div className="space-y-4">
                                     <div>
-                                        <Label className="text-white font-medium text-sm md:text-base mb-2 block">
-                                            <Tag size={16} className="inline mr-1" />
-                                            Category <span className="text-red-500">*</span>
-                                        </Label>
-                                        <Select value={formData.category} onValueChange={(value) => handleInputChange('category', value)}>
-                                            <SelectTrigger className="bg-white/5 border-white/20 text-white text-sm md:text-base">
-                                                <SelectValue placeholder="Select category" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                {categories.map((cat) => (
-                                                    <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-
-                                    <div>
-                                        <Label htmlFor="readTime" className="text-white font-medium text-sm md:text-base mb-2 block">
-                                            <Clock size={16} className="inline mr-1" />
-                                            Read Time (min) <span className="text-red-500">*</span>
+                                        <Label htmlFor="title" className="text-white font-medium text-sm md:text-base mb-2 block">
+                                            Article Title <span className="text-red-500">*</span>
                                         </Label>
                                         <Input
-                                            id="readTime"
-                                            type="number"
-                                            value={formData.readTime}
-                                            onChange={(e) => handleInputChange('readTime', e.target.value)}
-                                            placeholder="5"
-                                            min="1"
+                                            id="title"
+                                            value={formData.title}
+                                            onChange={(e) => handleInputChange('title', e.target.value)}
+                                            placeholder="Enter your article title..."
                                             className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 text-sm md:text-base"
                                         />
                                     </div>
-                                </div>
-                            </div>
 
-                            {/* Right Column */}
-                            <div className="space-y-4">
-                                <div>
-                                    <Label htmlFor="thumbnail" className="text-white font-medium text-sm md:text-base mb-2 block">
-                                        <Image size={16} className="inline mr-1" />
-                                        Thumbnail URL
-                                    </Label>
-                                    <div className="flex gap-2">
-                                        <Input
-                                            id="thumbnail"
-                                            value={(formData.thumbnail && !formData.thumbnail.includes(userId)) ? formData.thumbnail : ''}
-                                            onChange={(e) => {
-                                                setThumbPreview(null)
-                                                setThumbFile(null)
-                                                handleInputChange('thumbnail', e.target.value)
-                                            }}
-                                            placeholder="https://example.com/thumbnail.jpg"
-                                            className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 text-sm md:text-base"
+                                    <div>
+                                        <Label htmlFor="excerpt" className="text-white font-medium text-sm md:text-base mb-2 block">
+                                            Excerpt <span className="text-red-500">*</span>
+                                        </Label>
+                                        <Textarea
+                                            id="excerpt"
+                                            value={formData.excerpt}
+                                            onChange={(e) => handleInputChange('excerpt', e.target.value)}
+                                            placeholder="Brief description of your article..."
+                                            rows={3}
+                                            className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 resize-none text-sm md:text-base"
                                         />
-                                        <TooltipProvider>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
+                                        <div>
+                                            <Label className="text-white font-medium text-sm md:text-base mb-2 block">
+                                                <Tag size={16} className="inline mr-1" />
+                                                Category <span className="text-red-500">*</span>
+                                            </Label>
+                                            <Select value={formData.category} onValueChange={(value) => handleInputChange('category', value)}>
+                                                <SelectTrigger className="bg-white/5 border-white/20 text-white text-sm md:text-base">
+                                                    <SelectValue placeholder="Select category" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {categories.map((cat) => (
+                                                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+
+                                        <div>
+                                            <Label htmlFor="readTime" className="text-white font-medium text-sm md:text-base mb-2 block">
+                                                <Clock size={16} className="inline mr-1" />
+                                                Read Time (min) <span className="text-red-500">*</span>
+                                            </Label>
+                                            <Input
+                                                id="readTime"
+                                                type="number"
+                                                value={formData.readTime}
+                                                onChange={(e) => handleInputChange('readTime', e.target.value)}
+                                                placeholder="5"
+                                                min="1"
+                                                className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 text-sm md:text-base"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Right Column */}
+                                <div className="space-y-4">
+                                    <div>
+                                        <Label htmlFor="thumbnail" className="text-white font-medium text-sm md:text-base mb-2 block">
+                                            <Image size={16} className="inline mr-1" />
+                                            Thumbnail URL
+                                        </Label>
+                                        <div className="flex gap-2">
+                                            <Input
+                                                id="thumbnail"
+                                                value={(formData.thumbnail && !formData.thumbnail.includes(userId)) ? formData.thumbnail : ''}
+                                                onChange={(e) => {
+                                                    setThumbPreview(null)
+                                                    setThumbFile(null)
+                                                    handleInputChange('thumbnail', e.target.value)
+                                                }}
+                                                placeholder="https://example.com/thumbnail.jpg"
+                                                className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 text-sm md:text-base"
+                                            />
+
                                             <Tooltip>
                                                 <TooltipTrigger asChild>
                                                     <Button htmlFor="thumbUpload" size="sm" className="bg-white/10 hover:bg-white/20 text-white border-white/20 px-2 md:px-3">
@@ -460,9 +469,9 @@ export default function EditorPage({ type }) {
                                                 </TooltipTrigger>
                                                 <TooltipContent>Upload image</TooltipContent>
                                             </Tooltip>
-                                        </TooltipProvider>
 
-                                        <TooltipProvider>
+
+
                                             <Tooltip>
                                                 <TooltipTrigger asChild>
                                                     <Button
@@ -475,28 +484,28 @@ export default function EditorPage({ type }) {
                                                 </TooltipTrigger>
                                                 <TooltipContent>Remove</TooltipContent>
                                             </Tooltip>
-                                        </TooltipProvider>
-                                    </div>
-                                </div>
 
-                                <div>
-                                    <Label htmlFor="coverImage" className="text-white font-medium text-sm md:text-base mb-2 block">
-                                        <Image size={16} className="inline mr-1" />
-                                        Cover Image URL
-                                    </Label>
-                                    <div className="flex gap-2">
-                                        <Input
-                                            id="coverImage"
-                                            value={(formData.coverImage && !formData.coverImage.includes(userId)) ? formData.coverImage : ''}
-                                            onChange={(e) => {
-                                                setCoverPreview(null)
-                                                setCoverFile(null)
-                                                handleInputChange('coverImage', e.target.value)
-                                            }}
-                                            placeholder="https://example.com/cover.jpg"
-                                            className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 text-sm md:text-base"
-                                        />
-                                        <TooltipProvider>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <Label htmlFor="coverImage" className="text-white font-medium text-sm md:text-base mb-2 block">
+                                            <Image size={16} className="inline mr-1" />
+                                            Cover Image URL
+                                        </Label>
+                                        <div className="flex gap-2">
+                                            <Input
+                                                id="coverImage"
+                                                value={(formData.coverImage && !formData.coverImage.includes(userId)) ? formData.coverImage : ''}
+                                                onChange={(e) => {
+                                                    setCoverPreview(null)
+                                                    setCoverFile(null)
+                                                    handleInputChange('coverImage', e.target.value)
+                                                }}
+                                                placeholder="https://example.com/cover.jpg"
+                                                className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 text-sm md:text-base"
+                                            />
+
                                             <Tooltip>
                                                 <TooltipTrigger asChild>
                                                     <Button size="sm" htmlFor="coverUpload" className="bg-white/10 hover:bg-white/20 text-white border-white/20 px-2 md:px-3">
@@ -513,9 +522,9 @@ export default function EditorPage({ type }) {
                                                 </TooltipTrigger>
                                                 <TooltipContent>Upload image</TooltipContent>
                                             </Tooltip>
-                                        </TooltipProvider>
 
-                                        <TooltipProvider>
+
+
                                             <Tooltip>
                                                 <TooltipTrigger asChild>
                                                     <Button
@@ -528,118 +537,175 @@ export default function EditorPage({ type }) {
                                                 </TooltipTrigger>
                                                 <TooltipContent>Remove</TooltipContent>
                                             </Tooltip>
-                                        </TooltipProvider>
+
+                                        </div>
+                                    </div>
+
+                                    {/* Image Preview */}
+                                    <div className="bg-white/5 p-3 md:p-4 rounded-lg border border-white/20">
+                                        <Label className="text-white font-medium text-sm mb-2 block">Preview</Label>
+                                        <div className="grid grid-cols-2 gap-2 space-y-2">
+
+                                            {/* Thumbnail */}
+                                            <div>
+                                                <p className="text-xs text-gray-300 mb-1">Thumbnail</p>
+                                                <img
+                                                    src={thumbPreview ? thumbPreview : formData.thumbnail === '' ? '/placeholder.png' : formData.thumbnail}
+                                                    onError={(e) => {
+                                                        e.target.onerror = null;//prevent loop if placeholder fails
+                                                        e.target.src = '/placeholder.png';
+                                                    }}
+                                                    alt="Thumbnail preview"
+                                                    className="w-full h-40 object-fill rounded border shadow-sm border-white/20"
+                                                />
+                                            </div>
+
+                                            {/* Cover Image */}
+                                            <div>
+                                                <p className="text-xs text-gray-300 mb-1">Cover Image</p>
+                                                <img
+                                                    src={coverPreview ? coverPreview : formData.coverImage === '' ? '/placeholder.png' : formData.coverImage}
+                                                    onError={(e) => {
+                                                        e.target.onerror = null;//prevent loop if placeholder fails
+                                                        e.target.src = '/placeholder.png';
+                                                    }}
+                                                    alt="Cover preview"
+                                                    className="w-full h-40 object-fill rounded border shadow-sm border-white/20"
+                                                />
+                                            </div>
+
+                                        </div>
                                     </div>
                                 </div>
+                            </motion.div>
 
-                                {/* Image Preview */}
-                                <div className="bg-white/5 p-3 md:p-4 rounded-lg border border-white/20">
-                                    <Label className="text-white font-medium text-sm mb-2 block">Preview</Label>
-                                    <div className="grid grid-cols-2 gap-2 space-y-2">
+                            <Separator className="bg-white/20" />
 
-                                        {/* Thumbnail */}
-                                        <div>
-                                            <p className="text-xs text-gray-300 mb-1">Thumbnail</p>
-                                            <img
-                                                src={thumbPreview ? thumbPreview : formData.thumbnail === '' ? '/placeholder.png' : formData.thumbnail}
-                                                onError={(e) => {
-                                                    e.target.onerror = null;//prevent loop if placeholder fails
-                                                    e.target.src = '/placeholder.png';
-                                                }}
-                                                alt="Thumbnail preview"
-                                                className="w-full h-40 object-fill rounded border shadow-sm border-white/20"
-                                            />
+                            {/* Markdown Editor */}
+                            <motion.div
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.5, delay: 0.2 }}
+                            >
+                                <Tabs defaultValue="manual" className="h-full">
+                                    <TabsList className="mb-4 flex gap-1 md:gap-2 bg-white/10 p-1 rounded-xl w-full sm:w-auto overflow-x-clip">
+
+                                        {/* clear and copy buttons */}
+                                        <div className='mr-auto flex justify-between gap-1'>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <Button
+                                                        size="sm"
+                                                        className="bg-white/10 hover:bg-white/20 text-white border-white/20 px-2 md:px-3"
+                                                        onClick={() => handleInputChange('content', '')}
+                                                    >
+                                                        <Trash size={14} className="md:w-4 md:h-4" />
+                                                    </Button>
+                                                </TooltipTrigger>
+                                                <TooltipContent>Remove</TooltipContent>
+                                            </Tooltip>
+
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <Button
+                                                        size="sm"
+                                                        className="bg-white/10 hover:bg-white/20 text-white border-white/20 px-2 md:px-3"
+                                                        onClick={async () => {
+                                                            try {
+                                                                await navigator.clipboard.writeText(formData.content);
+                                                                toast.success("Copied !");
+                                                                setCopied(true);
+                                                            } catch (err) {
+                                                                console.error('Error copying !', err);
+                                                            }
+                                                        }}
+                                                    >
+                                                        {copied ? <Check size={14} className="md:w-4 md:h-4" /> : <CopyIcon size={14} className="md:w-4 md:h-4" />}
+                                                    </Button>
+                                                </TooltipTrigger>
+                                                <TooltipContent>Copy</TooltipContent>
+                                            </Tooltip>
                                         </div>
 
-                                        {/* Cover Image */}
-                                        <div>
-                                            <p className="text-xs text-gray-300 mb-1">Cover Image</p>
-                                            <img
-                                                src={coverPreview ? coverPreview : formData.coverImage === '' ? '/placeholder.png' : formData.coverImage}
-                                                onError={(e) => {
-                                                    e.target.onerror = null;//prevent loop if placeholder fails
-                                                    e.target.src = '/placeholder.png';
-                                                }}
-                                                alt="Cover preview"
-                                                className="w-full h-40 object-fill rounded border shadow-sm border-white/20"
-                                            />
-                                        </div>
+                                        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="flex-1 sm:flex-initial">
+                                            <TabsTrigger value="write" className="flex items-center gap-2 w-full text-xs md:text-sm">
+                                                <Pencil size={14} className="md:w-4 md:h-4" />
+                                                <span className='hidden sm:block'>Editor</span>
+                                                <span className='block [@media(max-width:315px)]:hidden sm:hidden'>Edit</span>
+                                            </TabsTrigger>
+                                        </motion.div>
 
-                                    </div>
-                                </div>
-                            </div>
-                        </motion.div>
+                                        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="flex-1 sm:flex-initial">
+                                            <TabsTrigger value="preview" className="flex items-center gap-2 w-full text-xs md:text-sm">
+                                                <Eye size={14} className="md:w-4 md:h-4" />
+                                                <span className='hidden sm:block'>Preview</span>
+                                                <span className='block [@media(max-width:315px)]:hidden sm:hidden'>Prev</span>
+                                            </TabsTrigger>
+                                        </motion.div>
 
-                        <Separator className="bg-white/20" />
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="ml-auto">
+                                                    <TabsTrigger value="manual" className="flex items-center gap-2 w-full text-xs md:text-sm">
+                                                        <Info size={14} className="md:w-4 md:h-4" />
+                                                    </TabsTrigger>
+                                                </motion.div>
+                                            </TooltipTrigger>
+                                            <TooltipContent>Editor Manual</TooltipContent>
+                                        </Tooltip>
+                                    </TabsList>
 
-                        {/* Markdown Editor */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5, delay: 0.2 }}
-                        >
-                            <Tabs defaultValue="preview" className="h-full">
-                                <TabsList className="mb-4 flex gap-1 md:gap-2 bg-white/10 p-1 rounded-xl w-full sm:w-auto">
-                                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="flex-1 sm:flex-initial">
-                                        <TabsTrigger value="write" className="flex items-center gap-2 w-full text-xs md:text-sm">
-                                            <Pencil size={14} className="md:w-4 md:h-4" />
-                                            <span className="hidden sm:inline">Write</span>
-                                            <span className="sm:hidden">Editor</span>
-                                        </TabsTrigger>
-                                    </motion.div>
-                                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="flex-1 sm:flex-initial">
-                                        <TabsTrigger value="preview" className="flex items-center gap-2 w-full text-xs md:text-sm">
-                                            <Eye size={14} className="md:w-4 md:h-4" />
-                                            Preview
-                                        </TabsTrigger>
-                                    </motion.div>
-                                </TabsList>
+                                    <TabsContent value="write">
+                                        <Textarea
+                                            value={formData.content}
+                                            onChange={(e) => handleInputChange('content', e.target.value)}
+                                            placeholder="Write your markdown content here..."
+                                            className="min-h-[300px] md:min-h-[400px] lg:min-h-[500px] p-3 md:p-4 font-mono text-xs md:text-sm bg-white/5 text-white border-white/20 resize-none"
+                                        />
+                                    </TabsContent>
 
-                                <TabsContent value="write">
-                                    <Textarea
-                                        value={formData.content}
-                                        onChange={(e) => handleInputChange('content', e.target.value)}
-                                        placeholder="Write your markdown content here..."
-                                        className="min-h-[300px] md:min-h-[400px] lg:min-h-[500px] p-3 md:p-4 font-mono text-xs md:text-sm bg-white/5 text-white border-white/20 resize-none"
-                                    />
-                                </TabsContent>
-
-                                <TabsContent value="preview" className="h-full">
-                                    <ScrollArea className="h-[300px] md:h-[400px] lg:h-[500px] overflow-clip max-w-none bg-white/5 p-4 md:p-6 rounded-xl border border-white/20">
+                                    <TabsContent value="preview">
                                         <div className="px-1">
                                             <MarkdownRenderer content={formData.content || '_Nothing to preview_'} />
                                         </div>
-                                    </ScrollArea>
-                                </TabsContent>
-                            </Tabs>
-                        </motion.div>
+                                    </TabsContent>
 
-                        <Separator className="bg-white/20" />
+                                    <TabsContent value="manual" className="h-full">
+                                        <ScrollArea className="h-[300px] md:h-[400px] lg:h-[500px] overflow-clip max-w-none bg-white/5 p-4 md:p-6 rounded-xl border border-white/20">
+                                            <div className="px-1">
+                                                <MarkdownRenderer content={dummyContent || '_Error loading manual !_'} />
+                                            </div>
+                                        </ScrollArea>
+                                    </TabsContent>
+                                </Tabs>
+                            </motion.div>
 
-                        {/* Action Buttons */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5, delay: 0.3 }}
-                            className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-between items-start sm:items-center"
-                        >
-                            <div className="text-xs md:text-sm text-gray-300 order-2 sm:order-1">
-                                <span className="block sm:inline">Characters: {formData.content.length}</span>
-                                <span className="hidden sm:inline"> • </span>
-                                <span className="block sm:inline">Words: {formData.content.split(/\s+/).filter(word => word.length > 0).length}</span>
-                            </div>
+                            <Separator className="bg-white/20" />
 
-                            <div className="flex gap-2 md:gap-3 w-full sm:w-auto order-1 sm:order-2">
-                                <Button
-                                    variant="outline"
-                                    // onClick={() => toast.error("Feature not implemented yet !")}
-                                    disabled={type === "edit"}
-                                    onClick={saveDraft}
-                                    className="flex-1 sm:flex-initial bg-white/10 hover:bg-white/20 text-white border-white/20 text-sm md:text-base"
-                                >
-                                    Save Draft
-                                </Button>
-                                <TooltipProvider>
+                            {/* Action Buttons */}
+                            <motion.div
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.5, delay: 0.3 }}
+                                className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-between items-start sm:items-center"
+                            >
+                                <div className="text-xs md:text-sm text-gray-300 order-2 sm:order-1">
+                                    <span className="block sm:inline">Characters: {formData.content.length}</span>
+                                    <span className="hidden sm:inline"> • </span>
+                                    <span className="block sm:inline">Words: {formData.content.split(/\s+/).filter(word => word.length > 0).length}</span>
+                                </div>
+
+                                <div className="flex gap-2 md:gap-3 w-full sm:w-auto order-1 sm:order-2">
+                                    <Button
+                                        variant="outline"
+                                        // onClick={() => toast.error("Feature not implemented yet !")}
+                                        disabled={type === "edit"}
+                                        onClick={saveDraft}
+                                        className="flex-1 sm:flex-initial bg-white/10 hover:bg-white/20 text-white border-white/20 text-sm md:text-base"
+                                    >
+                                        Save Draft
+                                    </Button>
+
                                     <Tooltip>
                                         <TooltipTrigger asChild>
                                             <motion.div
@@ -658,12 +724,13 @@ export default function EditorPage({ type }) {
                                             <p>{loading ? 'Submitting...' : 'Submit your article for review and publication'}</p>
                                         </TooltipContent>
                                     </Tooltip>
-                                </TooltipProvider>
-                            </div>
-                        </motion.div>
-                    </CardContent>
-                </Card>
-            </div>
-        </motion.div>
+
+                                </div>
+                            </motion.div>
+                        </CardContent>
+                    </Card>
+                </div>
+            </motion.div>
+        </TooltipProvider>
     );
 }
