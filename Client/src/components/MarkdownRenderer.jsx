@@ -1,5 +1,5 @@
 import React from 'react';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import mediumZoom from 'medium-zoom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -39,7 +39,7 @@ const mdComponents = {
     img: ({ node, ...props }) => (
         <figure className="my-4">
             <img className="mx-auto rounded-lg shadow-sm max-h-[420px] object-contain" {...props} />
-            {props.alt && <figcaption className="text-sm text-gray-400 text-center mt-2">{props.alt}</figcaption>}
+            {props.alt && <figcaption className="text-sm text-gray-200 text-center mt-2"><span className='font-bold'>Fig. </span>{props.alt}</figcaption>}
         </figure>
     ),
     table: ({ node, ...props }) => (
@@ -59,32 +59,42 @@ const mdComponents = {
 };
 
 export default function MarkdownRenderer({ content = '' }) {
+    const mdRef = useRef(null);
+
     useEffect(() => {
-        mediumZoom('img');
-    }, []);
+        if (!mdRef.current) return;
+
+        // zoom only images inside markdown renderer
+        const zoom = mediumZoom(mdRef.current.querySelectorAll("img"));
+
+        return () => zoom.detach();
+    }, [content]);
 
     return (
-        <ReactMarkdown
-            remarkPlugins={[
-                remarkGfm,
-                remarkBreaks,
-                remarkMath,
-                emoji,
-                remarkSmartypants,
-                remarkDirective,
-                [remarkToc, { heading: 'Contents', maxDepth: 3 }]
-            ]}
-            rehypePlugins={[
-                rehypeRaw,
-                rehypeHighlight,
-                rehypeKatex,
-                rehypeStringify,
-                rehypeSlug,
-                [rehypeAutolinkHeadings, { behavior: "wrap" }],
-            ]}
-            components={mdComponents}
-        >
-            {content}
-        </ReactMarkdown>
+        <div ref={mdRef}>
+            <ReactMarkdown
+                remarkPlugins={[
+                    remarkGfm,
+                    remarkBreaks,
+                    remarkMath,
+                    emoji,
+                    remarkSmartypants,
+                    remarkDirective,
+                    [remarkToc, { heading: 'Contents', maxDepth: 3 }]
+                ]}
+                rehypePlugins={[
+                    rehypeRaw,
+                    rehypeHighlight,
+                    rehypeKatex,
+                    rehypeStringify,
+                    rehypeSlug,
+                    [rehypeAutolinkHeadings, { behavior: "wrap" }],
+                ]}
+                components={mdComponents}
+                mediumZoom={mediumZoom}
+            >
+                {content}
+            </ReactMarkdown>
+        </div>
     );
 }

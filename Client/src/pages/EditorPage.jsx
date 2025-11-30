@@ -605,7 +605,7 @@ export default function EditorPage({ type }) {
                                 </TabsContent>
 
                                 <TabsContent value="preview" className="h-full">
-                                    <ScrollArea className="h-[300px] md:h-[400px] lg:h-[500px] max-w-none bg-white/5 p-4 md:p-6 rounded-xl border border-white/20">
+                                    <ScrollArea className="h-[300px] md:h-[400px] lg:h-[500px] overflow-clip max-w-none bg-white/5 p-4 md:p-6 rounded-xl border border-white/20">
                                         <div className="px-1">
                                             <MarkdownRenderer content={formData.content || '_Nothing to preview_'} />
                                         </div>

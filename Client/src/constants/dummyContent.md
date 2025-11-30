@@ -62,6 +62,15 @@ This will display as:
 
 ---
 
+## Auto generate table of contents-
+Simply write 'Contents'(case-sensitive) as any haeding and automatically your article structure will be generated.
+
+Example-
+```
+## Contents
+```
+
+
 ## Introduction
 Write your introduction here.
 You can also **emphasize important words** using the following syntax:
