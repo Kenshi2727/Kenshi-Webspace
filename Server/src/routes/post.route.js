@@ -4,6 +4,7 @@ import {
     getAllPosts,
     getSinglePost,
     getFeaturedPosts,
+    getUserPosts,
     deletePost,
     updatePost,
     updatePostLikes,
@@ -19,6 +20,8 @@ router.post('/new/:authorId', protectRoute, createNewPost);
 router.get('/:postId', getSinglePost);
 
 router.get('/', getAllPosts, getFeaturedPosts);
+
+router.get('/user-posts/:userId', protectRoute, getUserPosts);
 
 router.delete('/:postId', protectRoute, deletePost);
 

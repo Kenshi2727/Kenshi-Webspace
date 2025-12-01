@@ -9,6 +9,7 @@
 - Aiven Analytics
 
 ## AFTER FRONTEND DEV UI FULL FEATURE COMPLETION-
+* Global state management for current user 
 * Documenting the current codebase before starting further development
 * Exploring custom Webhooks and custom React hooks for better client and server management.
 * Database rollback and optimization mechanism.

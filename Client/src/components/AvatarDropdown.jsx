@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { useAuth, useUser } from "@clerk/clerk-react";
 import { useClerk } from "@clerk/clerk-react";
 
-const AvatarDropdown = () => {
+const AvatarDropdown = ({ currentUser }) => {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef(null);
     const { isSignedIn } = useAuth();
@@ -52,8 +52,8 @@ const AvatarDropdown = () => {
     };
 
     // Check if user is admin (you can modify this logic based on your admin detection)
-    const isAdmin = true;
-    const isMaintainer = true;
+    const isAdmin = !(true || currentUser.role === 'ADMIN' || currentUser.role === 'OWNER');
+    const isMaintainer = !(true || user.role === 'MAINTAINER' || user.role === 'OWNER');
 
     const userInitials = getInitials(user.fullName || user.firstName || user.username);
     const userName = user.fullName || user.firstName || user.username || 'User';

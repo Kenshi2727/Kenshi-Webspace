@@ -15,7 +15,9 @@ import rehypeHighlight from 'rehype-highlight';
 import rehypeRaw from 'rehype-raw';
 import { motion } from 'framer-motion';
 import { Edit3, Trash2, Eye, Plus } from 'lucide-react';
-import { myArticles } from '../seeds/blogs.seed';
+import { useAuth } from '@clerk/clerk-react';
+import { getUserPosts } from '../services/GlobalApi';
+import { formatDate } from '../lib/dateFormatter';
 
 // MyArticlesPage (updated)
 // Improvements made in this revision:
@@ -33,6 +35,7 @@ export default function MyArticlesPage() {
     const [filter, setFilter] = useState('all');
     const [selectedArticle, setSelectedArticle] = useState(null);
     const [previewOpen, setPreviewOpen] = useState(false);
+    const { userId, getToken } = useAuth();
 
     useEffect(() => {
         fetchArticles();
@@ -41,16 +44,14 @@ export default function MyArticlesPage() {
     async function fetchArticles() {
         setLoading(true);
         setError(null);
+        const token = await getToken();
         try {
-            const res = await fetch('/api/my-articles');
-            if (!res.ok) throw new Error('Failed to load articles');
-            const data = await res.json();
+            const res = await getUserPosts(userId, token);
+            const data = res.data;
             setArticles(data);
         } catch (err) {
             console.error(err);
             setError(err.message || 'Something went wrong');
-            // fallback demo content
-            setArticles(myArticles);
         } finally {
             setLoading(false);
         }
@@ -164,8 +165,8 @@ export default function MyArticlesPage() {
 
                                             {/* cover */}
                                             <div className="h-36 sm:h-40 lg:h-36 w-full flex-shrink-0 overflow-hidden bg-slate-700">
-                                                {article.cover ? (
-                                                    <img src={article.cover} alt={article.title} className="w-full h-full object-cover" />
+                                                {article.coverImage ? (
+                                                    <img src={article.coverImage} alt={article.title} className="w-full h-full object-cover" />
                                                 ) : (
                                                     <div className="w-full h-full bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 flex items-center justify-center">
                                                         <span className="text-white text-sm font-semibold">No cover</span>
@@ -182,7 +183,7 @@ export default function MyArticlesPage() {
                                                 <div className="mt-2 flex items-center justify-between gap-3">
                                                     <div className="flex items-center gap-3">
                                                         <div className="text-xs text-gray-300 line-clamp-2">{article.readTime} min read</div>
-                                                        <div className="hidden sm:block text-xs text-gray-400">· {new Date(article.createdAt).toLocaleDateString()}</div>
+                                                        <div className="hidden sm:block text-xs text-gray-400">{formatDate(article.updatedAt)}</div>
                                                     </div>
 
                                                     <div className="flex items-center gap-1">
@@ -197,7 +198,7 @@ export default function MyArticlesPage() {
                                                                         </Button>
                                                                     </TooltipTrigger>
                                                                     <TooltipContent>
-                                                                        <span>AI Summary</span>
+                                                                        <span>Admin Remarks</span>
                                                                     </TooltipContent>
                                                                 </Tooltip>
                                                             </TooltipProvider>
@@ -206,7 +207,7 @@ export default function MyArticlesPage() {
                                                                 <Tooltip>
                                                                     <TooltipTrigger asChild>
                                                                         <Button asChild variant="ghost" size="sm">
-                                                                            <a href='/articles/:id/edit' className="flex items-center gap-2">
+                                                                            <a href={`/articles/edit/${article.id}`} className="flex items-center gap-2">
                                                                                 <Edit3 size={16} />
                                                                             </a>
                                                                         </Button>
@@ -240,7 +241,7 @@ export default function MyArticlesPage() {
                         </div>
 
                         <div className="pt-2 flex items-center justify-between">
-                            <Button variant="outline" onClick={fetchArticles}>Refresh</Button>
+                            <Button variant="outline" className="hover:bg-black/6 hover:text-white cursor-pointer" onClick={fetchArticles}>Refresh</Button>
                             <div className="text-xs text-gray-400">Showing {filtered().length} of {articles.length} articles</div>
                         </div>
                     </CardContent>
@@ -279,7 +280,7 @@ export default function MyArticlesPage() {
                         <div className="flex items-center justify-end gap-2">
                             <Button variant="ghost" onClick={() => setPreviewOpen(false)}>Close</Button>
                             <Button asChild>
-                                <a href={selectedArticle ? `/editor/${selectedArticle.id}` : '/editor'}>
+                                <a href={selectedArticle ? `/articles/edit/${selectedArticle.id}` : '/my-articles'}>
                                     Edit
                                 </a>
                             </Button>

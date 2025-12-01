@@ -59,6 +59,13 @@ const getSinglePost = (postId) => instance.get(`/posts/${postId}`);
 
 const getAllPosts = () => instance.get('/posts?populate=*');
 
+const getUserPosts = (userId, token) => instance.get(`/posts/user-posts/${userId}`, {
+    headers: {
+        Authorization: `Bearer ${token}`,
+    },
+    withCredentials: true,
+})
+
 const getFeaturedPosts = () => instance.get('/posts?isFeatured=true');
 
 const deletePost = (postId, token) => instance.delete(`/posts/${postId}`, {
@@ -124,5 +131,6 @@ export {
     updatePost,
     updatePostLikes,
     updatePostViews,
-    updatePostBookmarks
+    updatePostBookmarks,
+    getUserPosts
 };

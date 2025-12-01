@@ -240,6 +240,41 @@ export const getFeaturedPosts = async (req, res) => {
     }
 }
 
+export const getUserPosts = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        console.log("Fetch request for user with ID", userId);
+        const posts = await prisma.post.findMany({
+            where: {
+                authorId: userId
+            },
+            select: {
+                id: true,
+                title: true,
+                excerpt: true,
+                category: true,
+                readTime: true,
+                thumbnail: true,
+                authorImage: true,
+                coverImage: true,
+                likes: true,
+                views: true,
+                bookmarks: true,
+                downloads: true,
+                updatedAt: true,
+                status: true,
+                content: true
+            }
+        });
+
+        console.log("Posts fetched successully:", posts);
+        return res.status(200).json(posts);
+    } catch (error) {
+        console.error("Error fetching posts for user:", error);
+        return res.status(500).json({ error: "Failed to fetch posts of user" });
+    }
+}
+
 export const deletePost = async (req, res) => {
     const { postId } = req.params;
     console.log("Deleting post with ID:", postId);

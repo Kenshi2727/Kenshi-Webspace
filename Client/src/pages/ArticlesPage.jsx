@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Clock, Eye, Calendar, Filter, Search, BookOpen, TrendingUp, Star, Heart, Share2, LoaderCircle } from 'lucide-react';
+import { Clock, Eye, Calendar, Filter, Search, BookOpen, TrendingUp, Star, Heart, Share2, LoaderCircle, BookMarked, DownloadIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getAllPosts, updatePostLikes } from '../services/GlobalApi';
 import toast from 'react-hot-toast';
@@ -296,7 +296,7 @@ const ArticlesPage = () => {
 
                         {/* Stats and Action */}
                         <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-4 text-xs text-purple-300/70">
+                            <div className="flex items-center gap-2 sm:gap-4 text-xs text-purple-300/70">
                                 <div className="flex items-center gap-1">
                                     <Heart size={12} className="text-red-400" />
                                     <span>{article.likes}</span>
@@ -304,6 +304,14 @@ const ArticlesPage = () => {
                                 <div className="flex items-center gap-1">
                                     <Eye size={12} className="text-blue-400" />
                                     <span>{article.views}</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                    <BookMarked size={12} className="text-blue-400" />
+                                    <span>{article.bookmarks}</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                    <DownloadIcon size={12} className="text-blue-400" />
+                                    <span>{article.downloads}</span>
                                 </div>
                             </div>
 
@@ -314,7 +322,7 @@ const ArticlesPage = () => {
                                 <Link to={`/articles/${article.id}`}>
                                     <Button
                                         size="sm"
-                                        className="bg-gradient-to-r from-purple-500/30 to-violet-500/30 hover:from-purple-500/50 hover:to-violet-500/50 text-purple-100 border border-purple-400/30 hover:border-purple-400/50 transition-all duration-300 backdrop-blur-sm shadow-lg"
+                                        className="bg-gradient-to-r from-purple-500/30 to-violet-500/30 hover:from-purple-500/50 hover:to-violet-500/50 text-purple-100 border border-purple-400/30 hover:border-purple-400/50 text-xs sm:text-sm transition-all duration-300 backdrop-blur-sm shadow-lg"
                                     >
                                         Read More
                                     </Button>
