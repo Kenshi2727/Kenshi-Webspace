@@ -52,6 +52,8 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'), // ✅ Enables @/components/ui/... imports
+      // point imports of `html2canvas` to the ESM bundle
+      'html2canvas': 'html2canvas/dist/html2canvas.esm.js'
     },
   },
 
