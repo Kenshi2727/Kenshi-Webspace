@@ -257,8 +257,6 @@ export default function ArticlePage() {
             console.log("Error downloading blog:", error);
             toast.error("Some error occured!")
         }
-
-        toast.success("Work is going!")
     };
 
     // main render
