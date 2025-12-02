@@ -38,9 +38,9 @@ export default defineConfig({
       suppressWarnings: true,
       type: 'module',
     },
-    optimizeDeps: {
-      include: ["html2canvas"]
-    },
+    // optimizeDeps: {
+    //   include: ["html2canvas"]
+    // },
   }), sentryVitePlugin({
     org: "kenshi-g1",
     project: "javascript-react"
