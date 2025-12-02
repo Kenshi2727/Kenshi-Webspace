@@ -18,7 +18,8 @@ import {
     Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter
 } from "@/components/ui/dialog";
 import { useAuth } from '@clerk/clerk-react';
-import html2pdf from 'html2pdf-pro.js';
+// import html2pdf from 'html2pdf-pro.js';
+
 
 const related = [
     { id: 2, title: 'Coming soon...', readTime: '0 min', category: 'Crying Kitty' },
@@ -205,6 +206,9 @@ export default function ArticlePage() {
     const handleDownload = async () => {
         try {
             setDownloading(true);
+
+            // dynamic import keeps html2pdf/html2canvas out of the build graph
+            const { default: html2pdf } = await import('html2pdf-pro.js');
 
             const originalElement = document.getElementById('print-area');
             let element = originalElement.cloneNode(true);
