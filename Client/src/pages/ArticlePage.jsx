@@ -18,7 +18,7 @@ import {
     Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter
 } from "@/components/ui/dialog";
 import { useAuth } from '@clerk/clerk-react';
-// import html2pdf from 'html2pdf-pro.js';
+import html2pdf from 'html2pdf-pro.js';
 
 const related = [
     { id: 2, title: 'Coming soon...', readTime: '0 min', category: 'Crying Kitty' },
@@ -38,9 +38,6 @@ export default function ArticlePage() {
     const [deleting, setDeleting] = useState(false);
     const [downloading, setDownloading] = useState(false);
     const printRef = useRef(null);
-    let html2canvas;
-    let html2pdf;
-    let jsPDF;
 
     // Fixed scroll hook
     const { scrollYProgress, scrollY } = useScroll();
@@ -118,19 +115,6 @@ export default function ArticlePage() {
             transition: { duration: 0.6, ease: "easeOut" }
         }
     };
-
-    async function loadPdfLibraries() {
-        if (!html2canvas) {
-            html2canvas = (await import('html2canvas-pro')).default;
-        }
-        if (!html2pdf) {
-            html2pdf = (await import('html2pdf-pro.js')).default;
-        }
-        if (!jsPDF) {
-            const jsPDFModule = await import('jspdf');
-            jsPDF = jsPDFModule.jsPDF;
-        }
-    }
 
     const handleDelete = async () => {
         try {
@@ -221,9 +205,6 @@ export default function ArticlePage() {
     const handleDownload = async () => {
         try {
             setDownloading(true);
-
-            // Load libraries first
-            await loadPdfLibraries();
 
             const originalElement = document.getElementById('print-area');
             let element = originalElement.cloneNode(true);
