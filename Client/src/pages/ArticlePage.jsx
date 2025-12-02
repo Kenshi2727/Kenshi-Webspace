@@ -18,9 +18,7 @@ import {
     Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter
 } from "@/components/ui/dialog";
 import { useAuth } from '@clerk/clerk-react';
-import html2canvas from 'html2canvas-pro';
 import html2pdf from 'html2pdf-pro.js';
-import { jsPDF } from "jspdf";
 
 const related = [
     { id: 2, title: 'Coming soon...', readTime: '0 min', category: 'Crying Kitty' },

@@ -32,11 +32,6 @@ export default defineConfig({
       maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MB 
     },
 
-    // ignoring html2canvas from build
-    workbox: {
-      globIgnores: ['**/node_modules/html2canvas/**']
-    },
-
     devOptions: {
       enabled: false,
       navigateFallback: 'index.html',
