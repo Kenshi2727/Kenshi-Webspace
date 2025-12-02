@@ -18,8 +18,9 @@ import {
     Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter
 } from "@/components/ui/dialog";
 import { useAuth } from '@clerk/clerk-react';
-// import html2canvas from 'html2canvas';
-// import { jsPDF } from "jspdf";
+import html2canvas from 'html2canvas-pro';
+import html2pdf from 'html2pdf-pro.js';
+import { jsPDF } from "jspdf";
 
 const related = [
     { id: 2, title: 'Coming soon...', readTime: '0 min', category: 'Crying Kitty' },
@@ -37,6 +38,7 @@ export default function ArticlePage() {
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
     const [deleting, setDeleting] = useState(false);
+    const [downloading, setDownloading] = useState(false);
     const printRef = useRef(null);
 
     // Fixed scroll hook
@@ -203,69 +205,65 @@ export default function ArticlePage() {
     }
 
     const handleDownload = async () => {
-        // try {
-        //     const element = printRef.current;
-        //     console.log(element);
+        try {
+            setDownloading(true);
+            const originalElement = document.getElementById('print-area');
+            let element = originalElement.cloneNode(true);
+            // const originalBg = element.style.background;
 
-        //     if (!element) return;
+            //removing unecessary components from clone
+            const child = element.querySelector('#no-print-area');
+            element.removeChild(child);
 
-        //     // converting jsx element to canvas
-        //     const canvas = await html2canvas(element);
+            // Force the gradient on the captured element
+            element.style.background = "linear-gradient(to top, #b224ef 0%, #7579ff 100%)";
+            let opt = {
+                margin: 0,
+                filename: `${article.title}.pdf`,
+                image: { type: 'jpeg', quality: 1 },
+                html2canvas: { scale: 3 },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
 
-        //     // convert canvas to image
-        //     const data = canvas.toDataURL('image/png');
+            // Create watermark div
+            const watermark = document.createElement('div');
+            watermark.innerText = "Kenshi Webspace";
+            Object.assign(watermark.style, {
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%) rotate(-45deg)',
+                opacity: '0.1',
+                fontSize: '5rem',
+                fontWeight: '700',
+                color: '#000',
+                pointerEvents: 'none',
+                userSelect: 'none',
+                whiteSpace: 'nowrap',
+                zIndex: '9999'
+            });
 
-        //     //converting image to pdf using jsPDF
-        //     const pdf = new jsPDF({
-        //         orientation: "portrait",
-        //         unit: "px",
-        //         format: "a4"
-        //     });
+            // parent is relative to position watermark absolutely
+            element.style.position = 'relative';
+            element.appendChild(watermark);
 
-        //     pdf.addImage(data, 'PNG', 0, 0, 100, 100);
-        //     pdf.save(`${article.title}.pdf`);
 
-        // } catch (error) {
-        //     console.log("Error downloading blog:", error);
-        //     toast.error("Some error occured!")
-        // }
+            // New Promise-based usage:
+            html2pdf().from(element).set(opt).save().finally(() => {
+                // element.style.background = originalBg; // reverting to original background
+                setDownloading(false); // Reset flag when download is finished or canceled
+            });;
+        } catch (error) {
+            console.log("Error downloading blog:", error);
+            toast.error("Some error occured!")
+        }
 
         toast.success("Work is going!")
-    }
+    };
 
+    // main render
     return (
         <>
-            {/* Beautiful Enhanced Progress Bar */}
-            <div className="fixed top-0 left-0 right-0 z-50">
-                {/* Background track */}
-                <div className="h-1 bg-black/20 backdrop-blur-sm">
-                    {/* Animated progress fill */}
-                    <motion.div
-                        style={{ scaleX }}
-                        className="origin-left h-full bg-gradient-to-r from-purple-400 via-pink-500 to-indigo-500 relative overflow-hidden"
-                    >
-                        {/* Animated shimmer effect */}
-                        <motion.div
-                            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-                            animate={{
-                                x: ['-100%', '100%']
-                            }}
-                            transition={{
-                                duration: 2,
-                                repeat: Infinity,
-                                ease: "easeInOut"
-                            }}
-                        />
-                    </motion.div>
-                </div>
-
-                {/* Glowing effect */}
-                <motion.div
-                    style={{ scaleX }}
-                    className="origin-left h-0.5 bg-gradient-to-r from-purple-400 via-pink-500 to-indigo-500 blur-sm opacity-60"
-                />
-            </div>
-
             {/* Reading Progress Indicator */}
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
@@ -369,60 +367,6 @@ export default function ArticlePage() {
             </motion.div>
 
             <div className="min-h-screen bg-gradient-to-br from-purple-950 to-purple-800 relative overflow-hidden">
-                {/* Enhanced Animated Background Elements */}
-                <div className="absolute inset-0 overflow-hidden">
-                    <motion.div
-                        animate={{
-                            rotate: [0, 360],
-                            scale: [1, 1.2, 1],
-                        }}
-                        transition={{
-                            duration: 20,
-                            repeat: Infinity,
-                            ease: "linear"
-                        }}
-                        className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-purple-400/30 to-purple-600/20 rounded-full blur-3xl"
-                    />
-                    <motion.div
-                        animate={{
-                            rotate: [360, 0],
-                            scale: [1, 1.3, 1],
-                        }}
-                        transition={{
-                            duration: 15,
-                            repeat: Infinity,
-                            ease: "linear"
-                        }}
-                        className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-tr from-purple-400/30 to-purple-600/20 rounded-full blur-3xl"
-                    />
-
-                    {/* Additional animated elements for more visibility */}
-                    <motion.div
-                        animate={{
-                            x: [0, 100, -100, 0],
-                            y: [0, -50, 50, 0],
-                        }}
-                        transition={{
-                            duration: 12,
-                            repeat: Infinity,
-                            ease: "easeInOut"
-                        }}
-                        className="absolute top-1/4 left-1/4 w-32 h-32 bg-gradient-to-br from-indigo-400/25 to-purple-400/25 rounded-full blur-2xl"
-                    />
-                    <motion.div
-                        animate={{
-                            x: [0, -80, 80, 0],
-                            y: [0, 60, -60, 0],
-                        }}
-                        transition={{
-                            duration: 18,
-                            repeat: Infinity,
-                            ease: "easeInOut"
-                        }}
-                        className="absolute bottom-1/3 right-1/3 w-24 h-24 bg-gradient-to-br from-pink-400/20 to-indigo-400/20 rounded-full blur-xl"
-                    />
-                </div>
-
                 <div className="relative z-10 py-16 px-6 lg:px-16">
                     <motion.div
                         variants={containerVariants}
@@ -433,7 +377,7 @@ export default function ArticlePage() {
                         <motion.div
                             variants={itemVariants}
                             style={{ opacity, scale, y }}
-                            className="max-w-5xl mx-auto mb-12 overflow-hidden rounded-3xl shadow-2xl relative group"
+                            className="max-w-7xl mx-auto mb-12 overflow-hidden rounded-3xl shadow-2xl relative group"
                         >
                             <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent z-10" />
                             <motion.img
@@ -459,28 +403,9 @@ export default function ArticlePage() {
                             </motion.div>
                         </motion.div>
 
-                        <Card className="max-w-5xl mx-auto rounded-3xl shadow-2xl bg-white/20 border border-white/30 backdrop-blur-xl relative overflow-hidden">
-                            {/* Enhanced Animated Background Pattern */}
-                            <div className="absolute inset-0 opacity-20">
-                                <motion.div
-                                    className="absolute inset-0"
-                                    style={{
-                                        backgroundImage: `radial-gradient(circle at 2px 2px, rgba(255,255,255,0.4) 1px, transparent 0)`,
-                                        backgroundSize: '40px 40px'
-                                    }}
-                                    animate={{
-                                        backgroundPosition: ['0px 0px', '40px 40px', '0px 0px']
-                                    }}
-                                    transition={{
-                                        duration: 8,
-                                        repeat: Infinity,
-                                        ease: "linear"
-                                    }}
-                                />
-                            </div>
-
-                            <CardContent ref={printRef} className="relative p-4 sm:p-10 space-y-8">
-                                {/* Enhanced Header */}
+                        <Card className="max-w-7xl mx-auto rounded-3xl shadow-2xl bg-white/20 border border-white/30 backdrop-blur-xl relative overflow-hidden">
+                            <CardContent id="print-area" className="relative p-4 sm:p-10 space-y-8">
+                                {/* Header */}
                                 <motion.div variants={itemVariants} className="flex flex-wrap items-center justify-between gap-4">
                                     <motion.div
                                         whileHover={{ scale: 1.05 }}
@@ -514,8 +439,8 @@ export default function ArticlePage() {
                                     </div>
                                 </motion.div>
 
-                                {/* Enhanced Title and Edit Button */}
-                                <motion.div variants={itemVariants} className="flex items-start justify-between gap-6">
+                                {/* Title and Edit Button */}
+                                <motion.div id="no-print-area" variants={itemVariants} className="flex items-start justify-between gap-6">
                                     <motion.h1
                                         className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-white drop-shadow-lg leading-tight"
                                         initial={{ opacity: 0, x: -50 }}
@@ -591,7 +516,7 @@ export default function ArticlePage() {
                                         </div>}
                                 </motion.div>
 
-                                {/* Enhanced Author Section */}
+                                {/* Author Section */}
                                 <motion.div variants={itemVariants} className="flex items-center space-x-4">
                                     <motion.div
                                         whileHover={{ scale: 1.1, rotate: 5 }}
@@ -622,7 +547,7 @@ export default function ArticlePage() {
                                     <Separator className="my-6 bg-gradient-to-r from-transparent via-white/30 to-transparent" />
                                 </motion.div>
 
-                                {/* Enhanced Content with Scroll Animations */}
+                                {/* Content with Scroll Animations */}
                                 <motion.div
                                     variants={itemVariants}
                                     className="prose prose-lg max-w-none dark:prose-invert prose-headings:text-white prose-p:text-gray-200 prose-strong:text-white prose-code:text-indigo-200 prose-code:bg-indigo-900/30 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-pre:bg-gray-900/50 prose-pre:border prose-pre:border-white/10"
