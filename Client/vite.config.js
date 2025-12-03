@@ -62,7 +62,7 @@ export default defineConfig({
   build: {
     sourcemap: true,
     commonjsOptions: {
-      include: ['html2canvas']
+      include: /node_modules/
     }
   }
 })
