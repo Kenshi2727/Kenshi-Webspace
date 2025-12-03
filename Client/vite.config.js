@@ -30,26 +30,6 @@ export default defineConfig({
       globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
       // Increase precache limit to 5 MB so large JS/CSS files like main bundle can be cached by the service worker
       maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MB 
-
-      buildPlugins: {
-        rollup: [
-          {
-            name: 'externalize-html2canvas-html2pdf',
-            resolveId(source) {
-              // make the SW build treat these IDs as external (not resolved/bundled)
-              if (
-                source === 'html2canvas' ||
-                source === 'html2pdf-pro.js' ||
-                source.includes('html2pdf') ||
-                source.includes('html2canvas')
-              ) {
-                return { id: source, external: true };
-              }
-              return null;
-            }
-          }
-        ]
-      }
     },
 
     devOptions: {
@@ -64,13 +44,11 @@ export default defineConfig({
   }), sentryVitePlugin({
     org: "kenshi-g1",
     project: "javascript-react"
-  }),
-  ],
+  })],
 
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'), // ✅ Enables @/components/ui/... imports
-      'html2canvas': 'html2canvas/dist/html2canvas.esm.js',
     },
   },
 
