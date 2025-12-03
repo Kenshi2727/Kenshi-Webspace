@@ -63,6 +63,7 @@ export default defineConfig({
     sourcemap: true,
     commonjsOptions: {
       include: ['html2canvas'],
+      transformMixedEsModules: true
     }
   }
 })
