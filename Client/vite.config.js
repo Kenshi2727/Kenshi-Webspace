@@ -62,7 +62,7 @@ export default defineConfig({
   build: {
     sourcemap: true,
     commonjsOptions: {
-      include: [/html2pdf-pro\.js/, /html2canvas/, /jspdf/, /node_modules/]
+      include: ['html2pdf-pro.js', 'html2canvas', 'jspdf', '/node_modules/']
     }
   }
 })
