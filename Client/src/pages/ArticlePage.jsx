@@ -18,7 +18,7 @@ import {
     Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter
 } from "@/components/ui/dialog";
 import { useAuth } from '@clerk/clerk-react';
-import html2pdf from 'html2pdf-pro.js';
+// import html2pdf from 'html2pdf-pro.js';
 
 
 const related = [
@@ -224,6 +224,16 @@ export default function ArticlePage() {
                 html2canvas: { scale: 3 },
                 jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
             };
+
+            // Ensure this runs only in the browser
+            if (typeof window === 'undefined') {
+                throw new Error('Download is only supported in the browser.');
+            }
+
+            // dynamic import — prevents module from being included in SW / SSR builds
+            const html2pdfModule = await import('html2pdf-pro.js');
+            // html2pdf-pro might export as default or named; handle both
+            const html2pdf = html2pdfModule.default ?? html2pdfModule;
 
             // Create watermark div
             const watermark = document.createElement('div');
