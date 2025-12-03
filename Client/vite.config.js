@@ -49,9 +49,9 @@ export default defineConfig({
     project: "javascript-react"
   })],
 
-  optimizeDeps: {
-    include: ['html2pdf-pro.js', 'html2canvas', 'jspdf']
-  },
+  // optimizeDeps: {
+  //   include: ['html2pdf-pro.js', 'html2canvas', 'jspdf']
+  // },
 
   resolve: {
     alias: {
