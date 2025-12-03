@@ -53,12 +53,6 @@ export default defineConfig({
     include: ['html2pdf-pro.js', 'html2canvas', 'jspdf']
   },
 
-  build: {
-    commonjsOptions: {
-      include: [/html2pdf-pro\.js/, /html2canvas/, /jspdf/, /node_modules/]
-    }
-  },
-
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'), // ✅ Enables @/components/ui/... imports
@@ -66,6 +60,9 @@ export default defineConfig({
   },
 
   build: {
-    sourcemap: true
+    sourcemap: true,
+    commonjsOptions: {
+      include: [/html2pdf-pro\.js/, /html2canvas/, /jspdf/, /node_modules/]
+    }
   }
 })
