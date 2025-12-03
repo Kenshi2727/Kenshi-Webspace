@@ -18,7 +18,6 @@ import {
     Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter
 } from "@/components/ui/dialog";
 import { useAuth } from '@clerk/clerk-react';
-import html2pdf from 'html2pdf-pro.js';
 
 const related = [
     { id: 2, title: 'Coming soon...', readTime: '0 min', category: 'Crying Kitty' },
@@ -37,7 +36,6 @@ export default function ArticlePage() {
     const [open, setOpen] = useState(false);
     const [deleting, setDeleting] = useState(false);
     const [downloading, setDownloading] = useState(false);
-    const printRef = useRef(null);
 
     // Fixed scroll hook
     const { scrollYProgress, scrollY } = useScroll();
@@ -205,56 +203,13 @@ export default function ArticlePage() {
     const handleDownload = async () => {
         try {
             setDownloading(true);
-
-            const originalElement = document.getElementById('print-area');
-            let element = originalElement.cloneNode(true);
-            // const originalBg = element.style.background;
-
-            //removing unecessary components from clone
-            const child = element.querySelector('#no-print-area');
-            element.removeChild(child);
-
-            // Force the gradient on the captured element
-            element.style.background = "linear-gradient(to top, #b224ef 0%, #7579ff 100%)";
-            let opt = {
-                margin: 0,
-                filename: `${article.title}.pdf`,
-                image: { type: 'jpeg', quality: 1 },
-                html2canvas: { scale: 3 },
-                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-            };
-
-            // Create watermark div
-            const watermark = document.createElement('div');
-            watermark.innerText = "Kenshi Webspace";
-            Object.assign(watermark.style, {
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%) rotate(-45deg)',
-                opacity: '0.1',
-                fontSize: '5rem',
-                fontWeight: '700',
-                color: '#000',
-                pointerEvents: 'none',
-                userSelect: 'none',
-                whiteSpace: 'nowrap',
-                zIndex: '9999'
-            });
-
-            // parent is relative to position watermark absolutely
-            element.style.position = 'relative';
-            element.appendChild(watermark);
-
-
-            // New Promise-based usage:
-            html2pdf().from(element).set(opt).save().finally(() => {
-                // element.style.background = originalBg; // reverting to original background
-                setDownloading(false); // Reset flag when download is finished or canceled
-            });;
+            window.print();
         } catch (error) {
             console.log("Error downloading blog:", error);
             toast.error("Some error occured!")
+        }
+        finally {
+            setDownloading(false);
         }
     };
 
@@ -266,6 +221,7 @@ export default function ArticlePage() {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5, duration: 0.6 }}
+                id="non-printable"
                 className="fixed top-20 right-4 sm:right-6 z-50 bg-white/10 backdrop-blur-lg border border-white/20 rounded-full px-3 py-1 sm:px-4 sm:py-2 text-xs sm:text-sm text-white shadow-lg"
             >
                 <div className="flex items-center gap-2">
@@ -290,6 +246,7 @@ export default function ArticlePage() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 1, duration: 0.5 }}
                 className="fixed right-6 top-1/2 -translate-y-1/2 z-40 p-1 flex flex-col gap-3"
+                id="non-printable"
             >
                 {/* Circular progress ring around like button */}
                 <div className="relative">
@@ -437,7 +394,7 @@ export default function ArticlePage() {
                                 </motion.div>
 
                                 {/* Title and Edit Button */}
-                                <motion.div id="no-print-area" variants={itemVariants} className="flex items-start justify-between gap-6">
+                                <motion.div variants={itemVariants} id="non-printable" className="flex items-start justify-between gap-6">
                                     <motion.h1
                                         className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-white drop-shadow-lg leading-tight"
                                         initial={{ opacity: 0, x: -50 }}
@@ -557,7 +514,7 @@ export default function ArticlePage() {
                                 </motion.div>
 
                                 {/* Enhanced Share Section */}
-                                <motion.div variants={itemVariants} className="space-y-6">
+                                <motion.div id="non-printable" variants={itemVariants} className="space-y-6">
                                     <motion.h3
                                         className="text-xl font-semibold text-white text-center"
                                         initial={{ opacity: 0 }}
@@ -603,6 +560,7 @@ export default function ArticlePage() {
                         <motion.div
                             variants={itemVariants}
                             className="max-w-5xl mx-auto mt-16"
+                            id="non-printable"
                         >
                             <motion.h2
                                 className="text-3xl font-bold text-white mb-8 text-center"
@@ -657,6 +615,7 @@ export default function ArticlePage() {
                         <motion.div
                             variants={itemVariants}
                             className="max-w-5xl mx-auto mt-16"
+                            id="non-printable"
                         >
                             <Card className="bg-white/5 border border-white/10 backdrop-blur-lg rounded-3xl overflow-hidden">
                                 <CardContent className="p-8">

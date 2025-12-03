@@ -139,6 +139,35 @@
   scrollbar-width: none;
 }
 
+/*definition for downloading pdf*/
+@media print{
+  #non-printable{
+    display: none;
+  }
+
+  #print-area{
+    display: block;
+  }
+
+  /*for removing date and time at time of printing*/
+  body{
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+  }
+}
+
+ /* Make sure browsers try to render background colors/images */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+/*for removing date and time at time of printing*/
+@page{
+  size: auto;
+  margin: 0mm;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

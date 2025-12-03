@@ -79,6 +79,7 @@ export default function Footer() {
             variants={footerVariants}
             className="relative bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white overflow-hidden"
             aria-label="Site footer"
+            id="non-printable"
         >
             {/* Enhanced background effects */}
             <div className="pointer-events-none absolute inset-0 -z-10">
