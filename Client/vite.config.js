@@ -50,7 +50,7 @@ export default defineConfig({
   {
     name: 'externalize-html2canvas',
     resolveId(source) {
-      if (source === 'html2canvas') return { id: source, external: true };
+      if (source === 'html2canvas' || source === 'html2pdf-pro.js' || source.includes('html2pdf')) return { id: source, external: true };
       return null;
     }
   }
