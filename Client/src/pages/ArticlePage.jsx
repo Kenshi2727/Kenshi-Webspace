@@ -20,7 +20,6 @@ import {
 import { useAuth } from '@clerk/clerk-react';
 import html2pdf from 'html2pdf-pro.js';
 
-
 const related = [
     { id: 2, title: 'Coming soon...', readTime: '0 min', category: 'Crying Kitty' },
     { id: 4, title: 'Coming soon...', readTime: '0 min', category: 'Crying Kitty' },
