@@ -53,11 +53,11 @@ export default defineConfig({
     include: ['html2pdf-pro.js', 'html2canvas', 'jspdf']
   },
 
-  // build: {
-  //   commonjsOptions: {
-  //     include: [/html2pdf-pro\.js/, /html2canvas/, /jspdf/, /node_modules/]
-  //   }
-  // },
+  build: {
+    commonjsOptions: {
+      include: [/html2pdf-pro\.js/, /html2canvas/, /jspdf/, /node_modules/]
+    }
+  },
 
   resolve: {
     alias: {
