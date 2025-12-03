@@ -18,6 +18,8 @@ import {
     Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter
 } from "@/components/ui/dialog";
 import { useAuth } from '@clerk/clerk-react';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import ArticlePDFDocument from '../components/ArticlePDFDocument';
 
 const related = [
     { id: 2, title: 'Coming soon...', readTime: '0 min', category: 'Crying Kitty' },
@@ -318,6 +320,23 @@ export default function ArticlePage() {
                 >
                     <DownloadIcon size={20} />
                 </motion.button>
+
+                <PDFDownloadLink
+                    document={<ArticlePDFDocument article={article} />}
+                    fileName={`${(article.title || 'article').replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pdf`}
+                >
+                    {({ loading, error }) => (
+                        <motion.button
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.95 }}
+                            disabled={loading}
+                            className="p-3 rounded-full bg-white/10 text-gray-300 hover:bg-white/20 backdrop-blur-lg border border-white/20 transition-all duration-300 disabled:opacity-50"
+                            title={loading ? 'Preparing PDF...' : error ? 'Error' : 'Download PDF'}
+                        >
+                            <DownloadIcon size={20} />
+                        </motion.button>
+                    )}
+                </PDFDownloadLink>
             </motion.div>
 
             <div className="min-h-screen bg-gradient-to-br from-purple-950 to-purple-800 relative overflow-hidden">

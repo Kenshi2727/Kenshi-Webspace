@@ -63,7 +63,7 @@ This will display as:
 ---
 
 ## Auto generate table of contents-
-Simply write 'Contents'(case-sensitive) as any haeding and automatically your article structure will be generated.
+Simply write 'Contents'(case-sensitive) as any heading and automatically your article structure will be generated.
 
 Example-
 ```
