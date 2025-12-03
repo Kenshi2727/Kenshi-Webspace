@@ -44,7 +44,17 @@ export default defineConfig({
   }), sentryVitePlugin({
     org: "kenshi-g1",
     project: "javascript-react"
-  })],
+  }),
+
+  //externalize html2canvas to avoid issues with Vite's optimization
+  {
+    name: 'externalize-html2canvas',
+    resolveId(source) {
+      if (source === 'html2canvas') return { id: source, external: true };
+      return null;
+    }
+  }
+  ],
 
   optimizeDeps: {
     include: ["html2canvas"]
