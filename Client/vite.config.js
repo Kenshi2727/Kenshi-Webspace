@@ -49,6 +49,16 @@ export default defineConfig({
     project: "javascript-react"
   })],
 
+  optimizeDeps: {
+    include: ['html2pdf-pro.js', 'html2canvas', 'jspdf']
+  },
+
+  // build: {
+  //   commonjsOptions: {
+  //     include: [/html2pdf-pro\.js/, /html2canvas/, /jspdf/, /node_modules/]
+  //   }
+  // },
+
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'), // ✅ Enables @/components/ui/... imports
