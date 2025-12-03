@@ -56,9 +56,9 @@ export default defineConfig({
   }
   ],
 
-  optimizeDeps: {
-    include: ["html2canvas"]
-  },
+  // optimizeDeps: {
+  //   include: ["html2canvas"]
+  // },
 
   resolve: {
     alias: {
