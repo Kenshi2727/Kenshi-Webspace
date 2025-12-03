@@ -38,9 +38,6 @@ export default defineConfig({
       suppressWarnings: true,
       type: 'module',
     },
-    optimizeDeps: {
-      include: ["html2canvas"]
-    },
   }), sentryVitePlugin({
     org: "kenshi-g1",
     project: "javascript-react"
@@ -50,7 +47,7 @@ export default defineConfig({
   })],
 
   optimizeDeps: {
-    include: ['html2pdf-pro.js', 'html2canvas', 'jspdf']
+    include: ["html2canvas"]
   },
 
   resolve: {
