@@ -70,6 +70,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'), // ✅ Enables @/components/ui/... imports
+      'html2canvas': 'html2canvas/dist/html2canvas.esm.js',
     },
   },
 
