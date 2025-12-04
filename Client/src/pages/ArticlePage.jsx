@@ -320,8 +320,10 @@ export default function ArticlePage() {
                         <motion.button
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.95 }}
+                            disabled={loading}
                             // onClick={handleDownload}
-                            className="cursor-pointer p-3 rounded-full bg-white/10 text-gray-300 hover:bg-white/20 backdrop-blur-lg border border-white/20 transition-all duration-300"
+                            className="cursor-pointer p-3 rounded-full bg-white/10 text-gray-300 hover:bg-white/20 backdrop-blur-lg border border-white/20 transition-all duration-300 disabled:opacity-50"
+                            title={loading ? 'Preparing PDF...' : error ? 'Error' : 'Download PDF'}
                         >
                             <DownloadIcon size={20} />
                         </motion.button>
