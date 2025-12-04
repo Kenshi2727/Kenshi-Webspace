@@ -286,7 +286,7 @@ export default function ArticlePage() {
                         whileHover={{ scale: 1.1, rotate: 5 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={handleLike}
-                        className={`relative p-3 rounded-full backdrop-blur-lg border border-white/20 transition-all duration-300 ${isLiked ? 'bg-red-500/80 text-white' : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                        className={`cursor-pointer relative p-3 rounded-full backdrop-blur-lg border border-white/20 transition-all duration-300 ${isLiked ? 'bg-red-500/80 text-white' : 'bg-white/10 text-gray-300 hover:bg-white/20'
                             }`}
                     >
                         <Heart size={20} className={isLiked ? 'fill-current' : ''} />
@@ -297,7 +297,7 @@ export default function ArticlePage() {
                     whileHover={{ scale: 1.1, rotate: -5 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={handleBookmark}
-                    className={`p-3 rounded-full backdrop-blur-lg border border-white/20 transition-all duration-300 ${isBookmarked ? 'bg-yellow-500/80 text-white' : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                    className={`cursor-pointer p-3 rounded-full backdrop-blur-lg border border-white/20 transition-all duration-300 ${isBookmarked ? 'bg-yellow-500/80 text-white' : 'bg-white/10 text-gray-300 hover:bg-white/20'
                         }`}
                 >
                     <Bookmark size={20} className={isBookmarked ? 'fill-current' : ''} />
@@ -307,7 +307,7 @@ export default function ArticlePage() {
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={handleShare}
-                    className="p-3 rounded-full bg-white/10 text-gray-300 hover:bg-white/20 backdrop-blur-lg border border-white/20 transition-all duration-300"
+                    className="cursor-pointer p-3 rounded-full bg-white/10 text-gray-300 hover:bg-white/20 backdrop-blur-lg border border-white/20 transition-all duration-300"
                 >
                     <Share2 size={20} />
                 </motion.button>
@@ -320,8 +320,8 @@ export default function ArticlePage() {
                         <motion.button
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.95 }}
-                            onClick={handleDownload}
-                            className="p-3 rounded-full bg-white/10 text-gray-300 hover:bg-white/20 backdrop-blur-lg border border-white/20 transition-all duration-300"
+                            // onClick={handleDownload}
+                            className="cursor-pointer p-3 rounded-full bg-white/10 text-gray-300 hover:bg-white/20 backdrop-blur-lg border border-white/20 transition-all duration-300"
                         >
                             <DownloadIcon size={20} />
                         </motion.button>
