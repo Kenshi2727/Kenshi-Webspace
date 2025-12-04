@@ -312,14 +312,14 @@ export default function ArticlePage() {
                     <Share2 size={20} />
                 </motion.button>
 
-                <motion.button
+                {/* <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={handleDownload}
                     className="p-3 rounded-full bg-white/10 text-gray-300 hover:bg-white/20 backdrop-blur-lg border border-white/20 transition-all duration-300"
                 >
                     <DownloadIcon size={20} />
-                </motion.button>
+                </motion.button> */}
 
                 <PDFDownloadLink
                     document={<ArticlePDFDocument article={article} />}

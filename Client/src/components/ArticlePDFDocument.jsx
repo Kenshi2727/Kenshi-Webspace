@@ -1,965 +1,348 @@
+// ArticlePDFDocument.jsx
 import React from 'react';
-import { Document, Page, Text, View, StyleSheet, Image, Link } from '@react-pdf/renderer';
+import {
+    Page,
+    Text,
+    View,
+    Document,
+    Image,
+    StyleSheet,
+    Font,
+    Link,
+} from '@react-pdf/renderer';
 import { unified } from 'unified';
-import remarkParse from 'remark-parse';
+import parse from 'remark-parse';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import remarkBreaks from 'remark-breaks';
-import rehypeRaw from 'rehype-raw';
-import rehypeKatex from 'rehype-katex'
-import rehypeHighlight from 'rehype-highlight';
-import rehypeStringify from 'rehype-stringify'
-import emoji from 'remark-emoji';
-import rehypeSlug from 'rehype-slug';
-import remarkSmartypants from "remark-smartypants";
-import remarkDirective from "remark-directive";
-import remarkToc from 'remark-toc'
-import { visit } from 'unist-util-visit';
+import remarkDirective from 'remark-directive';
+import remarkToc from 'remark-toc';
 
-// Professional PDF styles
+// Register basic fonts (you can register custom fonts here if you want)
+Font.register({ family: 'Helvetica' });
+
 const styles = StyleSheet.create({
     page: {
-        backgroundColor: '#ffffff',
+        backgroundColor: '#0f1724',
+        paddingTop: 32,
+        paddingBottom: 32,
+        paddingHorizontal: 40,
         fontFamily: 'Helvetica',
-        paddingBottom: 70
+        color: '#E6EEF8',
+        fontSize: 11,
+        lineHeight: 1.4,
     },
-    watermark: {
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%) rotate(-45deg)',
-        fontSize: 80,
-        color: '#fafafa',
-        opacity: 0.08,
-        fontWeight: 'bold',
-        letterSpacing: 8
-    },
-    header: {
+    headerRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingHorizontal: 50,
-        paddingVertical: 25,
-        backgroundColor: '#0f172a',
-        borderBottomWidth: 4,
-        borderBottomColor: '#6366f1'
+        marginBottom: 8,
     },
-    logoSection: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 12
-    },
-    logo: {
-        width: 45,
-        height: 45,
-        borderRadius: 8
-    },
-    logoText: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: '#ffffff',
-        letterSpacing: 0.5
-    },
-    logoTagline: {
+    badge: {
+        borderWidth: 1,
+        borderColor: '#7c3aed',
+        padding: 6,
+        borderRadius: 6,
+        color: '#C7D2FE',
         fontSize: 9,
-        color: '#94a3b8',
-        marginTop: 3,
-        letterSpacing: 0.3
     },
-    headerRight: {
-        alignItems: 'flex-end'
+    meta: {
+        fontSize: 9,
+        color: '#9CA3AF',
     },
-    headerDate: {
-        fontSize: 10,
-        color: '#cbd5e1',
-        letterSpacing: 0.2
-    },
-    contentWrapper: {
-        paddingHorizontal: 50,
-        paddingTop: 35
-    },
-    categoryBadge: {
-        alignSelf: 'flex-start',
-        backgroundColor: '#eef2ff',
-        color: '#4f46e5',
-        paddingVertical: 6,
-        paddingHorizontal: 14,
-        borderRadius: 8,
-        fontSize: 10,
-        fontWeight: 'bold',
-        marginBottom: 18,
-        letterSpacing: 0.5,
-        textTransform: 'uppercase'
+    titleRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+        marginTop: 6,
+        marginBottom: 10,
     },
     title: {
-        fontSize: 36,
-        fontWeight: 'bold',
-        color: '#0f172a',
-        marginBottom: 18,
-        lineHeight: 1.3,
-        letterSpacing: -0.5
+        fontSize: 28,
+        fontWeight: 800,
+        color: '#FFFFFF',
+        lineHeight: 1.05,
+        flex: 1,
+        marginRight: 12,
     },
-    metadataBar: {
-        flexDirection: 'row',
-        gap: 20,
-        paddingVertical: 12,
-        borderTopWidth: 2,
-        borderBottomWidth: 2,
-        borderColor: '#e2e8f0',
-        marginBottom: 25
-    },
-    metadataItem: {
+    authorRow: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 6,
-        fontSize: 10,
-        color: '#64748b'
+        marginBottom: 10,
     },
-    authorSection: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 15,
-        paddingVertical: 18,
-        paddingHorizontal: 20,
-        backgroundColor: '#f8fafc',
-        borderRadius: 12,
-        marginBottom: 30,
-        borderLeftWidth: 4,
-        borderLeftColor: '#6366f1'
-    },
-    authorAvatar: {
+    avatar: {
         width: 40,
         height: 40,
         borderRadius: 20,
-        backgroundColor: '#6366f1',
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    authorInitials: {
-        color: '#ffffff',
-        fontSize: 14,
-        fontWeight: 'bold'
-    },
-    authorInfo: {
-        flexDirection: 'column',
-        gap: 3
     },
     authorName: {
-        fontSize: 12,
-        color: '#0f172a',
-        fontWeight: 'bold'
+        fontSize: 11,
+        fontWeight: 600,
+        color: '#FFFFFF',
     },
     authorTagline: {
-        fontSize: 10,
-        color: '#64748b',
-        fontStyle: 'italic'
-    },
-    content: {
-        fontSize: 11,
-        lineHeight: 1.8,
-        color: '#334155'
-    },
-    paragraph: {
-        marginBottom: 12,
-        lineHeight: 1.8,
-        fontSize: 11,
-        color: '#334155'
-    },
-    h1: {
-        fontSize: 26,
-        fontWeight: 'bold',
-        color: '#0f172a',
-        marginTop: 20,
-        marginBottom: 12,
-        paddingBottom: 8,
-        borderBottomWidth: 2,
-        borderBottomColor: '#e2e8f0',
-        letterSpacing: -0.3
-    },
-    h2: {
-        fontSize: 22,
-        fontWeight: 'bold',
-        color: '#1e293b',
-        marginTop: 18,
-        marginBottom: 10,
-        letterSpacing: -0.2
-    },
-    h3: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#334155',
-        marginTop: 16,
-        marginBottom: 8,
-        letterSpacing: -0.1
-    },
-    h4: {
-        fontSize: 15,
-        fontWeight: 'bold',
-        color: '#475569',
-        marginTop: 14,
-        marginBottom: 7
-    },
-    h5: {
-        fontSize: 13,
-        fontWeight: 'bold',
-        color: '#475569',
-        marginTop: 12,
-        marginBottom: 6
-    },
-    h6: {
-        fontSize: 12,
-        fontWeight: 'bold',
-        color: '#64748b',
-        marginTop: 10,
-        marginBottom: 5
-    },
-    codeBlock: {
-        backgroundColor: '#1e293b',
-        padding: 12,
-        borderRadius: 6,
-        borderLeftWidth: 3,
-        borderLeftColor: '#6366f1',
-        marginVertical: 12,
-        fontFamily: 'Courier'
-    },
-    code: {
         fontSize: 9,
-        color: '#e2e8f0',
-        lineHeight: 1.6
+        color: '#9CA3AF',
     },
-    inlineCode: {
-        backgroundColor: '#f1f5f9',
-        color: '#6366f1',
-        paddingHorizontal: 4,
-        paddingVertical: 1,
-        borderRadius: 3,
-        fontSize: 10,
-        fontFamily: 'Courier',
-        fontWeight: 'bold'
-    },
-    listContainer: {
-        marginVertical: 8,
-        marginLeft: 5
-    },
-    listItem: {
-        flexDirection: 'row',
-        marginBottom: 6,
-        paddingLeft: 10
-    },
-    listBullet: {
-        width: 20,
-        color: '#6366f1',
-        fontSize: 11,
-        fontWeight: 'bold',
-        marginRight: 5
-    },
-    listText: {
-        flex: 1,
-        fontSize: 11,
-        color: '#334155',
-        lineHeight: 1.7
-    },
-    taskListItem: {
-        flexDirection: 'row',
-        marginBottom: 6,
-        paddingLeft: 10,
-        alignItems: 'flex-start'
-    },
-    taskCheckbox: {
-        width: 12,
-        height: 12,
-        borderWidth: 2,
-        borderColor: '#6366f1',
-        borderRadius: 3,
-        marginRight: 8,
-        marginTop: 2
-    },
-    taskCheckboxChecked: {
-        backgroundColor: '#6366f1',
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    taskCheckmark: {
-        color: '#ffffff',
-        fontSize: 7,
-        fontWeight: 'bold'
-    },
-    bold: {
-        fontWeight: 'bold',
-        color: '#0f172a'
-    },
-    italic: {
-        fontStyle: 'italic'
-    },
-    strikethrough: {
-        textDecoration: 'line-through',
-        color: '#64748b'
-    },
-    blockquote: {
-        borderLeftWidth: 4,
-        borderLeftColor: '#6366f1',
-        backgroundColor: '#f8fafc',
-        paddingLeft: 15,
-        paddingRight: 12,
-        paddingVertical: 10,
-        marginVertical: 12,
-        fontStyle: 'italic',
-        color: '#475569',
-        borderRadius: 4,
-        fontSize: 11,
-        lineHeight: 1.7
-    },
-    link: {
-        color: '#6366f1',
-        textDecoration: 'underline'
-    },
-    image: {
-        marginVertical: 12,
-        alignSelf: 'center',
-        maxWidth: '90%',
-        maxHeight: 300,
-        objectFit: 'contain'
-    },
-    imageCaption: {
-        fontSize: 9,
-        color: '#64748b',
-        textAlign: 'center',
-        marginTop: 5,
-        fontStyle: 'italic'
-    },
-    table: {
-        marginVertical: 12,
-        borderWidth: 1,
-        borderColor: '#e2e8f0',
-        borderRadius: 6
-    },
-    tableRow: {
-        flexDirection: 'row',
-        borderBottomWidth: 1,
-        borderBottomColor: '#e2e8f0'
-    },
-    tableHeaderRow: {
-        backgroundColor: '#f8fafc'
-    },
-    tableCell: {
-        flex: 1,
-        padding: 6,
-        fontSize: 9,
-        color: '#334155',
-        borderRightWidth: 1,
-        borderRightColor: '#e2e8f0'
-    },
-    tableHeaderCell: {
-        fontWeight: 'bold',
-        color: '#0f172a',
-        fontSize: 10
-    },
-    hr: {
+    separator: {
         height: 1,
-        backgroundColor: '#e2e8f0',
-        marginVertical: 20
+        backgroundColor: '#ffffff20',
+        marginVertical: 8,
     },
-    mathInline: {
-        backgroundColor: '#fef3c7',
-        color: '#92400e',
-        paddingHorizontal: 4,
-        paddingVertical: 1,
-        borderRadius: 3,
-        fontSize: 10,
-        fontFamily: 'Courier'
-    },
-    mathBlock: {
-        backgroundColor: '#fef3c7',
-        padding: 12,
-        borderRadius: 6,
-        marginVertical: 12,
-        fontFamily: 'Courier',
-        fontSize: 10,
-        color: '#92400e',
-        textAlign: 'center',
-        lineHeight: 1.6
-    },
-    footnoteRef: {
-        fontSize: 8,
-        color: '#6366f1',
-        verticalAlign: 'super'
-    },
-    footnoteSection: {
-        marginTop: 30,
-        paddingTop: 15,
-        borderTopWidth: 1,
-        borderTopColor: '#e2e8f0'
-    },
-    footnoteItem: {
-        flexDirection: 'row',
-        marginBottom: 8,
-        fontSize: 9
-    },
-    footnoteLabel: {
-        width: 25,
-        color: '#6366f1',
-        fontWeight: 'bold'
-    },
-    footnoteText: {
-        flex: 1,
-        color: '#64748b',
-        lineHeight: 1.6
-    },
-    footer: {
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingHorizontal: 50,
-        paddingVertical: 15,
-        backgroundColor: '#f8fafc',
-        borderTopWidth: 2,
-        borderTopColor: '#e2e8f0'
-    },
-    footerLeft: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 8
-    },
-    footerLogo: {
-        width: 20,
-        height: 20,
-        backgroundColor: '#6366f1',
-        borderRadius: 3
-    },
-    footerText: {
-        fontSize: 9,
-        color: '#64748b'
-    },
-    footerBrand: {
-        fontSize: 9,
-        color: '#6366f1',
-        fontWeight: 'bold'
-    },
-    pageNumber: {
-        fontSize: 9,
-        color: '#64748b',
-        fontWeight: 'bold'
-    }
+
+    /* Markdown styles */
+    md_h1: { fontSize: 22, fontWeight: 800, marginTop: 6, marginBottom: 6, color: '#FFFFFF' },
+    md_h2: { fontSize: 18, fontWeight: 700, marginTop: 6, marginBottom: 6, color: '#FFFFFF' },
+    md_h3: { fontSize: 14, fontWeight: 700, marginTop: 6, marginBottom: 4, color: '#FFFFFF' },
+    md_p: { fontSize: 11, marginBottom: 6, color: '#E6EEF8' },
+    md_strong: { fontWeight: 700, color: '#FFFFFF' },
+    md_em: { fontStyle: 'italic', color: '#D1D5DB' },
+    md_blockquote: { marginVertical: 6, paddingLeft: 8, borderLeftWidth: 3, borderLeftColor: '#7c3aed', color: '#CBD5E1', fontStyle: 'italic' },
+    md_code_block: { fontFamily: 'Courier', fontSize: 9, padding: 6, backgroundColor: '#0b1220', borderRadius: 6, marginVertical: 6 },
+    md_inline_code: { fontFamily: 'Courier', fontSize: 10, backgroundColor: '#ffffff0d', paddingHorizontal: 3, paddingVertical: 1 },
+    md_ul: { marginVertical: 4, paddingLeft: 12 },
+    md_li: { marginBottom: 2 },
+    md_img: { marginVertical: 8, alignSelf: 'center' },
+    md_table: { marginVertical: 6, borderWidth: 1, borderColor: '#ffffff14', borderRadius: 4, overflow: 'hidden' },
+    md_table_row: { flexDirection: 'row' },
+    md_table_cell: { flex: 1, padding: 6, borderRightWidth: 1, borderRightColor: '#ffffff08' },
+    link: { color: '#93C5FD', textDecoration: 'underline' },
 });
 
-// Emoji map
-const emojiMap = {
-    ':smile:': '😄',
-    ':heart:': '❤️',
-    ':rocket:': '🚀',
-    ':fire:': '🔥',
-    ':tada:': '🎉',
-    ':star:': '⭐',
-    ':thumbsup:': '👍',
-    ':thumbsdown:': '👎',
-    ':clap:': '👏',
-    ':eyes:': '👀',
-    ':thinking:': '🤔',
-    ':100:': '💯'
-};
+/* Helper to format date */
+function formatDate(iso) {
+    try {
+        const d = new Date(iso);
+        return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    } catch (e) {
+        return iso;
+    }
+}
 
-// Parse markdown using unified with proper plugins
-const parseMarkdownWithUnified = (markdown) => {
-    if (!markdown) return [];
+/* Markdown -> react-pdf renderer (v2) that handles raw HTML <img> tags and resolves relative URLs */
+function MarkdownToPDF_v2(props) {
+    const content = props && props.content ? String(props.content) : '';
 
-    // Parse markdown into AST using unified
-    const tree = unified()
-        .use(remarkParse)
-        .use(remarkGfm)  // GitHub Flavored Markdown (tables, task lists, strikethrough, etc.)
-        .use(remarkMath) // Math support
-        .use(remarkBreaks) // Line breaks
-        .use(emoji) // Emoji support
-        .use(remarkSmartypants) // Smart punctuation
-        .use(remarkDirective) // Directives support
-        .use(remarkToc, { heading: 'Contents', maxDepth: 3 }) // Table of Contents
-        .use(rehypeSlug)
-        .use(rehypeHighlight) // Syntax highlighting
-        .use(rehypeKatex) // Math rendering
-        .use(rehypeStringify) // Stringify to HTML (not used here but needed for rehype plugins)
-        .use(rehypeRaw)
-        .parse(markdown);
+    // Build a remark processor and run plugins so we get a transformed mdast
+    const processor = unified()
+        .use(parse)
+        .use(remarkGfm)
+        .use(remarkBreaks)
+        .use(remarkMath)
+        .use(remarkDirective)
+        .use(remarkToc, { heading: 'Contents', maxDepth: 3 });
 
-    const elements = [];
-    const footnotes = [];
+    let tree = processor.parse(content);
+    try {
+        tree = processor.runSync(tree);
+    } catch (err) {
+        console.error('Error running remark plugins:', err);
+    }
 
-    // Function to process text with inline formatting and emojis
-    const processInlineText = (text) => {
-        if (!text) return '';
+    // Resolve src: support data:, absolute and root-relative (/path)
+    function resolveSrc(src) {
+        if (!src) return '';
+        if (src.startsWith('data:') || /^https?:\/\//i.test(src)) return src;
+        if (src.startsWith('/')) {
+            if (typeof window !== 'undefined' && window.location) {
+                return window.location.origin + src;
+            }
+            return src;
+        }
+        if (typeof window !== 'undefined' && window.location) {
+            const base = window.location.href.replace(/\/[^/]*$/, '/');
+            try {
+                return new URL(src, base).toString();
+            } catch (e) {
+                return src;
+            }
+        }
+        return src;
+    }
 
-        // Convert emojis
-        let processed = text;
-        Object.entries(emojiMap).forEach(([code, emoji]) => {
-            processed = processed.replace(new RegExp(code.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), emoji);
+    function renderChildren(children) {
+        if (!children) return null;
+        return children.map((child, i) => {
+            try {
+                return renderNode(child, String(i));
+            } catch (e) {
+                console.error('Error rendering markdown node in PDF:', e, child);
+                return <Text key={'err-' + i} style={styles.md_p}>[Error rendering content]</Text>;
+            }
         });
+    }
 
-        return processed;
-    };
+    function renderNode(node, key) {
+        const type = node.type;
+        switch (type) {
+            case 'root':
+                return <View key={key}>{renderChildren(node.children)}</View>;
 
-    // Function to extract text from inline nodes
-    const extractInlineText = (node) => {
-        if (node.type === 'text') {
-            return processInlineText(node.value);
-        }
-        if (node.type === 'inlineCode') {
-            return { type: 'code', value: node.value };
-        }
-        if (node.type === 'strong') {
-            return { type: 'bold', children: node.children.map(extractInlineText) };
-        }
-        if (node.type === 'emphasis') {
-            return { type: 'italic', children: node.children.map(extractInlineText) };
-        }
-        if (node.type === 'delete') {
-            return { type: 'strikethrough', children: node.children.map(extractInlineText) };
-        }
-        if (node.type === 'link') {
-            return { type: 'link', url: node.url, children: node.children.map(extractInlineText) };
-        }
-        if (node.type === 'inlineMath') {
-            return { type: 'math', value: node.value };
-        }
-        if (node.type === 'footnoteReference') {
-            return { type: 'footnoteRef', identifier: node.identifier };
-        }
-        if (node.children) {
-            return node.children.map(extractInlineText);
-        }
-        return '';
-    };
-
-    // Recursive function to process AST nodes
-    const processNode = (node) => {
-        switch (node.type) {
-            case 'heading':
-                return {
-                    type: `h${node.depth}`,
-                    children: node.children.map(extractInlineText).flat()
-                };
+            case 'heading': {
+                const depth = node.depth || 1;
+                const childContent = node.children ? node.children.map((c, i) => renderNode(c, key + '-' + i)) : null;
+                if (depth === 1) return <Text key={key} style={styles.md_h1}>{childContent}</Text>;
+                if (depth === 2) return <Text key={key} style={styles.md_h2}>{childContent}</Text>;
+                return <Text key={key} style={styles.md_h3}>{childContent}</Text>;
+            }
 
             case 'paragraph':
-                return {
-                    type: 'paragraph',
-                    children: node.children.map(extractInlineText).flat()
-                };
+                return <Text key={key} style={styles.md_p}>{node.children ? node.children.map((c, i) => renderNode(c, key + '-' + i)) : null}</Text>;
 
-            case 'code':
-                return {
-                    type: 'code',
-                    value: node.value,
-                    lang: node.lang
-                };
+            case 'text':
+                return <Text key={key} style={{ fontFamily: 'Helvetica' }}>{String(node.value || '')}</Text>;
+
+            case 'emphasis':
+                return <Text key={key} style={styles.md_em}>{node.children ? node.children.map((c, i) => renderNode(c, key + '-' + i)) : null}</Text>;
+
+            case 'strong':
+                return <Text key={key} style={styles.md_strong}>{node.children ? node.children.map((c, i) => renderNode(c, key + '-' + i)) : null}</Text>;
 
             case 'blockquote':
-                return {
-                    type: 'blockquote',
-                    children: node.children.map(child =>
-                        child.children ? child.children.map(extractInlineText).flat() : []
-                    ).flat()
-                };
+                return <Text key={key} style={styles.md_blockquote}>{node.children ? node.children.map((c, i) => renderNode(c, key + '-' + i)) : null}</Text>;
 
-            case 'list':
-                const items = node.children.map(item => {
-                    const firstChild = item.children[0];
-                    if (firstChild && firstChild.children) {
-                        // Check for task list
-                        const checked = item.checked;
-                        if (checked !== null && checked !== undefined) {
-                            return {
-                                checked: checked,
-                                children: firstChild.children.map(extractInlineText).flat()
-                            };
-                        }
-                        return firstChild.children.map(extractInlineText).flat();
-                    }
-                    return [];
-                });
+            case 'code':
+                return <Text key={key} style={styles.md_code_block}>{String(node.value || '')}</Text>;
 
-                const isTaskList = items.some(item => item && typeof item === 'object' && 'checked' in item);
+            case 'inlineCode':
+                return <Text key={key} style={styles.md_inline_code}>{String(node.value || '')}</Text>;
 
-                return {
-                    type: isTaskList ? 'taskList' : (node.ordered ? 'orderedList' : 'unorderedList'),
-                    items: items
-                };
+            case 'list': {
+                const isOrdered = node.ordered;
+                return (
+                    <View key={key} style={styles.md_ul}>
+                        {node.children && node.children.map((li, i) => (
+                            <View key={key + '-li-' + i} style={{ flexDirection: 'row' }}>
+                                <Text style={{ width: 14 }}>{isOrdered ? `${i + 1}.` : '\u2022'}</Text>
+                                <View style={{ flex: 1 }}>{renderNode(li, key + '-li-' + i)}</View>
+                            </View>
+                        ))}
+                    </View>
+                );
+            }
 
-            case 'table':
-                return {
-                    type: 'table',
-                    headers: node.children[0].children.map(cell =>
-                        cell.children.map(extractInlineText).flat()
-                    ),
-                    rows: node.children.slice(1).map(row =>
-                        row.children.map(cell =>
-                            cell.children.map(extractInlineText).flat()
-                        )
-                    )
-                };
+            case 'listItem':
+                return <View key={key} style={styles.md_li}>{node.children ? node.children.map((c, i) => renderNode(c, key + '-' + i)) : null}</View>;
 
             case 'thematicBreak':
-                return {
-                    type: 'hr'
-                };
+                return <View key={key} style={styles.separator} />;
 
             case 'image':
-                return {
-                    type: 'image',
-                    url: node.url,
-                    alt: node.alt,
-                    title: node.title
-                };
-
-            case 'math':
-                return {
-                    type: 'mathBlock',
-                    value: node.value
-                };
-
-            case 'footnoteDefinition':
-                footnotes.push({
-                    identifier: node.identifier,
-                    children: node.children.map(child =>
-                        child.children ? child.children.map(extractInlineText).flat() : []
-                    ).flat()
-                });
-                return null;
+                try {
+                    const src = resolveSrc(node.url || '');
+                    if (!src) return null;
+                    // fixed numeric width/height to avoid NaN layout issues
+                    return (
+                        <View key={key} style={styles.md_img}>
+                            <Image src={src} style={{ width: 515, height: 260 }} />
+                            {node.alt ? <Text style={{ textAlign: 'center', fontSize: 9, color: '#E6EEF8', marginTop: 4 }}>Fig. {node.alt}</Text> : null}
+                        </View>
+                    );
+                } catch (e) {
+                    console.error('Error rendering image node:', e, node);
+                    return <Text key={key} style={styles.md_p}>[Image failed to load]</Text>;
+                }
 
             case 'html':
-                // Skip HTML for now or convert to text
-                return null;
-
-            default:
-                return null;
-        }
-    };
-
-    // Process all nodes in the tree
-    if (tree.children) {
-        tree.children.forEach(node => {
-            const processed = processNode(node);
-            if (processed) {
-                elements.push(processed);
-            }
-        });
-    }
-
-    // Add footnotes at the end if any
-    if (footnotes.length > 0) {
-        elements.push({ type: 'footnotes', items: footnotes });
-    }
-
-    return elements;
-};
-
-// Render inline content with formatting
-const renderInlineContent = (children) => {
-    if (!children || !Array.isArray(children)) {
-        return <Text>{String(children || '')}</Text>;
-    }
-
-    return children.map((child, index) => {
-        if (typeof child === 'string') {
-            return <Text key={index}>{child}</Text>;
-        }
-
-        if (typeof child === 'object') {
-            switch (child.type) {
-                case 'bold':
-                    return (
-                        <Text key={index} style={styles.bold}>
-                            {renderInlineContent(child.children)}
-                        </Text>
-                    );
-                case 'italic':
-                    return (
-                        <Text key={index} style={styles.italic}>
-                            {renderInlineContent(child.children)}
-                        </Text>
-                    );
-                case 'strikethrough':
-                    return (
-                        <Text key={index} style={styles.strikethrough}>
-                            {renderInlineContent(child.children)}
-                        </Text>
-                    );
-                case 'code':
-                    return (
-                        <Text key={index} style={styles.inlineCode}>
-                            {child.value}
-                        </Text>
-                    );
-                case 'link':
-                    return (
-                        <Link key={index} src={child.url} style={styles.link}>
-                            {renderInlineContent(child.children)}
-                        </Link>
-                    );
-                case 'math':
-                    return (
-                        <Text key={index} style={styles.mathInline}>
-                            {child.value}
-                        </Text>
-                    );
-                case 'footnoteRef':
-                    return (
-                        <Text key={index} style={styles.footnoteRef}>
-                            [{child.identifier}]
-                        </Text>
-                    );
-                default:
-                    if (Array.isArray(child)) {
-                        return renderInlineContent(child);
+                // raw HTML nodes — try to extract <img> tags and fallback to stripped text
+                try {
+                    const html = String(node.value || '');
+                    const imgMatch = html.match(/<img\s+[^>]*src=(?:\"|')([^\"']+)(?:\"|')[^>]*alt=(?:\"|')?([^\"'>]*)?(?:\"|')?[^>]*>/i)
+                        || html.match(/<img\s+[^>]*src=(?:\"|')([^\"']+)(?:\"|')[^>]*>/i);
+                    if (imgMatch) {
+                        const srcRaw = imgMatch[1];
+                        const altRaw = imgMatch[2] || '';
+                        const src = resolveSrc(srcRaw);
+                        return (
+                            <View key={key} style={styles.md_img}>
+                                <Image src={src} style={{ width: 515, height: 260 }} />
+                                {altRaw ? <Text style={{ textAlign: 'center', fontSize: 9, color: '#E6EEF8', marginTop: 4 }}>Fig. {altRaw}</Text> : null}
+                            </View>
+                        );
                     }
-                    return <Text key={index}>{String(child)}</Text>;
-            }
-        }
+                    const stripped = html.replace(/<[^>]+>/g, '');
+                    if (stripped.trim()) return <Text key={key} style={styles.md_p}>{stripped}</Text>;
+                    return null;
+                } catch (e) {
+                    console.error('Error handling raw HTML node:', e, node);
+                    return null;
+                }
 
-        return <Text key={index}>{String(child)}</Text>;
-    });
-};
-
-// Render parsed content
-const renderContent = (elements) => {
-    return elements.map((element, index) => {
-        switch (element.type) {
-            case 'h1':
-            case 'h2':
-            case 'h3':
-            case 'h4':
-            case 'h5':
-            case 'h6':
+            case 'link':
                 return (
-                    <Text key={index} style={styles[element.type]}>
-                        {renderInlineContent(element.children)}
-                    </Text>
-                );
-
-            case 'paragraph':
-                return (
-                    <Text key={index} style={styles.paragraph}>
-                        {renderInlineContent(element.children)}
-                    </Text>
-                );
-
-            case 'code':
-                return (
-                    <View key={index} style={styles.codeBlock}>
-                        <Text style={styles.code}>{element.value}</Text>
-                    </View>
-                );
-
-            case 'blockquote':
-                return (
-                    <View key={index} style={styles.blockquote}>
-                        <Text>{renderInlineContent(element.children)}</Text>
-                    </View>
-                );
-
-            case 'image':
-                return (
-                    <View key={index}>
-                        <Image src={element.url} style={styles.image} />
-                        {element.alt && (
-                            <Text style={styles.imageCaption}>
-                                Fig. {element.alt}
-                            </Text>
-                        )}
-                    </View>
-                );
-
-            case 'unorderedList':
-                return (
-                    <View key={index} style={styles.listContainer}>
-                        {element.items.map((item, i) => (
-                            <View key={i} style={styles.listItem}>
-                                <Text style={styles.listBullet}>•</Text>
-                                <Text style={styles.listText}>
-                                    {renderInlineContent(item)}
-                                </Text>
-                            </View>
-                        ))}
-                    </View>
-                );
-
-            case 'orderedList':
-                return (
-                    <View key={index} style={styles.listContainer}>
-                        {element.items.map((item, i) => (
-                            <View key={i} style={styles.listItem}>
-                                <Text style={styles.listBullet}>{i + 1}.</Text>
-                                <Text style={styles.listText}>
-                                    {renderInlineContent(item)}
-                                </Text>
-                            </View>
-                        ))}
-                    </View>
-                );
-
-            case 'taskList':
-                return (
-                    <View key={index} style={styles.listContainer}>
-                        {element.items.map((item, i) => (
-                            <View key={i} style={styles.taskListItem}>
-                                <View style={[
-                                    styles.taskCheckbox,
-                                    item.checked && styles.taskCheckboxChecked
-                                ]}>
-                                    {item.checked && (
-                                        <Text style={styles.taskCheckmark}>✓</Text>
-                                    )}
-                                </View>
-                                <Text style={styles.listText}>
-                                    {renderInlineContent(item.children)}
-                                </Text>
-                            </View>
-                        ))}
-                    </View>
+                    <Link key={key} src={node.url} style={styles.link}>
+                        {node.children ? node.children.map((c, i) => renderNode(c, key + '-' + i)) : node.url}
+                    </Link>
                 );
 
             case 'table':
                 return (
-                    <View key={index} style={styles.table}>
-                        <View style={[styles.tableRow, styles.tableHeaderRow]}>
-                            {element.headers.map((header, i) => (
-                                <Text key={i} style={[styles.tableCell, styles.tableHeaderCell]}>
-                                    {renderInlineContent(header)}
-                                </Text>
-                            ))}
-                        </View>
-                        {element.rows.map((row, i) => (
-                            <View key={i} style={styles.tableRow}>
-                                {row.map((cell, j) => (
-                                    <Text key={j} style={styles.tableCell}>
-                                        {renderInlineContent(cell)}
-                                    </Text>
+                    <View key={key} style={styles.md_table}>
+                        {node.children && node.children.map((row, i) => (
+                            <View key={key + '-r-' + i} style={styles.md_table_row}>
+                                {row.children && row.children.map((cell, j) => (
+                                    <View key={key + '-r-' + i + '-c-' + j} style={styles.md_table_cell}>
+                                        {cell.children ? cell.children.map((c, k) => renderNode(c, key + '-r-' + i + '-c-' + j + '-' + k)) : null}
+                                    </View>
                                 ))}
                             </View>
                         ))}
                     </View>
                 );
 
-            case 'hr':
-                return <View key={index} style={styles.hr} />;
-
-            case 'mathBlock':
-                return (
-                    <View key={index} style={styles.mathBlock}>
-                        <Text>{element.value}</Text>
-                    </View>
-                );
-
-            case 'footnotes':
-                return (
-                    <View key={index} style={styles.footnoteSection}>
-                        {element.items.map((footnote, i) => (
-                            <View key={i} style={styles.footnoteItem}>
-                                <Text style={styles.footnoteLabel}>[{footnote.identifier}]</Text>
-                                <Text style={styles.footnoteText}>
-                                    {renderInlineContent(footnote.children)}
-                                </Text>
-                            </View>
-                        ))}
-                    </View>
-                );
-
             default:
+                if (node.children) return <View key={key}>{node.children.map((c, i) => renderNode(c, key + '-' + i))}</View>;
                 return null;
         }
-    });
-};
+    }
 
-// Main PDF Document Component
-const ArticlePDFDocument = ({ article }) => {
-    const parsedContent = parseMarkdownWithUnified(article.content);
-    const currentDate = new Date().toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
+    return <View>{renderNode(tree, 'md-root')}</View>;
+}
 
+/* ArticlePDFDocument component using the v2 markdown renderer */
+export default function ArticlePDFDocument({ article = {} }) {
     return (
         <Document>
-            <Page size="A4" style={styles.page}>
-                <Text style={styles.watermark} fixed>KENSHI</Text>
-
-                <View style={styles.header} fixed>
-                    <View style={styles.logoSection}>
-                        <Image src="/logo-min.png" style={styles.logo} />
-                        <View>
-                            <Text style={styles.logoText}>Kenshi Webspace</Text>
-                            <Text style={styles.logoTagline}>Professional Blog & Developer Insights</Text>
-                        </View>
-                    </View>
-                    <View style={styles.headerRight}>
-                        <Text style={styles.headerDate}>{currentDate}</Text>
+            <Page size="A4" style={styles.page} wrap>
+                <View style={styles.headerRow} fixed>
+                    <Text style={styles.badge}>{article.category || 'Uncategorized'}</Text>
+                    <View>
+                        <Text style={styles.meta}>{formatDate(article.updatedAt || new Date().toISOString())} • {article.readTime || 0} min read</Text>
                     </View>
                 </View>
 
-                <View style={styles.contentWrapper}>
-                    <Text style={styles.categoryBadge}>
-                        {article.category || 'Article'}
-                    </Text>
+                <View style={styles.titleRow}>
+                    <Text style={styles.title}>{article.title || 'Untitled Article'}</Text>
+                </View>
 
-                    <Text style={styles.title}>
-                        {article.title || 'Untitled Article'}
-                    </Text>
+                <View style={styles.authorRow}>
+                    {article.authorImage ? (
+                        <Image src={article.authorImage} style={styles.avatar} />
+                    ) : (
+                        <View style={[styles.avatar, { backgroundColor: '#7c3aed', justifyContent: 'center', alignItems: 'center' }]}>
+                            <Text style={{ color: '#fff', fontWeight: 700 }}>{(article.author?.firstName?.[0] || '') + (article.author?.lastName?.[0] || '')}</Text>
+                        </View>
+                    )}
 
-                    <View style={styles.metadataBar}>
-                        <View style={styles.metadataItem}>
-                            <Text>📅 {article.updatedAt
-                                ? new Date(article.updatedAt).toLocaleDateString('en-US', {
-                                    month: 'short',
-                                    day: 'numeric',
-                                    year: 'numeric'
-                                })
-                                : currentDate}</Text>
-                        </View>
-                        <View style={styles.metadataItem}>
-                            <Text>⏱ {article.readTime || 0} min read</Text>
-                        </View>
-                    </View>
-
-                    <View style={styles.authorSection}>
-                        <View style={styles.authorAvatar}>
-                            <Text style={styles.authorInitials}>
-                                {article.author?.firstName?.charAt(0) || ''}{article.author?.lastName?.charAt(0) || ''}
-                            </Text>
-                        </View>
-                        <View style={styles.authorInfo}>
-                            <Text style={styles.authorName}>
-                                {article.author?.firstName || ''} {article.author?.lastName || ''}
-                            </Text>
-                            {article.author?.tagline && (
-                                <Text style={styles.authorTagline}>
-                                    {article.author.tagline}
-                                </Text>
-                            )}
-                        </View>
-                    </View>
-
-                    <View style={styles.content}>
-                        {renderContent(parsedContent)}
+                    <View>
+                        <Text style={styles.authorName}>{article.author?.firstName || 'Author'} {article.author?.lastName || ''}</Text>
+                        <Text style={styles.authorTagline}>{article.author?.tagline || 'Some wild author !'}</Text>
                     </View>
                 </View>
 
-                <View style={styles.footer} fixed>
-                    <View style={styles.footerLeft}>
-                        <View style={styles.footerLogo} />
-                        <Text style={styles.footerBrand}>Kenshi Webspace</Text>
-                        <Text style={styles.footerText}>• kenshiblog.in</Text>
-                    </View>
-                    <Text
-                        style={styles.pageNumber}
-                        render={({ pageNumber, totalPages }) => (
-                            `Page ${pageNumber} of ${totalPages}`
-                        )}
-                    />
+                <View style={styles.separator} />
+
+                {/* Use the v2 markdown renderer */}
+                <View>
+                    <MarkdownToPDF_v2 content={article.content || ''} />
+                </View>
+
+                <View style={styles.separator} />
+
+                <View>
+                    <Text style={{ textAlign: 'center', fontSize: 13, fontWeight: 700, color: '#FFFFFF' }}>Share this article</Text>
                 </View>
             </Page>
         </Document>
     );
-};
-
-export default ArticlePDFDocument;
+}
