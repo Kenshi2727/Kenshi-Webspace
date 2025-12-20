@@ -2,7 +2,8 @@
 - separate page for likes,bookmarks section for user profile
 - adding boomark count,download counts,etc in articles page
 - %age reading progress bar for blogs
-- recat pdf for downloading blogs instaed of html2pdf/canvas
+- react pdf for downloading blogs instaed of html2pdf/canvas
+- **react-quill editor integration**
 
 ## Web Analytics
 - Sentry Service Integration
