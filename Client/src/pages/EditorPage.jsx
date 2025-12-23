@@ -635,6 +635,17 @@ export default function EditorPage({ type }) {
                                             </TabsTrigger>
                                         </motion.div>
 
+
+                                        {/*todo: add quill editor in future */}
+
+                                        {/* <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="flex-1 sm:flex-initial">
+                                            <TabsTrigger value="write" className="flex items-center gap-2 w-full text-xs md:text-sm">
+                                                <Pencil size={14} className="md:w-4 md:h-4" />
+                                                <span className='hidden sm:block'>Mark Editor</span>
+                                                <span className='block [@media(max-width:315px)]:hidden sm:hidden'>M. Edit</span>
+                                            </TabsTrigger>
+                                        </motion.div> */}
+
                                         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="flex-1 sm:flex-initial">
                                             <TabsTrigger value="preview" className="flex items-center gap-2 w-full text-xs md:text-sm">
                                                 <Eye size={14} className="md:w-4 md:h-4" />
