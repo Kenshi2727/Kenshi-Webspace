@@ -31,6 +31,8 @@ import { useUser } from '@clerk/clerk-react';
 import NotFoundPage from './pages/NotFoundPage';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
+import { getToken } from "firebase/messaging";
+import { messaging } from './services/firebase';
 
 function App() {
   const isMaintenanceMode = false;
@@ -43,6 +45,37 @@ function App() {
       toast.success("You are already signed in. Redirecting...");
     }
   }, [params]);
+
+
+  //notficaton permission request for firebase messaging
+  useEffect(() => {
+    try {
+      async function notifReq() {
+        await Notification.requestPermission().then(async (permission) => {
+          if (permission === 'granted') {
+            console.log('Notification permission granted.');
+            toast.success("Thanks for allowing notifications.");
+
+            // generate the FCM token
+            const token = await getToken(messaging, {
+              vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY
+            });
+            console.log("Token generated:", token);
+
+          } else {
+            console.log('Unable to get permission to notify.');
+            toast.error("Notification permission denied.");
+          }
+        });
+      }
+
+      notifReq();
+    } catch (error) {
+      console.error("An error occurred while requesting notification permission:", error);
+    }
+
+  }, [])
+
 
   // useEffect(() => {
   //   // show dialog immediately on first render
