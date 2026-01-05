@@ -8,11 +8,13 @@ import cors from "cors";
 import userRoutes from "./routes/user.route.js";
 import postRoutes from "./routes/post.route.js";
 import mediaRoutes from "./routes/media.route.js";
+import serviceRoutes from "./routes/service.route.js";
 import { clerkMiddleware } from '@clerk/express';
 import bodyParser from 'body-parser';
 import helmet from "helmet";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
+import './services/firebase.js'; // Firebase service initialization
 
 dotenv.config();
 
@@ -26,12 +28,13 @@ app.use(cors(
     {
         origin: process.env.CORS_ORIGIN,
         methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+        // allowedHeaders: ["fcm-service-type"],
         credentials: true,
     }
 ));
 app.use(express.urlencoded({ extended: true }));
 app.use(clerkMiddleware({
-    audience: process.env.CORS_ORIGIN
+    audience: process.env.CORS_ORIGIN,
 }));
 // sending raw buffer to /users/create instead of json as webhook verify expects raw buffer
 app.use("/users", bodyParser.raw({ type: "application/json" }), userRoutes);
@@ -39,6 +42,7 @@ app.use(express.json());
 // rest middlewares for json type
 app.use("/posts", postRoutes);
 app.use("/media", mediaRoutes);
+app.use("/services", serviceRoutes);
 
 
 // app.use(express.static('public'));// do not place above cors, cors will not work

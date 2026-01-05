@@ -2,6 +2,14 @@ import { getAuth } from '@clerk/express';
 
 export const protectRoute = (req, res, next) => {
     try {
+        console.log(req.headers);
+
+        if (req.headers['fcm-service-type'] === 'public') {
+            console.log("hit!");
+
+            return next();// allow public fcm service req
+        }
+
         // console.log("Header containing token:", req.headers);
         const auth = getAuth(req);
         console.log('protectRoute getAuth =>', auth);
@@ -12,7 +20,7 @@ export const protectRoute = (req, res, next) => {
             });
         }
         res.locals.userId = auth.userId;
-        next();
+        return next();
     } catch (error) {
         console.error("Authentication middleware error:", error);
         res.status(500).json({

@@ -1,3 +1,6 @@
+# Server secrets
+server_secrets/
+
 # Logs
 logs
 *.log

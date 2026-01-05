@@ -27,6 +27,7 @@ const pingServer = async () => {
     toast.error("Server is down, please try again later.");
 }
 
+
 // User APIs
 const createUser = (data) => instance.post('/users/create', data);
 
@@ -116,6 +117,14 @@ const deleteMedia = (data, token) => instance.delete('/media', {
     withCredentials: true,
 });
 
+
+// Service APIs
+const sendPublicFcmToken = (data) => instance.post('/services/fcm-token', data, {
+    headers: {
+        'fcm-service-type': 'public', // custom header to identify fcm service type
+    }
+});
+
 export {
     pingServer,
     createUser,
@@ -132,5 +141,6 @@ export {
     updatePostLikes,
     updatePostViews,
     updatePostBookmarks,
-    getUserPosts
+    getUserPosts,
+    sendPublicFcmToken,
 };
