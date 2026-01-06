@@ -43,7 +43,7 @@ export const testNotify = (req, res) => {
 
     // These registration tokens come from the client FCM SDKs.
     const registrationTokens = [
-        'e9stE0co5WZJpcUL-xYlXB:APA91bESkdWlFbkGX__7ArhwjcvYOw3M1WZGW943nDKRteZ6JYZzWu7b0aQt4PUYA6Dw0Hl0Chd9I-tpzMsTx8CRwKf7X2ASi5TciuM9t5K4CcWI3safdGg'
+        ''
     ];
 
     const message = {
