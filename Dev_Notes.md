@@ -1,3 +1,6 @@
+## TO_DO-
+- Prisma major update
+
 ## UI/UX Improvements-
 - separate page for likes,bookmarks section for user profile
 - adding boomark count,download counts,etc in articles page

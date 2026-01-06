@@ -26,6 +26,7 @@ model User {
   updatedAt   DateTime      @updatedAt
   Posts       Post[]
   PostActions PostActions[]
+  fcmToken    FcmToken?
 }
 
 enum Role {
@@ -86,6 +87,20 @@ model MediaMetaData {
   userId       String? // Author/owner ID
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
+}
+
+model FcmToken {
+  userId    String?   @unique
+  token     String    @unique
+  createdAt DateTime  @default(now())
+  type      TokenType @default(PUBLIC)
+  updatedAt DateTime  @updatedAt
+  user      User?     @relation(fields: [userId], references: [id])
+}
+
+enum TokenType {
+  PUBLIC
+  PRIVATE
 }
 
 enum MediaType {
