@@ -43,13 +43,21 @@ export const testNotify = (req, res) => {
 
     // These registration tokens come from the client FCM SDKs.
     const registrationTokens = [
-        ''
+        'e9stE0co5WZJpcUL-xYlXB:APA91bF0B--4AsejHMHW1QIRWmIXfrd8i851qqCFUQJJq8ygQiHVTV5tbd0nrLtXWOpzPfk5NPcGnzVnDTk4RRLH6aOL1LYMbv9AJjY_4yf8CsZjkv1GA5Y'
     ];
 
     const message = {
         notification: {
             title: 'Testing',
             body: 'This is a test notification',
+            image: "https://www.pinkvilla.com/pics/500x500/1879722912_highschool-dxd-f_202401.jpg",
+
+        },
+        android: {
+            notification: {
+                icon: 'stock_ticker_update',
+                color: '#7e55c3'
+            }
         },
         data: { score: '850', time: '2:45' },
         tokens: registrationTokens,

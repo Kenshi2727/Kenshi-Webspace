@@ -54,7 +54,7 @@ function App() {
         await Notification.requestPermission().then(async (permission) => {
           if (permission === 'granted') {
             console.log('Notification permission granted.');
-            toast.success("Thanks for allowing notifications.");
+            // toast.success("Thanks for allowing notifications.");
 
             // generate the FCM token
             const token = await getToken(messaging, {
@@ -64,7 +64,8 @@ function App() {
 
           } else {
             console.log('Unable to get permission to notify.');
-            toast.error("Notification permission denied.");
+            console.log('Status:', permission);
+            toast.error("Notification permission denied. Please enable it in your browser settings if you change your mind.");
           }
         });
       }
