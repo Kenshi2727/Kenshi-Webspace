@@ -33,6 +33,7 @@ import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { getToken } from "firebase/messaging";
 import { messaging } from './services/firebase';
+import { sendPublicFcmToken } from './services/GlobalApi';
 
 function App() {
   const isMaintenanceMode = false;
@@ -62,6 +63,11 @@ function App() {
             });
             console.log("Token generated:", token);
 
+            if (localStorage.getItem("fcmToken") === token) return; //token already stored
+
+            // send the token to the server
+            localStorage.setItem("fcmToken", token);
+            await sendPublicFcmToken({ token });
           } else {
             console.log('Unable to get permission to notify.');
             console.log('Status:', permission);

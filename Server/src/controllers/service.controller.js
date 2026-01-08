@@ -3,7 +3,7 @@ import { messaging } from "../services/firebase.js";
 
 // TODO: IMPLEMENT LOGIC FOR HANDLING TOKEN EXPIRY AND CLEANUP
 
-// FCM(Firbase Cloud Messaging) Service Controllers
+// FCM(Firebase Cloud Messaging) Service Controllers
 
 export const saveFcmToken = async (req, res) => {
     try {
@@ -38,13 +38,26 @@ export const saveFcmToken = async (req, res) => {
     }
 }
 
-export const testNotify = (req, res) => {
+export const renderALLFcmTokens = async () => {
+    try {
+        const tokenObj = await prisma.fcmToken.findMany({
+            select: {
+                token: true
+            }
+        });
+        const tokens = tokenObj.map((t) => t.token);
+        console.log("Rendered tokens:", tokens);
+        return tokens;
+    } catch (error) {
+        console.error("Error fetching FCM tokens:", error);
+    }
+}
+
+export const testNotify = async (req, res) => {
     console.log("Test notif hit!");
 
     // These registration tokens come from the client FCM SDKs.
-    const registrationTokens = [
-        'e9stE0co5WZJpcUL-xYlXB:APA91bF0B--4AsejHMHW1QIRWmIXfrd8i851qqCFUQJJq8ygQiHVTV5tbd0nrLtXWOpzPfk5NPcGnzVnDTk4RRLH6aOL1LYMbv9AJjY_4yf8CsZjkv1GA5Y'
-    ];
+    const registrationTokens = await renderALLFcmTokens();
 
     const message = {
         notification: {
@@ -77,6 +90,7 @@ export const testNotify = (req, res) => {
         });
     return res.status(200).json({ message: "Test notification sent!" });
 }
+
 
 
 
