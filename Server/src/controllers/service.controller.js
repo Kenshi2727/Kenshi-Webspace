@@ -31,10 +31,10 @@ export const saveFcmToken = async (req, res) => {
                 // todo: implement logic for private fcm services
             }
         }
-        res.status(200).json({ message: "FCM token received and stored!" });
+        return res.status(200).json({ message: "FCM token received and stored!" });
     } catch (error) {
         console.error("Error in rendering FCM Token:", error);
-        res.status(500).json({ message: "Internal server error" });
+        return res.status(500).json({ message: "Internal server error" });
     }
 }
 
@@ -51,15 +51,12 @@ export const testNotify = (req, res) => {
             title: 'Testing',
             body: 'This is a test notification',
             image: "https://www.pinkvilla.com/pics/500x500/1879722912_highschool-dxd-f_202401.jpg",
-
         },
-        android: {
-            notification: {
-                icon: 'stock_ticker_update',
-                color: '#7e55c3'
+        webpush: {
+            fcmOptions: {
+                link: "/about",
             }
         },
-        data: { score: '850', time: '2:45' },
         tokens: registrationTokens,
     };
 
@@ -75,9 +72,10 @@ export const testNotify = (req, res) => {
                     }
                 });
                 console.log('List of tokens that caused failures: ' + failedTokens);
+                return res.status(500).json({ message: "Some notifications failed to send", failedTokens });
             }
         });
-    res.status(200).json({ message: "Test notification sent!" });
+    return res.status(200).json({ message: "Test notification sent!" });
 }
 
 
