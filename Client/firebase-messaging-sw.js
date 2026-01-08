@@ -28,5 +28,5 @@ messaging.onBackgroundMessage((payload) => {
         image: payload.notification.image,
     };
 
-    // self.registration.showNotification(notificationTitle, notificationOptions);
+    self.registration.showNotification(notificationTitle, notificationOptions);
 });
