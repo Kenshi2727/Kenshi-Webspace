@@ -14,4 +14,4 @@ router.post('/fcm-token', protectRoute, saveFcmToken);
 /* TESTING ROUTE ! - DISABLED ON PRODUCTION  */
 router.get('/test-notif', protectTestRoute, testNotify);
 
-export default router;
+export default router;  

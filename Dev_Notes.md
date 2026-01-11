@@ -1,5 +1,7 @@
 ## TO_DO-
 - Prisma major update
+- logger system
+- scalable notification system
 
 ## UI/UX Improvements-
 - separate page for likes,bookmarks section for user profile
@@ -39,7 +41,8 @@
               |--> code snippets
               |--> links
 13. Image upload ctrl c+v / normal user expectation --> medium style
-15. blog tagginng and filtering
+15. blog tagginng and filtering (AI assisted)
+              |--> notify user if tagged
 16. Voice reading of blogs
    
 ### Analytics -
