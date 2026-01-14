@@ -4,7 +4,8 @@ This document tracks important internal configuration and development changes th
 
 ---
 
-## [2025-11-20] – Prisma 7 Configuration Change
+## [2025-11-20] – Prisma 7 Configuration Changes
+[Cancelled Release]
 
 ### What Changed
 
