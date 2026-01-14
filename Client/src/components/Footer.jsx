@@ -260,7 +260,7 @@ export default function Footer() {
                                             Sitemap
                                         </Link>
                                         <Link
-                                            to="/maintenance"
+                                            to="/privacy"
                                             className="text-xs text-slate-400 hover:text-indigo-300 transition-colors"
                                         >
                                             Privacy
