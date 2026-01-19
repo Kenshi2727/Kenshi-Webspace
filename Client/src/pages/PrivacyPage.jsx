@@ -1,4 +1,5 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
+import { toast } from "react-hot-toast";
 
 const PRIVACY_POLICY = {
     title: "Privacy Policy",
@@ -104,7 +105,7 @@ const PRIVACY_POLICY = {
             heading: "10. Contact Us",
             content: {
                 organization: "Kenshi Webspace",
-                email: "kenshi-webspace@gmail.com"
+                email: "kenshi.webspace@gmail.com"
             }
         }
     ]
@@ -175,6 +176,7 @@ const CopyButton = ({ textToCopy }) => {
             const el = document.getElementById("copy-status");
             if (el) {
                 el.textContent = "Copied!";
+                toast.success("Email copied to clipboard!");
                 setTimeout(() => (el.textContent = "Copy"), 1500);
             }
         } catch {
@@ -187,7 +189,7 @@ const CopyButton = ({ textToCopy }) => {
         <>
             <button
                 onClick={handleCopy}
-                className="ml-2 px-2 py-1 rounded-md bg-white/10 hover:bg-white/20 text-sm"
+                className="ml-2 py-2 px-4 cursor-pointer rounded-md bg-white/10 hover:bg-white/20 text-sm hover:scale-105 transition-transform"
                 aria-label={`Copy email ${textToCopy}`}
                 id="copy-status"
             >
@@ -203,16 +205,22 @@ const CopyButton = ({ textToCopy }) => {
 };
 
 const Toc = ({ sections }) => {
+    const [selectedId, setSelectedId] = useState(null);
+
     return (
         <nav
             aria-label="Table of contents"
             className="hidden md:block sticky top-24 self-start w-56 shrink-0"
         >
             <div className="bg-white/3 p-4 rounded-xl border border-white/6">
-                <h4 className="text-sm font-semibold text-white/90 mb-3">Contents</h4>
+                <h4 className="text-sm font-semibold text-white mb-3">Contents</h4>
                 <ul className="space-y-2 text-sm">
                     {sections.map((s) => (
-                        <li key={s.id}>
+                        <li
+                            key={s.id}
+                            className={`${selectedId === s.id ? 'bg-white/10' : ''} hover:bg-white/10 rounded-md p-2 hover:scale-105 transition-transform cursor-pointer`}
+                            onClick={() => setSelectedId(s.id)}
+                        >
                             <a
                                 href={`#${s.id}`}
                                 className="text-white/80 hover:text-white transition-colors"
@@ -230,11 +238,11 @@ const Toc = ({ sections }) => {
 const PrivacyPage = () => {
     const { title, lastUpdated, intro, sections } = PRIVACY_POLICY;
 
-    // Create simple memoized tocSections to avoid re-renders
+    // simple memoized tocSections to avoid re-renders
     const tocSections = useMemo(() => sections, [sections]);
 
     return (
-        <main className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900 flex justify-center px-4 py-10">
+        <main className="min-h-screen bg-[url('/privacy.png')] bg-cover flex justify-center px-4 py-10">
             <section className="w-full max-w-6xl">
                 {/* Header */}
                 <header className="text-center mb-8">
@@ -265,7 +273,7 @@ const PrivacyPage = () => {
                                     </h2>
 
                                     {section.note && (
-                                        <p className="text-sm text-red-800 font-bold italic mb-2">{section.note}</p>
+                                        <p className="text-sm text-red-600 font-bold italic mb-2">{section.note}</p>
                                     )}
 
                                     <SectionContent section={section} />
@@ -275,18 +283,15 @@ const PrivacyPage = () => {
 
                         <footer className="mt-8 border-t border-white/6 pt-6">
                             <p className="text-sm text-white/70">
-                                If you have questions about this policy, contact{" "}
-                                <button
-                                    onClick={() =>
-                                        navigator.clipboard.writeText(
-                                            PRIVACY_POLICY.sections.find((s) => s.id === "contact").content
-                                                .email
-                                        )
-                                    }
-                                    className="underline"
-                                >
-                                    {PRIVACY_POLICY.sections.find((s) => s.id === "contact").content.email}
-                                </button>
+                                If you have questions about this policy, contact {" "}
+                                <span>
+                                    <a
+                                        href="mailto:kenshi.webspace.com"
+                                        className="underline font-bold text-white"
+                                    >
+                                        {PRIVACY_POLICY.sections.find((s) => s.id === "contact").content.email}
+                                    </a>
+                                </span>
                                 . We will respond as soon as we can.
                             </p>
                         </footer>

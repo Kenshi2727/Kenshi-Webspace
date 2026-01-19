@@ -27,6 +27,7 @@ import ReviewPage from './pages/ReviewPage';
 import ProfilePage from './pages/ProfilePage';
 import MaintainerPage from './super-admin/MaintainerPage';
 import PrivacyPage from './pages/PrivacyPage';
+import SiteMapPage from './pages/SiteMapPage';
 import toast, { Toaster } from 'react-hot-toast'
 import { useUser } from '@clerk/clerk-react';
 import NotFoundPage from './pages/NotFoundPage';
@@ -111,8 +112,11 @@ function App() {
             {/*Specific Maintenance route */}
             <Route path="/maintenance" element={<MaintenancePage />} />
 
+            {/*Maintenance independent routes*/}
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/sitemap" element={<SiteMapPage />} />
+
             <Route path="/" element={isMaintenanceMode ? <MaintenancePage /> : <HomePage />} />
-            <Route path="/privacy" element={isMaintenanceMode ? <MaintenancePage /> : <PrivacyPage />} />
             <Route path="/articles" element={false ? <MaintenancePage /> : <ArticlesPage />} />
 
             {/* <Route path="/categories" element={isMaintenanceMode ? <MaintenancePage /> : <CategoriesPage />} /> */}

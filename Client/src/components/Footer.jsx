@@ -254,7 +254,7 @@ export default function Footer() {
 
                                     <nav className="flex items-center gap-3 sm:gap-4">
                                         <Link
-                                            to="/maintenance"
+                                            to="/sitemap"
                                             className="text-xs text-slate-400 hover:text-indigo-300 transition-colors"
                                         >
                                             Sitemap
