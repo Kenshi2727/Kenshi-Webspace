@@ -28,6 +28,7 @@ import ProfilePage from './pages/ProfilePage';
 import MaintainerPage from './super-admin/MaintainerPage';
 import PrivacyPage from './pages/PrivacyPage';
 import SiteMapPage from './pages/SiteMapPage';
+import TermsPage from './pages/TermsPage';
 import toast, { Toaster } from 'react-hot-toast'
 import { useUser } from '@clerk/clerk-react';
 import NotFoundPage from './pages/NotFoundPage';
@@ -115,6 +116,7 @@ function App() {
             {/*Maintenance independent routes*/}
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/sitemap" element={<SiteMapPage />} />
+            <Route path="/terms" element={<TermsPage />} />
 
             <Route path="/" element={isMaintenanceMode ? <MaintenancePage /> : <HomePage />} />
             <Route path="/articles" element={false ? <MaintenancePage /> : <ArticlesPage />} />
