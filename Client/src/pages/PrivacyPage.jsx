@@ -16,7 +16,6 @@ const PRIVACY_POLICY = {
                     content: [
                         "Name",
                         "Email address",
-                        "Account details",
                         "Content you submit such as forms, or notes"
                     ]
                 },
@@ -254,7 +253,7 @@ const PrivacyPage = () => {
                     <Toc sections={tocSections} />
 
                     {/* Content Card */}
-                    <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-6 md:p-8 text-white shadow-2xl">
+                    <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-0 sm:p-6 md:p-8 text-white shadow-2xl">
                         <p className="text-white/80 leading-relaxed mb-6">{intro}</p>
 
                         <div className="space-y-8">
