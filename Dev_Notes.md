@@ -2,6 +2,9 @@
 - Prisma major update
 - logger system
 - scalable notification system
+- add smooth scrolling to both terms and privacy policy pages
+- remove rendundant code and animations from above and all of frontend
+- gemini integration for ai features
 
 ## UI/UX Improvements-
 - separate page for likes,bookmarks section for user profile

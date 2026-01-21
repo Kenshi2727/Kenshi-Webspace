@@ -61,11 +61,6 @@ export default function InfoBanner({ title, content, badgeText }) {
                 {/* Gradient Background */}
                 <div className="absolute inset-0 bg-gradient-to-r from-violet-200 to-purple-300" />
 
-                {/* Animated Background Pattern */}
-                <div className="absolute inset-0 opacity-10">
-                    <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-purple-300 to-transparent rounded-full blur-xl animate-pulse" />
-                </div>
-
                 {/* Content */}
                 <div className="relative p-3 sm:p-4">
                     <div className="flex items-center space-x-3 flex-1 min-w-0">
@@ -74,7 +69,7 @@ export default function InfoBanner({ title, content, badgeText }) {
                             <motion.div
                                 variants={pulseVariants}
                                 animate="pulse"
-                                className="absolute -inset-1 rounded-full bg-purple-300/30"
+                                className="absolute -inset-1 rounded-full bg-purple-300"
                             />
                             <div className="relative flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-100 to-purple-200 rounded-lg shadow-sm">
                                 <Globe className="w-4 h-4 text-purple-800" />

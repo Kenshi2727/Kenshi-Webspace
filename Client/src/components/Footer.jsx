@@ -138,7 +138,7 @@ export default function Footer() {
                                             <Button
                                                 size="sm"
                                                 type="submit"
-                                                className="whitespace-nowrap bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 border-0 shadow-lg hover:shadow-xl transition-all duration-300"
+                                                className="whitespace-nowrap bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 border-0 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
                                                 disabled={isSubscribed}
                                             >
                                                 <Mail className="mr-1.5 h-3 w-3 sm:h-4 sm:w-4" />
@@ -264,6 +264,12 @@ export default function Footer() {
                                             className="text-xs text-slate-400 hover:text-indigo-300 transition-colors"
                                         >
                                             Privacy
+                                        </Link>
+                                        <Link
+                                            to="/terms"
+                                            className="text-xs text-slate-400 hover:text-indigo-300 transition-colors"
+                                        >
+                                            Terms
                                         </Link>
                                         <motion.a
                                             href="#top"

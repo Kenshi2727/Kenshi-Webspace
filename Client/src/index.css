@@ -125,6 +125,13 @@
         animation: gradient-x 3s ease infinite;
   }
 
+  @keyframes spinY {
+  to {
+    transform: rotateY(360deg);
+  }
+}
+
+
 /* Hide scrollbar for Webkit (Chrome, Safari) */
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
