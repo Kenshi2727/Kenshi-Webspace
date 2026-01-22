@@ -13,6 +13,7 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { useUser } from '@clerk/clerk-react';
+import AnimatedFloatingSquares from '../components/AnimatedFloatingSquares';
 
 const containerVariants = {
     hidden: { opacity: 0, y: 30 },
@@ -118,6 +119,7 @@ const SiteMapPage = () => {
                 <FloatingOrbs />
                 <AnimatedDots />
                 <MouseGlow />
+                <AnimatedFloatingSquares />
 
                 <div className="relative z-10 max-w-7xl mx-auto px-4 py-20 text-center">
                     <div className='flex flex-col items-center'>
@@ -453,7 +455,7 @@ const SiteMapPage = () => {
                             className="inline-flex items-center px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white/90 text-sm font-medium mb-6"
                         >
                             <div className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
-                            Join 10,000+ writers worldwide
+                            Live ! Writing in progress
                         </motion.div>
 
                         <motion.h2

@@ -5,6 +5,7 @@
 - add smooth scrolling to both terms and privacy policy pages
 - remove rendundant code and animations from above and all of frontend
 - gemini integration for ai features
+- clerk user info optimization and management
 
 ## UI/UX Improvements-
 - separate page for likes,bookmarks section for user profile
@@ -33,7 +34,7 @@
                                   |--> web push npm package
                                   |--> author/topic specific notifications
 3. **Security-->Research Encryption Algorithms**
-4. geoip-lite ---> for logs.csv
+4. geoip-lite and clerk---> for logs.csv
 5. tagging users --> react-mentions
 6. Download blogs as pdf
 7. Wikipedia API integration for content enrichment

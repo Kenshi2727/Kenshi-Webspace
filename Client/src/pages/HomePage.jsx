@@ -468,7 +468,7 @@ const HomePage = () => {
                             className="inline-flex items-center px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white/90 text-sm font-medium mb-6"
                         >
                             <div className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
-                            Join 10,000+ writers worldwide
+                            Live ! Writing in progress
                         </motion.div>
 
                         <motion.h2
