@@ -117,18 +117,18 @@ const SectionContent = ({ section }) => {
             <div className="space-y-6">
                 {section.subsections.map((ss, i) => (
                     <article key={ss.title + i} className="space-y-2">
-                        <h3 className="text-lg font-semibold text-white">{ss.title}</h3>
+                        <h3 className="text-base sm:text-lg font-semibold text-white">{ss.title}</h3>
                         {ss.description && (
-                            <p className="text-white/80">{ss.description}</p>
+                            <p className="text-white/80 text-xs sm:text-base">{ss.description}</p>
                         )}
                         {Array.isArray(ss.content) ? (
-                            <ul className="list-disc list-inside text-white/85 ml-2 space-y-1">
+                            <ul className="list-disc list-inside text-xs sm:text-base text-white/85 ml-2 space-y-1">
                                 {ss.content.map((item, idx) => (
                                     <li key={idx}>{item}</li>
                                 ))}
                             </ul>
                         ) : ss.content ? (
-                            <p className="text-white/85">{ss.content}</p>
+                            <p className="text-white/85 text-xs sm:text-base">{ss.content}</p>
                         ) : null}
                     </article>
                 ))}
@@ -138,7 +138,7 @@ const SectionContent = ({ section }) => {
 
     if (Array.isArray(section.content)) {
         return (
-            <ul className="list-disc list-inside text-white/85 space-y-1">
+            <ul className="list-disc list-inside text-xs sm:text-base text-white/85 space-y-1">
                 {section.content.map((c, i) => (
                     <li key={i}>{c}</li>
                 ))}
@@ -147,13 +147,13 @@ const SectionContent = ({ section }) => {
     }
 
     if (typeof section.content === "string") {
-        return <p className="text-white/85">{section.content}</p>;
+        return <p className="text-white/85 text-xs sm:text-base">{section.content}</p>;
     }
 
     // contact object
     if (typeof section.content === "object") {
         return (
-            <div className="text-white/85 space-y-2">
+            <div className="text-white/85 text-xs sm:text-base space-y-2">
                 <p className="font-medium">{section.content.organization}</p>
                 <p className="flex items-center gap-3">
                     <span className="truncate">{section.content.email}</span>
@@ -253,8 +253,8 @@ const PrivacyPage = () => {
                     <Toc sections={tocSections} />
 
                     {/* Content Card */}
-                    <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-0 sm:p-6 md:p-8 text-white shadow-2xl">
-                        <p className="text-white/80 leading-relaxed mb-6">{intro}</p>
+                    <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-4 sm:p-6 md:p-8 text-white shadow-2xl">
+                        <p className="text-white/80 text-sm sm:text-base text-justify leading-relaxed mb-6">{intro}</p>
 
                         <div className="space-y-8">
                             {sections.map((section) => (
@@ -266,13 +266,13 @@ const PrivacyPage = () => {
                                 >
                                     <h2
                                         id={`${section.id}-heading`}
-                                        className="text-xl font-semibold text-white mb-3"
+                                        className="text-base sm:text-xl font-semibold text-white mb-3"
                                     >
                                         {section.heading}
                                     </h2>
 
                                     {section.note && (
-                                        <p className="text-sm text-red-600 font-bold italic mb-2">{section.note}</p>
+                                        <p className="text-xs sm:text-sm text-red-600 font-bold italic mb-2">{section.note}</p>
                                     )}
 
                                     <SectionContent section={section} />
