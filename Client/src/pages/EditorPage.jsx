@@ -676,7 +676,7 @@ export default function EditorPage({ type }) {
                                     </TabsContent>
 
                                     <TabsContent value="preview">
-                                        <div className="px-1">
+                                        <div className="px-1 break-all">
                                             <MarkdownRenderer content={formData.content || '_Nothing to preview_'} />
                                         </div>
                                     </TabsContent>

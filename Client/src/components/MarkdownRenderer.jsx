@@ -127,10 +127,92 @@ export default function MarkdownRenderer({ content = '' }) {
         pre: ({ node, children, ...props }) => {
             return <CodeBlock children={children} {...props} />
         },
+
+        // custom elemnts
+        danger: ({ children }) => (
+            <div className="bg-red-500/20 text-red-300 p-2 rounded w-fit">
+                ❗{children}
+            </div>
+        ),
+
+        info: ({ children }) => (
+            <div className="bg-yellow-300/50 p-2 rounded w-fit">
+                💡{children}
+            </div>
+        ),
+
+        note: ({ children }) => (
+            <div className="bg-blue-500/20 text-blue-300 p-2 rounded w-fit">
+                📝 {children}
+            </div>
+        ),
+
+        like: ({ children }) => (
+            <div className="bg-pink-500/20 text-pink-300 p-2 rounded w-fit">
+                🩷 {children}
+            </div>
+        ),
+        warn: ({ children }) => (
+            <div className="bg-orange-500/20 text-orange-300 p-2 rounded w-fit">
+                ⚠️ {children}
+            </div>
+        ),
+        success: ({ children }) => (
+            <div className="bg-green-500/20 text-green-300 p-2 rounded w-fit">
+                ✅ {children}
+            </div>
+        ),
+        tip: ({ children }) => (
+            <div className="bg-teal-500/20 text-teal-300 p-2 rounded w-fit">
+                💡 {children}
+            </div>
+        ),
+        todo: ({ children }) => (
+            <ul className="bg-purple-500/20 text-purple-300 p-2 space-y-0 rounded w-fit">
+                <hr />
+                <div className='w-full flex justify-start items-center'>
+                    <strong className='text-xl'>📋 To-Do:</strong>
+                </div>
+                {React.Children.map(children, (child, i) => (
+                    <li key={i} className='list-disc ml-6'>
+                        {child}
+                    </li>
+                ))}
+                <hr />
+            </ul>
+        ),
+
+        quote: ({ children }) => (
+            <div className="flex gap-2 border-l-4 border-indigo-400 pl-4 italic text-2xl font-bold text-indigo-300/80 my-4">
+                <svg
+                    className='size-7'
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 320 320">
+                    <path
+                        d="M82.87 129.48S77.32 98.96 114.31 74c-12.95 0-89.7 30.52-89.7 113.74 0 33.09 27.59 59.73 61.01 58.19 29.85-1.37 54.07-25.6 55.44-55.45 1.54-33.41-25.1-61-58.19-61zm154.26 0S231.58 98.96 268.57 74c-12.95 0-89.7 30.52-89.7 113.74 0 33.09 27.58 59.73 61.01 58.19 29.85-1.37 54.07-25.6 55.44-55.45 1.54-33.41-25.1-61-58.19-61z"
+                        fill="#FFF">
+                    </path>
+                </svg>
+                <span className='mt-4'>{children}</span>
+                <svg
+                    className="size-7"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 320 320"
+                >
+                    <g transform="scale(-1,1) translate(-320,0)">
+                        <path
+                            d="M82.87 129.48S77.32 98.96 114.31 74c-12.95 0-89.7 30.52-89.7 113.74 0 33.09 27.59 59.73 61.01 58.19 29.85-1.37 54.07-25.6 55.44-55.45 1.54-33.41-25.1-61-58.19-61zm154.26 0S231.58 98.96 268.57 74c-12.95 0-89.7 30.52-89.7 113.74 0 33.09 27.58 59.73 61.01 58.19 29.85-1.37 54.07-25.6 55.44-55.45 1.54-33.41-25.1-61-58.19-61z"
+                            fill="#FFF"
+                        />
+                    </g>
+                </svg>
+
+            </div>
+        ),
     };
 
     return (
-        <div ref={mdRef}>
+        <div ref={mdRef} className='text-justify'>
             <ReactMarkdown
                 remarkPlugins={[
                     remarkGfm,
