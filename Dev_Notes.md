@@ -1,5 +1,6 @@
 ## TO_DO-
-- line overflow issue in code blocks
+- global error logging
+- server attacks and security
 - Prisma major update
 - logger system
 - scalable notification system
