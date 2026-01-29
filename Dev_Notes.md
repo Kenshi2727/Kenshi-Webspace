@@ -8,6 +8,8 @@
 - remove rendundant code and animations from above and all of frontend
 - gemini integration for ai features
 - clerk user info optimization and management
+- websocket(supabase) vs SSE(serverless friendly)
+- @contentful/rich-text-from-markdown
 
 ## UI/UX Improvements-
 - separate page for likes,bookmarks section for user profile
