@@ -2,6 +2,7 @@
 - study the vercel client side analytics object
 
 ## TO_DO-
+- CLERK AUTOMATIC WEBHOOK DISABLING HANDLER
 - global error logging
 - server attacks and security
 - Prisma major update
