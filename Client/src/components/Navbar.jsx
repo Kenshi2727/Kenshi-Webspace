@@ -134,7 +134,7 @@ export default function Navbar() {
                                     'px-3 py-2 rounded-md text-sm font-medium transition-colors',
                                     isActive(to)
                                         ? 'bg-indigo-600/65 text-white'
-                                        : 'text-gray-700 dark:text-gray-300 hover:bg-white/20 dark:hover:bg-gray-700/20 hover:text-gray-900 dark:hover:text-white'
+                                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200/80 dark:hover:bg-gray-700/20 hover:text-gray-900 dark:hover:text-white'
                                 )}
                             >
                                 {label}

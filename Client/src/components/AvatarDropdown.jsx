@@ -4,13 +4,16 @@ import { User, LogOut, ChevronDown, FileText, PenTool, Settings, Sparkles, Shiel
 import { Link } from 'react-router-dom';
 import { useAuth, useUser } from "@clerk/clerk-react";
 import { useClerk } from "@clerk/clerk-react";
+import { useSelector } from 'react-redux';
 
-const AvatarDropdown = ({ currentUser }) => {
+const AvatarDropdown = () => {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef(null);
     const { isSignedIn } = useAuth();
     const { user } = useUser();
     const { signOut } = useClerk();
+    const currentUser = useSelector(state => state);
+    console.log("FULL REDUX STATE 👉", currentUser);
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -51,9 +54,9 @@ const AvatarDropdown = ({ currentUser }) => {
         return names[0][0].toUpperCase();
     };
 
-    // Check if user is admin (you can modify this logic based on your admin detection)
-    const isAdmin = !(true || currentUser.role === 'ADMIN' || currentUser.role === 'OWNER');
-    const isMaintainer = !(true || user.role === 'MAINTAINER' || user.role === 'OWNER');
+    // Check if user is admin or maintainer
+    const isAdmin = (currentUser?.role === 'ADMIN' || currentUser?.role === 'OWNER');
+    const isMaintainer = (currentUser.role === 'MAINTAINER' || currentUser?.role === 'OWNER');
 
     const userInitials = getInitials(user.fullName || user.firstName || user.username);
     const userName = user.fullName || user.firstName || user.username || 'User';

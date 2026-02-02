@@ -23,6 +23,8 @@ import {
 import { getFeaturedPosts, getUser } from '../services/GlobalApi';
 import { formatDate } from '../lib/dateFormatter.js';
 import { useAuth } from '@clerk/clerk-react';
+import { useDispatch } from "react-redux";
+import { setUser } from '../features/users/userSlice.js';
 
 const containerVariants = {
     hidden: { opacity: 0, y: 30 },
@@ -71,6 +73,7 @@ const HomePage = () => {
     const [errorFlag, setErrorFlag] = useState(false);
     const [role, setRole] = useState(null);
     const { userId, getToken } = useAuth();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         async function fetchFeaturedPosts() {
@@ -117,6 +120,7 @@ const HomePage = () => {
                 const response = await getUser(userId, token);
                 if (response.data) {
                     setRole(response.data.role);
+                    dispatch(setUser(response.data));
                 }
             } catch (error) {
                 console.error("Error fetching user info:", error);

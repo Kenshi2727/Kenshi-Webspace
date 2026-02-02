@@ -1,3 +1,6 @@
+## Client Side Vercel Analytics
+- study the vercel client side analytics object
+
 ## TO_DO-
 - global error logging
 - server attacks and security
@@ -52,6 +55,7 @@
 15. blog tagginng and filtering (AI assisted)
               |--> notify user if tagged
 16. Voice reading of blogs
+17. polling feature for author to ask his users.
    
 ### Analytics -
 * Posthemus
