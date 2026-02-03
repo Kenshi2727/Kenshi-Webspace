@@ -1,5 +1,9 @@
-## Client Side Vercel Analytics
+## V.IMP- Protect ROLE-BASED privileged routes both client and server side
+- Example- admin routes, edit-article routes,editor routes,etc
+
+## Client Side Vercel Analytics & AI Pipeline-
 - study the vercel client side analytics object
+- integrate client side langchain for client side ai features
 
 ## TO_DO-
 - CLERK AUTOMATIC WEBHOOK DISABLING HANDLER
@@ -14,6 +18,7 @@
 - clerk user info optimization and management
 - websocket(supabase) vs SSE(serverless friendly)
 - @contentful/rich-text-from-markdown
+- sitemap.xml 
 
 ## UI/UX Improvements-
 - separate page for likes,bookmarks section for user profile

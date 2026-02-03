@@ -25,6 +25,7 @@ import { formatDate } from '../lib/dateFormatter.js';
 import { useAuth } from '@clerk/clerk-react';
 import { useDispatch } from "react-redux";
 import { setUser } from '../features/users/userSlice.js';
+import { useSelector } from 'react-redux';
 
 const containerVariants = {
     hidden: { opacity: 0, y: 30 },
@@ -71,7 +72,7 @@ const HomePage = () => {
         thumbnail: '/placeholder.png',
     })));
     const [errorFlag, setErrorFlag] = useState(false);
-    const [role, setRole] = useState(null);
+    const [role, setRole] = useState(useSelector(state => state.role));
     const { userId, getToken } = useAuth();
     const dispatch = useDispatch();
 
@@ -119,8 +120,8 @@ const HomePage = () => {
                 const token = await getToken();
                 const response = await getUser(userId, token);
                 if (response.data) {
-                    setRole(response.data.role);
-                    dispatch(setUser(response.data));
+                    dispatch(setUser(response.data.user));
+                    // console.log("User data received:", response.data);
                 }
             } catch (error) {
                 console.error("Error fetching user info:", error);

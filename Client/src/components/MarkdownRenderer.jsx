@@ -62,7 +62,7 @@ export default function MarkdownRenderer({ content = '' }) {
                     onClick={() => handleCopy(children)}
                     aria-label={copied ? 'Copied' : 'Copy code'}
                     type="button"
-                    className="absolute right-2 top-2 inline-flex items-center gap-2 rounded px-2 py-1 bg-white/6 hover:bg-white/10 text-sm text-white transition"
+                    className="absolute right-2 top-2 inline-flex items-center gap-2 rounded px-2 py-1 bg-white/6 hover:bg-white/10 text-sm text-white transition cursor-pointer"
                 >
                     {copied ? <Check size={16} /> : <CopyIcon size={16} />}
                 </button>
