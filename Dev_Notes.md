@@ -1,9 +1,24 @@
 ## V.IMP- Protect ROLE-BASED privileged routes both client and server side
 - Example- admin routes, edit-article routes,editor routes,etc
 
+## Privileged route access plan-
+middleware that will check -> user id
+                           -> user email
+                           -> user role in DB
+                           -> file logger will log this entry in a separate file for security audits
+- refer to
+[video-for logging](https://youtu.be/m2q1Cevl_qw?si=3MesM5A2LkhcmoHS)
+
+
+
+
 ## Client Side Vercel Analytics & AI Pipeline-
 - study the vercel client side analytics object
 - integrate client side langchain for client side ai features
+## Web Analytics
+- Sentry Service Integration
+- Server Log Monitoring setup left
+- Aiven Analytics
 
 ## TO_DO-
 - CLERK AUTOMATIC WEBHOOK DISABLING HANDLER
@@ -12,11 +27,11 @@
 - Prisma major update
 - logger system
 - scalable notification system
-- add smooth scrolling to both terms and privacy policy pages
-- remove rendundant code and animations from above and all of frontend
-- gemini integration for ai features
 - clerk user info optimization and management
 - websocket(supabase) vs SSE(serverless friendly)
+- study Framer docs
+- remove rendundant code and animations from above and all of frontend
+- gemini integration for ai features
 - @contentful/rich-text-from-markdown
 - sitemap.xml 
 
@@ -27,18 +42,12 @@
 - react pdf for downloading blogs instaed of html2pdf/canvas
 - **react-quill editor integration**
 
-## Web Analytics
-- Sentry Service Integration
-- Server Log Monitoring setup left
-- Aiven Analytics
 
 ## AFTER FRONTEND DEV UI FULL FEATURE COMPLETION-
-* Global state management for current user 
-* Documenting the current codebase before starting further development
 * Exploring custom Webhooks and custom React hooks for better client and server management.
 * Database rollback and optimization mechanism.
 
-## IMMEDIATE AI INTEGRATION PLANS-
+## AI INTEGRATION PLANS-
 * Vercel AI SDK [Auto Complete Example](https://ai-sdk.dev/docs/ai-sdk-ui/completion)
 
 ### Planned Features-  
