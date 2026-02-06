@@ -65,7 +65,7 @@ const getUserPosts = (userId, token) => instance.get(`/posts/user-posts/${userId
         Authorization: `Bearer ${token}`,
     },
     withCredentials: true,
-})
+});
 
 const getFeaturedPosts = () => instance.get('/posts?isFeatured=true');
 
@@ -144,3 +144,7 @@ export {
     getUserPosts,
     sendPublicFcmToken,
 };
+
+
+
+

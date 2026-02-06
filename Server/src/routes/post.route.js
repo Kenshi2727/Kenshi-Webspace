@@ -12,6 +12,7 @@ import {
     updatePostBookmarks
 } from "../controllers/post.controller.js";
 import { protectRoute } from "../middlewares/auth.middleware.js";
+import { privilegedRouteAccess } from "../middlewares/rbac.middleware.js";
 
 const router = express.Router();
 

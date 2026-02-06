@@ -3,16 +3,15 @@
 
 ## Privileged route access plan-
 middleware that will check -> user id
-                           -> user email
-                           -> user role in DB
-                           -> file logger will log this entry in a separate file for security audits
+                           -> user email   <br>
+                           -> user role in DB  <br>
+                           -> file logger will log this entry in a separate file for security audits  <br>
 - refer to
 [video-for logging](https://youtu.be/m2q1Cevl_qw?si=3MesM5A2LkhcmoHS)
 
 
-
-
-## Client Side Vercel Analytics & AI Pipeline-
+## Client Side & Vercel Analytics & AI Pipeline-
+- Loading pages while client side isSignedIn is being checked 
 - study the vercel client side analytics object
 - integrate client side langchain for client side ai features
 ## Web Analytics
@@ -58,6 +57,7 @@ middleware that will check -> user id
 3. **Security-->Research Encryption Algorithms**
 4. geoip-lite and clerk---> for logs.csv
 5. tagging users --> react-mentions
+5. Draggable features using react-draggable/html draggable property
 6. Download blogs as pdf
 7. Wikipedia API integration for content enrichment
 8. Grammarly API integration for content enhancement
