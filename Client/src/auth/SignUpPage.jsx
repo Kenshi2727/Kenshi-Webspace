@@ -154,6 +154,13 @@ export default function CustomSignUpPage() {
         signIn.authenticateWithRedirect({
             strategy: provider, // e.g., "oauth_google"
             redirectUrl: "/auth/sso-callback", // callback page(for production)
+
+            /*
+            DEVELOPER NOTE:
+            ALL AUTH REDIRECTS ARE TO '/'(HOME) SINCE USER HYDRATION TAKES PLACE THERE.
+            GLOBAL USER STATE IS UPDATED ON HOME PAGE RENDER HENCE CHANGING THIS ROUTE 
+            MAY CAUSE HYDRATION ISSUES AND REDIRECT LOOPS!
+            */
             redirectUrlComplete: "/", // After successful login
         });
     };

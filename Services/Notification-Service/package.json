@@ -1,0 +1,37 @@
+{
+  "name": "kenshi-webspace-notif-microservice",
+  "version": "1.0.0",
+  "description": "This is a service to handle notifications and mail communications in the main Kenshi webspace server",
+  "keywords": [
+    "notifications",
+    "mails",
+    "microservice"
+  ],
+  "homepage": "https://github.com/Kenshi-Webspace/Kenshi-Webspace-Notif-Microservice#readme",
+  "bugs": {
+    "url": "https://github.com/Kenshi-Webspace/Kenshi-Webspace-Notif-Microservice/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kenshi-Webspace/Kenshi-Webspace-Notif-Microservice.git"
+  },
+  "license": "Apache-2.0",
+  "author": "Abhishek Mathur",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js",
+    "build": "npm install",
+    "log": "npm run dev -- --color 2>&1 | tee -a logs.txt",
+    "tunnel": "lt --port 5000",
+    "ngrok": "ngrok http http://localhost:5000"
+  },
+  "dependencies": {
+    "@sentry/node": "^10.34.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "helmet": "^8.1.0"
+  }
+}

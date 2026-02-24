@@ -118,8 +118,10 @@ function App() {
             <Route path="/sitemap" element={<SiteMapPage />} />
             <Route path="/terms" element={<TermsPage />} />
 
+
+            {/*Maintenance dependent routes*/}
             <Route path="/" element={isMaintenanceMode ? <MaintenancePage /> : <HomePage />} />
-            <Route path="/articles" element={false ? <MaintenancePage /> : <ArticlesPage />} />
+            <Route path="/articles" element={isMaintenanceMode ? <MaintenancePage /> : <ArticlesPage />} />
 
             {/* <Route path="/categories" element={isMaintenanceMode ? <MaintenancePage /> : <CategoriesPage />} /> */}
             <Route path="/categories" element={true ? <MaintenancePage /> : <CategoriesPage />} />
@@ -147,6 +149,8 @@ function App() {
             <Route path="/profile" element={isMaintenanceMode ? <MaintenancePage /> : isSignedIn ? <ProfilePage /> : <SignInPage />} />
             <Route path="/super-admin/maintainer" element={isMaintenanceMode ? <MaintenancePage /> : isSignedIn ? <MaintainerPage /> : <SignInPage />} />
             {/* Add more routes as needed */}
+
+
 
             {/*Invalid route Handling*/}
             <Route path="*" element={<NotFoundPage />} />

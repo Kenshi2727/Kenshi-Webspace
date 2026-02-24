@@ -1,0 +1,254 @@
+html{
+    height: 100%;
+    margin: 0;
+}
+
+body{
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    row-gap: 0;
+    z-index: 10;
+}
+
+header{
+    width: 100%;
+    height: 15vh;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    border-bottom: 2px solid #36454F;
+    box-shadow: #36454F 0px 0px 2px;
+    z-index: 50;
+    position: fixed;
+}
+
+header>.left>img{
+    height: 15vh;
+    width: 100%;
+}
+
+header>.right{
+    display:flex ;
+    justify-content: center;
+    align-items: center;
+    height: 15vh;
+    text-shadow: 1px 1px;
+    font-size:x-large;
+    background-color: #CCCCFF;
+}
+
+main{
+    margin-top: 15vh;
+    height: 85vh;
+}
+
+.info-container{
+    display: grid;
+    grid-template-columns: 1fr 5fr;
+    min-height: 100%;
+}
+
+.section-container{
+    height: 85vh;
+    padding: 12px;
+    overflow-y: auto;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.section-child{
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 2px;
+}
+
+.section-child>.heading-container{
+    display: flex;
+    flex-direction: column;
+    justify-content:space-between;
+    align-items:start;
+    row-gap: 12px;
+    margin: 0;
+}
+
+.section-child>.heading-container>h1,.section-child>.heading-container>h3{
+    margin: 0;
+}
+
+.section-child>.heading-container>h3{
+    color:#36454F;
+}
+
+.section-child-content>.content{
+    padding: 2px 2px 2px 0px;
+}
+
+.section-child-content>.code-content{
+    padding: 8px;
+    background-color: #CCCCFF;
+    box-shadow: #36454F 0px 0px 2px;
+    border:#cce4ff solid 2px;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-family: "Source Code Pro", monospace;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+}
+
+.code-content>img{
+    position: sticky; /* fixed inside a srollable parent*/
+    top: 0;
+    height: 20px;
+    width: 20px;
+    left: calc(100% - 28px); /*28px from right edge of parent container*/
+    cursor: pointer;
+    z-index: 20;
+}
+
+.code-content>img:hover{
+    filter: brightness(0.8);
+    transition: 0.3s;
+    transform: scale(1.08);
+}
+
+.contents-sidebar{
+    background-color: #CCCCFF;
+    height: 85vh;
+    overflow: auto;
+    box-shadow:0px 0px 5px #36454F;
+}
+
+footer{
+    min-height: 20vh;
+    border-top:2px solid #36454F;
+    background-color: #CCCCFF;
+}
+
+.contents-sidebar>.inner-container{
+    padding: 12px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+}
+
+.contents-sidebar>.inner-container>h2{
+    text-align: center;     
+}
+
+.contents-sidebar>.inner-container>ul{
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    text-align: center;
+}
+
+.contents-sidebar>.inner-container>ul>li{
+    padding: 8px 0;
+    border-bottom: 1px solid #36454F;
+    cursor: pointer;
+    overflow-wrap: break-word;
+    border-radius: 0 0 8px 8px;
+}
+
+.contents-sidebar>.inner-container>ul>li:hover{
+    background-color: #a594f9;
+    color: white;
+    transition: 0.3s;
+}
+
+footer{
+    height: auto;
+    border-top:2px solid #36454F;
+    background-color: #CCCCFF;
+}
+
+footer>.footer-container{
+    display: grid;
+    grid-template-columns: 1fr 5fr;
+    margin: 4px;
+    column-gap:20px;
+}
+
+.logo-footer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo-footer>img{
+    border-radius: 8px;
+}
+
+@media (max-width: 1475px) {
+    header>.right>h1 {
+        font-size: 2.5rem;
+    }
+
+    .code-content>img{
+        left: calc(100% - 20px);
+    }
+
+    .main-heading{
+        font-size: 1.5rem;
+    }
+
+    .sub-heading{
+        font-size: 1.1rem;
+    }
+
+    footer>.footer-container{
+        font-size: 0.8rem;
+    }
+
+    .logo-footer>img{
+        height: 80px;
+        width: 80px;
+    }
+}
+
+@media (max-width: 1140px) {
+    header>.right{
+        display: none;
+    }
+
+    header{
+        grid-template-columns: 1fr;
+    }
+
+    .contents-sidebar{
+        display: none;
+    }
+
+    .info-container{
+        grid-template-columns: 1fr;
+    }
+
+    .code-content>img{
+        left: calc(100% - 18px);
+    }
+
+    .main-heading{
+        font-size: 1.3rem;
+    }
+
+    .sub-heading{
+        font-size: 1rem;
+    }
+
+    footer>.footer-container{
+        font-size: 0.5rem;
+    }
+
+    .logo-footer>img{
+        height: 60px;
+        width: 60px;
+    }
+}
+
+
+

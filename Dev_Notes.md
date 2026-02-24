@@ -1,5 +1,6 @@
 ## V.IMP- Protect ROLE-BASED privileged routes both client and server side
 - Example- admin routes, edit-article routes,editor routes,etc
+         - cloudinary redunandnt images deletion route if role based acess is denied.
 
 ## Privileged route access plan-
 middleware that will check -> user id

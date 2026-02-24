@@ -20,6 +20,7 @@ import LoadingPage from './LoadingPage'
 import { useUser } from '@clerk/clerk-react';
 import MarkdownRenderer from '../components/MarkdownRenderer';
 import { diffeningFunction } from '../lib/utility.functions.js';
+import { useSelector } from 'react-redux';
 
 export default function EditorPage({ type }) {
     const [loading, setLoading] = useState(false);
@@ -46,6 +47,7 @@ export default function EditorPage({ type }) {
     const [coverPreview, setCoverPreview] = useState(null);
     const params = useParams();
     const { user } = useUser();
+    const currentUser = useSelector(state => state);
 
     const { getToken, userId } = useAuth();
     const [copied, setCopied] = useState(false);
@@ -276,6 +278,14 @@ export default function EditorPage({ type }) {
                 // delete thumb_id and cover_id in patch data for transmission
                 // delete patchData.thumb_id;
                 // delete patchData.cover_id;
+
+                // attaching global user info for role based access control
+
+                patchData.user = {
+                    id: currentUser?.id,
+                    email: currentUser?.email,
+                };
+
                 console.log("Patch data:", patchData);
 
                 const res = await updatePost(params.id, patchData, token);

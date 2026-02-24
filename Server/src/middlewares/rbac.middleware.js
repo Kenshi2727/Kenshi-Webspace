@@ -5,7 +5,8 @@ import prisma from "../../../Database/prisma.client.js";
 export const privilegedRouteAccess = (roles) => {
     return async (req, res, next) => {
         try {
-            const { id, email } = req.user;
+            const { id, email } = req.body.user;
+            console.log("user object in privilegedRouteAccess middleware:", req.body.user);
 
             const isAuthorized = await authorize(id, email, roles);
             if (!isAuthorized) {
@@ -15,8 +16,10 @@ export const privilegedRouteAccess = (roles) => {
         } catch (error) {
             console.warn("Unauthorized Access Detected!");
             console.warn("Reason:", error.message);
-            console.log("User Object:", req.user);
-            // todo: implement logging system        
+            console.log("User Object:", req.body.user);
+
+            // todo: implement logging system   
+            console.log("DEMO:Logged data");
 
             return res.status(401).json({
                 error: "Unauthorized access",
