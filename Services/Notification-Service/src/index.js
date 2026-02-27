@@ -22,7 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // listening to server
 app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
+    console.log(`NOTIFICATION SERVER is running on http://localhost:${port}`);
     console.log(`Current Process ID: ${process.pid}`);
     console.log(`CORS is enabled for: ${process.env.CORS_ORIGIN}`);
 });

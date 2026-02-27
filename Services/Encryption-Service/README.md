@@ -2,7 +2,8 @@
 An encryption service for Kenshi Webspace
 
 Expected langauages-JS<br>
-                    GO Lang
+                    GO Lang<br>
+                    Java
 
 ```
 kenshi-encryption-service

@@ -61,7 +61,7 @@ app.get('/ping', (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
+    console.log(`MAIN SERVER is running on http://localhost:${port}`);
     console.log(`Current Process ID: ${process.pid}`);
     console.log(`CORS is enabled for: ${process.env.CORS_ORIGIN}`);
     console.log(`Prisma Client is connected: ${prisma !== null && prisma !== undefined}`);
