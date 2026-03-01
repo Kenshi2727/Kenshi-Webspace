@@ -4,6 +4,8 @@
 - Example- admin routes, edit-article routes,editor routes,etc
          - cloudinary redunandnt images deletion route if role based acess is denied.
 
+- study vercel config
+
 ## Privileged route access plan-
 middleware that will check -> user id
                            -> user email   <br>
