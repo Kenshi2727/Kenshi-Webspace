@@ -2,7 +2,7 @@
 - rbac is not enough---> need strict checking for specific routes that are meant for specific roles only.
 
 - Example- admin routes, edit-article routes,editor routes,etc
-         - cloudinary redunandnt images deletion route if role based acess is denied.
+         - cloudinary redundant images deletion route if role based acess is denied.
 
 - study vercel config
 

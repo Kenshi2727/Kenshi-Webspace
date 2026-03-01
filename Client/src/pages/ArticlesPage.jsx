@@ -88,25 +88,6 @@ const FloatingParticles = () => {
     );
 };
 
-// Fluid blob component with stable animation
-const FluidBlob = ({ delay = 0, duration = 20, className = "" }) => (
-    <motion.div
-        className={`absolute rounded-full filter blur-3xl will-change-transform ${className}`}
-        animate={{
-            scale: [1, 1.2, 1.1, 1],
-            rotate: [0, 180, 360],
-            x: [0, 30, -20, 0],
-            y: [0, -30, 15, 0],
-        }}
-        transition={{
-            duration,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay,
-        }}
-    />
-);
-
 const ArticlesPage = () => {
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [searchTerm, setSearchTerm] = useState('');
@@ -322,7 +303,7 @@ const ArticlesPage = () => {
                                 <Link to={`/articles/${article.id}`}>
                                     <Button
                                         size="sm"
-                                        className="bg-gradient-to-r from-purple-500/30 to-violet-500/30 hover:from-purple-500/50 hover:to-violet-500/50 text-purple-100 border border-purple-400/30 hover:border-purple-400/50 text-xs sm:text-sm transition-all duration-300 backdrop-blur-sm shadow-lg"
+                                        className="bg-gradient-to-r from-purple-500/30 to-violet-500/30 hover:from-purple-500/50 hover:to-violet-500/50 text-purple-100 border border-purple-400/30 hover:border-purple-400/50 text-xs sm:text-sm transition-all duration-300 backdrop-blur-sm shadow-lg cursor-pointer"
                                     >
                                         Read More
                                     </Button>
@@ -348,22 +329,6 @@ const ArticlesPage = () => {
     // Main Render
     return (
         <div className="min-h-screen bg-gradient-to-br from-purple-950 to-purple-800 relative overflow-hidden">
-            {/* Stable Animated Background */}
-            <div className="absolute inset-0 overflow-hidden">
-                {/* <FluidBlob
-                    className="w-96 h-96 bg-gradient-to-br from-purple-400/10 to-violet-600/10 -top-48 -right-48"
-                    duration={30}
-                /> */}
-                {
-                    Array.from({ length: 3 }, (_, i) => (
-                        <FluidBlob
-                            key={i}
-                            className="w-96 h-96 bg-gradient-to-br from-purple-400/10 to-violet-600/10 -top-48 -right-48"
-                            duration={30}
-                        />
-                    ))}
-
-            </div>
 
             <FloatingParticles />
 
@@ -458,6 +423,7 @@ const ArticlesPage = () => {
                                                     else
                                                         setSelectedCategory(category)
                                                 }}
+
                                                 className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 backdrop-blur-sm ${selectedCategory === category
                                                     ? 'bg-gradient-to-r from-purple-500 to-violet-500 text-white shadow-lg shadow-purple-500/30 border border-purple-400/50'
                                                     : 'bg-purple-500/20 text-purple-200 hover:bg-purple-500/30 hover:text-white border border-purple-400/20 hover:border-purple-400/40'

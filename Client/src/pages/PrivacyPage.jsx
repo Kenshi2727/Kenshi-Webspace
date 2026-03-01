@@ -221,7 +221,16 @@ const Toc = ({ sections }) => {
                             onClick={() => setSelectedId(s.id)}
                         >
                             <a
-                                href={`#${s.id}`}
+                                // href={`#${s.id}`}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    const el = document.getElementById(s.id);
+                                    if (el) {
+                                        el.scrollIntoView({
+                                            behavior: "smooth", block: "start"
+                                        });
+                                    }
+                                }}
                                 className="text-white/80 hover:text-white transition-colors"
                             >
                                 {s.heading}

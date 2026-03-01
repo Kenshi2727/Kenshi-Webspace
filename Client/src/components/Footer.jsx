@@ -73,10 +73,10 @@ export default function Footer() {
 
     return (
         <motion.footer
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
-            variants={footerVariants}
+            // initial="hidden"
+            // whileInView="visible"
+            // viewport={{ once: true, amount: 0.1 }}
+            // variants={footerVariants}
             className="relative bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white overflow-hidden"
             aria-label="Site footer"
             id="non-printable"

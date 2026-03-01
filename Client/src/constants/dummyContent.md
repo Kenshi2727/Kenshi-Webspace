@@ -241,6 +241,167 @@ I love coding! :smile: :rocket:
 | `:tada:`   | 🎉    |
 
 ---
+
+
+---
+
+### Custom Alert Components
+
+You can use special styled alert components inside your article (MDX only).
+
+❗ Danger & 💡 Info
+
+**Syntax:**
+
+```mdx
+<div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
+  <danger>
+    This action cannot be undone.
+  </danger>
+
+  <info>
+    This feature is available in the Pro version.
+  </info>
+</div>
+```
+
+**This will display as:**
+
+<div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
+  <danger>
+    This action cannot be undone.
+  </danger>
+
+  <info>
+    This feature is available in the Pro version.
+  </info>
+</div>
+
+<br>
+
+---
+
+📝 Note & 🩷 Like
+
+**Syntax:**
+
+```mdx
+<div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
+  <note>
+    Make sure you configure your environment variables.
+  </note>
+
+  <like>
+    This architecture keeps your project clean and scalable.
+  </like>
+</div>
+```
+
+**This will display as:**
+
+<div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
+  <note>
+    Make sure you configure your environment variables.
+  </note>
+
+  <like>
+    This architecture keeps your project clean and scalable.
+  </like>
+</div>
+
+<br>
+
+---
+
+⚠️ Warn & ✅ Success
+
+**Syntax:**
+
+```mdx
+<div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
+  <warn>
+    Do not expose your API keys publicly.
+  </warn>
+
+  <success>
+    Your project has been deployed successfully!
+  </success>
+</div>
+```
+
+**This will display as:**
+
+<div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
+  <warn>
+    Do not expose your API keys publicly.
+  </warn>
+
+  <success>
+    Your project has been deployed successfully!
+  </success>
+</div>
+
+<br>
+
+---
+
+💡 Tip & 📋 Todo
+
+**Syntax:**
+
+```mdx
+<div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
+  <tip>
+    Use separate configs for development and production.
+  </tip>
+
+  <todo>
+    Add authentication
+    Write tests
+    Setup logging
+  </todo>
+</div>
+```
+
+**This will display as:**
+
+<div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
+  <tip>
+    Use separate configs for development and production.
+  </tip>
+
+  <todo>
+    Add authentication
+    Write tests
+    Setup logging
+  </todo>
+</div>
+
+<br>
+
+---
+
+✨ Quote
+
+**Syntax:**
+
+```mdx
+<quote>
+Code is like humor. When you have to explain it, it’s bad.
+</quote>
+```
+
+**This will display as:**
+
+<quote>
+Code is like humor. When you have to explain it, it’s bad.
+</quote>
+
+<br>
+
+---
+
+
 ### Footnotes in Markdown
 
 Footnotes let you add extra information without cluttering the main text.
@@ -257,4 +418,6 @@ This is some text with a footnote.[^1]
 This is some text with a footnote.[^1]
 
 [^1]: This is the footnote content.
+
+
 

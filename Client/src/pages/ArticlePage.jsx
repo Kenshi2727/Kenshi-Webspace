@@ -342,7 +342,7 @@ export default function ArticlePage() {
                         <motion.div
                             variants={itemVariants}
                             style={{ opacity, scale, y }}
-                            className="max-w-7xl mx-auto mb-12 overflow-hidden rounded-3xl shadow-2xl relative group"
+                            className="max-w-5xl mx-auto mb-12 overflow-hidden rounded-3xl shadow-2xl relative group"
                         >
                             <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent z-10" />
                             <motion.img
@@ -352,7 +352,7 @@ export default function ArticlePage() {
                                     e.target.src = '/placeholder.png';
                                 }}
                                 alt="Cover"
-                                className="w-full h-[200px] sm:h-[250px] md:h-[350px] lg:h-[400px] object-fill transition-transform duration-700 group-hover:scale-105"
+                                className="w-full h-[200px] sm:h-[250px] md:h-[300px] lg:h-[350px] object-fill transition-transform duration-700 group-hover:scale-105"
                                 whileHover={{ scale: 1.02 }}
                                 transition={{ duration: 0.3 }}
                             />
@@ -368,7 +368,7 @@ export default function ArticlePage() {
                             </motion.div>
                         </motion.div>
 
-                        <Card className="max-w-7xl mx-auto rounded-3xl shadow-2xl bg-white/20 border border-white/30 backdrop-blur-xl relative overflow-hidden">
+                        <Card className="max-w-5xl mx-auto rounded-3xl shadow-2xl bg-white/20 border border-white/30 backdrop-blur-xl relative overflow-hidden">
                             <CardContent id="print-area" className="relative p-4 sm:p-10 space-y-8">
                                 {/* Header */}
                                 <motion.div variants={itemVariants} className="flex flex-wrap items-center justify-between gap-4">

@@ -58,7 +58,17 @@ const TermsPage = () => {
                             <div className="p-4">
                                 {tos.terms.map((term) => (
                                     <React.Fragment key={term}>
-                                        <a href={`#${term.heading + tos.terms.indexOf(term)}`}>
+                                        <a
+                                            // preventing default anchor behavior to enable smooth scrolling
+                                            // href={`#${term.heading + tos.terms.indexOf(term)}`} 
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                document.getElementById(term.heading + tos.terms.indexOf(term)).scrollIntoView({
+                                                    behavior: 'smooth',
+                                                    block: 'center'
+                                                })
+                                            }}
+                                        >
                                             <div className="text-sm p-2 my-3 bg-white/10 hover:bg-white/20 hover:scale-105 transition-transform rounded-sm text-white/80 cursor-pointer">
                                                 {term.heading}
                                             </div>
