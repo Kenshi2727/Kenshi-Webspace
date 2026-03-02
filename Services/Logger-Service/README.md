@@ -1,3 +1,5 @@
+```         
+         
                 ┌──────────────────────┐
                 │  Kenshi Services     │
                 │  (User, Post, Auth)  │
@@ -33,10 +35,11 @@
                 │      Log Storage     │
                 └──────────────────────┘
 
+```
 
 
-
-                logger-service/
+```
+logger-service/
 │
 ├── cmd/
 │   └── logger-service/
@@ -94,10 +97,13 @@
 ├── go.mod
 ├── go.sum
 └── README.md
+```
+
 
 
 ## runtime log storage structure
 
+```
 logs/
  └── {year}/
       └── {month}/
@@ -110,3 +116,4 @@ logs/
            ├── auth/
            ├── system/
            └── payment/
+```
