@@ -37,6 +37,7 @@ import { SpeedInsights } from '@vercel/speed-insights/react';
 import { getToken } from "firebase/messaging";
 import { messaging } from './services/firebase';
 import { sendPublicFcmToken } from './services/GlobalApi';
+import PopupBanner from './components/banners/PopupBanner';
 
 function App() {
   const isMaintenanceMode = false;
@@ -102,6 +103,13 @@ function App() {
 
   return (
     <>
+
+      {/*Popup Banner*/}
+      <PopupBanner
+        title="We are extremely sorry!"
+        message="Our authentication system is currently down. Please try again later for signing in. you can access all the content but you can't sign in. We are actively working to resolve the issue! We are currently investigating an issue with DNS resolution."
+      />
+
       <Navbar />
       <Progress />
       <ScrollToTop />
