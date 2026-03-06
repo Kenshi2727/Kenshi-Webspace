@@ -4,17 +4,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <title>Documentation-Kenshi Webspace</title>
+    <title>Documentation - Kenshi Webspace</title>
 </head>
 
 <body>
     <header>
         <div class="left">
-            <img src="./public/logo.png" alt="logo-image">
+            <img src="./public/logo.png" alt="Kenshi Logo" class="brand-logo">
+            <span class="brand-text">Kenshi <span class="text-gradient">Webspace</span></span>
         </div>
+        
         <div class="right">
-            <h1>Documentaion - Kenshi Webspace Project</h1>
+            <div class="search-container">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="search-icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" id="searchInput" placeholder="Search documentation..." autocomplete="off">
+            </div>
+            <button id="themeToggle" aria-label="Toggle Dark Mode">
+                <svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            </button>
         </div>
     </header>
 
@@ -22,46 +34,26 @@
         <div class="info-container">
             <aside class="contents-sidebar">
                 <div class="inner-container">
-                    <h2 class="contents-heading">Contents</h2>
-                    <ul class="contents-list">
-                        <!-- <li id="1" class="contents-list-item">
-                        </li>
-                        <li class="contents-list-item">Item 2</li>
-                        <li class="contents-list-item">Item 3</li>
-                        <li class="contents-list-item">Item 1</li>
-                        <li class="contents-list-item">Item 2</li> -->
-
+                    <h3 class="contents-heading">On this page</h3>
+                    <ul class="contents-list" id="sidebarList">
+                        <!-- Populated dynamically via JS -->
                     </ul>
                 </div>
             </aside>
 
-            <div class="section-container">
-                <!-- <section class="section-child">
-                    <div class="heading-container">
-                        <h1 class="main-heading">
-                            Heading
-                        </h1>
-                        <h3 class="sub-heading">
-                            Sub heading
-                        </h3>
+            <div class="section-container" id="contentArea">
+                <div class="content-wrapper">
+                    <div class="docs-hero">
+                        <div class="hero-badge">Documentation v1.0</div>
+                        <h1 class="hero-title">Build with <span class="text-gradient">Kenshi</span></h1>
+                        <p class="hero-subtitle">The complete guide to the Kenshi Webspace ecosystem, featuring a modern React frontend, powerful Express API, and deep AI integrations.</p>
                     </div>
-                    <div class="section-child-content">
-                        <p class="content">
-                            This is a para. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Minus sapiente
-                            minima accusantium, quo earum dicta at, optio nesciunt ullam deserunt assumenda in
-                            consequatur adipisci labore aliquid rem eos? Animi, optio.
-                        </p>
-                        <pre class="code-content">
-                            <img src="./public/copy.svg" alt="copy-icon">
-                            <code id="code">
-function hello() {
-console.log("Hello world");
-}
-                            </code>
-                        </pre>
+                    <div id="noResultsMessage" class="no-results" style="display: none;">
+                        <h3>No results found</h3>
+                        <p>We couldn't find anything matching your search query.</p>
                     </div>
-
-                </section> -->
+                    <!-- Content sections injected here -->
+                </div>
             </div>
         </div>
     </main>
@@ -69,16 +61,16 @@ console.log("Hello world");
     <footer>
         <div class="footer-container">
             <div class="logo-footer">
-                <img src="./public/logo-min.png" alt="logo-footer">
+                <img src="./public/logo-min.png" alt="Kenshi Minimark" onerror="this.src='./public/logo.png'">
             </div>
-            <div style="text-align: left; padding: 20px 0;">
-                <h1>Documentation - Kenshi Webspace Project</h1>
-                <p style="font-weight: 400;">
-                    <a href="mailto:kenshi.webspace@gmail.com" style="text-decoration: none;color:black;">
-                        Contact: kenshi.webspace@gmail.com
-                    </a>
-                </p>
+            <div class="footer-details">
+                <h3>Kenshi Webspace</h3>
+                <p>The core documentation for building, deploying, and extending the Kenshi Webspace ecosystem.</p>
+                <a href="mailto:kenshi.webspace@gmail.com" class="footer-link">kenshi.webspace@gmail.com</a>
             </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; <span id="currentYear"></span> Abhishek Mathur. All rights reserved.</p>
         </div>
     </footer>
 
