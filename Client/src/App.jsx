@@ -1,10 +1,10 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+// import { motion } from 'framer-motion';
 import { Routes, Route, useSearchParams } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import ArticlesPage from './pages/ArticlesPage';
-import CategoriesPage from './pages/CategoriesPage';
+// import CategoriesPage from './pages/CategoriesPage';
 import AboutPage from './pages/AboutPage';
 import SignInPage from './auth/SignInPage';
 import ArticlePage from './pages/ArticlePage';
@@ -17,11 +17,11 @@ import ForgotPasswordPage from './auth/ForgotPasswordPage';
 import MaintenancePage from './components/MaintenancePage';
 import MyArticlesPage from './pages/MyArticlesPage';
 import DarkHomePage from './pages/DarkHomePage';
-import DarkModePrompt from './components/DarkModePrompt';
+// import DarkModePrompt from './components/DarkModePrompt';
 import ScrollToTopButton from './components/ScrollToTopButton';
 import Progress from './components/Progress';
-import ResearchBrewery from './pages/sections/Research_Section/ResearchBrewery';
-import CodePage from './pages/sections/Research_Section/CodePage';
+// import ResearchBrewery from './pages/sections/Research_Section/ResearchBrewery';
+// import CodePage from './pages/sections/Research_Section/CodePage';
 import ScrollToTop from './navigate/ScrollToTop';
 import ReviewPage from './pages/ReviewPage';
 import ProfilePage from './pages/ProfilePage';
@@ -41,7 +41,7 @@ import PopupBanner from './components/banners/PopupBanner';
 
 function App() {
   const isMaintenanceMode = false;
-  const [showDarkPrompt, setShowDarkPrompt] = useState(false);
+  // const [showDarkPrompt, setShowDarkPrompt] = useState(false);
   const { isSignedIn } = useUser();
   const [params] = useSearchParams();
 
@@ -105,10 +105,10 @@ function App() {
     <>
 
       {/*Popup Banner*/}
-      <PopupBanner
+      {/* <PopupBanner
         title="We are extremely sorry!"
         message="Our authentication system is currently down. Please try again later for signing in. you can access all the content but you can't sign in. We are actively working to resolve the issue! We are currently investigating an issue with DNS resolution."
-      />
+      /> */}
 
       <Navbar />
       <Progress />
@@ -132,7 +132,7 @@ function App() {
             <Route path="/articles" element={isMaintenanceMode ? <MaintenancePage /> : <ArticlesPage />} />
 
             {/* <Route path="/categories" element={isMaintenanceMode ? <MaintenancePage /> : <CategoriesPage />} /> */}
-            <Route path="/categories" element={true ? <MaintenancePage /> : <CategoriesPage />} />
+            <Route path="/categories" element={<MaintenancePage />} />
 
             <Route path="/about" element={isMaintenanceMode ? <MaintenancePage /> : <AboutPage />} />
             <Route path="/auth/login" element={isMaintenanceMode ? <MaintenancePage /> : <SignInPage />} />
@@ -150,8 +150,8 @@ function App() {
             {/* <Route path="/research" element={isMaintenanceMode ? <MaintenancePage /> : <ResearchBrewery />} />
             <Route path="/code" element={isMaintenanceMode ? <MaintenancePage /> : <CodePage />} /> */}
 
-            <Route path="/research" element={true ? <MaintenancePage /> : <ResearchBrewery />} />
-            <Route path="/code" element={true ? <MaintenancePage /> : <CodePage />} />
+            <Route path="/research" element={<MaintenancePage />} />
+            <Route path="/code" element={<MaintenancePage />} />
 
             <Route path="/review" element={isMaintenanceMode ? <MaintenancePage /> : isSignedIn ? <ReviewPage /> : <SignInPage />} />
             <Route path="/profile" element={isMaintenanceMode ? <MaintenancePage /> : isSignedIn ? <ProfilePage /> : <SignInPage />} />
