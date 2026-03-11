@@ -1,3 +1,6 @@
+## Oracle VPS Setup-
+- complete setup for Oracle VPS Websocket Server
+
 ## LOGGER Service-
 - APACHE KAFKA INTEGRATION FOR INTER SERVICE COMMUNICATION AND LOGGING
 - log summary using AI workflow(eg.- n8n)
