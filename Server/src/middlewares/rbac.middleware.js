@@ -17,8 +17,12 @@ export const privilegedRouteAccess = (allowedRoles) => {
 
             // Real-time role verification against the database
             const user = await prisma.user.findUnique({
-                where: { id: userId },
-                select: { role: true }
+                where: {
+                    id: userId
+                },
+                select: {
+                    role:true
+                }
             });
 
             if (!user) {

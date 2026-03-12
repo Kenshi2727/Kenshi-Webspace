@@ -21,6 +21,7 @@ const pingServer = async () => {
             return response;
         } catch (error) {
             console.log("Retry failed");
+            console.warn(error);
             continue;
         }
     }

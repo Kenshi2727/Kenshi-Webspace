@@ -21,6 +21,7 @@ import { useUser } from '@clerk/clerk-react';
 import MarkdownRenderer from '../components/MarkdownRenderer';
 import { diffeningFunction } from '../lib/utility.functions.js';
 import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 
 export default function EditorPage({ type }) {
     const [loading, setLoading] = useState(false);
@@ -47,7 +48,7 @@ export default function EditorPage({ type }) {
     const [coverPreview, setCoverPreview] = useState(null);
     const params = useParams();
     const { user } = useUser();
-    const currentUser = useSelector(state => state);
+    const currentUser = useSelector(state => state.user);
 
     const { getToken, userId } = useAuth();
     const [copied, setCopied] = useState(false);
@@ -86,6 +87,7 @@ export default function EditorPage({ type }) {
                 }
             }
             fetchPost();
+            // console.log("Current user:",currentUser); 
         }
     }, [])
 
@@ -281,10 +283,10 @@ export default function EditorPage({ type }) {
 
                 // attaching global user info for role based access control
 
-                patchData.user = {
-                    id: currentUser?.id,
-                    email: currentUser?.email,
-                };
+                // patchData.user = {
+                //     id: currentUser?.id,
+                //     email: currentUser?.email,
+                // };
 
                 console.log("Patch data:", patchData);
 
@@ -686,7 +688,7 @@ export default function EditorPage({ type }) {
                                     </TabsContent>
 
                                     <TabsContent value="preview">
-                                        <div className="px-1 break-all">
+                                        <div className="px-1 wrap-break-word">
                                             <MarkdownRenderer content={formData.content || '_Nothing to preview_'} />
                                         </div>
                                     </TabsContent>
@@ -755,3 +757,8 @@ export default function EditorPage({ type }) {
         </TooltipProvider>
     );
 }
+
+// type must be string(type checking-eslint)
+EditorPage.propTypes = {
+    type: PropTypes.string.isRequired
+};

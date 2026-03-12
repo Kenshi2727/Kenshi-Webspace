@@ -30,7 +30,7 @@ router.get('/user-posts/:userId', protectRoute, getUserPosts);
 router.delete('/:postId', protectRoute, deletePost);
 
 // update routes
-router.patch('/:postId', protectRoute, privilegedRouteAccess(["USER"]), updatePost);
+router.patch('/:postId', protectRoute, privilegedRouteAccess(["USER","OWNER"]), updatePost);
 
 router.put('/likes/:postId', protectRoute, updatePostLikes);
 

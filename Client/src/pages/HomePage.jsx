@@ -14,17 +14,15 @@ import MouseGlow from '../components/MouseGlow';
 import { Edit3, ArrowRight } from "lucide-react";
 import { useUser } from '@clerk/clerk-react';
 import toast from 'react-hot-toast';
-import Notice from '../components/banners/Notice';
+// import Notice from '../components/banners/Notice';
 import {
     Tooltip,
     TooltipContent,
     TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { getFeaturedPosts, getUser } from '../services/GlobalApi';
+import { getFeaturedPosts } from '../services/GlobalApi';
 import { formatDate } from '../lib/dateFormatter.js';
 import { useAuth } from '@clerk/clerk-react';
-import { useDispatch } from "react-redux";
-import { setUser } from '../features/users/userSlice.js';
 import { useSelector } from 'react-redux';
 
 const containerVariants = {
@@ -73,8 +71,6 @@ const HomePage = () => {
     })));
     const [errorFlag, setErrorFlag] = useState(false);
     const [role, setRole] = useState(useSelector(state => state.role));
-    const { userId, getToken } = useAuth();
-    const dispatch = useDispatch();
 
     useEffect(() => {
         async function fetchFeaturedPosts() {
@@ -113,23 +109,7 @@ const HomePage = () => {
     }, []);
 
 
-    useEffect(() => {
-        async function fetchUserInfo() {
-            try {
-                if (!isSignedIn || !userId) return;
-                const token = await getToken();
-                const response = await getUser(userId, token);
-                if (response.data) {
-                    dispatch(setUser(response.data.user));
-                    // console.log("User data received:", response.data);
-                }
-            } catch (error) {
-                console.error("Error fetching user info:", error);
-            }
-        }
 
-        fetchUserInfo();
-    }, []);
 
     async function handleConfirm() {
         try {
@@ -138,6 +118,7 @@ const HomePage = () => {
             // async actions if needed
         } catch (err) {
             toast.error("An error occurred. Please try again.");
+            console.error(err);
         } finally {
             setSubmitting(false);
             setOpen(false);

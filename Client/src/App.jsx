@@ -38,18 +38,41 @@ import { getToken } from "firebase/messaging";
 import { messaging } from './services/firebase';
 import { sendPublicFcmToken } from './services/GlobalApi';
 import PopupBanner from './components/banners/PopupBanner';
+import { useDispatch } from "react-redux";
+import { setUser } from './features/users/userSlice.js';
+import { getUser } from './services/GlobalApi';
+import { useAuth } from '@clerk/clerk-react';
 
 function App() {
   const isMaintenanceMode = false;
   // const [showDarkPrompt, setShowDarkPrompt] = useState(false);
   const { isSignedIn } = useUser();
   const [params] = useSearchParams();
+  const dispatch = useDispatch();
+  const { userId, getToken:getAuthToken } = useAuth();
 
   useEffect(() => {
     if (params.get("toast") === "already-signed-in") {
       toast.success("You are already signed in. Redirecting...");
     }
   }, [params]);
+
+  useEffect(() => {
+    async function fetchUserInfo() {
+        try {
+            if (!isSignedIn || !userId) return;
+            const token = await getAuthToken();
+            const response = await getUser(userId, token);
+          if (response.data) {
+                dispatch(setUser(response.data.user));
+            }
+        } catch (error) {
+            console.error("Error fetching user info:", error);
+        }
+    }
+
+    fetchUserInfo();
+  }, [isSignedIn, userId, dispatch, getAuthToken]);
 
 
   //notficaton permission request for firebase messaging
