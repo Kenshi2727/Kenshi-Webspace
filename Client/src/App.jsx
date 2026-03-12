@@ -88,7 +88,7 @@ function App() {
             const token = await getToken(messaging, {
               vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY
             });
-            console.log("Token generated:", token);
+            // console.log("Token generated:", token);
 
             if (localStorage.getItem("fcmToken") === token) return; //token already stored
 
