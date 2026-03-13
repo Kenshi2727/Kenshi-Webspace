@@ -1,4 +1,4 @@
-import prisma from "../../../Database/prisma.client.js";
+import prisma from "@kenshi/database/prisma.client.js";
 import { messaging } from "../services/firebase.js";
 
 // TODO: IMPLEMENT LOGIC FOR HANDLING TOKEN EXPIRY AND CLEANUP

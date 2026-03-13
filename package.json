@@ -1,0 +1,11 @@
+{
+  "name": "kenshi-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "Client",
+    "Server",
+    "Database",
+    "Services/*"
+  ]
+}

@@ -1,11 +1,11 @@
 {
-  "name": "database",
+  "name": "@kenshi/database",
   "version": "1.0.0",
   "description": "Separate codebase for Prisma ORM",
   "license": "ISC",
   "author": "",
   "type": "commonjs",
-  "main": "index.js",
+  "main": "prisma.client.js",
   "scripts": {
     "generate": "npx prisma generate",
     "migrate": "npx prisma migrate dev --name init",

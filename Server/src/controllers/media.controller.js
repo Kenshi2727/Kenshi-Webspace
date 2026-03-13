@@ -1,5 +1,5 @@
 import cloudinary from "../utils/cloudinary.js";
-import prisma from "../../../Database/prisma.client.js";
+import prisma from "@kenshi/database/prisma.client.js";
 
 // helper functions
 const setMediaMetaData = async (publicId, mediaType, options) => {

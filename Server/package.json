@@ -1,5 +1,5 @@
 {
-  "name": "server",
+  "name": "@kenshi/server",
   "version": "1.0.0",
   "description": "Server Side Service for Kenshi Webspace",
   "keywords": [
@@ -22,12 +22,13 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
-    "build": "npm --prefix ../Database install && npm --prefix ../Database run generate && npm install",
+    "build": "npm run generate --workspace=@kenshi/database",
     "log": "npm run dev -- --color 2>&1 | tee -a logs.txt",
     "tunnel": "lt --port 3000",
     "ngrok": "ngrok http http://localhost:3000"
   },
   "dependencies": {
+    "@kenshi/database": "*",
     "@clerk/express": "^1.7.40",
     "@sentry/node": "^10.25.0",
     "axios": "^1.11.0",

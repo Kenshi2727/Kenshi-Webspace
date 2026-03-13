@@ -1,4 +1,4 @@
-import prisma from "../../../Database/prisma.client.js";
+import prisma from "@kenshi/database/prisma.client.js";
 import { setServiceRef, deleteMediaMetaData, deleteServiceRef, deleteMedia, getPublicIds } from "./media.controller.js";
 import { parseDataTypes } from "../lib/typeParser.js";
 // Note-

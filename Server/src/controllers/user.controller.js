@@ -1,4 +1,4 @@
-import prisma from "../../../Database/prisma.client.js";
+import prisma from "@kenshi/database/prisma.client.js";
 import { clerkClient } from "@clerk/express";
 import { Webhook } from "svix";
 import dotenv from "dotenv";

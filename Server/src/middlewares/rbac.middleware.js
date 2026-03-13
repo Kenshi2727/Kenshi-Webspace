@@ -1,6 +1,6 @@
 // ROLE-BASED ACCESS CONTROL (RBAC) MIDDLEWARE
 // This middleware checks if the user has the necessary permissions to access a specific route based on their role.
-import prisma from "../../../Database/prisma.client.js";
+import prisma from "@kenshi/database/prisma.client.js";
 
 export const privilegedRouteAccess = (allowedRoles) => {
     return async (req, res, next) => {

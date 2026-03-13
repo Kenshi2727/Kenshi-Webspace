@@ -3,7 +3,7 @@ import "./instrument.js";
 // All other imports below
 import express from "express";
 import dotenv from "dotenv";
-import prisma from "../../Database/prisma.client.js";
+import prisma from "@kenshi/database/prisma.client.js";
 import cors from "cors";
 import userRoutes from "./routes/user.route.js";
 import postRoutes from "./routes/post.route.js";
