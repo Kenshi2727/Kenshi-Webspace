@@ -405,18 +405,9 @@ export default function ArticlePage() {
                                 </motion.div>
 
                                 {/* Title and Edit Button */}
-                                <motion.div variants={itemVariants} id="non-printable" className="flex items-start justify-between gap-6">
-                                    <motion.h1
-                                        className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-white drop-shadow-lg leading-tight"
-                                        initial={{ opacity: 0, x: -50 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
-                                    >
-                                        {article.title}
-                                    </motion.h1>
-
+                                <motion.div variants={itemVariants} id="non-printable" className="flex w-full">
                                     {user && (user.id === article.authorId) &&
-                                        <div className='flex flex-col [@media(min-width:364px)]:flex-row gap-2'>
+                                        <div className='flex w-full justify-end gap-2 sm:gap-4'>
                                             <motion.div
                                                 initial={{ opacity: 0, scale: 0.8 }}
                                                 animate={{ opacity: 1, scale: 1 }}
@@ -428,10 +419,10 @@ export default function ArticlePage() {
                                                     variant="outline"
                                                     size="sm"
                                                     onClick={() => setOpen(true)}
-                                                    className="flex items-center gap-2 bg-white/5 border-white/30 hover:bg-white/30 hover:border-white/50 text-white transition-all duration-300 backdrop-blur-sm"
+                                                    className="flex items-center gap-2 bg-white/5 border-white/30 hover:bg-white/30 hover:border-white/50 text-white transition-all duration-300 backdrop-blur-sm cursor-pointer"
                                                 >
                                                     <Trash size={16} />
-                                                    <span className="hidden sm:inline">Delete</span>
+                                                    <span className="hidden [@media(min-width:240px)]:inline">Delete</span>
                                                 </Button>
                                             </motion.div>
 
@@ -471,15 +462,25 @@ export default function ArticlePage() {
                                                     <Button
                                                         variant="outline"
                                                         size="sm"
-                                                        className="flex items-center gap-2 bg-white/5 border-white/30 hover:bg-white/30 hover:border-white/50 text-white transition-all duration-300 backdrop-blur-sm"
+                                                        className="flex items-center gap-2 bg-white/5 border-white/30 hover:bg-white/30 hover:border-white/50 text-white transition-all duration-300 backdrop-blur-sm cursor-pointer"
                                                     >
                                                         <Pencil size={16} />
-                                                        <span className="hidden sm:inline">Edit</span>
+                                                        <span className="hidden [@media(min-width:240px)]:inline">Edit</span>
                                                     </Button>
                                                 </motion.div>
                                             </Link>
                                         </div>}
                                 </motion.div>
+
+                                <motion.h1
+                                        className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-white text-left drop-shadow-lg leading-tight"
+                                        initial={{ opacity: 0, x: -50 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
+                                    >
+                                        {article.title}
+                                </motion.h1>
+
 
                                 {/* Author Section */}
                                 <motion.div variants={itemVariants} className="flex items-center space-x-4">
