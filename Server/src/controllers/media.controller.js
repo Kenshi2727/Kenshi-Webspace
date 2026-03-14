@@ -38,6 +38,8 @@ export const uploadImage = async (req, res) => {
         let thumb_id = null;
         let coverImage = '';
         let cover_id = null;
+        let contentImage = '';
+        let contentImage_id = null;
 
         if (req.files.thumbnail) {
             const uploadResponse = await cloudinary.uploader.upload(
@@ -90,15 +92,42 @@ export const uploadImage = async (req, res) => {
                 throw new Error("CoverImage meta data is null")
             }
         }
+        if (req.files.contentImage) {
+            const uploadResponse = await cloudinary.uploader.upload(
+                `data:${req.files.contentImage[0].mimetype};base64,${req.files.contentImage[0].buffer.toString('base64')}`,
+                {
+                    folder: `kenshi_webspace/${res.locals.userId}/contentImages`,
+                    transformation: [
+                        {
+                            quality: "auto:good"
+                        }
+                    ]
+                }
+            );
+            contentImage = uploadResponse.secure_url;
+            const { public_id } = uploadResponse;
+            const { serviceRefId, userId } = req.body;//options
+            const contentImageMetaData = await setMediaMetaData(public_id, prisma.MediaType.IMAGE, { serviceRefId, userId });
+            console.log("Content image metadata saved:", contentImageMetaData);
+            contentImage_id = public_id;
 
-        console.log("Upload response:", { thumbnail, coverImage });
+            if (contentImageMetaData === null) {
+                // delete media
+                await deleteMedia(public_id);
+                throw new Error("Content image meta data is null")
+            }
+        }
+
+        console.log("Upload response:", { thumbnail, coverImage, contentImage });
 
         return res.status(201).json({
             message: "Image uploaded successfully!",
             thumbnail,
             coverImage,
+            contentImage,
             thumb_id,
-            cover_id
+            cover_id,
+            contentImage_id
         });
     } catch (error) {
         console.error("Error uploading to Cloudinary:", error);

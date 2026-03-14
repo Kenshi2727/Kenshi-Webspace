@@ -85,6 +85,7 @@ model MediaMetaData {
   serviceRefId String?
   serviceRef   ServiceRef? @relation(fields: [serviceRefId], references: [id])
   userId       String? // Author/owner ID
+  orphan       Boolean     @default(true) // Marks media uploaded but unattached to a finalized service reference
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
 }
@@ -117,6 +118,7 @@ enum PostStatus {
 enum ServiceType {
   POST
   PROFILE
+  CONTENT
 }
 
 model ServiceRef {

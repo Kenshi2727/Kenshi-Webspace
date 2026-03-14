@@ -1,4 +1,6 @@
+# Local files
 PRIVATE.TXT
+content_image_implementation_strategy.md
 
 # Logs
 logs
@@ -25,4 +27,4 @@ Thumbs.db
 .env.local
 .env.development.local
 .env.test.local
-.env.production.local
+.env.production.localcontent_image_implementation_strategy.md

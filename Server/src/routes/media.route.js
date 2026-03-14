@@ -8,7 +8,8 @@ const upload = multer({ storage: multer.memoryStorage() });// memory buffer
 
 router.post('/upload/image', protectRoute, upload.fields([
     { name: 'thumbnail', maxCount: 1 },
-    { name: 'coverImage', maxCount: 1 }
+    { name: 'coverImage', maxCount: 1 },
+    { name: 'contentImage', maxCount: 1 }
 ]), uploadImage);
 
 router.delete('/', protectRoute, deleteMediaEntry);

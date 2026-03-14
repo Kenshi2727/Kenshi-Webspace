@@ -9,8 +9,9 @@ import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { motion } from 'framer-motion';
-import { Pencil, Eye, Send, FileText, Clock, Tag, Image, Upload, LoaderCircle, Trash, Info, CopyIcon, Check } from 'lucide-react';
+import { Pencil, Eye, Send, FileText, Clock, Tag, Image, Upload, LoaderCircle, Trash, Info, CopyIcon, Check, Link as LinkIcon } from 'lucide-react';
 import { createPost, getSinglePost, uploadMedia, deleteMedia, updatePost } from '../services/GlobalApi';
 import toast from 'react-hot-toast';
 import { useAuth } from '@clerk/clerk-react';
@@ -36,6 +37,10 @@ export default function EditorPage({ type }) {
         content: '',
         referenceStatus: false
     });
+    const [isUploadingImage, setIsUploadingImage] = useState(false);
+    const [isImageDialogOpen, setIsImageDialogOpen] = useState(false);
+    const [externalImageUrl, setExternalImageUrl] = useState('');
+    const [imageCaption, setImageCaption] = useState('');
 
     const handleInputChange = (field, value) => {
         setFormData(prev => ({ ...prev, [field]: value }));
@@ -139,6 +144,92 @@ export default function EditorPage({ type }) {
             console.error("Image removal error:", error);
         }
     }
+
+    const handleContentImageUpload = async (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+
+        try {
+            setIsUploadingImage(true);
+            toast.loading("Uploading image...", { id: "imageUpload" });
+            const token = await getToken();
+            
+            const imageUploads = new FormData();
+            imageUploads.append('contentImage', file);
+            imageUploads.append('userId', user.id);
+            
+            const uploadResponse = await uploadMedia(imageUploads, token);
+            
+            if (uploadResponse && uploadResponse.status === 201) {
+                const { contentImage } = uploadResponse.data;
+                const altText = imageCaption.trim() ? imageCaption.trim() : 'image';
+                const imageMarkdown = `\n![${altText}](${contentImage})\n`;
+                
+                // insert at cursor position
+                const textarea = document.getElementById('md-editor');
+                if (textarea) {
+                    const startPos = textarea.selectionStart;
+                    const endPos = textarea.selectionEnd;
+                    const textBefore = formData.content.substring(0, startPos);
+                    const textAfter = formData.content.substring(endPos, formData.content.length);
+                    const newContent = textBefore + imageMarkdown + textAfter;
+                    
+                    handleInputChange('content', newContent);
+                    
+                    // reset cursor (needs slight timeout to let React render)
+                    setTimeout(() => {
+                        textarea.focus();
+                        textarea.selectionStart = startPos + imageMarkdown.length;
+                        textarea.selectionEnd = startPos + imageMarkdown.length;
+                    }, 0);
+                } else {
+                    handleInputChange('content', formData.content + imageMarkdown);
+                }
+                toast.dismiss("imageUpload");
+                toast.success("Image added to editor!");
+                setIsImageDialogOpen(false);
+            }
+        } catch (error) {
+            console.error(error);
+            toast.dismiss("imageUpload");
+            toast.error("Failed to upload image!");
+        } finally {
+            setIsUploadingImage(false);
+            e.target.value = null; // reset file input
+            setImageCaption(''); // reset caption
+        }
+    };
+
+    const handleExternalImageInsert = () => {
+        if (!externalImageUrl.trim()) {
+            toast.error("Please enter a valid image URL");
+            return;
+        }
+        const altText = imageCaption.trim() ? imageCaption.trim() : 'image';
+        const imageMarkdown = `\n![${altText}](${externalImageUrl.trim()})\n`;
+        const textarea = document.getElementById('md-editor');
+        if (textarea) {
+            const startPos = textarea.selectionStart;
+            const endPos = textarea.selectionEnd;
+            const textBefore = formData.content.substring(0, startPos);
+            const textAfter = formData.content.substring(endPos, formData.content.length);
+            const newContent = textBefore + imageMarkdown + textAfter;
+            
+            handleInputChange('content', newContent);
+            
+            setTimeout(() => {
+                textarea.focus();
+                textarea.selectionStart = startPos + imageMarkdown.length;
+                textarea.selectionEnd = startPos + imageMarkdown.length;
+            }, 0);
+        } else {
+            handleInputChange('content', formData.content + imageMarkdown);
+        }
+        setExternalImageUrl('');
+        setImageCaption('');
+        setIsImageDialogOpen(false);
+        toast.success("Image link inserted!");
+    };
 
     function formValidate() {
         if (formData.title.trim() === '') {
@@ -637,6 +728,98 @@ export default function EditorPage({ type }) {
                                                 </TooltipTrigger>
                                                 <TooltipContent>Copy</TooltipContent>
                                             </Tooltip>
+
+                                            <Dialog open={isImageDialogOpen} onOpenChange={setIsImageDialogOpen}>
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <DialogTrigger asChild>
+                                                            <Button
+                                                                size="sm"
+                                                                className="bg-white/10 hover:bg-white/20 text-white border-white/20 px-2 md:px-3"
+                                                            >
+                                                                {isUploadingImage ? <LoaderCircle size={14} className="md:w-4 md:h-4 animate-spin" /> : <Image size={14} className="md:w-4 md:h-4" />}
+                                                            </Button>
+                                                        </DialogTrigger>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent>Insert Image</TooltipContent>
+                                                </Tooltip>
+                                                <DialogContent className="sm:max-w-md bg-gradient-to-br from-purple-950 via-purple-900 to-indigo-900 border-white/20 text-white">
+                                                    <DialogHeader>
+                                                        <DialogTitle className="text-white">Insert Image</DialogTitle>
+                                                        <DialogDescription className="text-gray-300">
+                                                            Upload a file from your device or embed an external link.
+                                                        </DialogDescription>
+                                                    </DialogHeader>
+                                                    
+                                                    {/* Global Caption Field */}
+                                                    <div className="px-4 pt-2">
+                                                        <Label htmlFor="imageCaption" className="text-white font-medium text-xs mb-1.5 block">
+                                                            Caption (Optional)
+                                                        </Label>
+                                                        <Input 
+                                                            id="imageCaption"
+                                                            placeholder="A descriptive alt text..." 
+                                                            value={imageCaption}
+                                                            onChange={(e) => setImageCaption(e.target.value)}
+                                                            className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 text-sm h-8"
+                                                        />
+                                                    </div>
+
+                                                    <div className="flex flex-col gap-6 px-4 pb-4">
+                                                        <div className="space-y-3 p-4 bg-white/5 border border-white/10 rounded-lg">
+                                                            <div className="flex items-center gap-2 mb-2">
+                                                                <LinkIcon size={16} />
+                                                                <h4 className="font-medium text-sm">Embed Link</h4>
+                                                            </div>
+                                                            <div className="flex items-center gap-2">
+                                                                <Input 
+                                                                    placeholder="https://example.com/image.png" 
+                                                                    value={externalImageUrl}
+                                                                    onChange={(e) => setExternalImageUrl(e.target.value)}
+                                                                    className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                                                                />
+                                                                <Button 
+                                                                    onClick={handleExternalImageInsert}
+                                                                    className="bg-white/20 hover:bg-white/30 text-white"
+                                                                >
+                                                                    Insert
+                                                                </Button>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div className="relative">
+                                                            <div className="absolute inset-0 flex items-center">
+                                                                <span className="w-full border-t border-white/10" />
+                                                            </div>
+                                                            <div className="relative flex justify-center text-xs uppercase">
+                                                                <span className="bg-purple-900 px-2 text-gray-400">Or</span>
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="space-y-3 p-4 bg-white/5 border border-white/10 rounded-lg">
+                                                            <div className="flex items-center gap-2 mb-2">
+                                                                <Upload size={16} />
+                                                                <h4 className="font-medium text-sm">Upload File</h4>
+                                                            </div>
+                                                            <Button
+                                                                asChild
+                                                                className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white cursor-pointer"
+                                                            >
+                                                                <label>
+                                                                    {isUploadingImage ? "Uploading..." : "Click to select file"}
+                                                                    <input
+                                                                        type="file"
+                                                                        accept="image/*"
+                                                                        className="hidden"
+                                                                        onChange={handleContentImageUpload}
+                                                                        disabled={isUploadingImage}
+                                                                    />
+                                                                </label>
+                                                            </Button>
+                                                        </div>
+                                                    </div>
+                                                </DialogContent>
+                                            </Dialog>
                                         </div>
 
                                         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="flex-1 sm:flex-initial">
@@ -680,6 +863,7 @@ export default function EditorPage({ type }) {
 
                                     <TabsContent value="write">
                                         <Textarea
+                                            id="md-editor"
                                             value={formData.content}
                                             onChange={(e) => handleInputChange('content', e.target.value)}
                                             placeholder="Write your markdown content here..."
