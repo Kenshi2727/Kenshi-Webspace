@@ -3,8 +3,8 @@ export const dataList = [
         id: 1,
         heading: "Overview",
         subHeading: "What is Kenshi Webspace (Full Stack)",
-        content: `<p><strong>Kenshi Webspace</strong> is a comprehensive full-stack blogging and web platform. It is split into a modern frontend (Client), a robust backend REST API (Server), and a dedicated ORM layer (Database).</p>
-<p>The application supports advanced features like Role-Based Access Control, deep AI integration pipelines, rich text blogging, and analytics.</p>`,
+        content: `<p><strong>Kenshi Webspace</strong> is a comprehensive full-stack blogging and web platform managed via an NPM Workspaces monorepo. It is split into a modern frontend (Client), a robust backend REST API (Server), a dedicated ORM layer (Database), and isolated microservices (Services).</p>
+<p>The application supports advanced features like Role-Based Access Control, planned AI integration pipelines, rich text blogging, and analytics.</p>`,
         code: `
 Repo: https://github.com/Kenshi-Webspace/Kenshi-Webspace.git
 `
@@ -13,14 +13,14 @@ Repo: https://github.com/Kenshi-Webspace/Kenshi-Webspace.git
         id: 2,
         heading: "Architecture Structure",
         subHeading: "Main directories and separation of concerns",
-        content: "<p>The project follows a modular monorepo-style structure, separating the presentation layer, business logic, and data access.</p>",
+        content: "<p>The project follows a modular NPM Workspaces monorepo structure, strictly separating the presentation layer, business logic, data access, and microservices.</p>",
         code: `
 Kenshi-Webspace/
 ├─ Client/      (React + Vite + Tailwind CSS frontend)
 ├─ Server/      (Express.js REST API)
 ├─ Database/    (Prisma ORM and schemas)
+├─ Services/    (Microservices like AI-Pipeline, Encryption, etc.)
 ├─ Architecture/(Design docs and diagrams)
-├─ Services/    (External services configs)
 ├─ docs/        (Documentation UI components and data)
 └─ Dev_Notes.md (Ongoing plans and notes)
 `
@@ -44,6 +44,7 @@ Kenshi-Webspace/
         subHeading: "Backend infrastructure",
         content: `<ul>
   <li><strong>Core:</strong> Node.js (ES Modules), Express.js</li>
+  <li><strong>Architecture:</strong> Heavy workloads (e.g. AI modules) are planned to be delegated to isolated microservices rather than running directly on the Express server.</li>
   <li><strong>Authentication:</strong> @clerk/express, svix (for Webhooks)</li>
   <li><strong>Storage & Media:</strong> Cloudinary, Firebase Admin, multer</li>
   <li><strong>Security & Utils:</strong> Helmet, cors, dotenv</li>
@@ -57,29 +58,28 @@ Kenshi-Webspace/
         content: `<p>The <code>Database</code> directory encapsulates all database interactions.</p>
 <ul>
   <li><strong>ORM:</strong> Prisma</li>
-  <li><strong>Scripts:</strong> Custom build scripts sync generated Prisma clients securely with the Server layer.</li>
+  <li><strong>Integration:</strong> Accessed by the Server securely through NPM Workspace linking.</li>
 </ul>`
     },
     {
         id: 6,
         heading: "Quick Start",
         subHeading: "Running the application locally",
-        content: `<p>Each tier requires its own environment variables and dependencies. You need to run them simultaneously for full functionality.</p>`,
+        content: `<p>Since the project uses NPM Workspaces, dependencies are managed at the root. Each tier requires its own environment variables but shares a unified package installation.</p>`,
         code: `
-# 1. Setup Database
-cd Database
+# 1. Install all dependencies (at repository root)
 npm install
+
+# 2. Setup Database
+cd Database
 npm run generate
 
-# 2. Run Server
-cd ../Server
-npm install
-npm run dev
+# 3. Run Development Servers (in separate terminals)
+# Server
+cd Server && npm run dev
 
-# 3. Run Client
-cd ../Client
-npm install
-npm run dev
+# Client
+cd Client && npm run dev
 `
     },
     {
@@ -115,7 +115,7 @@ npm run dev
         id: 10,
         heading: "AI Integrations & Workflows",
         subHeading: "Next-gen platform features",
-        content: `<p>AI is a core focus for ongoing development, enhancing user reading and writing experiences.</p>
+        content: `<p>AI is a core focus for ongoing development, enhancing user reading and writing experiences. The architecture is prepared for a dedicated Python <code>AI-Pipeline</code> microservice, though active development on it has not yet started.</p>
 <ul>
   <li><strong>Planned Features:</strong> Vercel AI SDK integration, Gemini / Langchain incorporation for client-side AI.</li>
   <li><strong>Workflows:</strong> n8n, MCP Servers, and automated tag generation/content enrichment.</li>
@@ -135,19 +135,26 @@ npm run dev
     },
     {
         id: 12,
-        heading: "Environment Variables",
-        subHeading: "Securing keys and connections",
-        content: `<p>Maintain strict <code>.env</code> files in <code>Client</code>, <code>Server</code>, and <code>Database</code> directories. Avoid committing these files. Check respective <code>.gitignore</code> rules.</p>`,
+        heading: "Environment Variables Management",
+        subHeading: "Securing keys across workspaces and microservices",
+        content: `<p>Environment variables must be securely maintained in their respective <code>.env</code> files across the different workspaces. Here are the types of variables required per service:</p>
+<ul>
+  <li><strong>Client:</strong> Public identifiers like <code>VITE_CLERK_PUBLISHABLE_KEY</code>, <code>VITE_BASE_URL</code>, and public Firebase configuration keys (e.g., <code>VITE_FIREBASE_API_KEY</code>, <code>VITE_FIREBASE_VAPID_KEY</code>).</li>
+  <li><strong>Server:</strong> <code>PORT</code>, <code>CORS_ORIGIN</code>, <code>CLERK_PUBLISHABLE_KEY</code>, <code>CLERK_SECRET_KEY</code>, <code>CLERK_WEBHOOK_SECRET</code>, <code>CLOUDINARY_CLOUD_NAME</code>, <code>CLOUDINARY_API_KEY</code>, <code>CLOUDINARY_API_SECRET</code>, <code>SENTRY_DSN</code>, <code>MODE</code>.</li>
+  <li><strong>Database:</strong> Connection strings including <code>DATABASE_URL</code> for the Prisma ORM.</li>
+  <li><strong>Services/AI-Pipeline (Planned):</strong> LLM provider API keys (e.g., Gemini, OpenAI, Stable Diffusion).</li>
+  <li><strong>Services/Encryption-Service:</strong> Master secret keys or salt values for cryptographic operations.</li>
+  <li><strong>Services/Logger-Service:</strong> External centralized logging platform credentials.</li>
+  <li><strong>Services/Notification-Service:</strong> SMTP, Push, or SMS gateway keys.</li>
+</ul>`,
         code: `
-# Client (.env)
-VITE_CLERK_PUBLISHABLE_KEY=pk_test_...
-
-# Server (.env)
-CLERK_SECRET_KEY=sk_test_...
-CLOUDINARY_URL=cloudinary://...
-
-# Database (.env)
-DATABASE_URL=postgresql://...
+# Expected Structure
+Client/.env
+Server/.env
+Database/.env
+Services/AI-Pipeline/.env
+Services/Encryption-Service/.env
+# (Remember to add all .env files to .gitignore)
 `
     },
     {

@@ -3,6 +3,7 @@
 
 ## LOGGER Service-
 - APACHE KAFKA INTEGRATION FOR INTER SERVICE COMMUNICATION AND LOGGING
+- Aiven kafka deployment
 - log summary using AI workflow(eg.- n8n)
 
 ## V.IMP- Protect ROLE-BASED privileged routes both client and server side
