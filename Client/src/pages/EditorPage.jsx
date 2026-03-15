@@ -1,49 +1,97 @@
-import React, { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Textarea } from '@/components/ui/textarea';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
-import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
-import { Separator } from '@/components/ui/separator';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { motion } from 'framer-motion';
-import { Pencil, Eye, Send, FileText, Clock, Tag, Image, Upload, LoaderCircle, Trash, Info, CopyIcon, Check, Link as LinkIcon } from 'lucide-react';
-import { createPost, getSinglePost, uploadMedia, deleteMedia, updatePost } from '../services/GlobalApi';
-import toast from 'react-hot-toast';
-import { useAuth } from '@clerk/clerk-react';
-import dummyContent from '../constants/dummyContent.md?raw'
-import { useParams } from 'react-router-dom';
-import LoadingPage from './LoadingPage'
-import { useUser } from '@clerk/clerk-react';
-import MarkdownRenderer from '../components/MarkdownRenderer';
-import { diffeningFunction } from '../lib/utility.functions.js';
-import { useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
+import React, { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import {
+    Tooltip,
+    TooltipTrigger,
+    TooltipContent,
+    TooltipProvider,
+} from "@/components/ui/tooltip";
+import { Separator } from "@/components/ui/separator";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import { motion } from "framer-motion";
+import {
+    Pencil,
+    Eye,
+    Send,
+    FileText,
+    Clock,
+    Tag,
+    Image,
+    Upload,
+    LoaderCircle,
+    Trash,
+    Info,
+    CopyIcon,
+    Check,
+    Link as LinkIcon,
+    MessageSquareWarning,
+} from "lucide-react";
+import {
+    createPost,
+    getSinglePost,
+    uploadMedia,
+    deleteMedia,
+    updatePost,
+} from "../services/GlobalApi";
+import toast from "react-hot-toast";
+import { useAuth } from "@clerk/clerk-react";
+import dummyContent from "../constants/dummyContent.md?raw";
+import { useParams } from "react-router-dom";
+import LoadingPage from "./LoadingPage";
+import { useUser } from "@clerk/clerk-react";
+import MarkdownRenderer from "../components/MarkdownRenderer";
+import { diffeningFunction } from "../lib/utility.functions.js";
+import { useSelector } from "react-redux";
+import PropTypes from "prop-types";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export default function EditorPage({ type }) {
     const [loading, setLoading] = useState(false);
     const [oldData, setOldData] = useState(null); // for storing old data in edit mode
     const [formData, setFormData] = useState({
-        title: '',
-        excerpt: '',
-        category: '',
+        title: "",
+        excerpt: "",
+        category: "",
         readTime: 0,
-        thumbnail: '',
-        coverImage: '',
-        content: '',
-        referenceStatus: false
+        thumbnail: "",
+        coverImage: "",
+        content: "",
+        referenceStatus: false,
     });
     const [isUploadingImage, setIsUploadingImage] = useState(false);
     const [isImageDialogOpen, setIsImageDialogOpen] = useState(false);
-    const [externalImageUrl, setExternalImageUrl] = useState('');
-    const [imageCaption, setImageCaption] = useState('');
+    const [externalImageUrl, setExternalImageUrl] = useState("");
+    const [imageCaption, setImageCaption] = useState("");
+    const [contentImagePreview, setContentImagePreview] = useState(null);
+    const [contentImageUploadPermission, setContentImageUploadPermission] = useState(false);
+    const [contentImageUploadEventObject, setContentImageUploadEventObject] = useState(null);
+
+    const [isComponentDialogOpen, setIsComponentDialogOpen] = useState(false);
+    const [selectedComponentType, setSelectedComponentType] = useState("info");
+    const [componentContentText, setComponentContentText] = useState("");
 
     const handleInputChange = (field, value) => {
-        setFormData(prev => ({ ...prev, [field]: value }));
+        setFormData((prev) => ({ ...prev, [field]: value }));
     };
 
     // for handling image uploads
@@ -53,7 +101,7 @@ export default function EditorPage({ type }) {
     const [coverPreview, setCoverPreview] = useState(null);
     const params = useParams();
     const { user } = useUser();
-    const currentUser = useSelector(state => state.user);
+    const currentUser = useSelector((state) => state.user);
 
     const { getToken, userId } = useAuth();
     const [copied, setCopied] = useState(false);
@@ -64,17 +112,18 @@ export default function EditorPage({ type }) {
         return () => clearTimeout(t);
     }, [copied]);
 
-
     // cleanup object URLs to avoid memory leaks
     useEffect(() => {
         return () => {
             if (thumbPreview) URL.revokeObjectURL(thumbPreview);
             if (coverPreview) URL.revokeObjectURL(coverPreview);
+            if (contentImagePreview) URL.revokeObjectURL(contentImagePreview);
         };
-    }, [thumbPreview, coverPreview]);
+    }, [thumbPreview, coverPreview, contentImagePreview]);
 
     useEffect(() => {
-        if (type === "new" && localStorage.getItem("draft")) setFormData(JSON.parse(localStorage.getItem("draft")));
+        if (type === "new" && localStorage.getItem("draft"))
+            setFormData(JSON.parse(localStorage.getItem("draft")));
         if (type === "edit") {
             async function fetchPost() {
                 try {
@@ -84,17 +133,18 @@ export default function EditorPage({ type }) {
                     setOldData(post.data);
                 } catch (error) {
                     console.error(error);
-                    toast.loading("Error editing post, redirecting...", { duration: 3000 });
+                    toast.loading("Error editing post, redirecting...", {
+                        duration: 3000,
+                    });
                     window.history.back();
-                }
-                finally {
+                } finally {
                     setLoading(false);
                 }
             }
             fetchPost();
-            // console.log("Current user:",currentUser); 
+            // console.log("Current user:",currentUser);
         }
-    }, [])
+    }, []);
 
     const handleImageUpload = (e, type) => {
         const file = e.target.files && e.target.files[0];
@@ -109,16 +159,15 @@ export default function EditorPage({ type }) {
                 const previewUrl = URL.createObjectURL(file);
                 setThumbFile(file);
                 setThumbPreview(previewUrl);
-                setFormData(prev => ({ ...prev, thumbnail: '' }));
-            }
-            else if (type === "cover") {
+                setFormData((prev) => ({ ...prev, thumbnail: "" }));
+            } else if (type === "cover") {
                 // removing previous preview
                 if (coverPreview) URL.revokeObjectURL(coverPreview);
 
                 const previewUrl = URL.createObjectURL(file);
                 setCoverFile(file);
                 setCoverPreview(previewUrl);
-                setFormData(prev => ({ ...prev, coverImage: '' }));
+                setFormData((prev) => ({ ...prev, coverImage: "" }));
             }
         }
     };
@@ -129,21 +178,29 @@ export default function EditorPage({ type }) {
                 setThumbPreview(null);
                 setThumbFile(null);
                 URL.revokeObjectURL(thumbPreview);
-                handleInputChange('thumbnail', '');
+                handleInputChange("thumbnail", "");
                 toast.success("Thumbnail removed !");
-            }
-            else if (ImageType === "cover") {
+            } else if (ImageType === "cover") {
                 setCoverPreview(null);
                 setCoverFile(null);
                 URL.revokeObjectURL(coverPreview);
-                handleInputChange('coverImage', '');
+                handleInputChange("coverImage", "");
                 toast.success("Cover image removed !");
+            }
+            else if (ImageType === "content") {
+                setContentImagePreview(null);
+                setExternalImageUrl("");
+                setImageCaption("");
+                setContentImageUploadPermission(false);
+                setContentImageUploadEventObject(null);
+                URL.revokeObjectURL(contentImagePreview);
+                setContentImagePreview(null);
             }
         } catch (error) {
             toast.error("Error removing image ! Contact support.");
             console.error("Image removal error:", error);
         }
-    }
+    };
 
     const handleContentImageUpload = async (e) => {
         const file = e.target.files && e.target.files[0];
@@ -151,31 +208,34 @@ export default function EditorPage({ type }) {
 
         try {
             setIsUploadingImage(true);
-            toast.loading("Uploading image...", { id: "imageUpload" });
+            // toast.loading("Uploading image...", { id: "imageUpload" });
             const token = await getToken();
-            
+
             const imageUploads = new FormData();
-            imageUploads.append('contentImage', file);
-            imageUploads.append('userId', user.id);
-            
+            imageUploads.append("contentImage", file);
+            imageUploads.append("userId", user.id);
+
             const uploadResponse = await uploadMedia(imageUploads, token);
-            
+
             if (uploadResponse && uploadResponse.status === 201) {
                 const { contentImage } = uploadResponse.data;
-                const altText = imageCaption.trim() ? imageCaption.trim() : 'image';
+                const altText = imageCaption.trim() ? imageCaption.trim() : "image";
                 const imageMarkdown = `\n![${altText}](${contentImage})\n`;
-                
+
                 // insert at cursor position
-                const textarea = document.getElementById('md-editor');
+                const textarea = document.getElementById("md-editor");
                 if (textarea) {
                     const startPos = textarea.selectionStart;
                     const endPos = textarea.selectionEnd;
                     const textBefore = formData.content.substring(0, startPos);
-                    const textAfter = formData.content.substring(endPos, formData.content.length);
+                    const textAfter = formData.content.substring(
+                        endPos,
+                        formData.content.length,
+                    );
                     const newContent = textBefore + imageMarkdown + textAfter;
-                    
-                    handleInputChange('content', newContent);
-                    
+
+                    handleInputChange("content", newContent);
+
                     // reset cursor (needs slight timeout to let React render)
                     setTimeout(() => {
                         textarea.focus();
@@ -183,7 +243,7 @@ export default function EditorPage({ type }) {
                         textarea.selectionEnd = startPos + imageMarkdown.length;
                     }, 0);
                 } else {
-                    handleInputChange('content', formData.content + imageMarkdown);
+                    handleInputChange("content", formData.content + imageMarkdown);
                 }
                 toast.dismiss("imageUpload");
                 toast.success("Image added to editor!");
@@ -195,8 +255,11 @@ export default function EditorPage({ type }) {
             toast.error("Failed to upload image!");
         } finally {
             setIsUploadingImage(false);
+            setContentImageUploadPermission(false);
             e.target.value = null; // reset file input
-            setImageCaption(''); // reset caption
+            setImageCaption(""); // reset caption
+            URL.revokeObjectURL(contentImagePreview);
+            setContentImagePreview(null);//reset preview image url
         }
     };
 
@@ -205,42 +268,84 @@ export default function EditorPage({ type }) {
             toast.error("Please enter a valid image URL");
             return;
         }
-        const altText = imageCaption.trim() ? imageCaption.trim() : 'image';
+        const altText = imageCaption.trim() ? imageCaption.trim() : "image";
         const imageMarkdown = `\n![${altText}](${externalImageUrl.trim()})\n`;
-        const textarea = document.getElementById('md-editor');
+        const textarea = document.getElementById("md-editor");
         if (textarea) {
             const startPos = textarea.selectionStart;
             const endPos = textarea.selectionEnd;
             const textBefore = formData.content.substring(0, startPos);
-            const textAfter = formData.content.substring(endPos, formData.content.length);
+            const textAfter = formData.content.substring(
+                endPos,
+                formData.content.length,
+            );
             const newContent = textBefore + imageMarkdown + textAfter;
-            
-            handleInputChange('content', newContent);
-            
+
+            handleInputChange("content", newContent);
+
             setTimeout(() => {
                 textarea.focus();
                 textarea.selectionStart = startPos + imageMarkdown.length;
                 textarea.selectionEnd = startPos + imageMarkdown.length;
             }, 0);
         } else {
-            handleInputChange('content', formData.content + imageMarkdown);
+            handleInputChange("content", formData.content + imageMarkdown);
         }
-        setExternalImageUrl('');
-        setImageCaption('');
+        setExternalImageUrl("");
+        setImageCaption("");
+        setContentImagePreview(null);
         setIsImageDialogOpen(false);
         toast.success("Image link inserted!");
     };
 
+    const handleComponentInsert = () => {
+        if (!componentContentText.trim()) {
+            toast.error("Content cannot be empty");
+            return;
+        }
+
+        let componentMarkdown = `\n<${selectedComponentType}>\n${componentContentText.trim()}\n</${selectedComponentType}>\n\n`;
+
+        // Handling todo formatting optionally
+        if (selectedComponentType === "todo" && !componentContentText.includes("\n")) {
+            componentMarkdown = `\n<todo>\n- ${componentContentText.trim()}\n</todo>\n\n`;
+        }
+
+        const textarea = document.getElementById("md-editor");
+        if (textarea) {
+            const startPos = textarea.selectionStart;
+            const endPos = textarea.selectionEnd;
+            const textBefore = formData.content.substring(0, startPos);
+            const textAfter = formData.content.substring(endPos, formData.content.length);
+            const newContent = textBefore + componentMarkdown + textAfter;
+
+            handleInputChange("content", newContent);
+
+            setTimeout(() => {
+                textarea.focus();
+                textarea.selectionStart = startPos + componentMarkdown.length;
+                textarea.selectionEnd = startPos + componentMarkdown.length;
+            }, 0);
+        } else {
+            handleInputChange("content", formData.content + componentMarkdown);
+        }
+
+        setSelectedComponentType("info");
+        setComponentContentText("");
+        setIsComponentDialogOpen(false);
+        toast.success(`Custom ${selectedComponentType} inserted!`);
+    };
+
     function formValidate() {
-        if (formData.title.trim() === '') {
+        if (formData.title.trim() === "") {
             toast.error("Title is required !");
             return false;
         }
-        if (formData.excerpt.trim() === '') {
+        if (formData.excerpt.trim() === "") {
             toast.error("Excerpt is required !");
             return false;
         }
-        if (formData.category.trim() === '') {
+        if (formData.category.trim() === "") {
             toast.error("Category is required !");
             return false;
         }
@@ -256,7 +361,7 @@ export default function EditorPage({ type }) {
             await navigator.clipboard.writeText(text);
             toast.success("Link to post copied to clipboard !");
         } catch (err) {
-            console.error('Failed to copy link to clipboard !', err);
+            console.error("Failed to copy link to clipboard !", err);
         }
     };
 
@@ -265,7 +370,7 @@ export default function EditorPage({ type }) {
         if (!formValidate()) {
             setLoading(false);
             return;
-        };
+        }
 
         try {
             const token = await getToken();
@@ -274,10 +379,10 @@ export default function EditorPage({ type }) {
             // uploading uploaded images to cloudinary
             if (thumbFile || coverFile) {
                 const imageUploads = new FormData();
-                if (thumbFile) imageUploads.append('thumbnail', thumbFile);
-                if (coverFile) imageUploads.append('coverImage', coverFile);
+                if (thumbFile) imageUploads.append("thumbnail", thumbFile);
+                if (coverFile) imageUploads.append("coverImage", coverFile);
                 //appending user id
-                imageUploads.append('userId', user.id);
+                imageUploads.append("userId", user.id);
                 const uploadResponse = await uploadMedia(imageUploads, token);
 
                 // setting thumnail and coverImage URLs from response
@@ -293,36 +398,50 @@ export default function EditorPage({ type }) {
                         ...updatedFormData,
                         thumb_id,
                         cover_id,
-                        referenceStatus: true
-                    }
+                        referenceStatus: true,
+                    };
                 }
             }
 
-            if (type === 'new') {
+            if (type === "new") {
                 // handle new article submission
                 const res = await createPost(updatedFormData, userId, token);
                 if (res && res.status === 201) {
                     toast.success("Draft sent for review successfully !");
-                    copyToClipboard(`${window.location.origin}/articles/${res.data.postId}`);
+                    copyToClipboard(
+                        `${window.location.origin}/articles/${res.data.postId}`,
+                    );
                 } else {
                     toast.error("Failed to create post !");
                 }
             }
-            if (type === 'edit') {
+            if (type === "edit") {
                 // handle article update submission
                 const patchData = diffeningFunction(oldData, updatedFormData);
 
                 // check referenceStatus and prepare patch data
-                if (oldData.referenceStatus && (!updatedFormData.thumb_id || updatedFormData.thumb_id === null) && (!updatedFormData.cover_id || updatedFormData.cover_id === null)) {
+                if (
+                    oldData.referenceStatus &&
+                    (!updatedFormData.thumb_id || updatedFormData.thumb_id === null) &&
+                    (!updatedFormData.cover_id || updatedFormData.cover_id === null)
+                ) {
                     if (!patchData.thumbnail && !patchData.coverImage) {
                         updatedFormData.referenceStatus = true;
                         patchData.referenceStatus = true;
                     }
-                    if ((patchData.thumbnail && !patchData.coverImage && oldData.coverImage.includes(userId))) {
+                    if (
+                        patchData.thumbnail &&
+                        !patchData.coverImage &&
+                        oldData.coverImage.includes(userId)
+                    ) {
                         updatedFormData.referenceStatus = true;
                         patchData.referenceStatus = true;
                     }
-                    if ((patchData.coverImage && !patchData.thumbnail && oldData.thumbnail.includes(userId))) {
+                    if (
+                        patchData.coverImage &&
+                        !patchData.thumbnail &&
+                        oldData.thumbnail.includes(userId)
+                    ) {
                         updatedFormData.referenceStatus = true;
                         patchData.referenceStatus = true;
                     }
@@ -333,39 +452,59 @@ export default function EditorPage({ type }) {
                 }
 
                 // Set referenceStatus to false when both images are deleted
-                if (patchData.thumbnail === '' && patchData.coverImage === '') {
+                if (patchData.thumbnail === "" && patchData.coverImage === "") {
                     patchData.referenceStatus = false;
                 }
 
                 // handling old media deletion if changed
                 if (oldData.referenceStatus) {
-                    // Case 1: New images uploaded 
-                    if ((patchData.thumb_id && patchData.thumb_id !== null) || (patchData.cover_id && patchData.cover_id !== null)) {
+                    // Case 1: New images uploaded
+                    if (
+                        (patchData.thumb_id && patchData.thumb_id !== null) ||
+                        (patchData.cover_id && patchData.cover_id !== null)
+                    ) {
                         if (patchData.thumbnail && oldData.thumbnail.includes(userId)) {
-                            const oldThumbId = 'kenshi_webspace' + oldData.thumbnail.split('kenshi_webspace')[1].split('.')[0];
+                            const oldThumbId =
+                                "kenshi_webspace" +
+                                oldData.thumbnail.split("kenshi_webspace")[1].split(".")[0];
                             await deleteMedia({ publicId: oldThumbId }, token);
                         }
                         if (patchData.coverImage && oldData.coverImage.includes(userId)) {
-                            const oldCoverId = 'kenshi_webspace' + oldData.coverImage.split('kenshi_webspace')[1].split('.')[0];
+                            const oldCoverId =
+                                "kenshi_webspace" +
+                                oldData.coverImage.split("kenshi_webspace")[1].split(".")[0];
                             await deleteMedia({ publicId: oldCoverId }, token);
                         }
                     }
-                    // Case 2: Images deleted without replacement 
+                    // Case 2: Images deleted without replacement
                     else if (!thumbFile && !coverFile) {
-                        if ((patchData.thumbnail || patchData.thumbnail === '') && oldData.thumbnail.includes(userId)) {
-                            const oldThumbId = 'kenshi_webspace' + oldData.thumbnail.split('kenshi_webspace')[1].split('.')[0];
+                        if (
+                            (patchData.thumbnail || patchData.thumbnail === "") &&
+                            oldData.thumbnail.includes(userId)
+                        ) {
+                            const oldThumbId =
+                                "kenshi_webspace" +
+                                oldData.thumbnail.split("kenshi_webspace")[1].split(".")[0];
                             await deleteMedia({ publicId: oldThumbId }, token);
                         }
-                        if ((patchData.coverImage || patchData.coverImage === '') && oldData.coverImage.includes(userId)) {
-                            const oldCoverId = 'kenshi_webspace' + oldData.coverImage.split('kenshi_webspace')[1].split('.')[0];
+                        if (
+                            (patchData.coverImage || patchData.coverImage === "") &&
+                            oldData.coverImage.includes(userId)
+                        ) {
+                            const oldCoverId =
+                                "kenshi_webspace" +
+                                oldData.coverImage.split("kenshi_webspace")[1].split(".")[0];
                             await deleteMedia({ publicId: oldCoverId }, token);
                         }
                     }
                 }
 
                 // handling service reference deletion if changed
-                if (patchData.referenceStatus === false && oldData.referenceStatus === true) {
-                    patchData.del_req = true;// flag for deleting service reference
+                if (
+                    patchData.referenceStatus === false &&
+                    oldData.referenceStatus === true
+                ) {
+                    patchData.del_req = true; // flag for deleting service reference
                 }
 
                 // delete thumb_id and cover_id in patch data for transmission
@@ -385,20 +524,19 @@ export default function EditorPage({ type }) {
 
                 if (res && res.status === 200) {
                     toast.success("Post updated successfully!");
-                }
-                else {
+                } else {
                     toast.error("Failed to update post !");
                 }
             }
         } catch (error) {
             if (error.code === "ECONNABORTED")
-                toast.error("Request timed out. Please check 'Your Articles' and retry if post not created.");
-            else
-                toast.error("An error occurred while processing your request !");
+                toast.error(
+                    "Request timed out. Please check 'Your Articles' and retry if post not created.",
+                );
+            else toast.error("An error occurred while processing your request !");
 
             console.error("Submission error:", error);
-        }
-        finally {
+        } finally {
             // resetting form data
             if (type === "new") {
                 // cleanup object URLs
@@ -414,17 +552,16 @@ export default function EditorPage({ type }) {
                 }
 
                 setFormData({
-                    title: '',
-                    excerpt: '',
-                    category: '',
+                    title: "",
+                    excerpt: "",
+                    category: "",
                     readTime: 0,
-                    thumbnail: '',
-                    coverImage: '',
+                    thumbnail: "",
+                    coverImage: "",
                     content: dummyContent,
-                    referenceStatus: false
-                })
-            }
-            else if (type === "edit") {
+                    referenceStatus: false,
+                });
+            } else if (type === "edit") {
                 setOldData(formData);
                 setFormData(formData);
             }
@@ -432,18 +569,30 @@ export default function EditorPage({ type }) {
             // set loading to false
             setLoading(false);
         }
-    }
+    };
 
     const saveDraft = () => {
         localStorage.setItem("draft", JSON.stringify(formData));
-        toast.success("Draft is saved locally. Saving to cloud will be enabled in future soon...", { duration: 7000 })
-    }
+        toast.success(
+            "Draft is saved locally. Saving to cloud will be enabled in future soon...",
+            { duration: 7000 },
+        );
+    };
 
     const categories = [
-        "Technology", "Geopolitics", "History", "Astronomy", "Religion & Culture", "Anime", "Literature", "Travel"
+        "Technology",
+        "Geopolitics",
+        "History",
+        "Astronomy",
+        "Religion & Culture",
+        "Anime",
+        "Literature",
+        "Travel",
     ];
 
-    { type === "edit" && loading && <LoadingPage /> }
+    {
+        type === "edit" && loading && <LoadingPage />;
+    }
 
     return (
         <TooltipProvider>
@@ -459,7 +608,9 @@ export default function EditorPage({ type }) {
                             <CardTitle className="flex items-center gap-2 md:gap-3 text-white text-xl md:text-2xl lg:text-3xl font-extrabold">
                                 <FileText size={20} className="md:hidden" />
                                 <FileText size={28} className="hidden md:block" />
-                                <span className="truncate">{type === 'new' ? 'Create New' : 'Edit your'} Article</span>
+                                <span className="truncate">
+                                    {type === "new" ? "Create New" : "Edit your"} Article
+                                </span>
                             </CardTitle>
                         </CardHeader>
 
@@ -474,26 +625,36 @@ export default function EditorPage({ type }) {
                                 {/* Left Column */}
                                 <div className="space-y-4">
                                     <div>
-                                        <Label htmlFor="title" className="text-white font-medium text-sm md:text-base mb-2 block">
+                                        <Label
+                                            htmlFor="title"
+                                            className="text-white font-medium text-sm md:text-base mb-2 block"
+                                        >
                                             Article Title <span className="text-red-500">*</span>
                                         </Label>
                                         <Input
                                             id="title"
                                             value={formData.title}
-                                            onChange={(e) => handleInputChange('title', e.target.value)}
+                                            onChange={(e) =>
+                                                handleInputChange("title", e.target.value)
+                                            }
                                             placeholder="Enter your article title..."
                                             className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 text-sm md:text-base"
                                         />
                                     </div>
 
                                     <div>
-                                        <Label htmlFor="excerpt" className="text-white font-medium text-sm md:text-base mb-2 block">
+                                        <Label
+                                            htmlFor="excerpt"
+                                            className="text-white font-medium text-sm md:text-base mb-2 block"
+                                        >
                                             Excerpt <span className="text-red-500">*</span>
                                         </Label>
                                         <Textarea
                                             id="excerpt"
                                             value={formData.excerpt}
-                                            onChange={(e) => handleInputChange('excerpt', e.target.value)}
+                                            onChange={(e) =>
+                                                handleInputChange("excerpt", e.target.value)
+                                            }
                                             placeholder="Brief description of your article..."
                                             rows={3}
                                             className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 resize-none text-sm md:text-base"
@@ -506,20 +667,30 @@ export default function EditorPage({ type }) {
                                                 <Tag size={16} className="inline mr-1" />
                                                 Category <span className="text-red-500">*</span>
                                             </Label>
-                                            <Select value={formData.category} onValueChange={(value) => handleInputChange('category', value)}>
+                                            <Select
+                                                value={formData.category}
+                                                onValueChange={(value) =>
+                                                    handleInputChange("category", value)
+                                                }
+                                            >
                                                 <SelectTrigger className="bg-white/5 border-white/20 text-white text-sm md:text-base">
                                                     <SelectValue placeholder="Select category" />
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     {categories.map((cat) => (
-                                                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                                                        <SelectItem key={cat} value={cat}>
+                                                            {cat}
+                                                        </SelectItem>
                                                     ))}
                                                 </SelectContent>
                                             </Select>
                                         </div>
 
                                         <div>
-                                            <Label htmlFor="readTime" className="text-white font-medium text-sm md:text-base mb-2 block">
+                                            <Label
+                                                htmlFor="readTime"
+                                                className="text-white font-medium text-sm md:text-base mb-2 block"
+                                            >
                                                 <Clock size={16} className="inline mr-1" />
                                                 Read Time (min) <span className="text-red-500">*</span>
                                             </Label>
@@ -527,7 +698,9 @@ export default function EditorPage({ type }) {
                                                 id="readTime"
                                                 type="number"
                                                 value={formData.readTime}
-                                                onChange={(e) => handleInputChange('readTime', e.target.value)}
+                                                onChange={(e) =>
+                                                    handleInputChange("readTime", e.target.value)
+                                                }
                                                 placeholder="5"
                                                 min="1"
                                                 className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 text-sm md:text-base"
@@ -539,18 +712,26 @@ export default function EditorPage({ type }) {
                                 {/* Right Column */}
                                 <div className="space-y-4">
                                     <div>
-                                        <Label htmlFor="thumbnail" className="text-white font-medium text-sm md:text-base mb-2 block">
+                                        <Label
+                                            htmlFor="thumbnail"
+                                            className="text-white font-medium text-sm md:text-base mb-2 block"
+                                        >
                                             <Image size={16} className="inline mr-1" />
                                             Thumbnail URL
                                         </Label>
                                         <div className="flex gap-2">
                                             <Input
                                                 id="thumbnail"
-                                                value={(formData.thumbnail && !formData.thumbnail.includes(userId)) ? formData.thumbnail : ''}
+                                                value={
+                                                    formData.thumbnail &&
+                                                        !formData.thumbnail.includes(userId)
+                                                        ? formData.thumbnail
+                                                        : ""
+                                                }
                                                 onChange={(e) => {
-                                                    setThumbPreview(null)
-                                                    setThumbFile(null)
-                                                    handleInputChange('thumbnail', e.target.value)
+                                                    setThumbPreview(null);
+                                                    setThumbFile(null);
+                                                    handleInputChange("thumbnail", e.target.value);
                                                 }}
                                                 placeholder="https://example.com/thumbnail.jpg"
                                                 className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 text-sm md:text-base"
@@ -558,22 +739,31 @@ export default function EditorPage({ type }) {
 
                                             <Tooltip>
                                                 <TooltipTrigger asChild>
-                                                    <Button htmlFor="thumbUpload" size="sm" className="bg-white/10 hover:bg-white/20 text-white border-white/20 px-2 md:px-3">
+                                                    <Button
+                                                        htmlFor="thumbUpload"
+                                                        size="sm"
+                                                        className="bg-white/10 hover:bg-white/20 text-white border-white/20 px-2 md:px-3"
+                                                    >
                                                         <Upload size={16} />
                                                         <input
                                                             type="file"
                                                             id="thumbUpload"
                                                             accept="image/*"
-                                                            className='hidden'
-                                                            onChange={(e) => handleImageUpload(e, "thumbnail")}
+                                                            className="hidden"
+                                                            onChange={(e) =>
+                                                                handleImageUpload(e, "thumbnail")
+                                                            }
                                                         />
-                                                        <label htmlFor="thumbUpload" className='hidden sm:block'>Upload Image</label>
+                                                        <label
+                                                            htmlFor="thumbUpload"
+                                                            className="hidden sm:block"
+                                                        >
+                                                            Upload Image
+                                                        </label>
                                                     </Button>
                                                 </TooltipTrigger>
                                                 <TooltipContent>Upload image</TooltipContent>
                                             </Tooltip>
-
-
 
                                             <Tooltip>
                                                 <TooltipTrigger asChild>
@@ -587,23 +777,30 @@ export default function EditorPage({ type }) {
                                                 </TooltipTrigger>
                                                 <TooltipContent>Remove</TooltipContent>
                                             </Tooltip>
-
                                         </div>
                                     </div>
 
                                     <div>
-                                        <Label htmlFor="coverImage" className="text-white font-medium text-sm md:text-base mb-2 block">
+                                        <Label
+                                            htmlFor="coverImage"
+                                            className="text-white font-medium text-sm md:text-base mb-2 block"
+                                        >
                                             <Image size={16} className="inline mr-1" />
                                             Cover Image URL
                                         </Label>
                                         <div className="flex gap-2">
                                             <Input
                                                 id="coverImage"
-                                                value={(formData.coverImage && !formData.coverImage.includes(userId)) ? formData.coverImage : ''}
+                                                value={
+                                                    formData.coverImage &&
+                                                        !formData.coverImage.includes(userId)
+                                                        ? formData.coverImage
+                                                        : ""
+                                                }
                                                 onChange={(e) => {
-                                                    setCoverPreview(null)
-                                                    setCoverFile(null)
-                                                    handleInputChange('coverImage', e.target.value)
+                                                    setCoverPreview(null);
+                                                    setCoverFile(null);
+                                                    handleInputChange("coverImage", e.target.value);
                                                 }}
                                                 placeholder="https://example.com/cover.jpg"
                                                 className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 text-sm md:text-base"
@@ -611,22 +808,29 @@ export default function EditorPage({ type }) {
 
                                             <Tooltip>
                                                 <TooltipTrigger asChild>
-                                                    <Button size="sm" htmlFor="coverUpload" className="bg-white/10 hover:bg-white/20 text-white border-white/20 px-2 md:px-3">
+                                                    <Button
+                                                        size="sm"
+                                                        htmlFor="coverUpload"
+                                                        className="bg-white/10 hover:bg-white/20 text-white border-white/20 px-2 md:px-3"
+                                                    >
                                                         <Upload size={16} />
                                                         <input
                                                             type="file"
                                                             id="coverUpload"
                                                             accept="image/*"
-                                                            className='hidden'
+                                                            className="hidden"
                                                             onChange={(e) => handleImageUpload(e, "cover")}
                                                         />
-                                                        <label htmlFor="coverUpload" className='hidden sm:block'>Upload Image</label>
+                                                        <label
+                                                            htmlFor="coverUpload"
+                                                            className="hidden sm:block"
+                                                        >
+                                                            Upload Image
+                                                        </label>
                                                     </Button>
                                                 </TooltipTrigger>
                                                 <TooltipContent>Upload image</TooltipContent>
                                             </Tooltip>
-
-
 
                                             <Tooltip>
                                                 <TooltipTrigger asChild>
@@ -640,23 +844,29 @@ export default function EditorPage({ type }) {
                                                 </TooltipTrigger>
                                                 <TooltipContent>Remove</TooltipContent>
                                             </Tooltip>
-
                                         </div>
                                     </div>
 
                                     {/* Image Preview */}
                                     <div className="bg-white/5 p-3 md:p-4 rounded-lg border border-white/20">
-                                        <Label className="text-white font-medium text-sm mb-2 block">Preview</Label>
+                                        <Label className="text-white font-medium text-sm mb-2 block">
+                                            Preview
+                                        </Label>
                                         <div className="grid grid-cols-2 gap-2 space-y-2">
-
                                             {/* Thumbnail */}
                                             <div>
                                                 <p className="text-xs text-gray-300 mb-1">Thumbnail</p>
                                                 <img
-                                                    src={thumbPreview ? thumbPreview : formData.thumbnail === '' ? '/placeholder.png' : formData.thumbnail}
+                                                    src={
+                                                        thumbPreview
+                                                            ? thumbPreview
+                                                            : formData.thumbnail === ""
+                                                                ? "/placeholder.png"
+                                                                : formData.thumbnail
+                                                    }
                                                     onError={(e) => {
-                                                        e.target.onerror = null;//prevent loop if placeholder fails
-                                                        e.target.src = '/placeholder.png';
+                                                        e.target.onerror = null; //prevent loop if placeholder fails
+                                                        e.target.src = "/placeholder.png";
                                                     }}
                                                     alt="Thumbnail preview"
                                                     className="w-full h-40 object-fill rounded border shadow-sm border-white/20"
@@ -665,18 +875,25 @@ export default function EditorPage({ type }) {
 
                                             {/* Cover Image */}
                                             <div>
-                                                <p className="text-xs text-gray-300 mb-1">Cover Image</p>
+                                                <p className="text-xs text-gray-300 mb-1">
+                                                    Cover Image
+                                                </p>
                                                 <img
-                                                    src={coverPreview ? coverPreview : formData.coverImage === '' ? '/placeholder.png' : formData.coverImage}
+                                                    src={
+                                                        coverPreview
+                                                            ? coverPreview
+                                                            : formData.coverImage === ""
+                                                                ? "/placeholder.png"
+                                                                : formData.coverImage
+                                                    }
                                                     onError={(e) => {
-                                                        e.target.onerror = null;//prevent loop if placeholder fails
-                                                        e.target.src = '/placeholder.png';
+                                                        e.target.onerror = null; //prevent loop if placeholder fails
+                                                        e.target.src = "/placeholder.png";
                                                     }}
                                                     alt="Cover preview"
                                                     className="w-full h-40 object-fill rounded border shadow-sm border-white/20"
                                                 />
                                             </div>
-
                                         </div>
                                     </div>
                                 </div>
@@ -690,17 +907,16 @@ export default function EditorPage({ type }) {
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.5, delay: 0.2 }}
                             >
-                                <Tabs defaultValue="manual" className="h-full">
+                                <Tabs defaultValue="write" className="h-full">
                                     <TabsList className="mb-4 flex gap-1 md:gap-2 bg-white/10 p-1 rounded-xl w-full sm:w-auto overflow-x-clip">
-
                                         {/* clear and copy buttons */}
-                                        <div className='mr-auto flex justify-between gap-1'>
+                                        <div className="mr-auto flex justify-between gap-1">
                                             <Tooltip>
                                                 <TooltipTrigger asChild>
                                                     <Button
                                                         size="sm"
                                                         className="bg-white/10 hover:bg-white/20 text-white border-white/20 px-2 md:px-3"
-                                                        onClick={() => handleInputChange('content', '')}
+                                                        onClick={() => handleInputChange("content", "")}
                                                     >
                                                         <Trash size={14} className="md:w-4 md:h-4" />
                                                     </Button>
@@ -715,21 +931,39 @@ export default function EditorPage({ type }) {
                                                         className="bg-white/10 hover:bg-white/20 text-white border-white/20 px-2 md:px-3"
                                                         onClick={async () => {
                                                             try {
-                                                                await navigator.clipboard.writeText(formData.content);
+                                                                await navigator.clipboard.writeText(
+                                                                    formData.content,
+                                                                );
                                                                 toast.success("Copied !");
                                                                 setCopied(true);
                                                             } catch (err) {
-                                                                console.error('Error copying !', err);
+                                                                console.error("Error copying !", err);
                                                             }
                                                         }}
                                                     >
-                                                        {copied ? <Check size={14} className="md:w-4 md:h-4" /> : <CopyIcon size={14} className="md:w-4 md:h-4" />}
+                                                        {copied ? (
+                                                            <Check size={14} className="md:w-4 md:h-4" />
+                                                        ) : (
+                                                            <CopyIcon size={14} className="md:w-4 md:h-4" />
+                                                        )}
                                                     </Button>
                                                 </TooltipTrigger>
                                                 <TooltipContent>Copy</TooltipContent>
                                             </Tooltip>
 
-                                            <Dialog open={isImageDialogOpen} onOpenChange={setIsImageDialogOpen}>
+                                            <Dialog
+                                                open={isImageDialogOpen}
+                                                onOpenChange={(open) => {
+                                                    setIsImageDialogOpen(open);
+                                                    if (!open) {
+                                                        setExternalImageUrl("");
+                                                        setImageCaption("");
+                                                        setContentImagePreview(null);
+                                                        setContentImageUploadPermission(false);
+                                                        setContentImageUploadEventObject(null);
+                                                    }
+                                                }}
+                                            >
                                                 <Tooltip>
                                                     <TooltipTrigger asChild>
                                                         <DialogTrigger asChild>
@@ -737,7 +971,14 @@ export default function EditorPage({ type }) {
                                                                 size="sm"
                                                                 className="bg-white/10 hover:bg-white/20 text-white border-white/20 px-2 md:px-3"
                                                             >
-                                                                {isUploadingImage ? <LoaderCircle size={14} className="md:w-4 md:h-4 animate-spin" /> : <Image size={14} className="md:w-4 md:h-4" />}
+                                                                {isUploadingImage ? (
+                                                                    <LoaderCircle
+                                                                        size={14}
+                                                                        className="md:w-4 md:h-4 animate-spin"
+                                                                    />
+                                                                ) : (
+                                                                    <Image size={14} className="md:w-4 md:h-4" />
+                                                                )}
                                                             </Button>
                                                         </DialogTrigger>
                                                     </TooltipTrigger>
@@ -745,20 +986,26 @@ export default function EditorPage({ type }) {
                                                 </Tooltip>
                                                 <DialogContent className="sm:max-w-md bg-gradient-to-br from-purple-950 via-purple-900 to-indigo-900 border-white/20 text-white">
                                                     <DialogHeader>
-                                                        <DialogTitle className="text-white">Insert Image</DialogTitle>
+                                                        <DialogTitle className="text-white">
+                                                            Insert Image
+                                                        </DialogTitle>
                                                         <DialogDescription className="text-gray-300">
-                                                            Upload a file from your device or embed an external link.
+                                                            Upload a file from your device or embed an
+                                                            external link.
                                                         </DialogDescription>
                                                     </DialogHeader>
-                                                    
+
                                                     {/* Global Caption Field */}
                                                     <div className="px-4 pt-2">
-                                                        <Label htmlFor="imageCaption" className="text-white font-medium text-xs mb-1.5 block">
+                                                        <Label
+                                                            htmlFor="imageCaption"
+                                                            className="text-white font-medium text-xs mb-1.5 block"
+                                                        >
                                                             Caption (Optional)
                                                         </Label>
-                                                        <Input 
+                                                        <Input
                                                             id="imageCaption"
-                                                            placeholder="A descriptive alt text..." 
+                                                            placeholder="A descriptive alt text..."
                                                             value={imageCaption}
                                                             onChange={(e) => setImageCaption(e.target.value)}
                                                             className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 text-sm h-8"
@@ -766,19 +1013,44 @@ export default function EditorPage({ type }) {
                                                     </div>
 
                                                     <div className="flex flex-col gap-6 px-4 pb-4">
+                                                        {(externalImageUrl || contentImagePreview) && (
+                                                            <div className="bg-white/5 p-3 rounded-lg border border-white/20">
+                                                                <Label className="text-white font-medium text-xs mb-2 block">
+                                                                    Live Preview
+                                                                </Label>
+                                                                <div className="flex justify-center bg-black/40 rounded border border-white/10 p-2 h-32 overflow-hidden">
+                                                                    <img
+                                                                        src={
+                                                                            contentImagePreview || externalImageUrl
+                                                                        }
+                                                                        alt="Preview"
+                                                                        className="object-contain w-full h-full"
+                                                                        onError={(e) => {
+                                                                            e.target.onerror = null;
+                                                                            e.target.src = "/placeholder.png"; // Make sure placeholder.png exists or use a generic one
+                                                                        }}
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                        )}
+
                                                         <div className="space-y-3 p-4 bg-white/5 border border-white/10 rounded-lg">
                                                             <div className="flex items-center gap-2 mb-2">
                                                                 <LinkIcon size={16} />
-                                                                <h4 className="font-medium text-sm">Embed Link</h4>
+                                                                <h4 className="font-medium text-sm">
+                                                                    Embed Link
+                                                                </h4>
                                                             </div>
                                                             <div className="flex items-center gap-2">
-                                                                <Input 
-                                                                    placeholder="https://example.com/image.png" 
+                                                                <Input
+                                                                    placeholder="https://example.com/image.png"
                                                                     value={externalImageUrl}
-                                                                    onChange={(e) => setExternalImageUrl(e.target.value)}
+                                                                    onChange={(e) =>
+                                                                        setExternalImageUrl(e.target.value)
+                                                                    }
                                                                     className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
                                                                 />
-                                                                <Button 
+                                                                <Button
                                                                     onClick={handleExternalImageInsert}
                                                                     className="bg-white/20 hover:bg-white/30 text-white"
                                                                 >
@@ -786,50 +1058,178 @@ export default function EditorPage({ type }) {
                                                                 </Button>
                                                             </div>
                                                         </div>
-                                                        
+
                                                         <div className="relative">
                                                             <div className="absolute inset-0 flex items-center">
                                                                 <span className="w-full border-t border-white/10" />
                                                             </div>
                                                             <div className="relative flex justify-center text-xs uppercase">
-                                                                <span className="bg-purple-900 px-2 text-gray-400">Or</span>
+                                                                <span className="bg-purple-900 px-2 text-gray-400">
+                                                                    Or
+                                                                </span>
                                                             </div>
                                                         </div>
 
                                                         <div className="space-y-3 p-4 bg-white/5 border border-white/10 rounded-lg">
                                                             <div className="flex items-center gap-2 mb-2">
                                                                 <Upload size={16} />
-                                                                <h4 className="font-medium text-sm">Upload File</h4>
+                                                                <h4 className="font-medium text-sm">
+                                                                    Upload File
+                                                                </h4>
                                                             </div>
-                                                            <Button
-                                                                asChild
-                                                                className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white cursor-pointer"
-                                                            >
-                                                                <label>
-                                                                    {isUploadingImage ? "Uploading..." : "Click to select file"}
-                                                                    <input
-                                                                        type="file"
-                                                                        accept="image/*"
-                                                                        className="hidden"
-                                                                        onChange={handleContentImageUpload}
-                                                                        disabled={isUploadingImage}
-                                                                    />
-                                                                </label>
-                                                            </Button>
+                                                            <div className="flex gap-2 w-full items-center">
+                                                                <Button
+                                                                    asChild
+                                                                    className="w-full flex-1 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white cursor-pointer"
+                                                                    onClick={
+                                                                        () => {
+                                                                            if (contentImageUploadPermission) {
+                                                                                handleContentImageUpload(contentImageUploadEventObject);
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                >
+                                                                    <label>
+                                                                        {contentImageUploadPermission ? isUploadingImage ? <><LoaderCircle className="animate-spin" /> <span>Uploading...</span></> : "Upload"
+                                                                            : "Click to select file"}
+                                                                        <input
+                                                                            type="file"
+                                                                            accept="image/*"
+                                                                            className="hidden"
+                                                                            onChange={(e) => {
+                                                                                const file =
+                                                                                    e.target.files && e.target.files[0];
+                                                                                if (file) {
+                                                                                    const previewUrl =
+                                                                                        URL.createObjectURL(file);
+                                                                                    setContentImagePreview(previewUrl);
+                                                                                    setContentImageUploadPermission(true);
+                                                                                    setContentImageUploadEventObject(e);
+                                                                                }
+                                                                            }}
+                                                                            disabled={isUploadingImage}
+                                                                        />
+                                                                    </label>
+                                                                </Button>
+                                                                <Button
+                                                                    size="sm"
+                                                                    className="bg-white/10 hover:bg-white/20 text-white border-white/20 px-2 md:px-3"
+                                                                    onClick={() => handleImageDelete("content")}
+                                                                >
+                                                                    <Trash size={16} />
+                                                                </Button>
+                                                            </div>
                                                         </div>
+                                                    </div>
+                                                </DialogContent>
+                                            </Dialog>
+
+                                            <Dialog
+                                                open={isComponentDialogOpen}
+                                                onOpenChange={(open) => {
+                                                    setIsComponentDialogOpen(open);
+                                                    if (!open) {
+                                                        setSelectedComponentType("info");
+                                                        setComponentContentText("");
+                                                    }
+                                                }}
+                                            >
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <DialogTrigger asChild>
+                                                            <Button
+                                                                size="sm"
+                                                                className="bg-white/10 hover:bg-white/20 text-white border-white/20 px-2 md:px-3"
+                                                            >
+                                                                <MessageSquareWarning size={14} className="md:w-4 md:h-4" />
+                                                            </Button>
+                                                        </DialogTrigger>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent>Insert Banner</TooltipContent>
+                                                </Tooltip>
+                                                <DialogContent className="sm:max-w-md bg-gradient-to-br from-purple-950 via-purple-900 to-indigo-900 border-white/20 text-white">
+                                                    <DialogHeader>
+                                                        <DialogTitle className="text-white">
+                                                            Insert Banner
+                                                        </DialogTitle>
+                                                        <DialogDescription className="text-gray-300">
+                                                            Insert stylized callouts, quotes, warnings, and lists into your article.
+                                                        </DialogDescription>
+                                                    </DialogHeader>
+
+                                                    <div className="flex flex-col gap-4 px-4 py-2">
+                                                        <div>
+                                                            <Label className="text-white font-medium text-xs mb-2 block">
+                                                                Component Type
+                                                            </Label>
+                                                            <RadioGroup
+                                                                value={selectedComponentType}
+                                                                onValueChange={setSelectedComponentType}
+                                                                className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2"
+                                                            >
+                                                                {["info", "note", "tip", "like", "success", "warn", "danger", "todo", "quote"].map((type) => (
+                                                                    <div key={type} className="flex items-center space-x-2">
+                                                                        <RadioGroupItem value={type} id={type} className="border-white/50 text-indigo-400" />
+                                                                        <Label htmlFor={type} className="text-xs capitalize flex items-center gap-1 cursor-pointer hover:text-indigo-300 transition-colors">
+                                                                            {type === "info" && "💡"}
+                                                                            {type === "note" && "📝"}
+                                                                            {type === "tip" && "💡"}
+                                                                            {type === "like" && "🩷"}
+                                                                            {type === "success" && "✅"}
+                                                                            {type === "warn" && "⚠️"}
+                                                                            {type === "danger" && "❗"}
+                                                                            {type === "todo" && "📋"}
+                                                                            {type === "quote" && "✨"}
+                                                                            {type}
+                                                                        </Label>
+                                                                    </div>
+                                                                ))}
+                                                            </RadioGroup>
+                                                        </div>
+
+                                                        <div>
+                                                            <Label htmlFor="componentContent" className="text-white font-medium text-xs mb-1.5 block">
+                                                                Text Content
+                                                            </Label>
+                                                            <Textarea
+                                                                id="componentContent"
+                                                                rows={4}
+                                                                value={componentContentText}
+                                                                onChange={(e) => setComponentContentText(e.target.value)}
+                                                                placeholder="e.g. This is a very important warning for readers..."
+                                                                className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 text-sm resize-y"
+                                                            />
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="flex px-4 pb-4">
+                                                        <Button
+                                                            className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white"
+                                                            onClick={handleComponentInsert}
+                                                        >
+                                                            Insert Component
+                                                        </Button>
                                                     </div>
                                                 </DialogContent>
                                             </Dialog>
                                         </div>
 
-                                        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="flex-1 sm:flex-initial">
-                                            <TabsTrigger value="write" className="flex items-center gap-2 w-full text-xs md:text-sm">
+                                        <motion.div
+                                            whileHover={{ scale: 1.05 }}
+                                            whileTap={{ scale: 0.95 }}
+                                            className="flex-1 sm:flex-initial"
+                                        >
+                                            <TabsTrigger
+                                                value="write"
+                                                className="flex items-center gap-2 w-full text-xs md:text-sm"
+                                            >
                                                 <Pencil size={14} className="md:w-4 md:h-4" />
-                                                <span className='hidden sm:block'>Editor</span>
-                                                <span className='block [@media(max-width:315px)]:hidden sm:hidden'>Edit</span>
+                                                <span className="hidden sm:block">Editor</span>
+                                                <span className="block [@media(max-width:315px)]:hidden sm:hidden">
+                                                    Edit
+                                                </span>
                                             </TabsTrigger>
                                         </motion.div>
-
 
                                         {/*todo: add quill editor in future */}
 
@@ -841,18 +1241,34 @@ export default function EditorPage({ type }) {
                                             </TabsTrigger>
                                         </motion.div> */}
 
-                                        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="flex-1 sm:flex-initial">
-                                            <TabsTrigger value="preview" className="flex items-center gap-2 w-full text-xs md:text-sm">
+                                        <motion.div
+                                            whileHover={{ scale: 1.05 }}
+                                            whileTap={{ scale: 0.95 }}
+                                            className="flex-1 sm:flex-initial"
+                                        >
+                                            <TabsTrigger
+                                                value="preview"
+                                                className="flex items-center gap-2 w-full text-xs md:text-sm"
+                                            >
                                                 <Eye size={14} className="md:w-4 md:h-4" />
-                                                <span className='hidden sm:block'>Preview</span>
-                                                <span className='block [@media(max-width:315px)]:hidden sm:hidden'>Prev</span>
+                                                <span className="hidden sm:block">Preview</span>
+                                                <span className="block [@media(max-width:315px)]:hidden sm:hidden">
+                                                    Prev
+                                                </span>
                                             </TabsTrigger>
                                         </motion.div>
 
                                         <Tooltip>
                                             <TooltipTrigger asChild>
-                                                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="ml-auto">
-                                                    <TabsTrigger value="manual" className="flex items-center gap-2 w-full text-xs md:text-sm">
+                                                <motion.div
+                                                    whileHover={{ scale: 1.05 }}
+                                                    whileTap={{ scale: 0.95 }}
+                                                    className="ml-auto"
+                                                >
+                                                    <TabsTrigger
+                                                        value="manual"
+                                                        className="flex items-center gap-2 w-full text-xs md:text-sm"
+                                                    >
                                                         <Info size={14} className="md:w-4 md:h-4" />
                                                     </TabsTrigger>
                                                 </motion.div>
@@ -865,7 +1281,9 @@ export default function EditorPage({ type }) {
                                         <Textarea
                                             id="md-editor"
                                             value={formData.content}
-                                            onChange={(e) => handleInputChange('content', e.target.value)}
+                                            onChange={(e) =>
+                                                handleInputChange("content", e.target.value)
+                                            }
                                             placeholder="Write your markdown content here..."
                                             className="min-h-[300px] md:min-h-[400px] lg:min-h-[500px] p-3 md:p-4 font-mono text-xs md:text-sm bg-white/5 text-white border-white/20 resize-none"
                                         />
@@ -873,14 +1291,18 @@ export default function EditorPage({ type }) {
 
                                     <TabsContent value="preview">
                                         <div className="px-1 wrap-break-word">
-                                            <MarkdownRenderer content={formData.content || '_Nothing to preview_'} />
+                                            <MarkdownRenderer
+                                                content={formData.content || "_Nothing to preview_"}
+                                            />
                                         </div>
                                     </TabsContent>
 
                                     <TabsContent value="manual" className="h-full">
                                         <ScrollArea className="h-[300px] md:h-[400px] lg:h-[500px] overflow-clip max-w-none bg-white/5 p-4 md:p-6 rounded-xl border border-white/20">
                                             <div className="px-1">
-                                                <MarkdownRenderer content={dummyContent || '_Error loading manual !_'} />
+                                                <MarkdownRenderer
+                                                    content={dummyContent || "_Error loading manual !_"}
+                                                />
                                             </div>
                                         </ScrollArea>
                                     </TabsContent>
@@ -897,9 +1319,18 @@ export default function EditorPage({ type }) {
                                 className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-between items-start sm:items-center"
                             >
                                 <div className="text-xs md:text-sm text-gray-300 order-2 sm:order-1">
-                                    <span className="block sm:inline">Characters: {formData.content.length}</span>
+                                    <span className="block sm:inline">
+                                        Characters: {formData.content.length}
+                                    </span>
                                     <span className="hidden sm:inline"> • </span>
-                                    <span className="block sm:inline">Words: {formData.content.split(/\s+/).filter(word => word.length > 0).length}</span>
+                                    <span className="block sm:inline">
+                                        Words:{" "}
+                                        {
+                                            formData.content
+                                                .split(/\s+/)
+                                                .filter((word) => word.length > 0).length
+                                        }
+                                    </span>
                                 </div>
 
                                 <div className="flex gap-2 md:gap-3 w-full sm:w-auto order-1 sm:order-2">
@@ -920,18 +1351,30 @@ export default function EditorPage({ type }) {
                                                 whileTap={{ scale: 0.95 }}
                                                 className="flex-1 sm:flex-initial"
                                             >
-                                                <Button onClick={() => handleSubmit()} className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white flex items-center justify-center gap-2 transition-all duration-200 text-sm md:text-base">
-                                                    {loading ? <LoaderCircle className='animate-spin' /> : <Send size={16} className="md:w-4 md:h-4" />}
-                                                    <span className="hidden sm:inline">{loading ? 'Submitting...' : 'Submit for Review'}</span>
+                                                <Button
+                                                    onClick={() => handleSubmit()}
+                                                    className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white flex items-center justify-center gap-2 transition-all duration-200 text-sm md:text-base"
+                                                >
+                                                    {loading ? (
+                                                        <LoaderCircle className="animate-spin" />
+                                                    ) : (
+                                                        <Send size={16} className="md:w-4 md:h-4" />
+                                                    )}
+                                                    <span className="hidden sm:inline">
+                                                        {loading ? "Submitting..." : "Submit for Review"}
+                                                    </span>
                                                     <span className="sm:hidden">Submit</span>
                                                 </Button>
                                             </motion.div>
                                         </TooltipTrigger>
                                         <TooltipContent>
-                                            <p>{loading ? 'Submitting...' : 'Submit your article for review and publication'}</p>
+                                            <p>
+                                                {loading
+                                                    ? "Submitting..."
+                                                    : "Submit your article for review and publication"}
+                                            </p>
                                         </TooltipContent>
                                     </Tooltip>
-
                                 </div>
                             </motion.div>
                         </CardContent>
@@ -944,5 +1387,5 @@ export default function EditorPage({ type }) {
 
 // type must be string(type checking-eslint)
 EditorPage.propTypes = {
-    type: PropTypes.string.isRequired
+    type: PropTypes.string.isRequired,
 };
