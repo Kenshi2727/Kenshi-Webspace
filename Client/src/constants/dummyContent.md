@@ -1,3 +1,17 @@
+## Slash Commands (Quick Formatting)
+
+You can quickly format your text or insert blocks without using your mouse!
+
+Simply type a forward slash `/` at the beginning of any new line to open the **Command Menu**.
+
+**Example:**
+```
+/
+```
+*A menu will pop up allowing you to use your Arrow Keys and Enter to quickly insert Headings, Lists, Quotes, Dividers, or Code Blocks.*
+
+---
+
 ## Font Styles in Markdown-
 
 Write **#** before text to change the visual size.

@@ -54,6 +54,10 @@ import {
     Heading4,
     Heading5,
     Heading6,
+    Maximize,
+    Minimize,
+    Columns,
+    List,
 } from "lucide-react";
 import {
     createPost,
@@ -98,6 +102,16 @@ export default function EditorPage({ type }) {
     const [isComponentDialogOpen, setIsComponentDialogOpen] = useState(false);
     const [selectedComponentType, setSelectedComponentType] = useState("info");
     const [componentContentText, setComponentContentText] = useState("");
+
+    // Zen Mode & Split Screen
+    const [isZenMode, setIsZenMode] = useState(false);
+    const [isSplitScreen, setIsSplitScreen] = useState(false);
+
+    // Slash Commands
+    const [showSlashMenu, setShowSlashMenu] = useState(false);
+    const [slashMenuPosition, setSlashMenuPosition] = useState({ top: 0, left: 0 });
+    const [slashMenuFilter, setSlashMenuFilter] = useState("");
+    const [slashMenuIndex, setSlashMenuIndex] = useState(0);
 
     const handleInputChange = (field, value) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
@@ -160,7 +174,7 @@ export default function EditorPage({ type }) {
         }
     }, []);
 
-    // Auto-Save every 10 seconds (Only for new articles)
+    // Auto-Save every 1 minute (Only for new articles)
     useEffect(() => {
         if (formData) {
             const timer = setInterval(() => {
@@ -168,7 +182,7 @@ export default function EditorPage({ type }) {
                 const timeString = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
                 setLastSaved(timeString);
                 localStorage.setItem("lastSaved", timeString);
-            }, 10000); // 10 seconds interval
+            }, 1 * 60000); // 1 minute interval
             return () => clearInterval(timer);
         }
     }, [formData]);
@@ -226,6 +240,202 @@ export default function EditorPage({ type }) {
         } catch (error) {
             toast.error("Error removing image ! Contact support.");
             console.error("Image removal error:", error);
+        }
+    };
+
+    const insertMarkdownAtCursor = (markdown) => {
+        const textarea = document.getElementById("md-editor");
+        if (textarea) {
+            const startPos = textarea.selectionStart;
+            const endPos = textarea.selectionEnd;
+            const textBefore = formData.content.substring(0, startPos);
+            const textAfter = formData.content.substring(
+                endPos,
+                formData.content.length,
+            );
+            const newContent = textBefore + markdown + textAfter;
+
+            handleInputChange("content", newContent);
+
+            setTimeout(() => {
+                textarea.focus();
+                textarea.selectionStart = startPos + markdown.length;
+                textarea.selectionEnd = startPos + markdown.length;
+            }, 0);
+        } else {
+            handleInputChange("content", formData.content + markdown);
+        }
+    };
+
+    const generateTableOfContents = () => {
+        // remark-toc is configured to look for the "Contents" header
+        insertMarkdownAtCursor("\n## Contents\n");
+        toast.success("Table of Contents placeholder added!");
+    };
+
+    const handleEditorDrop = (e) => {
+        const url = e.dataTransfer.getData("URL");
+        const html = e.dataTransfer.getData("text/html");
+
+        let imgSrc = null;
+        if (html) {
+            const match = html.match(/<img[^>]+src=["']([^"']+)["']/i);
+            if (match) imgSrc = match[1];
+        }
+
+        if (!imgSrc && url && url.match(/\.(jpeg|jpg|gif|png|webp|svg)(\?.*)?$/i)) {
+            imgSrc = url;
+        }
+
+        if (imgSrc) {
+            e.preventDefault();
+            insertMarkdownAtCursor(`\n![image](${imgSrc})\n`);
+            return;
+        }
+
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            const file = e.dataTransfer.files[0];
+            if (file.type.startsWith("image/")) {
+                e.preventDefault();
+                insertMarkdownAtCursor(`\n![image](image_url_here)\n`);
+                toast.info("Inserted image placeholder. Please replace 'image_url_here' with the actual link.");
+            }
+        }
+    };
+
+    const handleEditorPaste = (e) => {
+        const html = e.clipboardData.getData("text/html");
+        const text = e.clipboardData.getData("text/plain");
+
+        let imgSrc = null;
+        if (html) {
+            const match = html.match(/<img[^>]+src="([^">]+)"/);
+            if (match) imgSrc = match[1];
+        }
+
+        if (!imgSrc && text && text.match(/^https?:\/\/.+\.(jpeg|jpg|gif|png|webp|svg)$/i)) {
+            imgSrc = text;
+        }
+
+        if (imgSrc) {
+            e.preventDefault();
+            insertMarkdownAtCursor(`\n![image](${imgSrc})\n`);
+            return;
+        }
+
+        if (e.clipboardData.files && e.clipboardData.files.length > 0) {
+            const file = e.clipboardData.files[0];
+            if (file.type.startsWith("image/")) {
+                e.preventDefault();
+                insertMarkdownAtCursor(`\n![image](image_url_here)\n`);
+                toast.info("Inserted image placeholder. Please replace 'image_url_here' with the actual link.");
+            }
+        }
+    };
+
+    const slashCommands = [
+        { title: "Heading 1", icon: <Heading1 size={14} />, markdown: "# " },
+        { title: "Heading 2", icon: <Heading2 size={14} />, markdown: "## " },
+        { title: "Heading 3", icon: <Heading3 size={14} />, markdown: "### " },
+        { title: "Blockquote", icon: <Pencil size={14} />, markdown: "> " },
+        { title: "Code Block", icon: <Columns size={14} />, markdown: "```\n\n```" },
+        { title: "Bulleted List", icon: <List size={14} />, markdown: "- " },
+        { title: "Divider", icon: <Minimize size={14} />, markdown: "\n---\n" },
+    ];
+
+    const filteredSlashCommands = slashCommands.filter(cmd =>
+        cmd.title.toLowerCase().includes(slashMenuFilter.toLowerCase())
+    );
+
+    const executeSlashCommand = (markdown) => {
+        const textarea = document.getElementById("md-editor");
+        if (!textarea) return;
+
+        const cursorPosition = textarea.selectionStart;
+        const textBeforeCursor = formData.content.substring(0, cursorPosition);
+
+        // Find where the slash command started
+        const slashIndex = textBeforeCursor.lastIndexOf("/");
+        if (slashIndex === -1) return;
+
+        const textBeforeSlash = formData.content.substring(0, slashIndex);
+        const textAfterCursor = formData.content.substring(cursorPosition);
+
+        const newContent = textBeforeSlash + markdown + textAfterCursor;
+        handleInputChange("content", newContent);
+
+        setShowSlashMenu(false);
+        setSlashMenuFilter("");
+
+        setTimeout(() => {
+            textarea.focus();
+            const newPos = slashIndex + markdown.length;
+            // if code block, put cursor inside
+            if (markdown === "```\n\n```") {
+                textarea.selectionStart = newPos - 4;
+                textarea.selectionEnd = newPos - 4;
+            } else {
+                textarea.selectionStart = newPos;
+                textarea.selectionEnd = newPos;
+            }
+        }, 0);
+    };
+
+    const handleEditorKeyDown = (e) => {
+        if (!showSlashMenu) return;
+
+        if (e.key === "ArrowDown") {
+            e.preventDefault();
+            setSlashMenuIndex((prev) =>
+                prev < filteredSlashCommands.length - 1 ? prev + 1 : 0
+            );
+        } else if (e.key === "ArrowUp") {
+            e.preventDefault();
+            setSlashMenuIndex((prev) =>
+                prev > 0 ? prev - 1 : filteredSlashCommands.length - 1
+            );
+        } else if (e.key === "Enter") {
+            e.preventDefault();
+            if (filteredSlashCommands.length > 0) {
+                executeSlashCommand(filteredSlashCommands[slashMenuIndex].markdown);
+            }
+        } else if (e.key === "Escape") {
+            e.preventDefault();
+            setShowSlashMenu(false);
+            setSlashMenuFilter("");
+        }
+    };
+
+    const handleEditorChange = (e) => {
+        const newValue = e.target.value;
+        const cursorPosition = e.target.selectionStart;
+        handleInputChange("content", newValue);
+
+        // Check for slash command trigger
+        const textBeforeCursor = newValue.substring(0, cursorPosition);
+
+        // Ensure the slash is either at the beginning of the string or preceded by a newline
+        const slashMatch = textBeforeCursor.match(/(?:^|\n)\/([a-zA-Z]*)$/);
+
+        if (slashMatch) {
+            const filterText = slashMatch[1];
+
+            // Calculate cursor position (rough approximation for simple textareas)
+            // A more robust solution involves a hidden div replica, but this works for basic fixed-width fonts
+            const lines = textBeforeCursor.split('\n');
+            const currentLineNumber = lines.length;
+            const currentColumn = lines[lines.length - 1].length;
+
+            setSlashMenuPosition({
+                top: Math.min(currentLineNumber * 20 + 10, 300), // rough line height approx
+                left: Math.min(currentColumn * 8 + 20, window.innerWidth - 250) // rough char width approx
+            });
+
+            setSlashMenuFilter(filterText);
+            setSlashMenuIndex(0);
+            setShowSlashMenu(true);
+        } else {
+            setShowSlashMenu(false);
         }
     };
 
@@ -825,11 +1035,14 @@ export default function EditorPage({ type }) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
-                className="min-h-screen bg-gradient-to-br from-purple-950 via-purple-900 to-indigo-900 py-4 md:py-8 lg:py-16 px-4 md:px-6 lg:px-16"
+                className={isZenMode
+                    ? "fixed inset-0 z-50 overflow-y-auto bg-gradient-to-br from-purple-950 via-purple-900 to-indigo-900 py-4 md:py-8 lg:py-12 px-4 md:px-6 lg:px-16"
+                    : "min-h-screen bg-gradient-to-br from-purple-950 via-purple-900 to-indigo-900 py-4 md:py-8 lg:py-16 px-4 md:px-6 lg:px-16"
+                }
             >
                 <div className="max-w-7xl mx-auto">
-                    <Card className="rounded-2xl md:rounded-3xl shadow-2xl bg-white/10 border border-white/20 backdrop-blur-xl">
-                        <CardHeader className="p-4 md:p-6 lg:p-8">
+                    <Card className={`rounded-2xl md:rounded-3xl shadow-2xl bg-white/10 border border-white/20 backdrop-blur-xl ${isZenMode ? "min-h-[90vh]" : ""}`}>
+                        <CardHeader className={isZenMode ? "hidden" : "p-4 md:p-6 lg:p-8"}>
                             <CardTitle className="flex items-center gap-2 md:gap-3 text-white text-xl md:text-2xl lg:text-3xl font-extrabold">
                                 <FileText size={20} className="md:hidden" />
                                 <FileText size={28} className="hidden md:block" />
@@ -845,7 +1058,7 @@ export default function EditorPage({ type }) {
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.5, delay: 0.1 }}
-                                className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6"
+                                className={`grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 ${isZenMode ? "hidden" : ""}`}
                             >
                                 {/* Left Column */}
                                 <div className="space-y-4">
@@ -1124,7 +1337,7 @@ export default function EditorPage({ type }) {
                                 </div>
                             </motion.div>
 
-                            <Separator className="bg-white/20" />
+                            <Separator className={`bg-white/20 ${isZenMode ? "hidden" : ""}`} />
 
                             {/* Markdown Editor */}
                             <motion.div
@@ -1233,6 +1446,20 @@ export default function EditorPage({ type }) {
                                             </Select>
 
                                             <div className="mx-1 mt-1 w-[1px] h-6 bg-white/20 self-center hidden sm:block"></div>
+
+                                            {/* Table of Contents Generator */}
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <Button
+                                                        size="sm"
+                                                        className="bg-white/10 hover:bg-white/20 text-white border-white/20 px-2 md:px-3"
+                                                        onClick={generateTableOfContents}
+                                                    >
+                                                        <List size={14} className="md:w-4 md:h-4" />
+                                                    </Button>
+                                                </TooltipTrigger>
+                                                <TooltipContent>Generate Table of Contents</TooltipContent>
+                                            </Tooltip>
 
                                             <Dialog
                                                 open={isImageDialogOpen}
@@ -1497,6 +1724,40 @@ export default function EditorPage({ type }) {
                                             </Dialog>
                                         </div>
 
+                                        <div className="flex items-center gap-1 sm:gap-2 mr-2">
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                                                        <Button
+                                                            size="sm"
+                                                            variant="ghost"
+                                                            className={`px-2 md:px-3 text-white hover:bg-white/20 hover:text-white ${isSplitScreen ? 'bg-white/20' : ''} hidden lg:flex`}
+                                                            onClick={() => setIsSplitScreen(!isSplitScreen)}
+                                                        >
+                                                            <Columns size={14} className="md:w-4 md:h-4" />
+                                                        </Button>
+                                                    </motion.div>
+                                                </TooltipTrigger>
+                                                <TooltipContent>Split Screen (Desktop)</TooltipContent>
+                                            </Tooltip>
+
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                                                        <Button
+                                                            size="sm"
+                                                            variant="ghost"
+                                                            className={`px-2 md:px-3 text-white hover:bg-white/20 hover:text-white ${isZenMode ? 'bg-white/20' : ''}`}
+                                                            onClick={() => setIsZenMode(!isZenMode)}
+                                                        >
+                                                            {isZenMode ? <Minimize size={14} className="md:w-4 md:h-4" /> : <Maximize size={14} className="md:w-4 md:h-4" />}
+                                                        </Button>
+                                                    </motion.div>
+                                                </TooltipTrigger>
+                                                <TooltipContent>{isZenMode ? "Exit Zen Mode" : "Zen Mode"}</TooltipContent>
+                                            </Tooltip>
+                                        </div>
+
                                         <motion.div
                                             whileHover={{ scale: 1.05 }}
                                             whileTap={{ scale: 0.95 }}
@@ -1561,15 +1822,64 @@ export default function EditorPage({ type }) {
                                     </TabsList>
 
                                     <TabsContent value="write">
-                                        <Textarea
-                                            id="md-editor"
-                                            value={formData.content}
-                                            onChange={(e) =>
-                                                handleInputChange("content", e.target.value)
-                                            }
-                                            placeholder="Write your markdown content here..."
-                                            className="min-h-[300px] md:min-h-[400px] lg:min-h-[500px] p-3 md:p-4 font-mono text-xs md:text-sm bg-white/5 text-white border-white/20 resize-none"
-                                        />
+                                        <div className={isSplitScreen ? "grid grid-cols-1 lg:grid-cols-2 gap-4" : ""}>
+                                            <div className="relative w-full h-full">
+                                                <Textarea
+                                                    id="md-editor"
+                                                    value={formData.content}
+                                                    onChange={handleEditorChange}
+                                                    onClick={() => setShowSlashMenu(false)}
+                                                    onKeyDown={handleEditorKeyDown}
+                                                    onDrop={handleEditorDrop}
+                                                    onPaste={handleEditorPaste}
+                                                    placeholder="Write your markdown content here... Type '/' for command menu."
+                                                    className={`p-3 md:p-4 font-mono text-xs md:text-sm bg-white/5 text-white border-white/20 resize-none hide-scrollbar ${isSplitScreen ? (isZenMode ? "max-h-[85vh] h-[85vh] overflow-y-auto" : "max-h-[300px] md:max-h-[400px] lg:max-h-[500px] h-[300px] md:h-[400px] lg:h-[500px] overflow-y-auto") : (isZenMode ? "min-h-[85vh]" : "min-h-[300px] md:min-h-[400px] lg:min-h-[500px]")}`}
+                                                />
+
+                                                {showSlashMenu && filteredSlashCommands.length > 0 && (
+                                                    <div
+                                                        className="absolute z-50 w-48 bg-gray-900 border border-white/20 rounded-md shadow-xl overflow-hidden"
+                                                        style={{
+                                                            top: `${slashMenuPosition.top}px`,
+                                                            left: `${slashMenuPosition.left}px`
+                                                        }}
+                                                    >
+                                                        <div className="text-xs text-gray-400 px-3 py-1.5 border-b border-white/10 uppercase tracking-wider font-semibold">
+                                                            Basic Blocks
+                                                        </div>
+                                                        <div className="max-h-60 overflow-y-auto py-1">
+                                                            {filteredSlashCommands.map((cmd, idx) => (
+                                                                <button
+                                                                    key={idx}
+                                                                    className={`w-full flex items-center gap-3 px-3 py-2 text-sm text-left transition-colors ${idx === slashMenuIndex
+                                                                        ? "bg-purple-600/40 text-white"
+                                                                        : "text-gray-300 hover:bg-white/10"
+                                                                        }`}
+                                                                    onClick={(e) => {
+                                                                        e.preventDefault();
+                                                                        executeSlashCommand(cmd.markdown);
+                                                                    }}
+                                                                >
+                                                                    <div className="bg-white/10 p-1.5 rounded-md flex-shrink-0">
+                                                                        {cmd.icon}
+                                                                    </div>
+                                                                    <span className="font-medium whitespace-nowrap overflow-hidden text-ellipsis">{cmd.title}</span>
+                                                                </button>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            {isSplitScreen && (
+                                                <div
+                                                    className={`px-4 py-3 wrap-break-word overflow-y-auto bg-white/5 border border-white/20 rounded-md hide-scrollbar scroll-smooth ${isZenMode ? "max-h-[85vh] h-[85vh]" : "max-h-[300px] md:max-h-[400px] lg:max-h-[500px] h-[300px] md:h-[400px] lg:h-[500px]"}`}
+                                                >
+                                                    <MarkdownRenderer
+                                                        content={formData.content || "_Nothing to preview_"}
+                                                    />
+                                                </div>
+                                            )}
+                                        </div>
                                     </TabsContent>
 
                                     <TabsContent value="preview">
