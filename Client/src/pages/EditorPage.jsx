@@ -45,6 +45,15 @@ import {
     Check,
     Link as LinkIcon,
     MessageSquareWarning,
+    Bold,
+    Italic,
+    Strikethrough,
+    Heading1,
+    Heading2,
+    Heading3,
+    Heading4,
+    Heading5,
+    Heading6,
 } from "lucide-react";
 import {
     createPost,
@@ -105,6 +114,7 @@ export default function EditorPage({ type }) {
 
     const { getToken, userId } = useAuth();
     const [copied, setCopied] = useState(false);
+    const [lastSaved, setLastSaved] = useState(null);
 
     useEffect(() => {
         let t;
@@ -122,8 +132,12 @@ export default function EditorPage({ type }) {
     }, [thumbPreview, coverPreview, contentImagePreview]);
 
     useEffect(() => {
-        if (type === "new" && localStorage.getItem("draft"))
+        if (type === "new" && localStorage.getItem("draft")) {
             setFormData(JSON.parse(localStorage.getItem("draft")));
+            if (localStorage.getItem("lastSaved")) {
+                setLastSaved(localStorage.getItem("lastSaved"));
+            }
+        }
         if (type === "edit") {
             async function fetchPost() {
                 try {
@@ -145,6 +159,19 @@ export default function EditorPage({ type }) {
             // console.log("Current user:",currentUser);
         }
     }, []);
+
+    // Auto-Save every 10 seconds (Only for new articles)
+    useEffect(() => {
+        if (formData) {
+            const timer = setInterval(() => {
+                localStorage.setItem("draft", JSON.stringify(formData));
+                const timeString = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                setLastSaved(timeString);
+                localStorage.setItem("lastSaved", timeString);
+            }, 10000); // 10 seconds interval
+            return () => clearInterval(timer);
+        }
+    }, [formData]);
 
     const handleImageUpload = (e, type) => {
         const file = e.target.files && e.target.files[0];
@@ -336,6 +363,199 @@ export default function EditorPage({ type }) {
         toast.success(`Custom ${selectedComponentType} inserted!`);
     };
 
+    const handleFormatAction = (action) => {
+        const textarea = document.getElementById("md-editor");
+        if (!textarea) return;
+
+        let startPos = textarea.selectionStart;
+        let endPos = textarea.selectionEnd;
+
+        // If no text is selected, do nothing or just show a small toast
+        if (startPos === endPos) {
+            toast.error("Please select text to format");
+            return;
+        }
+
+        const fullText = formData.content;
+        let selectedText = fullText.substring(startPos, endPos);
+        const textBeforeSelection = fullText.substring(0, startPos);
+        const textAfterSelection = fullText.substring(endPos, fullText.length);
+
+        // --- Helper for Basic Markdown Toggling ---
+        const toggleBasicFormat = (marker) => {
+            const markerLen = marker.length;
+
+            // Check if tags are immediately OUTSIDE the selection
+            if (textBeforeSelection.endsWith(marker) && textAfterSelection.startsWith(marker)) {
+                const newTextBefore = textBeforeSelection.slice(0, -markerLen);
+                const newTextAfter = textAfterSelection.slice(markerLen);
+                handleInputChange("content", newTextBefore + selectedText + newTextAfter);
+
+                setTimeout(() => {
+                    textarea.focus();
+                    textarea.selectionStart = startPos - markerLen;
+                    textarea.selectionEnd = endPos - markerLen;
+                }, 0);
+                return;
+            }
+
+            // Check if tags are immediately INSIDE the selection
+            if (selectedText.startsWith(marker) && selectedText.endsWith(marker) && selectedText.length >= markerLen * 2) {
+                const innerText = selectedText.slice(markerLen, -markerLen);
+                handleInputChange("content", textBeforeSelection + innerText + textAfterSelection);
+
+                setTimeout(() => {
+                    textarea.focus();
+                    textarea.selectionStart = startPos;
+                    textarea.selectionEnd = startPos + innerText.length;
+                }, 0);
+                return;
+            }
+
+            // Apply formatting
+            const formattedText = `${marker}${selectedText}${marker}`;
+            handleInputChange("content", textBeforeSelection + formattedText + textAfterSelection);
+
+            setTimeout(() => {
+                textarea.focus();
+                textarea.selectionStart = startPos;
+                textarea.selectionEnd = startPos + formattedText.length;
+            }, 0);
+        };
+
+        // --- Helper for Heading Toggling/Replacement ---
+        const applyHeading = (level) => {
+            const requestedLevelCount = parseInt(level.substring(1));
+            const htmlTagMap = {
+                'h1': 'h1', 'h2': 'h2', 'h3': 'h3',
+                'h4': 'h4', 'h5': 'h5', 'h6': 'h6'
+            };
+            const requestedTag = htmlTagMap[level];
+
+            // 1. Check HTML INSIDE
+            const htmlRegexInside = /^<h([1-6])>(.*?)<\/h\1>$/s;
+            const matchInside = selectedText.match(htmlRegexInside);
+            if (matchInside) {
+                const currentTag = `h${matchInside[1]}`;
+                const innerText = matchInside[2];
+                let replacementText = '';
+                if (currentTag === requestedTag) {
+                    replacementText = innerText; // Toggle OFF
+                } else {
+                    replacementText = `<${requestedTag}>${innerText}</${requestedTag}>`; // REPLACE
+                }
+                handleInputChange("content", textBeforeSelection + replacementText + textAfterSelection);
+                setTimeout(() => {
+                    textarea.focus();
+                    textarea.selectionStart = startPos;
+                    textarea.selectionEnd = startPos + replacementText.length;
+                }, 0);
+                return;
+            }
+
+            // 2. Check HTML OUTSIDE
+            const matchBefore = textBeforeSelection.match(/<h([1-6])>$/);
+            const matchAfter = textAfterSelection.match(/^<\/h([1-6])>/);
+            if (matchBefore && matchAfter && matchBefore[1] === matchAfter[1]) {
+                const currentTag = `h${matchBefore[1]}`;
+                const tagBeforeLen = matchBefore[0].length;
+                const tagAfterLen = matchAfter[0].length;
+
+                const newTextBefore = textBeforeSelection.slice(0, -tagBeforeLen);
+                const newTextAfter = textAfterSelection.slice(tagAfterLen);
+
+                let newFormattedContext = '';
+                let newStartPos = newTextBefore.length;
+                let newEndPos = newTextBefore.length;
+
+                if (currentTag === requestedTag) {
+                    newFormattedContext = selectedText; // Toggle OFF
+                    newEndPos = newStartPos + selectedText.length;
+                } else {
+                    newFormattedContext = `<${requestedTag}>${selectedText}</${requestedTag}>`; // REPLACE
+                    newEndPos = newStartPos + newFormattedContext.length;
+                }
+                handleInputChange("content", newTextBefore + newFormattedContext + newTextAfter);
+                setTimeout(() => {
+                    textarea.focus();
+                    textarea.selectionStart = newStartPos;
+                    textarea.selectionEnd = newEndPos;
+                }, 0);
+                return;
+            }
+
+            // 3. Check MD INSIDE
+            const mdRegexInside = /^(#{1,6})\s+(.*?)$/s;
+            const mdMatchInside = selectedText.match(mdRegexInside);
+            if (mdMatchInside) {
+                const currentLevelCount = mdMatchInside[1].length;
+                const innerText = mdMatchInside[2];
+
+                let replacementText = '';
+                if (currentLevelCount === requestedLevelCount) {
+                    replacementText = innerText; // Toggle OFF
+                } else {
+                    replacementText = `<${requestedTag}>${innerText}</${requestedTag}>`; // REPLACE
+                }
+                handleInputChange("content", textBeforeSelection + replacementText + textAfterSelection);
+                setTimeout(() => {
+                    textarea.focus();
+                    textarea.selectionStart = startPos;
+                    textarea.selectionEnd = startPos + replacementText.length;
+                }, 0);
+                return;
+            }
+
+            // 4. Check MD OUTSIDE
+            // Looks for heading start at the beginning of the line
+            const mdMatchBefore = textBeforeSelection.match(/(^|\n)(#{1,6})\s+$/);
+            if (mdMatchBefore) {
+                const hashes = mdMatchBefore[2];
+                const currentLevelCount = hashes.length;
+                // remove only the `# ` (hashes length + space)
+                const matchFullLength = hashes.length + 1;
+
+                const newTextBefore = textBeforeSelection.slice(0, -matchFullLength);
+
+                let newFormattedContext = '';
+                let newStartPos = newTextBefore.length;
+                let newEndPos = newTextBefore.length;
+
+                if (currentLevelCount === requestedLevelCount) {
+                    newFormattedContext = selectedText; // Toggle OFF
+                    newEndPos = newStartPos + selectedText.length;
+                } else {
+                    newFormattedContext = `<${requestedTag}>${selectedText}</${requestedTag}>`; // REPLACE
+                    newEndPos = newStartPos + newFormattedContext.length;
+                }
+                handleInputChange("content", newTextBefore + newFormattedContext + textAfterSelection);
+                setTimeout(() => {
+                    textarea.focus();
+                    textarea.selectionStart = newStartPos;
+                    textarea.selectionEnd = newEndPos;
+                }, 0);
+                return;
+            }
+
+            // 5. Apply new HTML heading
+            const formattedText = `<${requestedTag}>${selectedText}</${requestedTag}>`;
+            handleInputChange("content", textBeforeSelection + formattedText + textAfterSelection);
+            setTimeout(() => {
+                textarea.focus();
+                textarea.selectionStart = startPos;
+                textarea.selectionEnd = startPos + formattedText.length;
+            }, 0);
+        };
+
+        switch (action) {
+            case "bold": toggleBasicFormat("**"); break;
+            case "italic": toggleBasicFormat("*"); break;
+            case "strikethrough": toggleBasicFormat("~~"); break;
+            case "h1": case "h2": case "h3": case "h4": case "h5": case "h6": applyHeading(action); break;
+            default: break;
+        }
+    };
+
     function formValidate() {
         if (formData.title.trim() === "") {
             toast.error("Title is required !");
@@ -407,6 +627,8 @@ export default function EditorPage({ type }) {
                 // handle new article submission
                 const res = await createPost(updatedFormData, userId, token);
                 if (res && res.status === 201) {
+                    localStorage.removeItem("draft");
+                    localStorage.removeItem("lastSaved");
                     toast.success("Draft sent for review successfully !");
                     copyToClipboard(
                         `${window.location.origin}/articles/${res.data.postId}`,
@@ -573,9 +795,12 @@ export default function EditorPage({ type }) {
 
     const saveDraft = () => {
         localStorage.setItem("draft", JSON.stringify(formData));
+        const timeString = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        setLastSaved(timeString);
+        localStorage.setItem("lastSaved", timeString);
         toast.success(
-            "Draft is saved locally. Saving to cloud will be enabled in future soon...",
-            { duration: 7000 },
+            "Draft is saved locally.",
+            { duration: 2000 },
         );
     };
 
@@ -908,9 +1133,9 @@ export default function EditorPage({ type }) {
                                 transition={{ duration: 0.5, delay: 0.2 }}
                             >
                                 <Tabs defaultValue="write" className="h-full">
-                                    <TabsList className="mb-4 flex gap-1 md:gap-2 bg-white/10 p-1 rounded-xl w-full sm:w-auto overflow-x-clip">
+                                    <TabsList className="mb-4 flex flex-wrap h-auto gap-1 md:gap-2 justify-start items-center bg-white/10 p-1 rounded-xl w-full">
                                         {/* clear and copy buttons */}
-                                        <div className="mr-auto flex justify-between gap-1">
+                                        <div className="mr-auto flex flex-wrap items-center justify-start gap-1">
                                             <Tooltip>
                                                 <TooltipTrigger asChild>
                                                     <Button
@@ -950,6 +1175,64 @@ export default function EditorPage({ type }) {
                                                 </TooltipTrigger>
                                                 <TooltipContent>Copy</TooltipContent>
                                             </Tooltip>
+
+                                            <div className="mx-1 mt-1 w-[1px] h-6 bg-white/20 self-center hidden sm:block"></div>
+
+                                            {/* Text Formatting Toolbar Elements */}
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <Button
+                                                        size="sm"
+                                                        className="bg-white/10 hover:bg-white/20 text-white border-white/20 px-2 md:px-3"
+                                                        onClick={() => handleFormatAction("bold")}
+                                                    >
+                                                        <Bold size={14} className="md:w-4 md:h-4" />
+                                                    </Button>
+                                                </TooltipTrigger>
+                                                <TooltipContent>Bold</TooltipContent>
+                                            </Tooltip>
+
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <Button
+                                                        size="sm"
+                                                        className="bg-white/10 hover:bg-white/20 text-white border-white/20 px-2 md:px-3"
+                                                        onClick={() => handleFormatAction("italic")}
+                                                    >
+                                                        <Italic size={14} className="md:w-4 md:h-4" />
+                                                    </Button>
+                                                </TooltipTrigger>
+                                                <TooltipContent>Italic</TooltipContent>
+                                            </Tooltip>
+
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <Button
+                                                        size="sm"
+                                                        className="bg-white/10 hover:bg-white/20 text-white border-white/20 px-2 md:px-3"
+                                                        onClick={() => handleFormatAction("strikethrough")}
+                                                    >
+                                                        <Strikethrough size={14} className="md:w-4 md:h-4" />
+                                                    </Button>
+                                                </TooltipTrigger>
+                                                <TooltipContent>Strikethrough</TooltipContent>
+                                            </Tooltip>
+
+                                            <Select value="" onValueChange={(val) => handleFormatAction(val)}>
+                                                <SelectTrigger className="w-[70px] h-8 bg-white/10 hover:bg-white/20 text-white border-white/20 text-xs px-2 focus:ring-0 focus:ring-offset-0 relative [&>svg]:right-1 [&>svg]:absolute pr-0 pl-2">
+                                                    <SelectValue placeholder="Hx" />
+                                                </SelectTrigger>
+                                                <SelectContent className="bg-purple-900 border-white/20 text-white min-w-[70px]">
+                                                    <SelectItem value="h1" className="focus:bg-white/10 focus:text-white cursor-pointer"><div className="flex items-center gap-2 pr-2 -ml-2"><Heading1 size={14} /></div></SelectItem>
+                                                    <SelectItem value="h2" className="focus:bg-white/10 focus:text-white cursor-pointer"><div className="flex items-center gap-2 pr-2 -ml-2"><Heading2 size={14} /></div></SelectItem>
+                                                    <SelectItem value="h3" className="focus:bg-white/10 focus:text-white cursor-pointer"><div className="flex items-center gap-2 pr-2 -ml-2"><Heading3 size={14} /></div></SelectItem>
+                                                    <SelectItem value="h4" className="focus:bg-white/10 focus:text-white cursor-pointer"><div className="flex items-center gap-2 pr-2 -ml-2"><Heading4 size={14} /></div></SelectItem>
+                                                    <SelectItem value="h5" className="focus:bg-white/10 focus:text-white cursor-pointer"><div className="flex items-center gap-2 pr-2 -ml-2"><Heading5 size={14} /></div></SelectItem>
+                                                    <SelectItem value="h6" className="focus:bg-white/10 focus:text-white cursor-pointer"><div className="flex items-center gap-2 pr-2 -ml-2"><Heading6 size={14} /></div></SelectItem>
+                                                </SelectContent>
+                                            </Select>
+
+                                            <div className="mx-1 mt-1 w-[1px] h-6 bg-white/20 self-center hidden sm:block"></div>
 
                                             <Dialog
                                                 open={isImageDialogOpen}
@@ -1331,13 +1614,18 @@ export default function EditorPage({ type }) {
                                                 .filter((word) => word.length > 0).length
                                         }
                                     </span>
+                                    {lastSaved && (
+                                        <div className="flex items-center gap-1 mt-1 text-xs text-indigo-300">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></div>
+                                            <span>Saved locally at {lastSaved}</span>
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="flex gap-2 md:gap-3 w-full sm:w-auto order-1 sm:order-2">
                                     <Button
                                         variant="outline"
                                         // onClick={() => toast.error("Feature not implemented yet !")}
-                                        disabled={type === "edit"}
                                         onClick={saveDraft}
                                         className="flex-1 sm:flex-initial bg-white/10 hover:bg-white/20 text-white border-white/20 text-sm md:text-base"
                                     >

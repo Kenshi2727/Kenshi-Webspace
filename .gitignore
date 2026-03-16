@@ -28,4 +28,5 @@ Thumbs.db
 .env.development.local
 .env.test.local
 .env.production.local
-.env.production.localcontent_image_implementation_strategy.md
+content_image_implementation_strategy.md
+editor_plan.txt
