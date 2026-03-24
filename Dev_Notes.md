@@ -1,5 +1,6 @@
-## Oracle VPS Setup-
+## Oracle VPS Setup & Validation layer-
 - complete setup for Oracle VPS Websocket Server
+- zod validation for all client and server side inputs
 
 ## LOGGER Service-
 - APACHE KAFKA INTEGRATION FOR INTER SERVICE COMMUNICATION AND LOGGING
