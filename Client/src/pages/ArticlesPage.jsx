@@ -55,26 +55,33 @@ const cardVariants = {
     }
 };
 
-// Floating particles component
+// Floating bubbles component
 const FloatingParticles = () => {
-    const particles = Array.from({ length: 60 }, (_, i) => i);
+    const bubbles = Array.from({ length: 20 }, (_, i) => ({
+        id: i,
+        size: Math.random() * 50 + 30, // 30px to 80px
+    }));
 
     return (
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            {particles.map((particle) => (
+            {bubbles.map((bubble) => (
                 <motion.div
-                    key={particle}
-                    className="absolute w-2 h-2 bg-gradient-to-r from-purple-300/20 to-violet-400/20 rounded-full"
+                    key={bubble.id}
+                    className="absolute rounded-full bg-gradient-to-br from-purple-400/35 to-violet-500/25 backdrop-blur-sm"
+                    style={{
+                        width: bubble.size,
+                        height: bubble.size,
+                    }}
                     initial={{
                         x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1200),
-                        y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800),
+                        y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight * 2 : 1600),
                         scale: Math.random() * 0.5 + 0.5,
                     }}
                     animate={{
-                        y: [null, -20, 20],
-                        x: [null, Math.random() * 50 - 25],
-                        opacity: [0.2, 0.6, 0.2],
-                        scale: [null, Math.random() * 0.3 + 0.7],
+                        y: [null, -40, 40],
+                        x: [null, Math.random() * 80 - 40],
+                        opacity: [0.25, 0.55, 0.25],
+                        scale: [null, Math.random() * 0.4 + 0.8],
                     }}
                     transition={{
                         duration: Math.random() * 15 + 15,

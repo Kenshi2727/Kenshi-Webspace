@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useSignIn } from "@clerk/clerk-react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
@@ -6,12 +6,11 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
-import { Users, ShieldCheck, FileText, Layers, Smartphone, Moon, Sparkles } from "lucide-react";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 import { FcGoogle } from 'react-icons/fc';
 import { useAuth } from "@clerk/clerk-react";
 import LoadingPage from "../pages/LoadingPage";
+import AuthBrandingPanel from "./AuthBrandingPanel";
 
 /**
  * CustomSignInPage
@@ -126,104 +125,7 @@ export default function CustomSignInPage() {
             >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* LEFT: Branding / marketing box */}
-                    <motion.aside
-                        initial={{ x: -18, opacity: 0 }}
-                        animate={{ x: 0, opacity: 1 }}
-                        transition={{ delay: 0.06, duration: 0.6 }}
-                        className="relative overflow-hidden rounded-2xl p-8 md:p-10 hidden md:flex flex-col justify-between bg-gradient-to-br from-indigo-800 via-purple-800 to-slate-900 text-white shadow-lg"
-                    >
-                        {/* subtle decorative shapes */}
-                        <div className="absolute -right-24 -top-10 w-64 h-64 rounded-full bg-white/6 blur-3xl pointer-events-none" />
-                        <div className="absolute -left-20 bottom-0 w-56 h-56 rounded-full bg-indigo-900/40 blur-2xl pointer-events-none" />
-
-                        <div>
-                            <div className="flex items-center gap-4 mb-4">
-                                <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-white/6 ring-1 ring-white/8">
-                                    <Sparkles className="h-6 w-6 text-white" />
-                                </div>
-                                <div>
-                                    <h1 className="text-2xl font-extrabold leading-tight">Kenshi WebSpace</h1>
-                                    <p className="mt-1 text-sm text-white/80">Community growth • Tech adventures • Publish your story</p>
-                                </div>
-                            </div>
-
-                            <p className="text-sm text-white/70 mb-6">
-                                A place for creators and builders — write, share, and grow with a community that cares.
-                            </p>
-
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                <div className="flex items-start gap-3">
-                                    <div className="flex h-9 w-9 items-center justify-center rounded-md bg-white/6">
-                                        <Users className="h-5 w-5" aria-hidden />
-                                    </div>
-                                    <div>
-                                        <p className="font-semibold">Community first</p>
-                                        <p className="text-xs text-white/80">Collaborate, publish and learn together.</p>
-                                    </div>
-                                </div>
-
-
-                                <div className="flex items-start gap-3">
-                                    <div className="flex h-9 w-9 items-center justify-center rounded-md bg-white/6">
-                                        <ShieldCheck className="h-5 w-5" aria-hidden />
-                                    </div>
-                                    <div>
-                                        <p className="font-semibold">Secure auth</p>
-                                        <p className="text-xs text-white/80">Powerful and secure sign-up via Clerk.</p>
-                                    </div>
-                                </div>
-
-
-                                <div className="flex items-start gap-3">
-                                    <div className="flex h-9 w-9 items-center justify-center rounded-md bg-white/6">
-                                        <FileText className="h-5 w-5" aria-hidden />
-                                    </div>
-                                    <div>
-                                        <p className="font-semibold">EJS entrypoint</p>
-                                        <p className="text-xs text-white/80">Use an EJS file as the Vite app entry for server-side templating.</p>
-                                    </div>
-                                </div>
-
-
-                                <div className="flex items-start gap-3">
-                                    <div className="flex h-9 w-9 items-center justify-center rounded-md bg-white/6">
-                                        <Layers className="h-5 w-5" aria-hidden />
-                                    </div>
-                                    <div>
-                                        <p className="font-semibold">Tailwind + Flowbite</p>
-                                        <p className="text-xs text-white/80">Preconfigured Tailwind utilities and Flowbite components.</p>
-                                    </div>
-                                </div>
-
-
-                                <div className="flex items-start gap-3">
-                                    <div className="flex h-9 w-9 items-center justify-center rounded-md bg-white/6">
-                                        <Smartphone className="h-5 w-5" aria-hidden />
-                                    </div>
-                                    <div>
-                                        <p className="font-semibold">Responsive UI</p>
-                                        <p className="text-xs text-white/80">Layouts that look great on phones, tablets and desktops.</p>
-                                    </div>
-                                </div>
-
-
-                                <div className="flex items-start gap-3">
-                                    <div className="flex h-9 w-9 items-center justify-center rounded-md bg-white/6">
-                                        <Moon className="h-5 w-5" aria-hidden />
-                                    </div>
-                                    <div>
-                                        <p className="font-semibold">Dark mode support</p>
-                                        <p className="text-xs text-white/80">Easily toggle between light and dark themes.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="mt-6 flex items-center justify-between">
-                            <Badge className="bg-white/6 text-white">Beta</Badge>
-                            <div className="text-xs text-white/70">Early access features enabled</div>
-                        </div>
-                    </motion.aside>
+                    <AuthBrandingPanel />
 
                     {/* RIGHT: Sign-in form */}
                     <motion.section
