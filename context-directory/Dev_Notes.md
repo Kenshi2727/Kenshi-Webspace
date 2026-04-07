@@ -9,6 +9,7 @@
 - APACHE KAFKA INTEGRATION FOR INTER SERVICE COMMUNICATION AND LOGGING
 - Aiven kafka deployment
 - log summary using AI workflow(eg.- n8n)
+- all log files under one root log directory to avoid instance spin up
 
 ## V.IMP- Protect ROLE-BASED privileged routes both client and server side
 - rbac is not enough---> need strict checking for specific routes that are meant for specific roles only.
