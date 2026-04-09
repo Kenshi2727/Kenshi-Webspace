@@ -6,7 +6,10 @@ Requires Ollama to be installed and running on the machine.
 No API key needed. Unlimited usage.
 """
 
-from langchain_community.chat_models import ChatOllama
+try:
+    from langchain_ollama import ChatOllama
+except ImportError:
+    from langchain_community.chat_models import ChatOllama
 
 
 class OllamaProvider:

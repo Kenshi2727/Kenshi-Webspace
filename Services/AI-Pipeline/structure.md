@@ -1,5 +1,7 @@
 # AI Pipeline — Project Structure Guide
 
+**Starup Page on dev-localhost:4000/docs**
+
 This document explains **every file and directory** in the AI Pipeline service so you can understand what each piece does, why it exists, and how they connect together.
 
 ---

@@ -14,7 +14,7 @@ from src.api.router import api_router
 from src.utils.logger import logger
 
 # --- Sentry Initialization ---
-if settings.SENTRY_DSN:
+if settings.SENTRY_DSN and settings.SENTRY_DSN.startswith("http"):
     sentry_sdk.init(
         dsn=settings.SENTRY_DSN,
         traces_sample_rate=0.2,
