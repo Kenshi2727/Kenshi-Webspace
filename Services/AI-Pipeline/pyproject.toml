@@ -1,0 +1,63 @@
+[project]
+name = "kenshi-ai-pipeline"
+version = "0.1.0"
+description = "AI Pipeline microservice for Kenshi Webspace — blog generation, content review, and image generation"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Abhishek Mathur" }]
+requires-python = ">=3.12"
+
+dependencies = [
+    # Core
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.34.0",
+    "pydantic>=2.10.0",
+    "pydantic-settings>=2.7.0",
+    "python-dotenv>=1.0.0",
+    "python-multipart>=0.0.18",
+
+    # AI & LLM
+    "langchain>=0.3.0",
+    "langchain-core>=0.3.0",
+    "langchain-google-genai>=2.1.0",
+    "langchain-groq>=0.3.0",
+    "langchain-community>=0.3.0",
+    "langchain-huggingface>=0.2.0",
+
+    # Image Generation
+    "httpx>=0.28.0",
+    "Pillow>=11.0.0",
+
+    # Monitoring
+    "sentry-sdk[fastapi]>=2.19.0",
+
+    # HTTP
+    "cors-middleware>=0.1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3.0",
+    "pytest-asyncio>=0.24.0",
+    "ruff>=0.8.0",
+    "pyright>=1.1.0",
+    "httpx>=0.28.0",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP"]
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.pyright]
+pythonVersion = "3.12"
+typeCheckingMode = "basic"

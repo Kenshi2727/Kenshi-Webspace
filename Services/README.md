@@ -6,7 +6,7 @@ This directory contains the various backend microservices that support the Kensh
 
 | Service Name | Description | Primary Tech Stack | Status |
 |--------------|-------------|--------------------|--------|
-| **[AI-Pipeline](./AI-Pipeline)** | Manages AI-related tasks and model planning. | Python/LangChain | Under Development |
+| **[AI-Pipeline](./AI-Pipeline)** | AI-powered blog generation, content review/moderation, and image generation using multi-model fallback chains. | Python (FastAPI / LangChain) | Under Development |
 | **[Encryption-Service](./Encryption-Service)** | Core encryption service for securing Kenshi Webspace data. | Java (Maven) / Go / JS | Under Development |
 | **[Logger-Service](./Logger-Service)** | Centralized logger engine with level filtering, active routing, and formatted log generation. | Go | Inactive(Under Development) |
 | **[Notification-Service](./Notification-Service)** | Handles push notifications, emails, and other SMTP communications for user events. | Node.js (Express) | Disabled(Under Development) |
