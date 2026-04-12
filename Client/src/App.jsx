@@ -49,7 +49,7 @@ function App() {
   const { isSignedIn } = useUser();
   const [params] = useSearchParams();
   const dispatch = useDispatch();
-  const { userId, getToken:getAuthToken } = useAuth();
+  const { userId, getToken: getAuthToken } = useAuth();
 
   useEffect(() => {
     if (params.get("toast") === "already-signed-in") {
@@ -59,16 +59,16 @@ function App() {
 
   useEffect(() => {
     async function fetchUserInfo() {
-        try {
-            if (!isSignedIn || !userId) return;
-            const token = await getAuthToken();
-            const response = await getUser(userId, token);
-          if (response.data) {
-                dispatch(setUser(response.data.user));
-            }
-        } catch (error) {
-            console.error("Error fetching user info:", error);
+      try {
+        if (!isSignedIn || !userId) return;
+        const token = await getAuthToken();
+        const response = await getUser(userId, token);
+        if (response.data) {
+          dispatch(setUser(response.data.user));
         }
+      } catch (error) {
+        console.error("Error fetching user info:", error);
+      }
     }
 
     fetchUserInfo();
