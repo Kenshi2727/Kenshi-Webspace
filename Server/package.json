@@ -28,8 +28,8 @@
     "ngrok": "ngrok http http://localhost:3000"
   },
   "dependencies": {
-    "@kenshi/database": "*",
     "@clerk/express": "^1.7.40",
+    "@kenshi/database": "*",
     "@sentry/node": "^10.25.0",
     "axios": "^1.11.0",
     "cloudinary": "^2.7.0",

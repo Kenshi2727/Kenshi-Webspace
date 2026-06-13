@@ -9,7 +9,7 @@ import {
     updatePost,
     updatePostLikes,
     countView,
-    updatePostBookmarks
+    updatePostBookmarks,
 } from "../controllers/post.controller.js";
 import { protectRoute } from "../middlewares/auth.middleware.js";
 import { privilegedRouteAccess } from "../middlewares/rbac.middleware.js";
@@ -30,7 +30,7 @@ router.get('/user-posts/:userId', protectRoute, getUserPosts);
 router.delete('/:postId', protectRoute, deletePost);
 
 // update routes
-router.patch('/:postId', protectRoute, privilegedRouteAccess(["USER","OWNER"]), updatePost);
+router.patch('/:postId', protectRoute, privilegedRouteAccess(["USER", "OWNER"]), updatePost);
 
 router.put('/likes/:postId', protectRoute, updatePostLikes);
 

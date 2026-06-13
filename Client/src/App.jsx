@@ -194,6 +194,7 @@ function App() {
         <Toaster
           position="top-center"
           reverseOrder={false}
+          className="no-pdf"
         />
         <Analytics />
         <SpeedInsights />

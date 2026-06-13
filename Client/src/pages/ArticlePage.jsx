@@ -332,7 +332,7 @@ export default function ArticlePage() {
                         <motion.div
                             variants={itemVariants}
                             style={{ opacity, scale, y }}
-                            className="max-w-5xl mx-auto mb-12 overflow-hidden rounded-3xl shadow-2xl relative group"
+                            className="no-pdf max-w-5xl mx-auto mb-12 overflow-hidden rounded-3xl shadow-2xl relative group"
                         >
                             <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent z-10" />
                             <motion.img

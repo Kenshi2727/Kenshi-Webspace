@@ -1,6 +1,7 @@
 import prisma from "@kenshi/database/prisma.client.js";
 import { setServiceRef, deleteMediaMetaData, deleteServiceRef, deleteMedia, getPublicIds } from "./media.controller.js";
 import { parseDataTypes } from "../lib/typeParser.js";
+
 // Note-
 /* Reference 1 -
 Be cautious
@@ -614,5 +615,4 @@ export const updatePostBookmarks = async (req, res) => {
         return res.status(500).json({ error: "Failed to update post bookmarks" });
     }
 }
-
 
