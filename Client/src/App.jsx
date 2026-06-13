@@ -181,8 +181,6 @@ function App() {
             <Route path="/super-admin/maintainer" element={isMaintenanceMode ? <MaintenancePage /> : isSignedIn ? <MaintainerPage /> : <SignInPage />} />
             {/* Add more routes as needed */}
 
-
-
             {/*Invalid route Handling*/}
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
