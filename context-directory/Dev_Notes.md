@@ -32,6 +32,7 @@ middleware that will check -> user id
 - Loading pages while client side isSignedIn is being checked 
 - study the vercel client side analytics object
 - integrate client side langchain for client side ai features
+
 ## Web Analytics
 - Sentry Service Integration
 - Server Log Monitoring setup left
@@ -51,6 +52,80 @@ middleware that will check -> user id
 - gemini integration for ai features
 - @contentful/rich-text-from-markdown
 - sitemap.xml 
+
+## Restructuring_Plan-
+> This restructuring is planned soon, but will be handled after the current higher-priority tasks are completed. Keep this section as context for the future restructuring pass.
+
+### Main Goal-
+- Keep the current monorepo architecture, but tighten boundaries so the project is easier to scale, test, and maintain.
+- Avoid a full rewrite; restructure gradually around the existing working system.
+
+### Current Architecture-
+- `Client/` owns React + Vite frontend UI, routing, browser state, and API calls.
+- `Server/` owns Express routes, authentication, authorization, business logic, and database-facing API behavior.
+- `Database/` owns Prisma schema, migrations, and shared Prisma client.
+- `Services/` owns microservices such as AI Pipeline, Notification, Logger, Encryption, and other independent service workloads.
+- Runtime flow should remain: Client -> Server -> Database, with Server calling external/internal services when needed.
+
+### Server Restructuring-
+- Split heavy controllers into clearer layers:
+  - `routes/` for endpoint definitions only.
+  - `controllers/` for HTTP request/response handling.
+  - `services/` for business logic.
+  - `repositories/` for Prisma/database queries.
+  - `validators/` for request validation.
+  - `integrations/` for Cloudinary, Firebase, AI Pipeline, notification, logger, and other external clients.
+  - `config/` for environment and app configuration.
+- Move post/media logic out of large controller files into focused service modules.
+- Keep controllers thin: read request data, call service, return response.
+- Add shared error response helpers and consistent API response formats.
+- Add validation for client and server inputs, preferably with Zod or a similar schema validator.
+
+### Client Restructuring-
+- Split `Client/src/services/GlobalApi.js` into domain-based API files:
+  - `apiClient.js`
+  - `postApi.js`
+  - `userApi.js`
+  - `mediaApi.js`
+  - `notificationApi.js`
+  - future AI/service API modules as needed.
+- Organize feature-specific code under `features/` where useful:
+  - `posts/`
+  - `users/`
+  - `auth/`
+  - `media/`
+  - `notifications/`
+- Keep shared UI in `components/`, shared helpers in `lib/`, and route-level screens in `pages/`.
+
+### Database Restructuring-
+- Keep Prisma centralized in `Database/`.
+- Consider moving the Prisma client wrapper into a clearer package entry such as `Database/src/client.js` or `Database/src/index.js`.
+- Treat generated Prisma output as generated code only; never hand-edit generated files.
+- Review old migrations and schema naming before major Prisma upgrades.
+
+### Services Restructuring-
+- Standardize all `Services/*` folders around a consistent internal structure where possible.
+- Use `Services/AI-Pipeline` as the reference pattern because it already separates API routes, controllers, core logic, models, providers, prompts, middleware, and utils.
+- Keep service-specific concerns inside the service folder.
+- Let the main `Server/` communicate with services through explicit integration/client modules instead of scattered direct calls.
+
+### Docs And Workspace-
+- Update `Architecture/` docs after restructuring so documentation matches the real repo.
+- Add or improve root workspace scripts for common development commands:
+  - dev
+  - build
+  - lint
+  - test
+  - prisma generate/migrate
+- Keep restructuring commits separate from feature commits where possible.
+
+### Suggested Priority Order-
+1. Refactor `Server/` controller/service/repository boundaries.
+2. Split frontend API service files by domain.
+3. Standardize service folder patterns.
+4. Clean up database package exports.
+5. Update architecture documentation.
+6. Add workspace-level scripts and checks.
 
 ## UI/UX Improvements-
 - separate page for likes,bookmarks section for user profile

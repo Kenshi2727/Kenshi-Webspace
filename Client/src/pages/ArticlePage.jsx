@@ -332,9 +332,40 @@ export default function ArticlePage() {
                         <motion.div
                             variants={itemVariants}
                             style={{ opacity, scale, y }}
-                            className="no-pdf max-w-5xl mx-auto mb-12 overflow-hidden rounded-3xl shadow-2xl relative group"
+                            whileHover={{
+                                z: 20
+                            }}
+                            className="no-pdf h-[80vh] max-w-5xl mx-auto mb-12 overflow-hidden rounded-3xl shadow-2xl relative group"
                         >
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent z-10" />
+                            <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent z-10 hover:opacity-0 transition-opacity delay-300 duration-500" />
+
+                            <svg
+                                className="absolute inset-0 w-full h-full z-30 pointer-events-none"
+                            >
+                                <motion.rect
+                                    x="2"
+                                    y="2"
+                                    width="calc(100% - 4px)"
+                                    height="calc(100% - 4px)"
+                                    rx="24"
+                                    fill="none"
+                                    stroke="#a855f7"
+                                    strokeWidth="3"
+                                    strokeDasharray="200 3000"
+                                    style={{
+                                        filter: "drop-shadow(0 0 12px #a855f7)",
+                                    }}
+                                    whileInView={{
+                                        strokeDashoffset: [0, -3080],
+                                    }}
+                                    transition={{
+                                        duration: 3,
+                                        repeat: Infinity,
+                                        ease: "linear",
+                                    }}
+                                />
+                            </svg>
+
                             <motion.img
                                 src={(!article.coverImage) || article.coverImage.trim() === '' ? '/placeholder.png' : article.coverImage}
                                 onError={(e) => {
@@ -342,10 +373,38 @@ export default function ArticlePage() {
                                     e.target.src = '/placeholder.png';
                                 }}
                                 alt="Cover"
-                                className="w-full h-[200px] sm:h-[250px] md:h-[300px] lg:h-[350px] object-fill transition-transform duration-700 group-hover:scale-105"
+                                className="w-full h-full object-fill transition-transform duration-700 group-hover:scale-105"
                                 whileHover={{ scale: 1.02 }}
                                 transition={{ duration: 0.3 }}
                             />
+
+                            {/*Cover - Article title and author overlay */}
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.5, duration: 0.6 }}
+                                className="absolute inset-0 z-20"
+                            >
+
+                                <div className="absolute top-6 left-6" >
+                                    {/* article title */}
+                                    <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold text-white">{article.title}</h1>
+
+                                    {/* article author */}
+                                    <motion.div
+                                        className="text-xl sm:text-2xl font-stretch-extra-condensed italic text-white/50 mt-2"
+                                        whileHover={{
+                                            color: '#a855f7',
+                                        }}
+                                        transition={{ delay: 0.2, duration: 0.3 }}
+                                    >
+                                        - by {article.author.firstName} {article.author.lastName}
+                                    </motion.div>
+
+                                </div>
+                            </motion.div>
+
+                            {/* article badge */}
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}

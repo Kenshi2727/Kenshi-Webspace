@@ -15,6 +15,7 @@ import remarkSmartypants from "remark-smartypants";
 import remarkDirective from "remark-directive";
 import remarkToc from 'remark-toc'
 import toast from 'react-hot-toast';
+import { motion } from 'framer-motion';
 
 // import 'highlight.js/styles/github-dark.css';
 // import 'highlight.js/styles/rose-pine-moon.css';
@@ -107,7 +108,45 @@ export default function MarkdownRenderer({ content = '' }) {
         blockquote: ({ node, ...props }) => <blockquote className="border-l-4 border-indigo-400 pl-4 italic text-gray-200 my-4" {...props} />,
         img: ({ node, ...props }) => (
             <figure className="my-4">
-                <img className="mx-auto rounded-lg shadow-sm max-h-[420px] object-contain" {...props} />
+
+                <div className="relative w-fit mx-auto">
+                    <img className="mx-auto rounded-lg shadow-sm max-h-[420px] object-contain" {...props} />
+                    <svg
+                        className="absolute inset-0 w-full h-full z-30 pointer-events-none"
+                    >
+                        <motion.rect
+                            x="2"
+                            y="2"
+                            width="calc(100% - 4px)"
+                            height="calc(100% - 4px)"
+                            rx="8"
+                            fill="none"
+                            stroke="white"
+                            strokeWidth="3"
+                            strokeDasharray="200 3000"
+                            style={{
+                                filter: "drop-shadow(0 0 12px white)",
+                            }}
+
+                            initial={{
+                                strokeDashoffset: 0,
+                                opacity: 0
+                            }}
+                            whileInView={{
+                                opacity: [1, 0.8, 0.8, 1],
+                                strokeDashoffset: [0, -3080],
+                            }}
+                            transition={{
+                                duration: 4,
+                                repeat: Infinity,
+                                repeatDelay: 0,
+                                repeatType: "loop",
+                                ease: "linear",
+                            }}
+                        />
+                    </svg>
+                </div>
+
                 {props.alt && <figcaption className="text-sm text-gray-200 text-center mt-2"><span className='font-bold'>Fig. </span>{props.alt}</figcaption>}
             </figure>
         ),

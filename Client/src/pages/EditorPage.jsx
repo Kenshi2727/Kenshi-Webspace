@@ -107,7 +107,7 @@ export default function EditorPage({ type }) {
     const [isZenMode, setIsZenMode] = useState(false);
     const [isSplitScreen, setIsSplitScreen] = useState(false);
 
-    // Slash Commands
+    // Basic block command menu
     const [showSlashMenu, setShowSlashMenu] = useState(false);
     const [slashMenuPosition, setSlashMenuPosition] = useState({ top: 0, left: 0 });
     const [slashMenuFilter, setSlashMenuFilter] = useState("");
@@ -347,21 +347,31 @@ export default function EditorPage({ type }) {
         cmd.title.toLowerCase().includes(slashMenuFilter.toLowerCase())
     );
 
+    const openBasicBlocksMenu = (textarea) => {
+        const cursorPosition = textarea.selectionStart;
+        const textBeforeCursor = textarea.value.substring(0, cursorPosition);
+        const lines = textBeforeCursor.split('\n');
+        const currentLineNumber = lines.length;
+        const currentColumn = lines[lines.length - 1].length;
+
+        setSlashMenuPosition({
+            top: Math.min(currentLineNumber * 20 + 10, 300),
+            left: Math.min(currentColumn * 8 + 20, window.innerWidth - 250)
+        });
+        setSlashMenuFilter("");
+        setSlashMenuIndex(0);
+        setShowSlashMenu(true);
+    };
+
     const executeSlashCommand = (markdown) => {
         const textarea = document.getElementById("md-editor");
         if (!textarea) return;
 
         const cursorPosition = textarea.selectionStart;
         const textBeforeCursor = formData.content.substring(0, cursorPosition);
-
-        // Find where the slash command started
-        const slashIndex = textBeforeCursor.lastIndexOf("/");
-        if (slashIndex === -1) return;
-
-        const textBeforeSlash = formData.content.substring(0, slashIndex);
         const textAfterCursor = formData.content.substring(cursorPosition);
 
-        const newContent = textBeforeSlash + markdown + textAfterCursor;
+        const newContent = textBeforeCursor + markdown + textAfterCursor;
         handleInputChange("content", newContent);
 
         setShowSlashMenu(false);
@@ -369,7 +379,7 @@ export default function EditorPage({ type }) {
 
         setTimeout(() => {
             textarea.focus();
-            const newPos = slashIndex + markdown.length;
+            const newPos = cursorPosition + markdown.length;
             // if code block, put cursor inside
             if (markdown === "```\n\n```") {
                 textarea.selectionStart = newPos - 4;
@@ -382,6 +392,12 @@ export default function EditorPage({ type }) {
     };
 
     const handleEditorKeyDown = (e) => {
+        if (e.ctrlKey && (e.key === " " || e.code === "Space")) {
+            e.preventDefault();
+            openBasicBlocksMenu(e.currentTarget);
+            return;
+        }
+
         if (!showSlashMenu) return;
 
         if (e.key === "ArrowDown") {
@@ -408,35 +424,8 @@ export default function EditorPage({ type }) {
 
     const handleEditorChange = (e) => {
         const newValue = e.target.value;
-        const cursorPosition = e.target.selectionStart;
         handleInputChange("content", newValue);
-
-        // Check for slash command trigger
-        const textBeforeCursor = newValue.substring(0, cursorPosition);
-
-        // Ensure the slash is either at the beginning of the string or preceded by a newline
-        const slashMatch = textBeforeCursor.match(/(?:^|\n)\/([a-zA-Z]*)$/);
-
-        if (slashMatch) {
-            const filterText = slashMatch[1];
-
-            // Calculate cursor position (rough approximation for simple textareas)
-            // A more robust solution involves a hidden div replica, but this works for basic fixed-width fonts
-            const lines = textBeforeCursor.split('\n');
-            const currentLineNumber = lines.length;
-            const currentColumn = lines[lines.length - 1].length;
-
-            setSlashMenuPosition({
-                top: Math.min(currentLineNumber * 20 + 10, 300), // rough line height approx
-                left: Math.min(currentColumn * 8 + 20, window.innerWidth - 250) // rough char width approx
-            });
-
-            setSlashMenuFilter(filterText);
-            setSlashMenuIndex(0);
-            setShowSlashMenu(true);
-        } else {
-            setShowSlashMenu(false);
-        }
+        setShowSlashMenu(false);
     };
 
     const handleContentImageUpload = async (e) => {
@@ -1111,7 +1100,7 @@ export default function EditorPage({ type }) {
                                                     handleInputChange("category", value)
                                                 }
                                             >
-                                                <SelectTrigger className="bg-white/5 border-white/20 text-white text-sm md:text-base">
+                                                <SelectTrigger className="bg-white/5 border-white/20 text-white text-sm md:text-base focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
                                                     <SelectValue placeholder="Select category" />
                                                 </SelectTrigger>
                                                 <SelectContent>
@@ -1832,7 +1821,7 @@ export default function EditorPage({ type }) {
                                                     onKeyDown={handleEditorKeyDown}
                                                     onDrop={handleEditorDrop}
                                                     onPaste={handleEditorPaste}
-                                                    placeholder="Write your markdown content here... Type '/' for command menu."
+                                                    placeholder="Write your markdown content here... Press Ctrl + Space for Basic Blocks."
                                                     className={`p-3 md:p-4 font-mono text-xs md:text-sm bg-white/5 text-white border-white/20 resize-none hide-scrollbar ${isSplitScreen ? (isZenMode ? "max-h-[85vh] h-[85vh] overflow-y-auto" : "max-h-[300px] md:max-h-[400px] lg:max-h-[500px] h-[300px] md:h-[400px] lg:h-[500px] overflow-y-auto") : (isZenMode ? "min-h-[85vh]" : "min-h-[300px] md:min-h-[400px] lg:min-h-[500px]")}`}
                                                 />
 
