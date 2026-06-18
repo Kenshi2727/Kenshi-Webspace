@@ -335,7 +335,7 @@ export default function ArticlePage() {
                             whileHover={{
                                 z: 20
                             }}
-                            className="no-pdf h-[calc(100vh-176px)] max-w-5xl mx-auto mb-12 overflow-hidden rounded-3xl shadow-2xl relative group"
+                            className="no-pdf h-50 sm:h-100 md:h-[calc(100vh-176px)] max-w-5xl mx-auto mb-12 overflow-hidden rounded-3xl shadow-2xl relative group"
                         >
                             <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent z-10 hover:opacity-0 transition-opacity delay-300 duration-500" />
 
@@ -388,11 +388,11 @@ export default function ArticlePage() {
 
                                 <div className="absolute top-6 left-6" >
                                     {/* article title */}
-                                    <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold text-white">{article.title}</h1>
+                                    <h1 className="text-xl sm:text-3xl md:text-5xl lg:text-6xl font-bold text-white">{article.title}</h1>
 
                                     {/* article author */}
                                     <motion.div
-                                        className="text-xl sm:text-2xl font-stretch-extra-condensed italic text-white/50 mt-2"
+                                        className="text-xs sm:text-xl md:text-2xl font-stretch-extra-condensed italic text-white/50 mt-2"
                                         whileHover={{
                                             color: '#a855f7',
                                         }}
