@@ -335,7 +335,7 @@ export default function ArticlePage() {
                             whileHover={{
                                 z: 20
                             }}
-                            className="no-pdf h-[80vh] max-w-5xl mx-auto mb-12 overflow-hidden rounded-3xl shadow-2xl relative group"
+                            className="no-pdf h-[calc(100vh-176px)] max-w-5xl mx-auto mb-12 overflow-hidden rounded-3xl shadow-2xl relative group"
                         >
                             <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent z-10 hover:opacity-0 transition-opacity delay-300 duration-500" />
 
