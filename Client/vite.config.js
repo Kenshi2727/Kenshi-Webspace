@@ -32,6 +32,14 @@ export default defineConfig({
       maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MB 
     },
 
+    optimizeDeps: {
+      // Option A: Force Vite to pre-bundle it on initialization
+      include: ['html2pdf.js'],
+
+      // Option B: Use this if Option A still errors out
+      // exclude: ['html2pdf.js'] 
+    },
+
     devOptions: {
       enabled: false,
       navigateFallback: 'index.html',

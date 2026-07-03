@@ -42,6 +42,7 @@ import { useDispatch } from "react-redux";
 import { setUser } from './features/users/userSlice.js';
 import { getUser } from './services/GlobalApi';
 import { useAuth } from '@clerk/clerk-react';
+import ArticlePDF from './components/ArticlePDF';
 
 function App() {
   const isMaintenanceMode = false;
@@ -180,6 +181,10 @@ function App() {
             <Route path="/profile" element={isMaintenanceMode ? <MaintenancePage /> : isSignedIn ? <ProfilePage /> : <SignInPage />} />
             <Route path="/super-admin/maintainer" element={isMaintenanceMode ? <MaintenancePage /> : isSignedIn ? <MaintainerPage /> : <SignInPage />} />
             {/* Add more routes as needed */}
+
+
+            {/*Testing Routes */}
+            <Route path="/test/article-pdf" element={<ArticlePDF />} />
 
             {/*Invalid route Handling*/}
             <Route path="*" element={<NotFoundPage />} />

@@ -222,6 +222,150 @@ PostgreSQL is ideal for applications needing reliable, feature-rich relational d
 
 ];
 
+export const testArticle = {
+  id: "demo-1",
+  title: "Building My AI Resume Builder: Lessons from a Full-Stack Project",
+  excerpt:
+    "A behind-the-scenes look at designing, developing, and deploying an AI-powered resume builder using React, Express, PostgreSQL, Clerk, and Gemini AI.",
+  cover: null,
+  content: `
+## Contents
+
+### What Is a Dyson Sphere?
+
+A Dyson Sphere is a hypothetical megastructure built around a star to collect a significant portion of its energy output. The concept was popularized in 1960 by physicist Freeman Dyson, who suggested that an advanced civilization would eventually require vast amounts of energy and might construct structures around its star to meet those needs.
+
+<info>
+Contrary to popular belief, Dyson never envisioned a solid shell surrounding a star. Instead, he proposed a swarm of millions or even billions of satellites orbiting the star and collecting solar energy. This arrangement is often called a "Dyson Swarm."
+</info>
+
+### Why Would We Need One?
+
+Human civilization's energy consumption has grown continuously throughout history. As our population increases and technology advances, our demand for energy also rises.
+
+The Sun produces approximately 386 septillion watts of power every second. To put this into perspective, humanity currently uses only a tiny fraction of that amount. Capturing even a small percentage of the Sun's output could provide enough energy to power civilization for millions of years.
+
+A Dyson Sphere could support:
+
+* Massive space colonies
+* Advanced artificial intelligence systems
+* Planetary-scale computing
+* Interstellar spacecraft
+* Large-scale terraforming projects
+
+## The Kardashev Scale
+
+The idea of Dyson Spheres is closely connected to the Kardashev Scale, a method of measuring a civilization's technological advancement based on its energy consumption.
+
+- #### Type I Civilization
+Can harness all the energy available on its home planet.
+
+- #### Type II Civilization
+
+Can harness the total energy output of its star, potentially using a Dyson Sphere.
+
+- #### Type III Civilization
+
+Can utilize the energy of an entire galaxy.
+
+Humanity is currently estimated to be around Type 0.7, meaning we have not yet reached Type I status.
+
+### Could We Actually Build One?
+
+Constructing a Dyson Sphere would be one of the largest engineering projects ever conceived.
+
+The challenges include:
+
+- #### Material Requirements
+
+A traditional solid shell would require more material than exists in all the planets of our Solar System. This is one reason why scientists favor the Dyson Swarm concept.
+
+- #### Manufacturing
+
+Millions of autonomous robots would likely be needed to mine asteroids, process raw materials, and manufacture solar collectors in space.
+
+- #### Orbital Stability
+
+Managing billions of independent satellites without collisions would require highly sophisticated artificial intelligence and navigation systems.
+
+- #### Time Scale
+
+Even with advanced technology, building a Dyson Swarm could take centuries or thousands of years.
+
+### How Would We Detect Alien Dyson Spheres?
+
+If extraterrestrial civilizations have built Dyson Spheres, astronomers might be able to detect them.
+
+A star surrounded by energy-collecting structures would appear dimmer in visible light because some of its energy would be blocked. However, the structures would still radiate heat, producing an unusual infrared signature.
+
+Scientists have searched for such anomalies in astronomical data. While some interesting candidates have been identified, no confirmed Dyson Sphere has ever been discovered.
+
+
+<success>
+One famous example is Tabby's Star, whose unusual brightness fluctuations sparked speculation about alien megastructures. Although natural explanations are now considered more likely, the star renewed public interest in Dyson Spheres.
+</success>
+
+
+
+### Variations of Dyson Structures
+
+Over time, scientists and science-fiction writers have proposed several alternatives.
+
+- #### Dyson Swarm
+
+A vast collection of orbiting solar collectors.
+
+- #### Dyson Bubble
+
+Energy collectors held in position using solar sails and radiation pressure.
+
+- #### Dyson Ring
+
+A ring of structures orbiting around a star.
+
+- #### Matrioshka Brain
+
+Multiple layers of Dyson-like structures used to power unimaginably large supercomputers.
+
+### Dyson Spheres in Science Fiction
+
+The concept has inspired countless works of science fiction. Dyson Spheres often appear as symbols of civilizations that have transcended planetary limitations and expanded into the cosmos.
+
+
+<like>
+These structures remind us that today's impossible ideas may become tomorrow's engineering projects.
+</like>
+
+
+
+### The Future of Humanity
+
+Although humanity is nowhere near building a Dyson Sphere, the concept encourages us to think on a cosmic scale. Every major technological achievement—from flight to space travel—once seemed impossible.
+
+If our species survives long enough and continues advancing technologically, future generations may one day begin constructing the first components of a Dyson Swarm around the Sun.
+
+For now, Dyson Spheres remain a bridge between science and imagination, offering a glimpse into what a truly advanced civilization might achieve.
+
+### Conclusion
+
+A Dyson Sphere is more than a science-fiction concept. It represents the ultimate quest for energy and a possible milestone in humanity's journey toward becoming an interplanetary civilization. 
+
+
+
+<quote>
+Whether built by humans or discovered around distant stars, Dyson Spheres challenge us to imagine a future where the scale of our ambitions matches the scale of the universe itself.
+</quote>
+
+
+![Hot, dust-obscured galaxies (Hot DOGs), like the one circled in purple, may have similar energy signatures to hypothetical alien structures called Dyson spheres, new research suggests. (Image credit: NASA/JPL-Caltech/UCLA)](https://cdn.mos.cms.futurecdn.net/pjCgXoDuVfAQV5SRzErjP8-1280-80.jpg.webp)
+
+
+`,
+  readTime: 6,
+  createdAt: "2026-07-03T10:30:00.000Z",
+  updatedAt: "2026-07-03T10:30:00.000Z",
+};
+
 export const myArticles = [
   {
     id: 'demo-1',

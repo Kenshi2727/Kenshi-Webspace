@@ -22,7 +22,7 @@ import { motion } from 'framer-motion';
 import 'highlight.js/styles/tokyo-night-dark.css';
 import { Check, CopyIcon } from 'lucide-react';
 
-export default function MarkdownRenderer({ content = '' }) {
+export default function MarkdownRenderer({ content = '', components }) {
     const mdRef = useRef(null);
 
     useEffect(() => {
@@ -269,7 +269,7 @@ export default function MarkdownRenderer({ content = '' }) {
                     rehypeStringify,
                     rehypeSlug,
                 ]}
-                components={mdComponents}
+                components={components || mdComponents}
                 mediumZoom={mediumZoom}
             >
                 {content}
