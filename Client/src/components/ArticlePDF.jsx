@@ -127,7 +127,7 @@ const pdfComponents = {
         </div>
     ),
     quote: ({ children }) => (
-        <div className="pdf-quote">{children}</div>
+        <div className="pdf-quote">"{children}"</div>
     ),
 };
 
@@ -160,7 +160,7 @@ const PdfArticle = ({ article }) => (
             </div>
             <div className="pdf-header-details">
                 <span className="pdf-pill">{article.category || 'Miscellaneous'}</span>
-                <span className="pdf-pill"><VerifiedIcon />Verified</span>
+                <span className="pdf-pill"><VerifiedIcon /> Verified</span>
             </div>
         </div>
 
@@ -168,6 +168,7 @@ const PdfArticle = ({ article }) => (
 
         <MarkdownRenderer content={article.content} components={pdfComponents} />
 
+        {/*footer */}
         <div
             className="pdf-footer"
             style={{
@@ -270,7 +271,7 @@ const PdfArticle = ({ article }) => (
                 flexDirection: 'column',
                 gap: '0.35rem',
                 marginTop: '3rem',
-                opacity: 0.88
+                opacity: 1
             }}>
                 <span style={{ fontSize: '0.95rem' }}>© {new Date().getFullYear()} Kenshi Webspace</span>
                 <span style={{ fontSize: '0.95rem' }}>Made with passion for creators and curious minds.</span>
@@ -283,7 +284,7 @@ const ArticlePDF = () => {
     const [downloading, setDownloading] = useState(false);
     const article = useSelector((state) => state.currentArticle);
 
-    const handleDownload = () => {
+    const handleDownload = async () => {
         if (downloading) return;
 
         setDownloading(true);
@@ -299,31 +300,33 @@ const ArticlePDF = () => {
             image: { type: 'jpeg', quality: 1 },
             enableLinks: true,
             pagebreak: {
-                mode: ['css', 'legacy'],
+                mode: ['avoid-all'],
                 before: ['.pdf-footer'],
-                avoid: [
-                    'img',
-                    'table',
-                    'pre',
-                    'code',
-                    'blockquote',
-                    '.pdf-header',
-                    '.pdf-author-block',
-                    '.pdf-divider',
-                    '.pdf-table-container',
-                    '.pdf-figure',
-                    '.pdf-callout',
-                    '.pdf-todo',
-                    '.pdf-quote'
-                ]
+                // avoid: [
+                //     'img',
+                //     'table',
+                //     'pre',
+                //     'code',
+                //     'blockquote',
+                //     '.pdf-header',
+                //     '.pdf-author-block',
+                //     '.pdf-divider',
+                //     '.pdf-table-container',
+                //     '.pdf-figure',
+                //     '.pdf-callout',
+                //     '.pdf-todo',
+                //     '.pdf-quote'
+                // ]
             },
             html2canvas: {
-                scale: 3,
+                scale: 4,
+                backgroundColor: null,
                 useCORS: true,
                 allowTaint: true,
                 logging: false,
                 scrollX: 0,
-                scrollY: -window.scrollY
+                scrollY: -window.scrollY,
+                // letterRendering: true
             },
             jsPDF: {
                 unit: 'in',

@@ -48,6 +48,7 @@
     border-radius: 8px;
     height: 180px;
     object-fit: fill;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.548);
 }
 .pdf-brand-name {
     font-family: 'Inter', sans-serif;
@@ -108,7 +109,6 @@
 .pdf-pill {
     display: inline-flex;
     gap:4px;
-    align-items: center;
     padding: 6px 12px;
     border-radius: 999px;
     background: #ede9fe;
@@ -141,38 +141,45 @@
     color: #5b21b6;
 }
 .pdf-title {
-    font-size: 30px;
+    line-height: 1.2;
+    font-size: 2.25rem;
     font-weight: 700;
+    margin-top: 10px;
     margin-bottom: 10px;
 }
 .pdf-heading-2 {
-    font-size: 26px;
-    margin-top: 32px;
-    margin-bottom: 14px;
-    font-weight: 600;
-}
-.pdf-heading-3 {
-    font-size: 22px;
-    margin-top: 28px;
-    margin-bottom: 12px;
-    font-weight: 600;
-}
-.pdf-heading-4 {
-    font-size: 20px;
-    margin-top: 24px;
+    font-size: 2rem;
+    line-height: calc(2.5rem/2.25rem);
+    margin-top: 20px;
     margin-bottom: 10px;
     font-weight: 600;
 }
-.pdf-heading-5 {
-    font-size: 18px;
+.pdf-heading-3 {
+    font-size: 1.8rem;
     margin-top: 20px;
+    margin-bottom: 12px;
+    line-height: calc(2rem/1.8rem);
+    font-weight: 600;
+}
+.pdf-heading-4 {
+    font-size: 1.5rem;
+    margin-top: 18px;
+    margin-bottom: 10px;
+    line-height: calc(1.75rem/1.5rem);
+    font-weight: 600;
+}
+.pdf-heading-5 {
+    font-size: 1.25rem;
+    margin-top: 16px;
     margin-bottom: 8px;
+    line-height: calc(1.5rem/1.25rem);
     font-weight: 600;
 }
 .pdf-heading-6 {
-    font-size: 16px;
-    margin-top: 18px;
-    margin-bottom: 8px;
+    font-size: 1rem;
+    margin-top: 14px;
+    margin-bottom: 6px;
+    line-height: calc(1.25rem/1rem);
     font-weight: 600;
 }
 .pdf-paragraph {
@@ -211,11 +218,17 @@
 .pdf-figure {
     margin: 24px 0;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
 }
 .pdf-image {
     max-width: 100%;
     height: auto;
     border: 1px solid #d8d8d8;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.548);
+    border-radius: 8px;
     background: #ffffff;
 }
 .pdf-figcaption {
@@ -250,7 +263,7 @@
     border-radius: 4px;
     padding: 16px;
     overflow-x: auto;
-    margin: 20px 0;
+    margin: 10px 0;
     font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
     font-size: 0.95rem;
 }
