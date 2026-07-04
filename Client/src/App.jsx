@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Routes, Route, useSearchParams } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import ArticlesPage from './pages/ArticlesPage';
-// import CategoriesPage from './pages/CategoriesPage';
+import CategoriesPage from './pages/CategoriesPage';
 import AboutPage from './pages/AboutPage';
 import SignInPage from './auth/SignInPage';
 import ArticlePage from './pages/ArticlePage';
@@ -20,8 +20,6 @@ import DarkHomePage from './pages/DarkHomePage';
 // import DarkModePrompt from './components/DarkModePrompt';
 import ScrollToTopButton from './components/ScrollToTopButton';
 import Progress from './components/Progress';
-// import ResearchBrewery from './pages/sections/Research_Section/ResearchBrewery';
-// import CodePage from './pages/sections/Research_Section/CodePage';
 import ScrollToTop from './navigate/ScrollToTop';
 import ReviewPage from './pages/ReviewPage';
 import ProfilePage from './pages/ProfilePage';
@@ -154,10 +152,7 @@ function App() {
             {/*Maintenance dependent routes*/}
             <Route path="/" element={isMaintenanceMode ? <MaintenancePage /> : <HomePage />} />
             <Route path="/articles" element={isMaintenanceMode ? <MaintenancePage /> : <ArticlesPage />} />
-
-            {/* <Route path="/categories" element={isMaintenanceMode ? <MaintenancePage /> : <CategoriesPage />} /> */}
-            <Route path="/categories" element={<MaintenancePage />} />
-
+            <Route path="/categories" element={isMaintenanceMode ? <MaintenancePage /> : <CategoriesPage />} />
             <Route path="/about" element={isMaintenanceMode ? <MaintenancePage /> : <AboutPage />} />
             <Route path="/auth/login" element={isMaintenanceMode ? <MaintenancePage /> : <SignInPage />} />
             <Route path="/auth/sign-up" element={isMaintenanceMode ? <MaintenancePage /> : <SignUpPage />} />
@@ -170,13 +165,6 @@ function App() {
             <Route path="/auth/forgot-password" element={isMaintenanceMode ? <MaintenancePage /> : <ForgotPasswordPage />} />
             <Route path="/my-articles" element={isMaintenanceMode ? <MaintenancePage /> : isSignedIn ? <MyArticlesPage /> : <SignInPage />} />
             <Route path="/dark" element={isMaintenanceMode ? <MaintenancePage /> : <DarkHomePage />} />
-
-            {/* <Route path="/research" element={isMaintenanceMode ? <MaintenancePage /> : <ResearchBrewery />} />
-            <Route path="/code" element={isMaintenanceMode ? <MaintenancePage /> : <CodePage />} /> */}
-
-            <Route path="/research" element={<MaintenancePage />} />
-            <Route path="/code" element={<MaintenancePage />} />
-
             <Route path="/review" element={isMaintenanceMode ? <MaintenancePage /> : isSignedIn ? <ReviewPage /> : <SignInPage />} />
             <Route path="/profile" element={isMaintenanceMode ? <MaintenancePage /> : isSignedIn ? <ProfilePage /> : <SignInPage />} />
             <Route path="/super-admin/maintainer" element={isMaintenanceMode ? <MaintenancePage /> : isSignedIn ? <MaintainerPage /> : <SignInPage />} />

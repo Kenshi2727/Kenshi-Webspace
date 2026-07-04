@@ -1,437 +1,528 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Filter, TrendingUp, BookOpen, Star, ArrowRight, Grid, List } from 'lucide-react';
-import { Link } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+    ArrowRight,
+    Atom,
+    BookOpen,
+    BookText,
+    CheckCircle2,
+    Compass,
+    Filter,
+    Flag,
+    Globe2,
+    Grid,
+    History,
+    Landmark,
+    LayoutList,
+    LoaderCircle,
+    MonitorCog,
+    Search,
+    Sparkles,
+    Star,
+    TrendingUp,
+    XCircle,
+} from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import { checkCategoryPosts, getCategoryPostCounts } from "../services/GlobalApi";
 
 const containerVariants = {
-    hidden: { opacity: 0, y: 12 },
+    hidden: { opacity: 0 },
     show: {
         opacity: 1,
-        y: 0,
         transition: {
-            staggerChildren: 0.06,
+            staggerChildren: 0.07,
             delayChildren: 0.08,
         },
     },
 };
 
 const itemVariants = {
-    hidden: { opacity: 0, y: 8, scale: 0.985 },
+    hidden: { opacity: 0, y: 18, scale: 0.98 },
     show: {
         opacity: 1,
         y: 0,
         scale: 1,
-        transition: { type: 'spring', stiffness: 110, damping: 14 },
+        transition: { type: "spring", stiffness: 120, damping: 18 },
     },
 };
 
+const categories = [
+    {
+        id: 1,
+        name: "Technology",
+        icon: MonitorCog,
+        description: "Systems, tools, software, and the future of digital craft.",
+        trending: true,
+        accent: "from-blue-500 to-indigo-600",
+        tint: "bg-blue-50 text-blue-700 border-blue-100",
+        chip: "bg-blue-100 text-blue-700",
+    },
+    {
+        id: 2,
+        name: "Geopolitics",
+        icon: Globe2,
+        description: "Power, diplomacy, borders, and global strategy in motion.",
+        accent: "from-emerald-500 to-teal-600",
+        tint: "bg-emerald-50 text-emerald-700 border-emerald-100",
+        chip: "bg-emerald-100 text-emerald-700",
+    },
+    {
+        id: 3,
+        name: "History",
+        icon: History,
+        description: "Civilizations, turning points, and the echoes behind today.",
+        trending: true,
+        accent: "from-amber-400 to-orange-500",
+        tint: "bg-amber-50 text-amber-700 border-amber-100",
+        chip: "bg-amber-100 text-amber-700",
+    },
+    {
+        id: 4,
+        name: "Astronomy",
+        icon: Atom,
+        description: "Cosmic discoveries, night-sky wonder, and space science.",
+        accent: "from-violet-500 to-purple-600",
+        tint: "bg-violet-50 text-violet-700 border-violet-100",
+        chip: "bg-violet-100 text-violet-700",
+    },
+    {
+        id: 5,
+        name: "Religion & Culture",
+        icon: Landmark,
+        description: "Traditions, meaning, philosophy, and cultural memory.",
+        accent: "from-rose-500 to-pink-600",
+        tint: "bg-rose-50 text-rose-700 border-rose-100",
+        chip: "bg-rose-100 text-rose-700",
+    },
+    {
+        id: 6,
+        name: "Anime",
+        icon: Sparkles,
+        description: "Stories, studios, characters, and Japanese pop culture.",
+        accent: "from-fuchsia-500 to-purple-600",
+        tint: "bg-fuchsia-50 text-fuchsia-700 border-fuchsia-100",
+        chip: "bg-fuchsia-100 text-fuchsia-700",
+    },
+    {
+        id: 7,
+        name: "Literature",
+        icon: BookText,
+        description: "Books, poetry, essays, criticism, and the written imagination.",
+        accent: "from-lime-500 to-green-600",
+        tint: "bg-lime-50 text-lime-700 border-lime-100",
+        chip: "bg-lime-100 text-lime-700",
+    },
+    {
+        id: 8,
+        name: "Travel",
+        icon: Compass,
+        description: "Places, routes, field notes, and journeys worth remembering.",
+        trending: true,
+        accent: "from-sky-500 to-indigo-600",
+        tint: "bg-sky-50 text-sky-700 border-sky-100",
+        chip: "bg-sky-100 text-sky-700",
+    },
+];
+
 const CategoriesPage = () => {
-    const [searchTerm, setSearchTerm] = useState('');
-    const [sortBy, setSortBy] = useState('name');
-    const [viewMode, setViewMode] = useState('grid');
-    const [hoveredCategory, setHoveredCategory] = useState(null);
+    const navigate = useNavigate();
+    const [searchTerm, setSearchTerm] = useState("");
+    const [sortBy, setSortBy] = useState("name");
+    const [viewMode, setViewMode] = useState("grid");
+    const [checkingCategoryId, setCheckingCategoryId] = useState(null);
+    const [categoryStatuses, setCategoryStatuses] = useState({});
+    const [categoryCounts, setCategoryCounts] = useState({});
+    const [countsLoading, setCountsLoading] = useState(true);
 
-    const categories = [
-        {
-            id: 1,
-            name: 'Technology',
-            count: 24,
-            color: 'bg-indigo-100 text-indigo-800',
-            gradient: 'from-indigo-500 to-indigo-600',
-            icon: '💻',
-            description: 'Latest tech trends and innovations',
-            trending: true
-        },
-        {
-            id: 2,
-            name: 'Geopolitics',
-            count: 10,
-            color: 'bg-orange-100 text-orange-800',
-            gradient: 'from-orange-500 to-orange-600',
-            icon: '🌍',
-            description: 'Global affairs and political analysis'
-        },
-        {
-            id: 3,
-            name: 'History',
-            count: 20,
-            color: 'bg-teal-100 text-teal-800',
-            gradient: 'from-teal-500 to-teal-600',
-            icon: '📚',
-            description: 'Stories from the past',
-            trending: true
-        },
-        {
-            id: 4,
-            name: 'Astronomy',
-            count: 16,
-            color: 'bg-cyan-100 text-cyan-800',
-            gradient: 'from-cyan-500 to-cyan-600',
-            icon: '🌟',
-            description: 'Explore the cosmos and beyond'
-        },
-        {
-            id: 5,
-            name: 'Religion & Culture',
-            count: 14,
-            color: 'bg-rose-100 text-rose-800',
-            gradient: 'from-rose-500 to-rose-600',
-            icon: '🕊️',
-            description: 'Cultural insights and beliefs'
-        },
-        {
-            id: 6,
-            name: 'Anime',
-            count: 12,
-            color: 'bg-purple-100 text-purple-800',
-            gradient: 'from-purple-500 to-purple-600',
-            icon: '🎌',
-            description: 'Japanese animation and culture'
-        },
-        {
-            id: 7,
-            name: 'Literature',
-            count: 18,
-            color: 'bg-pink-100 text-pink-800',
-            gradient: 'from-pink-500 to-pink-600',
-            icon: '📖',
-            description: 'Books, poetry, and written works'
-        },
-        {
-            id: 8,
-            name: 'Travel',
-            count: 22,
-            color: 'bg-yellow-100 text-yellow-800',
-            gradient: 'from-yellow-500 to-yellow-600',
-            icon: '✈️',
-            description: 'Adventures around the world',
-            trending: true
-        },
-    ];
+    useEffect(() => {
+        const fetchCategoryCounts = async () => {
+            setCountsLoading(true);
 
-    const filteredCategories = categories
-        .filter(category =>
-            category.name.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-        .sort((a, b) => {
-            if (sortBy === 'name') return a.name.localeCompare(b.name);
-            if (sortBy === 'count') return b.count - a.count;
-            return 0;
-        });
+            try {
+                const response = await getCategoryPostCounts();
+                setCategoryCounts(response.data.counts || {});
+            } catch (error) {
+                console.error("Category counts fetch failed:", error);
+                toast.error("Could not load category article counts.");
+            } finally {
+                setCountsLoading(false);
+            }
+        };
 
-    const totalArticles = categories.reduce((sum, cat) => sum + cat.count, 0);
+        fetchCategoryCounts();
+    }, []);
+
+    const categoriesWithCounts = useMemo(() => {
+        return categories.map((category) => ({
+            ...category,
+            count: categoryCounts[category.name.toLowerCase()] ?? 0,
+        }));
+    }, [categoryCounts]);
+
+    const filteredCategories = useMemo(() => {
+        return categoriesWithCounts
+            .filter((category) => category.name.toLowerCase().includes(searchTerm.toLowerCase()))
+            .sort((a, b) => {
+                if (sortBy === "name") return a.name.localeCompare(b.name);
+                if (sortBy === "count") return b.count - a.count;
+                if (sortBy === "trending") return Number(Boolean(b.trending)) - Number(Boolean(a.trending));
+                return 0;
+            });
+    }, [categoriesWithCounts, searchTerm, sortBy]);
+
+    const totalArticles = categoriesWithCounts.reduce((sum, category) => sum + category.count, 0);
+    const trendingCount = categories.filter((category) => category.trending).length;
+
+    const handleCategoryClick = async (category) => {
+        setCheckingCategoryId(category.id);
+
+        try {
+            const response = await checkCategoryPosts(category.name);
+            const { exists, count } = response.data;
+
+            setCategoryCounts((currentCounts) => ({
+                ...currentCounts,
+                [category.name.toLowerCase()]: count,
+            }));
+
+            if (!exists) {
+                setCategoryStatuses((currentStatuses) => ({
+                    ...currentStatuses,
+                    [category.id]: "empty",
+                }));
+                toast.error(`No published articles found for ${category.name}.`);
+                return;
+            }
+
+            setCategoryStatuses((currentStatuses) => ({
+                ...currentStatuses,
+                [category.id]: "available",
+            }));
+            toast.success(`${count} ${count === 1 ? "article" : "articles"} found in ${category.name}.`);
+            navigate(`/articles?category=${encodeURIComponent(category.name)}`);
+        } catch (error) {
+            console.error("Category check failed:", error);
+            toast.error("Could not verify this category. Please try again.");
+        } finally {
+            setCheckingCategoryId(null);
+        }
+    };
+
+    const renderCategoryCard = (category) => {
+        const Icon = category.icon;
+        const isChecking = checkingCategoryId === category.id;
+        const categoryStatus = isChecking ? "checking" : categoryStatuses[category.id] ?? "idle";
+        const footerStatus = {
+            idle: {
+                icon: Star,
+                label: "Browse topic",
+                className: "border-indigo-100 bg-indigo-50 text-indigo-700",
+            },
+            checking: {
+                icon: LoaderCircle,
+                label: "Checking...",
+                className: "border-sky-100 bg-sky-50 text-sky-700",
+                iconClassName: "animate-spin",
+            },
+            available: {
+                icon: CheckCircle2,
+                label: "Available",
+                className: "border-emerald-100 bg-emerald-50 text-emerald-700",
+            },
+            empty: {
+                icon: XCircle,
+                label: "No articles yet",
+                className: "border-amber-100 bg-amber-50 text-amber-700",
+            },
+        }[categoryStatus];
+        const FooterStatusIcon = footerStatus.icon;
+
+        return (
+            <motion.button
+                key={category.id}
+                type="button"
+                variants={itemVariants}
+                whileHover={{ y: -8, scale: 1.015 }}
+                whileTap={{ scale: 0.985 }}
+                onClick={() => handleCategoryClick(category)}
+                disabled={checkingCategoryId !== null}
+                className="group h-full text-left disabled:cursor-wait disabled:opacity-80"
+            >
+                <Card className="relative h-full overflow-hidden rounded-lg border-white/75 bg-white/72 py-0 shadow-xl shadow-indigo-300/18 backdrop-blur-md ring-1 ring-white/55 transition-all duration-300 group-hover:border-white group-hover:bg-white/82 group-hover:shadow-2xl group-hover:shadow-indigo-300/30">
+                    <div className={`absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r ${category.accent}`} />
+                    <div className="pointer-events-none absolute inset-x-4 top-3 h-20 rounded-full bg-white/45 blur-xl" />
+                    <motion.div
+                        className={`absolute -right-12 -top-12 size-32 rounded-full bg-gradient-to-br ${category.accent} opacity-18 blur-xl transform-gpu`}
+                        animate={{ scale: [1, 1.16, 1], opacity: [0.14, 0.24, 0.14] }}
+                        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                    />
+
+                    <CardContent className="relative flex h-full flex-col p-5">
+                        <div className="mb-5 flex items-start justify-between gap-4">
+                            <motion.div
+                                className={`flex size-12 items-center justify-center rounded-lg border bg-white/65 shadow-inner ${category.tint}`}
+                                whileHover={{ rotate: -4 }}
+                                transition={{ type: "spring", stiffness: 260, damping: 16 }}
+                            >
+                                <Icon className="size-6" />
+                            </motion.div>
+
+                            <div className="flex flex-col items-end gap-2">
+                                {category.trending && (
+                                    <Badge className="rounded-full border-amber-200 bg-amber-50 text-amber-700 shadow-sm hover:bg-amber-100">
+                                        <TrendingUp className="mr-1 size-3" />
+                                        Trending
+                                    </Badge>
+                                )}
+                                <Badge className={`rounded-full border-0 shadow-sm ${category.chip}`}>
+                                    <Flag className="mr-1 size-3" />
+                                    {countsLoading ? <LoaderCircle className="size-3 animate-spin" /> : category.count}
+                                </Badge>
+                            </div>
+                        </div>
+
+                        <div className="flex-1">
+                            <h2 className="mb-2 text-xl font-bold tracking-tight text-gray-900 transition-colors group-hover:text-indigo-600">
+                                {category.name}
+                            </h2>
+                            <p className="text-sm leading-6 text-gray-500">
+                                {category.description}
+                            </p>
+                        </div>
+
+                        <div className="mt-6 flex items-center justify-between border-t border-white/70 pt-4 text-sm">
+                            <Badge className={`rounded-full border px-2.5 py-1 font-medium shadow-sm ${footerStatus.className}`}>
+                                <FooterStatusIcon className={`mr-1.5 size-3.5 ${footerStatus.iconClassName ?? ""}`} />
+                                {footerStatus.label}
+                            </Badge>
+                            <span className="flex items-center gap-2 font-semibold text-indigo-600">
+                                {isChecking ? (
+                                    <>
+                                        Checking
+                                        <LoaderCircle className="size-4 animate-spin" />
+                                    </>
+                                ) : (
+                                    <>
+                                        Explore
+                                        <motion.span
+                                            className="inline-flex"
+                                            animate={{ x: [0, 4, 0] }}
+                                            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+                                        >
+                                            <ArrowRight className="size-4" />
+                                        </motion.span>
+                                    </>
+                                )}
+                            </span>
+                        </div>
+                    </CardContent>
+                </Card>
+            </motion.button>
+        );
+    };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-purple-200 via-white to-purple-300">
-            <div className="max-w-7xl mx-auto py-6 px-3 sm:py-12 sm:px-6 lg:px-8">
-                {/* Header Section */}
-                <div className="text-center mb-8 sm:mb-12">
+        <div className="relative isolate min-h-screen overflow-hidden bg-[#f8fbff] text-gray-900">
+            <div className="pointer-events-none fixed inset-0 -z-10 bg-[linear-gradient(135deg,#f8fbff_0%,#f4efff_42%,#fff7fb_100%)]" />
+            <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(circle_at_16%_12%,rgba(99,102,241,0.28),transparent_28%),radial-gradient(circle_at_82%_8%,rgba(236,72,153,0.2),transparent_26%),radial-gradient(circle_at_68%_78%,rgba(14,165,233,0.18),transparent_30%)]" />
+            <motion.div
+                aria-hidden
+                className="pointer-events-none fixed left-[8%] top-24 -z-10 h-64 w-64 rounded-full bg-indigo-300/30 blur-3xl transform-gpu"
+                animate={{ y: [0, 24, 0], scale: [1, 1.08, 1] }}
+                transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <motion.div
+                aria-hidden
+                className="pointer-events-none fixed right-[7%] top-20 -z-10 h-72 w-72 rounded-full bg-pink-300/25 blur-3xl transform-gpu"
+                animate={{ y: [0, -18, 0], scale: [1, 1.1, 1] }}
+                transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <motion.div
+                aria-hidden
+                className="pointer-events-none fixed bottom-12 left-1/2 -z-10 h-80 w-80 -translate-x-1/2 rounded-full bg-cyan-200/30 blur-3xl transform-gpu"
+                animate={{ x: [0, 28, 0], scale: [1, 1.06, 1] }}
+                transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <div
+                className="pointer-events-none fixed inset-0 -z-10 opacity-[0.14]"
+                style={{
+                    backgroundImage:
+                            "linear-gradient(rgba(79,70,229,.16) 1px, transparent 1px), linear-gradient(90deg, rgba(79,70,229,.16) 1px, transparent 1px)",
+                    backgroundSize: "34px 34px",
+                }}
+            />
+
+            <main className="relative mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
+                <section className="mb-8 grid gap-6 lg:grid-cols-[1fr_360px] lg:items-center">
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.6 }}
-                        className="inline-flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-indigo-100 to-purple-100 rounded-full mb-4 sm:mb-6"
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.55, ease: "easeOut" }}
+                        className="relative"
                     >
-                        <BookOpen className="w-4 h-4 text-indigo-600" />
-                        <span className="text-xs sm:text-sm font-medium text-indigo-800">{totalArticles} Total Articles</span>
+                        <Badge className="mb-5 rounded-full border-white/70 bg-white/60 px-3 py-1.5 text-indigo-700 shadow-lg shadow-indigo-200/30 backdrop-blur-md hover:bg-white/75">
+                            <BookOpen className="mr-2 size-4" />
+                            {countsLoading ? "Loading" : totalArticles} curated reads across {categories.length} category flags
+                        </Badge>
+                        <h1 className="max-w-3xl text-4xl font-black leading-tight tracking-tight text-gray-950 sm:text-5xl lg:text-6xl">
+                            Browse categories
+                            <span className="block bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">
+                                with a sharper signal.
+                            </span>
+                        </h1>
+                        <p className="mt-5 max-w-2xl text-base leading-7 text-gray-600 sm:text-lg">
+                            Tap any category flag and Kenshi Webspace checks the backend first, then opens the matching article collection when content exists.
+                        </p>
                     </motion.div>
 
-                    <motion.h1
-                        initial={{ opacity: 0, y: 6 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.45 }}
-                        className="text-3xl sm:text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-3 sm:mb-4"
-                    >
-                        Browse Categories
-                    </motion.h1>
-
-                    <motion.p
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.08 }}
-                        className="max-w-2xl mx-auto text-sm sm:text-base lg:text-lg text-gray-600 leading-relaxed px-4"
-                    >
-                        Discover curated content across diverse topics. From cutting-edge technology to ancient history,
-                        find exactly what sparks your curiosity.
-                    </motion.p>
-                </div>
-
-                {/* Controls Section */}
-                <motion.div
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                    className="flex flex-col gap-3 sm:gap-4 mb-6 sm:mb-8 p-4 sm:p-6 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200"
-                >
-                    {/* Search */}
-                    <div className="relative w-full">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
-                        <input
-                            type="text"
-                            placeholder="Search categories..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full pl-9 sm:pl-10 pr-4 py-2.5 sm:py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all bg-gray-50 focus:bg-white text-sm sm:text-base"
-                        />
-                    </div>
-
-                    {/* Controls Row */}
-                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                        {/* Sort Dropdown */}
-                        <div className="relative flex-1 sm:flex-none">
-                            <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
-                            <select
-                                value={sortBy}
-                                onChange={(e) => setSortBy(e.target.value)}
-                                className="w-full sm:w-auto pl-9 sm:pl-10 pr-8 py-2.5 sm:py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all bg-gray-50 focus:bg-white text-sm sm:text-base sm:min-w-[140px]"
-                            >
-                                <option value="name">Sort by Name</option>
-                                <option value="count">Sort by Count</option>
-                            </select>
-                        </div>
-
-                        {/* View Toggle */}
-                        <div className="flex bg-gray-100 rounded-xl p-1 self-start sm:self-auto">
-                            <button
-                                onClick={() => setViewMode('grid')}
-                                className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-lg transition-all text-sm sm:text-base ${viewMode === 'grid'
-                                    ? 'bg-white shadow-sm text-indigo-600'
-                                    : 'text-gray-500 hover:text-gray-700'
-                                    }`}
-                            >
-                                <Grid className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                                <span className="hidden xs:inline">Grid</span>
-                            </button>
-                            <button
-                                onClick={() => setViewMode('list')}
-                                className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-lg transition-all text-sm sm:text-base ${viewMode === 'list'
-                                    ? 'bg-white shadow-sm text-indigo-600'
-                                    : 'text-gray-500 hover:text-gray-700'
-                                    }`}
-                            >
-                                <List className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                                <span className="hidden xs:inline">List</span>
-                            </button>
-                        </div>
-                    </div>
-                </motion.div>
-
-                {/* Categories Grid/List */}
-                <AnimatePresence mode="wait">
                     <motion.div
-                        key={viewMode}
+                        initial={{ opacity: 0, x: 18 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.12, duration: 0.55, ease: "easeOut" }}
+                        className="grid gap-3 rounded-2xl border border-white/70 bg-white/55 p-3 shadow-2xl shadow-indigo-300/25 backdrop-blur-lg ring-1 ring-white/50"
+                    >
+                        {[
+                            { label: "Categories", value: categories.length, tone: "from-indigo-500 to-purple-500" },
+                            { label: "Articles", value: countsLoading ? "..." : totalArticles, tone: "from-sky-500 to-indigo-500" },
+                            { label: "Trending", value: trendingCount, tone: "from-amber-400 to-pink-500" },
+                        ].map((stat) => (
+                            <div key={stat.label} className="flex items-center justify-between rounded-lg border border-white/80 bg-white/75 px-4 py-3 shadow-lg shadow-indigo-100/35 backdrop-blur-sm">
+                                <div>
+                                    <div className="text-xs font-semibold uppercase tracking-wide text-gray-400">{stat.label}</div>
+                                    <div className="text-2xl font-black text-gray-950">{stat.value}</div>
+                                </div>
+                                <div className={`size-10 rounded-lg bg-gradient-to-br ${stat.tone} shadow-lg shadow-indigo-200`} />
+                            </div>
+                        ))}
+                    </motion.div>
+                </section>
+
+                <motion.section
+                    initial={{ opacity: 0, y: 14 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.16, duration: 0.45 }}
+                    className="mb-8 rounded-2xl border border-white/70 bg-white/60 p-4 shadow-2xl shadow-indigo-300/20 backdrop-blur-lg ring-1 ring-white/50"
+                >
+                    <div className="grid gap-3 lg:grid-cols-[1fr_auto_auto]">
+                        <div className="relative">
+                            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-400" />
+                            <Input
+                                type="text"
+                                placeholder="Search category flags..."
+                                value={searchTerm}
+                                onChange={(event) => setSearchTerm(event.target.value)}
+                                className="h-11 rounded-lg border-indigo-100 bg-white pl-10 text-gray-900 placeholder:text-gray-400 focus-visible:border-indigo-300 focus-visible:ring-indigo-200"
+                            />
+                        </div>
+
+                        <Select value={sortBy} onValueChange={setSortBy}>
+                            <SelectTrigger className="h-11 w-full rounded-lg border-indigo-100 bg-white text-gray-700 focus:ring-indigo-200 lg:w-[180px]">
+                                <Filter className="size-4 text-gray-400" />
+                                <SelectValue placeholder="Sort categories" />
+                            </SelectTrigger>
+                            <SelectContent className="rounded-lg">
+                                <SelectItem value="name">Sort by Name</SelectItem>
+                                <SelectItem value="count">Sort by Count</SelectItem>
+                                <SelectItem value="trending">Trending First</SelectItem>
+                            </SelectContent>
+                        </Select>
+
+                        <div className="grid h-11 grid-cols-2 rounded-lg border border-indigo-100 bg-indigo-50/70 p-1">
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => setViewMode("grid")}
+                                className={`h-full rounded-md text-gray-500 hover:bg-white hover:text-gray-900 ${viewMode === "grid" ? "bg-white text-indigo-600 shadow-sm" : ""}`}
+                            >
+                                <Grid className="size-4" />
+                                Grid
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => setViewMode("list")}
+                                className={`h-full rounded-md text-gray-500 hover:bg-white hover:text-gray-900 ${viewMode === "list" ? "bg-white text-indigo-600 shadow-sm" : ""}`}
+                            >
+                                <LayoutList className="size-4" />
+                                List
+                            </Button>
+                        </div>
+                    </div>
+                </motion.section>
+
+                <AnimatePresence mode="wait">
+                    <motion.section
+                        key={viewMode + searchTerm + sortBy}
                         variants={containerVariants}
                         initial="hidden"
                         animate="show"
+                        exit={{ opacity: 0, y: 10 }}
                         className={
-                            viewMode === 'grid'
-                                ? "grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-                                : "space-y-3 sm:space-y-4"
+                            viewMode === "grid"
+                                ? "grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+                                : "grid gap-4"
                         }
                     >
-                        {filteredCategories.map((category) => (
-                            <motion.div
-                                key={category.id}
-                                variants={itemVariants}
-                                whileHover={{ y: -6, scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                onHoverStart={() => setHoveredCategory(category.id)}
-                                onHoverEnd={() => setHoveredCategory(null)}
-                                className="group cursor-pointer"
-                            >
-                                {viewMode === 'grid' ? (
-                                    <div className="relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden h-44 sm:h-48">
-                                        {/* Trending Badge */}
-                                        {category.trending && (
-                                            <motion.div
-                                                initial={{ opacity: 0, scale: 0 }}
-                                                animate={{ opacity: 1, scale: 1 }}
-                                                transition={{ delay: 0.3 }}
-                                                className="absolute top-2 right-2 sm:top-3 sm:right-3 z-10"
-                                            >
-                                                <div className="flex items-center gap-1 px-1.5 py-0.5 sm:px-2 sm:py-1 bg-gradient-to-r from-yellow-400 to-orange-400 text-white text-xs font-bold rounded-full shadow-lg">
-                                                    <TrendingUp className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
-                                                    <span className="hidden xs:inline">Trending</span>
-                                                </div>
-                                            </motion.div>
-                                        )}
-
-                                        {/* Background Gradient */}
-                                        <div className={`absolute inset-0 bg-gradient-to-br ${category.gradient} opacity-5 group-hover:opacity-10 transition-opacity duration-300`} />
-
-                                        {/* Content */}
-                                        <div className="relative p-4 sm:p-6 h-full flex flex-col justify-between">
-                                            <div>
-                                                <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-                                                    <motion.div
-                                                        className="text-2xl sm:text-3xl"
-                                                        animate={{
-                                                            rotate: hoveredCategory === category.id ? 12 : 0,
-                                                            scale: hoveredCategory === category.id ? 1.1 : 1
-                                                        }}
-                                                        transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                                                    >
-                                                        {category.icon}
-                                                    </motion.div>
-                                                    <div className={`px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-xs font-medium ${category.color} whitespace-nowrap`}>
-                                                        {category.count}
-                                                    </div>
-                                                </div>
-
-                                                <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-1 sm:mb-2 group-hover:text-indigo-600 transition-colors line-clamp-1">
-                                                    {category.name}
-                                                </h3>
-
-                                                <p className="text-xs sm:text-sm text-gray-600 leading-relaxed line-clamp-2">
-                                                    {category.description}
-                                                </p>
-                                            </div>
-
-                                            <div className="flex items-center justify-between mt-3 sm:mt-4">
-                                                <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-gray-500">
-                                                    <Star className="w-3 h-3 sm:w-4 sm:h-4" />
-                                                    <span className="hidden sm:inline">Popular</span>
-                                                </div>
-
-                                                <motion.div
-                                                    className="flex items-center gap-1 text-indigo-600 font-medium text-xs sm:text-sm"
-                                                    animate={{ x: hoveredCategory === category.id ? 4 : 0 }}
-                                                    transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                                                >
-                                                    <span className="hidden sm:inline">Explore</span>
-                                                    <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
-                                                </motion.div>
-                                            </div>
-                                        </div>
-
-                                        {/* Interactive overlay */}
-                                        <motion.div
-                                            className={`absolute inset-0 bg-gradient-to-br ${category.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}
-                                        />
-                                    </div>
-                                ) : (
-                                    <div className="flex items-center gap-3 sm:gap-6 p-4 sm:p-6 bg-white rounded-xl shadow-md hover:shadow-lg transition-all border border-gray-100">
-                                        <div className="text-2xl sm:text-3xl flex-shrink-0">{category.icon}</div>
-
-                                        <div className="flex-1 min-w-0">
-                                            <div className="flex items-center gap-2 sm:gap-3 mb-1 flex-wrap">
-                                                <h3 className="text-base sm:text-lg font-bold text-gray-900 group-hover:text-indigo-600 transition-colors truncate">
-                                                    {category.name}
-                                                </h3>
-                                                {category.trending && (
-                                                    <div className="flex items-center gap-1 px-1.5 py-0.5 sm:px-2 sm:py-1 bg-gradient-to-r from-yellow-400 to-orange-400 text-white text-xs font-bold rounded-full whitespace-nowrap">
-                                                        <TrendingUp className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
-                                                        <span className="hidden xs:inline">Trending</span>
-                                                    </div>
-                                                )}
-                                            </div>
-                                            <p className="text-xs sm:text-sm text-gray-600 line-clamp-1 sm:line-clamp-none">{category.description}</p>
-                                        </div>
-
-                                        <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
-                                            <div className={`px-2 py-1 sm:px-3 rounded-full text-xs sm:text-sm font-medium ${category.color} whitespace-nowrap`}>
-                                                <span className="sm:hidden">{category.count}</span>
-                                                <span className="hidden sm:inline">{category.count} articles</span>
-                                            </div>
-                                            <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600" />
-                                        </div>
-                                    </div>
-                                )}
-                            </motion.div>
-                        ))}
-                    </motion.div>
+                        {filteredCategories.map((category) => renderCategoryCard(category))}
+                    </motion.section>
                 </AnimatePresence>
 
-                {/* No Results */}
                 {filteredCategories.length === 0 && (
                     <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="text-center py-12 sm:py-16"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="rounded-2xl border border-white/70 bg-white/65 p-10 text-center shadow-2xl shadow-indigo-300/20 backdrop-blur-lg ring-1 ring-white/50"
                     >
-                        <div className="text-4xl sm:text-6xl mb-3 sm:mb-4">🔍</div>
-                        <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">No categories found</h3>
-                        <p className="text-sm sm:text-base text-gray-600">Try adjusting your search terms</p>
+                        <Search className="mx-auto mb-4 size-10 text-gray-400" />
+                        <h2 className="text-xl font-semibold text-gray-900">No category flags found</h2>
+                        <p className="mt-2 text-sm text-gray-500">Try a broader search term.</p>
                     </motion.div>
                 )}
 
-                {/* Stats Section */}
-                <motion.div
-                    initial={{ opacity: 0, y: 12 }}
+                <motion.section
+                    initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4 }}
-                    className="mt-12 sm:mt-16 grid grid-cols-3 gap-3 sm:gap-6"
+                    transition={{ delay: 0.34, duration: 0.5 }}
+                    className="mt-10 overflow-hidden rounded-2xl border border-white/70 bg-white/65 shadow-2xl shadow-indigo-300/20 backdrop-blur-lg ring-1 ring-white/50"
                 >
-                    <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center">
-                        <div className="text-xl sm:text-3xl font-bold text-indigo-600 mb-1 sm:mb-2">{categories.length}</div>
-                        <div className="text-indigo-800 font-medium text-xs sm:text-base">Categories</div>
-                    </div>
-
-                    <div className="bg-gradient-to-br from-purple-50 to-purple-200 rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center">
-                        <div className="text-xl sm:text-3xl font-bold text-purple-600 mb-1 sm:mb-2">{totalArticles}</div>
-                        <div className="text-purple-800 font-medium text-xs sm:text-base">Articles</div>
-                    </div>
-
-                    <div className="bg-gradient-to-br from-pink-50 to-pink-100 rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center">
-                        <div className="text-xl sm:text-3xl font-bold text-pink-600 mb-1 sm:mb-2">
-                            {categories.filter(c => c.trending).length}
+                    <div className="grid gap-6 p-6 sm:p-8 md:grid-cols-[1fr_auto] md:items-center">
+                        <div>
+                            <Badge className="mb-3 rounded-full border-indigo-100 bg-indigo-50 text-indigo-700 hover:bg-indigo-100">
+                                <Sparkles className="mr-2 size-4" />
+                                Topic request
+                            </Badge>
+                            <h2 className="text-2xl font-semibold tracking-tight text-gray-900">Looking for a category that is not here?</h2>
+                            <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-500">
+                                Request a topic or browse the complete article archive while new collections are being curated.
+                            </p>
                         </div>
-                        <div className="text-pink-800 font-medium text-xs sm:text-base">Trending</div>
-                    </div>
-                </motion.div>
 
-                {/* Call to Action */}
-                <motion.div
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.6 }}
-                    className="mt-12 sm:mt-16 relative"
-                >
-                    <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-2xl sm:rounded-3xl p-1">
-                        <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8">
-                            <div className="max-w-3xl mx-auto text-center">
-                                <motion.div
-                                    animate={{ rotate: [0, 5, -5, 0] }}
-                                    transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-                                    className="text-3xl sm:text-4xl mb-3 sm:mb-4"
-                                >
-                                    💡
-                                </motion.div>
-
-                                <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-3 sm:mb-4">
-                                    Can't find what you're looking for?
-                                </h2>
-
-                                <p className="text-gray-600 text-sm sm:text-base lg:text-lg mb-6 sm:mb-8 px-2">
-                                    Have a specific topic in mind? We'd love to create content that interests you most.
-                                </p>
-
-                                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
-                                    <Link to="/maintenance">
-                                        <motion.button
-                                            whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(99, 102, 241, 0.3)" }}
-                                            whileTap={{ scale: 0.95 }}
-                                            className="px-6 py-3 sm:px-8 sm:py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all text-sm sm:text-base"
-                                        >
-                                            Request a Topic
-                                        </motion.button>
-                                    </Link>
-
-                                    <Link to="/articles">
-                                        <motion.button
-                                            whileHover={{ scale: 1.05 }}
-                                            whileTap={{ scale: 0.95 }}
-                                            className="px-6 py-3 sm:px-8 sm:py-4 border-2 border-indigo-200 text-indigo-600 font-semibold rounded-xl hover:bg-indigo-50 transition-all text-sm sm:text-base"
-                                        >
-                                            Browse All Articles
-                                        </motion.button>
-                                    </Link>
-                                </div>
-                            </div>
+                        <div className="flex flex-col gap-3 sm:flex-row">
+                            <Button asChild className="rounded-lg bg-indigo-600 text-white hover:bg-indigo-500">
+                                <Link to="/maintenance">Request a Topic</Link>
+                            </Button>
+                            <Button asChild variant="outline" className="rounded-lg border-indigo-200 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-700">
+                                <Link to="/articles">Browse All Articles</Link>
+                            </Button>
                         </div>
                     </div>
-                </motion.div>
-            </div>
+                    <div className="h-1 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500" />
+                </motion.section>
+            </main>
         </div>
     );
 };

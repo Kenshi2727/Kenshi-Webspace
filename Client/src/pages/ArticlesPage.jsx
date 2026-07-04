@@ -1,10 +1,10 @@
-import React, { useState, useEffect, use } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Clock, Eye, Calendar, Filter, Search, BookOpen, TrendingUp, Star, Heart, Share2, LoaderCircle, BookMarked, DownloadIcon } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Clock, Eye, Calendar, Filter, Search, BookOpen, TrendingUp, Heart, Share2, LoaderCircle, BookMarked, DownloadIcon } from 'lucide-react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { getAllPosts, updatePostLikes } from '../services/GlobalApi';
 import toast from 'react-hot-toast';
 import { formatDate } from '../lib/dateFormatter';
@@ -55,6 +55,10 @@ const cardVariants = {
     }
 };
 
+const categories = [
+    "Trending", "Technology", "Geopolitics", "History", "Astronomy", "Religion & Culture", "Anime", "Literature", "Travel"
+];
+
 // Floating bubbles component
 const FloatingParticles = () => {
     const bubbles = Array.from({ length: 20 }, (_, i) => ({
@@ -101,6 +105,7 @@ const ArticlesPage = () => {
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [averageReadTime, setAverageReadTime] = useState(0);
+    const [searchParams] = useSearchParams();
     const { user } = useUser();
     const { getToken } = useAuth();
 
@@ -128,9 +133,13 @@ const ArticlesPage = () => {
         }
     }, [articles]);
 
-    const categories = [
-        "Trending", "Technology", "Geopolitics", "History", "Astronomy", "Religion & Culture", "Anime", "Literature", "Travel"
-    ];
+    useEffect(() => {
+        const categoryFromQuery = searchParams.get("category");
+
+        if (categoryFromQuery && categories.includes(categoryFromQuery)) {
+            setSelectedCategory(categoryFromQuery);
+        }
+    }, [searchParams]);
 
     const filteredArticles = articles.filter(article => {
         const matchesCategory = selectedCategory === 'All' || article.category === selectedCategory || (selectedCategory === "Trending" && article.trending);

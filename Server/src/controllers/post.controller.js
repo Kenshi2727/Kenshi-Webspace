@@ -241,6 +241,61 @@ export const getFeaturedPosts = async (req, res) => {
     }
 }
 
+export const checkCategoryPosts = async (req, res) => {
+    const { categoryName } = req.params;
+    const decodedCategory = decodeURIComponent(categoryName || "").trim();
+    console.log("Checking posts for category:", decodedCategory);
+
+    if (!decodedCategory) {
+        return res.status(400).json({ error: "Category name is required" });
+    }
+
+    try {
+        const count = await prisma.post.count({
+            where: {
+                category: {
+                    equals: decodedCategory,
+                    mode: "insensitive",
+                },
+            },
+        });
+
+        console.log(`Found ${count} posts for category:`, decodedCategory);
+        return res.status(200).json({
+            category: decodedCategory,
+            exists: count > 0,
+            count,
+        });
+    } catch (error) {
+        console.error("Error checking category posts:", error);
+        return res.status(500).json({ error: "Failed to check category posts" });
+    }
+}
+
+export const getCategoryPostCounts = async (req, res) => {
+    console.log("Fetching post counts by category");
+
+    try {
+        const groupedCounts = await prisma.post.groupBy({
+            by: ["category"],
+            _count: {
+                _all: true,
+            },
+        });
+
+        const counts = groupedCounts.reduce((categoryCounts, categoryGroup) => {
+            const key = categoryGroup.category.trim().toLowerCase();
+            categoryCounts[key] = (categoryCounts[key] || 0) + categoryGroup._count._all;
+            return categoryCounts;
+        }, {});
+
+        return res.status(200).json({ counts });
+    } catch (error) {
+        console.error("Error fetching category post counts:", error);
+        return res.status(500).json({ error: "Failed to fetch category post counts" });
+    }
+}
+
 export const getUserPosts = async (req, res) => {
     try {
         const { userId } = req.params;

@@ -70,6 +70,10 @@ const getUserPosts = (userId, token) => instance.get(`/posts/user-posts/${userId
 
 const getFeaturedPosts = () => instance.get('/posts?isFeatured=true');
 
+const getCategoryPostCounts = () => instance.get('/posts/category/counts');
+
+const checkCategoryPosts = (categoryName) => instance.get(`/posts/category/check/${encodeURIComponent(categoryName)}`);
+
 const deletePost = (postId, token) => instance.delete(`/posts/${postId}`, {
     headers: {
         Authorization: `Bearer ${token}`,
@@ -137,6 +141,8 @@ export {
     getSinglePost,
     getAllPosts,
     getFeaturedPosts,
+    getCategoryPostCounts,
+    checkCategoryPosts,
     deletePost,
     updatePost,
     updatePostLikes,

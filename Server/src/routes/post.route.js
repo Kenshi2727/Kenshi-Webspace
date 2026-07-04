@@ -10,6 +10,8 @@ import {
     updatePostLikes,
     countView,
     updatePostBookmarks,
+    checkCategoryPosts,
+    getCategoryPostCounts,
 } from "../controllers/post.controller.js";
 import { protectRoute } from "../middlewares/auth.middleware.js";
 import { privilegedRouteAccess } from "../middlewares/rbac.middleware.js";
@@ -20,6 +22,10 @@ const router = express.Router();
 router.post('/new/:authorId', protectRoute, createNewPost);
 
 // get routes
+router.get('/category/counts', getCategoryPostCounts);
+
+router.get('/category/check/:categoryName', checkCategoryPosts);
+
 router.get('/:postId', getSinglePost);
 
 router.get('/', getAllPosts, getFeaturedPosts);
