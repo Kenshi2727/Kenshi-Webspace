@@ -1,38 +1,54 @@
-import { React, useState } from 'react'
+/* eslint-disable react/prop-types */
+import { useState } from 'react'
 import html2pdf from 'html2pdf.js';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import rehypeRaw from 'rehype-raw';
-import rehypeKatex from 'rehype-katex'
-import remarkBreaks from 'remark-breaks';
-import remarkMath from 'remark-math';
-import rehypeHighlight from 'rehype-highlight';
-import rehypeStringify from 'rehype-stringify'
-import emoji from 'remark-emoji';
-import rehypeSlug from 'rehype-slug';
-import remarkSmartypants from "remark-smartypants";
-import remarkDirective from "remark-directive";
-import remarkToc from 'remark-toc'
-import { testArticle } from '../seeds/blogs.seed.js';
 import MarkdownRenderer from './MarkdownRenderer';
-import { motion } from 'framer-motion';
 import { Button } from './ui/button';
 import { Link } from 'react-router-dom';
 import { VerifiedIcon } from 'lucide-react';
+import { useSelector } from 'react-redux';
 import './comp-stylesheets/pdf.css';
 
-const article = testArticle;
-const content = article.content;
+const getAuthorName = (article) => {
+    if (article.author?.firstName || article.author?.lastName) {
+        return `${article.author?.firstName || ''} ${article.author?.lastName || ''}`.trim();
+    }
+
+    if (typeof article.author === 'string') return article.author;
+
+    return 'Kenshi Webspace Author';
+};
+
+const getArticleDate = (article) => {
+    const date = article.updatedAt || article.createdAt;
+    if (!date) return 'Unknown date';
+
+    return new Intl.DateTimeFormat('en', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+    }).format(new Date(date));
+};
+
+const getPdfFileName = (title) => {
+    const fallback = 'article';
+    const slug = (title || fallback)
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+
+    return `${slug || fallback}.pdf`;
+};
 
 const pdfComponents = {
-    h1: ({ node, ...props }) => <h1 className="pdf-title" {...props} />,
-    h2: ({ node, ...props }) => <h2 className="pdf-heading-2" {...props} />,
-    h3: ({ node, ...props }) => <h3 className="pdf-heading-3" {...props} />,
-    h4: ({ node, ...props }) => <h4 className="pdf-heading-4" {...props} />,
-    h5: ({ node, ...props }) => <h5 className="pdf-heading-5" {...props} />,
-    h6: ({ node, ...props }) => <h6 className="pdf-heading-6" {...props} />,
-    p: ({ node, ...props }) => <p className="pdf-paragraph" {...props} />,
-    a: ({ node, href, ...props }) => {
+    h1: (props) => <h1 className="pdf-title" {...props} />,
+    h2: (props) => <h2 className="pdf-heading-2" {...props} />,
+    h3: (props) => <h3 className="pdf-heading-3" {...props} />,
+    h4: (props) => <h4 className="pdf-heading-4" {...props} />,
+    h5: (props) => <h5 className="pdf-heading-5" {...props} />,
+    h6: (props) => <h6 className="pdf-heading-6" {...props} />,
+    p: (props) => <p className="pdf-paragraph" {...props} />,
+    a: ({ href, ...props }) => {
         const isExternal = href && !href.startsWith("#") && !href.startsWith("/");
 
         return (
@@ -45,13 +61,13 @@ const pdfComponents = {
             />
         )
     },
-    ul: ({ node, ...props }) => <ul className="pdf-list" {...props} />,
-    ol: ({ node, ...props }) => <ol className="pdf-list pdf-ordered-list" {...props} />,
-    li: ({ node, ...props }) => <li className="pdf-list-item" {...props} />,
-    strong: ({ node, ...props }) => <strong className="pdf-strong" {...props} />,
-    em: ({ node, ...props }) => <em className="pdf-emphasis" {...props} />,
-    blockquote: ({ node, ...props }) => <blockquote className="pdf-blockquote" {...props} />,
-    img: ({ node, ...props }) => (
+    ul: (props) => <ul className="pdf-list" {...props} />,
+    ol: (props) => <ol className="pdf-list pdf-ordered-list" {...props} />,
+    li: (props) => <li className="pdf-list-item" {...props} />,
+    strong: (props) => <strong className="pdf-strong" {...props} />,
+    em: (props) => <em className="pdf-emphasis" {...props} />,
+    blockquote: (props) => <blockquote className="pdf-blockquote" {...props} />,
+    img: (props) => (
         <figure className="pdf-figure">
             <img className="pdf-image" {...props} />
             {props.alt && (
@@ -62,13 +78,13 @@ const pdfComponents = {
             )}
         </figure>
     ),
-    table: ({ node, ...props }) => (
+    table: (props) => (
         <div className="pdf-table-container">
             <table className="pdf-table" {...props} />
         </div>
     ),
-    th: ({ node, ...props }) => <th className="pdf-table-heading" {...props} />,
-    td: ({ node, ...props }) => <td className="pdf-table-cell" {...props} />,
+    th: (props) => <th className="pdf-table-heading" {...props} />,
+    td: (props) => <td className="pdf-table-cell" {...props} />,
     code: ({ inline, className, children, ...props }) => {
         if (inline) {
             return <code className="pdf-inline-code" {...props}>{children}</code>;
@@ -80,7 +96,7 @@ const pdfComponents = {
             </pre>
         );
     },
-    pre: ({ node, children, ...props }) => (
+    pre: ({ children, ...props }) => (
         <div className="pdf-code-block" {...props}>{children}</div>
     ),
     danger: ({ children }) => (
@@ -116,7 +132,7 @@ const pdfComponents = {
 };
 
 
-const PdfArticle = () => (
+const PdfArticle = ({ article }) => (
     <div id="print-area" className="pdf-page">
         <div className="pdf-header">
             <div className="pdf-branding">
@@ -129,7 +145,7 @@ const PdfArticle = () => (
             </div>
             <div className="pdf-header-details">
                 <span>{article.category || 'Web Development'}</span>
-                <span>{article.date || 'Unknown date'}</span>
+                <span>{getArticleDate(article)}</span>
                 <span>{article.readTime || 'N/A'} minutes</span>
             </div>
         </div>
@@ -140,7 +156,7 @@ const PdfArticle = () => (
         <div className="pdf-author-block">
             <div>
                 <div className="pdf-author-label">Author</div>
-                <div className="pdf-author-name">{article.author || 'Some wild coyote!'}</div>
+                <div className="pdf-author-name">{getAuthorName(article)}</div>
             </div>
             <div className="pdf-header-details">
                 <span className="pdf-pill">{article.category || 'Miscellaneous'}</span>
@@ -150,7 +166,7 @@ const PdfArticle = () => (
 
         <div className="pdf-divider" />
 
-        <MarkdownRenderer content={content} components={pdfComponents} />
+        <MarkdownRenderer content={article.content} components={pdfComponents} />
 
         <div
             className="pdf-footer"
@@ -265,15 +281,21 @@ const PdfArticle = () => (
 
 const ArticlePDF = () => {
     const [downloading, setDownloading] = useState(false);
+    const article = useSelector((state) => state.currentArticle);
 
     const handleDownload = () => {
         if (downloading) return;
 
         setDownloading(true);
         const element = document.getElementById('print-area');
+        if (!element) {
+            setDownloading(false);
+            return;
+        }
+
         const opt = {
             margin: [0.1, 0.1, 0.1, 0.1], // top, right, bottom, left
-            filename: 'article.pdf',
+            filename: getPdfFileName(article.title),
             image: { type: 'jpeg', quality: 1 },
             enableLinks: true,
             pagebreak: {
@@ -316,11 +338,25 @@ const ArticlePDF = () => {
         });
     };
 
+    if (!article.isLoaded) {
+        return (
+            <div className="min-h-screen bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-16 text-white">
+                <div className="mx-auto flex max-w-2xl flex-col items-start gap-4 rounded-2xl border border-white/20 bg-white/10 p-6 backdrop-blur">
+                    <h1 className="text-2xl font-bold">No article selected</h1>
+                    <p className="text-white/80">
+                        Open an article first, then use the download button to prepare its PDF.
+                    </p>
+                    <Button asChild className="cursor-pointer">
+                        <Link to="/articles">Browse articles</Link>
+                    </Button>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="bg-gradient-to-r from-indigo-600 to-purple-600" style={{ padding: '20px' }}>
-
-
-            <motion.div>
+            <div>
                 <Button
                     className="px-6 py-3 hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer"
                     onClick={handleDownload}
@@ -328,9 +364,9 @@ const ArticlePDF = () => {
                 >
                     {downloading ? 'Downloading...' : 'Download PDF'}
                 </Button>
-            </motion.div>
+            </div>
 
-            <PdfArticle />
+            <PdfArticle article={article} />
 
         </div>
     );

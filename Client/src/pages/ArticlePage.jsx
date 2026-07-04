@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
@@ -18,6 +18,8 @@ import {
     Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter
 } from "@/components/ui/dialog";
 import { useAuth } from '@clerk/clerk-react';
+import { useDispatch } from 'react-redux';
+import { setCurrentArticle } from '@/features/articles/currentArticleSlice';
 
 const related = [
     { id: 2, title: 'Coming soon...', readTime: '0 min', category: 'Crying Kitty' },
@@ -29,13 +31,14 @@ export default function ArticlePage() {
     const { id } = useParams();
     const { user } = useUser();
     const { getToken } = useAuth();
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [isLiked, setIsLiked] = useState(false);
     const [isBookmarked, setIsBookmarked] = useState(false);
     const [article, setArticle] = useState(null);
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
     const [deleting, setDeleting] = useState(false);
-    const [downloading, setDownloading] = useState(false);
 
     // Fixed scroll hook
     const { scrollYProgress, scrollY } = useScroll();
@@ -53,6 +56,7 @@ export default function ArticlePage() {
             try {
                 const res = await getSinglePost(id);
                 setArticle(res.data);
+                dispatch(setCurrentArticle(res.data));
 
                 // Check if the user has liked the post
                 const likeStatus = res.data.PostActions?.find(action => action.userId === user?.id)?.likeStatus;
@@ -79,7 +83,7 @@ export default function ArticlePage() {
             }
         }
         updateViews();
-    }, [user, id]);
+    }, [user, id, dispatch]);
 
     useEffect(() => {
         const unsubscribe = readingProgress.on('change', setProgress);
@@ -202,14 +206,11 @@ export default function ArticlePage() {
 
     const handleDownload = async () => {
         try {
-            setDownloading(true);
-            window.print();
+            dispatch(setCurrentArticle(article));
+            navigate('/test/article-pdf');
         } catch (error) {
             console.log("Error downloading blog:", error);
             toast.error("Some error occured!")
-        }
-        finally {
-            setDownloading(false);
         }
     };
 
