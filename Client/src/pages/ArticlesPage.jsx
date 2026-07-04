@@ -67,7 +67,7 @@ const FloatingParticles = () => {
             {bubbles.map((bubble) => (
                 <motion.div
                     key={bubble.id}
-                    className="absolute rounded-full bg-gradient-to-br from-purple-400/35 to-violet-500/25 backdrop-blur-sm"
+                    className="absolute rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 backdrop-blur-sm"
                     style={{
                         width: bubble.size,
                         height: bubble.size,
