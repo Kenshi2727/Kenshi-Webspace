@@ -67,4 +67,3 @@ export default function SsoCallback() {
         </div>
     );
 }
-

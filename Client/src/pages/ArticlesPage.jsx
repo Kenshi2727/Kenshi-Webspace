@@ -71,7 +71,7 @@ const FloatingParticles = () => {
             {bubbles.map((bubble) => (
                 <motion.div
                     key={bubble.id}
-                    className="absolute rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 backdrop-blur-sm"
+                    className="absolute rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-gray-50 dark:to-gray-300 backdrop-blur-sm"
                     style={{
                         width: bubble.size,
                         height: bubble.size,
@@ -344,7 +344,7 @@ const ArticlesPage = () => {
 
     // Main Render
     return (
-        <div className="min-h-screen bg-gradient-to-br from-purple-950 to-purple-800 relative overflow-hidden">
+        <div className="min-h-screen bg-gradient-to-br from-purple-950 to-purple-800 dark:from-indigo-950 dark:via-purple-950 dark:to-slate-950 relative overflow-hidden">
 
             <FloatingParticles />
 

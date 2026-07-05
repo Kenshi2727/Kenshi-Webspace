@@ -358,7 +358,7 @@ const ArticlePDF = () => {
     }
 
     return (
-        <div className="bg-gradient-to-r from-indigo-600 to-purple-600" style={{ padding: '20px' }}>
+        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-950 dark:via-purple-950 dark:to-slate-950" style={{ padding: '20px' }}>
             <div>
                 <Button
                     className="px-6 py-3 hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer"

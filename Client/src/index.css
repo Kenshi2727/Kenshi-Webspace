@@ -111,6 +111,7 @@
 } */
 
 :root {
+  color-scheme: light;
   --radius: 0.625rem;
 
   --background: #ffffff;
@@ -160,6 +161,7 @@
 }
 
 .dark {
+  color-scheme: dark;
   --background: #1c1c1c;
   --foreground: #fafafa;
 
@@ -282,7 +284,10 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    @apply bg-background;
+  }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground transition-colors duration-300;
   }
 }

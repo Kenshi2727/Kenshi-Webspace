@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Home, FileText, Folder, Info, LogIn, UserPlus, Edit3, User, Settings, Shield, FileSearch, Code, Search, Lock, MapPin, ArrowRight, Sparkles, Layout, Workflow } from 'lucide-react';
+import { Home, FileText, Info, LogIn, UserPlus, Edit3, User, Settings, Shield, FileSearch, Lock, MapPin, ArrowRight, Sparkles, Layout, Workflow } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
 import FloatingOrbs from '../components/FloatingOrbs';
@@ -84,15 +84,6 @@ const SiteMapPage = () => {
             ]
         },
         {
-            category: "Research & Tools",
-            icon: Search,
-            color: "from-blue-500 to-indigo-500",
-            links: [
-                { name: "Research Brewery", path: "/research", icon: Search },
-                { name: "Code Page", path: "/code", icon: Code },
-            ]
-        },
-        {
             category: "Legal & Info",
             icon: FileText,
             color: "from-slate-500 to-gray-600",
@@ -109,12 +100,12 @@ const SiteMapPage = () => {
             initial="hidden"
             animate="visible"
             variants={containerVariants}
-            className="min-h-screen bg-gray-50"
+            className="min-h-screen bg-gray-50 text-gray-900 transition-colors duration-300 dark:bg-[#111122] dark:text-gray-100"
         >
             {/* Hero Section */}
             <motion.section
                 variants={itemVariants}
-                className="relative min-h-[70vh] flex items-center overflow-hidden bg-gradient-to-r from-indigo-600 to-purple-600"
+                className="relative min-h-[70vh] flex items-center overflow-hidden bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-950 dark:via-purple-950 dark:to-slate-950"
             >
                 <FloatingOrbs />
                 <AnimatedDots />
@@ -202,7 +193,7 @@ const SiteMapPage = () => {
             </motion.section>
 
             {/* Content Section */}
-            <motion.section variants={itemVariants} className="py-16 bg-gray-50">
+            <motion.section variants={itemVariants} className="py-16 bg-gray-50 transition-colors duration-300 dark:bg-[#111122]">
                 <div className="max-w-7xl mx-auto px-4">
                     {activeView === 'grid' ? (
                         /* Grid View */
@@ -214,8 +205,8 @@ const SiteMapPage = () => {
                             transition={{ duration: 0.5 }}
                         >
                             <div className="text-center mb-12">
-                                <h2 className="text-3xl font-bold text-gray-900 mb-3">Kenshi Webspace Sitemap</h2>
-                                <p className="text-gray-600">Browse through all available pages and features</p>
+                                <h2 className="text-3xl font-bold text-gray-900 mb-3 dark:text-white">Kenshi Webspace Sitemap</h2>
+                                <p className="text-gray-600 dark:text-gray-300">Browse through all available pages and features</p>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -228,7 +219,7 @@ const SiteMapPage = () => {
                                             whileHover={{ scale: 1.02, y: -5 }}
                                             transition={{ type: 'spring', stiffness: 300 }}
                                         >
-                                            <Card className="group h-full border border-gray-200 hover:border-indigo-400 transition-all duration-300 hover:shadow-xl overflow-hidden bg-white">
+                                            <Card className="group h-full border border-gray-200 hover:border-indigo-400 transition-all duration-300 hover:shadow-xl overflow-hidden bg-white dark:border-white/10 dark:bg-white/7 dark:hover:border-indigo-300/40 dark:hover:shadow-black/30">
                                                 <CardContent className="p-6">
                                                     <div className="flex items-center gap-3 mb-6">
                                                         <motion.div
@@ -238,7 +229,7 @@ const SiteMapPage = () => {
                                                         >
                                                             <SectionIcon className="w-6 h-6 text-white" />
                                                         </motion.div>
-                                                        <h2 className="text-xl font-bold text-gray-900">
+                                                        <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                                                             {section.category}
                                                         </h2>
                                                     </div>
@@ -254,10 +245,10 @@ const SiteMapPage = () => {
                                                                 >
                                                                     <Link
                                                                         to={link.path}
-                                                                        className="group/link flex items-center gap-3 p-3 rounded-lg hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50 transition-all duration-200"
+                                                                        className="group/link flex items-center gap-3 p-3 rounded-lg hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50 transition-all duration-200 dark:hover:from-indigo-500/10 dark:hover:to-purple-500/10"
                                                                     >
-                                                                        <LinkIcon className="w-4 h-4 text-gray-500 group-hover/link:text-indigo-600 transition-colors flex-shrink-0" />
-                                                                        <span className="text-gray-700 group-hover/link:text-indigo-700 font-medium transition-colors">
+                                                                        <LinkIcon className="w-4 h-4 text-gray-500 group-hover/link:text-indigo-600 transition-colors flex-shrink-0 dark:text-gray-400 dark:group-hover/link:text-indigo-300" />
+                                                                        <span className="text-gray-700 group-hover/link:text-indigo-700 font-medium transition-colors dark:text-gray-300 dark:group-hover/link:text-indigo-200">
                                                                             {link.name}
                                                                         </span>
                                                                         <ArrowRight className="w-4 h-4 ml-auto text-indigo-600 opacity-0 group-hover/link:opacity-100 transition-opacity" />
@@ -281,11 +272,11 @@ const SiteMapPage = () => {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -20 }}
                             transition={{ duration: 0.5 }}
-                            className="bg-white rounded-2xl shadow-xl p-8 border border-gray-200"
+                            className="bg-white rounded-2xl shadow-xl p-8 border border-gray-200 dark:border-white/10 dark:bg-white/7 dark:shadow-black/30"
                         >
                             <div className="text-center mb-12">
-                                <h2 className="text-3xl font-bold text-gray-900 mb-3">Site Architecture</h2>
-                                <p className="text-gray-600">Visual overview of Kenshi Webspace structure</p>
+                                <h2 className="text-3xl font-bold text-gray-900 mb-3 dark:text-white">Site Architecture</h2>
+                                <p className="text-gray-600 dark:text-gray-300">Visual overview of Kenshi Webspace structure</p>
                             </div>
 
                             {/* Site Map Diagram */}
@@ -329,13 +320,13 @@ const SiteMapPage = () => {
                                                 <div className={`bg-gradient-to-r ${section.color} p-4 rounded-xl shadow-lg mb-4`}>
                                                     <SectionIcon className="w-6 h-6 text-white" />
                                                 </div>
-                                                <h3 className="text-sm font-bold text-gray-900 text-center mb-3">{section.category}</h3>
+                                                <h3 className="text-sm font-bold text-gray-900 text-center mb-3 dark:text-white">{section.category}</h3>
                                                 <div className="w-full space-y-2">
                                                     {section.links.map((link, linkIdx) => (
                                                         <Link
                                                             key={linkIdx}
                                                             to={link.path}
-                                                            className="block bg-gray-50 hover:bg-indigo-50 px-3 py-2 rounded-lg text-xs text-gray-700 hover:text-indigo-600 transition-colors text-center border border-gray-200 hover:border-indigo-300"
+                                                            className="block bg-gray-50 hover:bg-indigo-50 px-3 py-2 rounded-lg text-xs text-gray-700 hover:text-indigo-600 transition-colors text-center border border-gray-200 hover:border-indigo-300 dark:border-white/10 dark:bg-white/8 dark:text-gray-300 dark:hover:border-indigo-300/40 dark:hover:bg-indigo-500/10 dark:hover:text-indigo-200"
                                                         >
                                                             {link.name}
                                                         </Link>
@@ -348,7 +339,7 @@ const SiteMapPage = () => {
 
                                 {/* Legal Section - Separate Row */}
                                 {siteStructure.length > 5 && (
-                                    <div className="mt-12 pt-8 border-t border-gray-200">
+                                    <div className="mt-12 pt-8 border-t border-gray-200 dark:border-white/10">
                                         <div className="flex justify-center">
                                             <motion.div
                                                 initial={{ opacity: 0, y: 20 }}
@@ -359,13 +350,13 @@ const SiteMapPage = () => {
                                                 <div className={`bg-gradient-to-r ${siteStructure[5].color} p-4 rounded-xl shadow-lg mb-4`}>
                                                     <FileText className="w-6 h-6 text-white" />
                                                 </div>
-                                                <h3 className="text-sm font-bold text-gray-900 text-center mb-3">{siteStructure[5].category}</h3>
+                                                <h3 className="text-sm font-bold text-gray-900 text-center mb-3 dark:text-white">{siteStructure[5].category}</h3>
                                                 <div className="w-full space-y-2">
                                                     {siteStructure[5].links.map((link, linkIdx) => (
                                                         <Link
                                                             key={linkIdx}
                                                             to={link.path}
-                                                            className="block bg-gray-50 hover:bg-indigo-50 px-3 py-2 rounded-lg text-xs text-gray-700 hover:text-indigo-600 transition-colors text-center border border-gray-200 hover:border-indigo-300"
+                                                            className="block bg-gray-50 hover:bg-indigo-50 px-3 py-2 rounded-lg text-xs text-gray-700 hover:text-indigo-600 transition-colors text-center border border-gray-200 hover:border-indigo-300 dark:border-white/10 dark:bg-white/8 dark:text-gray-300 dark:hover:border-indigo-300/40 dark:hover:bg-indigo-500/10 dark:hover:text-indigo-200"
                                                         >
                                                             {link.name}
                                                         </Link>
@@ -384,8 +375,8 @@ const SiteMapPage = () => {
                         variants={itemVariants}
                         className="mt-16 text-center"
                     >
-                        <div className="inline-block bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
-                            <p className="text-gray-600 text-lg">
+                        <div className="inline-block bg-white rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-white/10 dark:bg-white/7 dark:shadow-black/25">
+                            <p className="text-gray-600 text-lg dark:text-gray-300">
                                 Can't find what you're looking for?{' '}
                                 <Link to="/about" className="text-indigo-600 hover:text-indigo-700 font-semibold underline decoration-2 underline-offset-2">
                                     Contact us
@@ -399,7 +390,7 @@ const SiteMapPage = () => {
             {/* CTA Section */}
             <motion.section
                 variants={itemVariants}
-                className="relative overflow-hidden bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-800 shadow-2xl"
+                className="relative overflow-hidden bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-800 dark:from-indigo-950 dark:via-purple-950 dark:to-slate-950 shadow-2xl"
             >
                 {/* Animated Background Effects */}
                 <div className="absolute inset-0">

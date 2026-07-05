@@ -322,7 +322,7 @@ export default function ArticlePage() {
                 </motion.button>
             </motion.div>
 
-            <div className="min-h-screen bg-gradient-to-br from-purple-950 to-purple-800 relative overflow-hidden">
+            <div className="min-h-screen bg-gradient-to-br from-purple-950 to-purple-800 dark:from-indigo-950 dark:via-purple-950 dark:to-slate-950 relative overflow-hidden">
                 <div className="relative z-10 py-16 px-6 lg:px-16">
                     <motion.div
                         variants={containerVariants}

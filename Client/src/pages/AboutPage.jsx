@@ -221,7 +221,7 @@ const TeamCard = ({ member, index }) => {
                     z: isHovered ? 50 : 0,
                 }}
                 transition={{ duration: 0.4, type: "spring" }}
-                className="bg-white rounded-lg sm:rounded-xl md:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden h-full flex flex-col"
+                className="bg-white rounded-lg sm:rounded-xl md:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden h-full flex flex-col dark:bg-white/7 dark:border-white/10 dark:backdrop-blur-xl dark:hover:shadow-indigo-500/15"
             >
                 {/* Binary code background pattern - hidden on small screens */}
                 {/* <div className="absolute inset-0 opacity-5 font-mono text-xs leading-none hidden md:block">
@@ -268,21 +268,21 @@ const TeamCard = ({ member, index }) => {
 
                     {/* Content with fixed responsive layout */}
                     <div className="flex-1 flex flex-col min-h-0">
-                        <h3 className="text-sm sm:text-base md:text-lg font-bold text-gray-900 mb-1 sm:mb-2 line-clamp-2 flex-shrink-0">{member.name}</h3>
+                        <h3 className="text-sm sm:text-base md:text-lg font-bold text-gray-900 mb-1 sm:mb-2 line-clamp-2 flex-shrink-0 dark:text-white">{member.name}</h3>
                         <div className="flex items-center gap-1 mb-2 sm:mb-3 flex-shrink-0">
                             <span className={`inline-block w-1.5 h-1.5 ${member.active ? 'bg-emerald-400' : 'bg-red-400'} rounded-full animate-pulse`}></span>
                             <p className="text-indigo-600 font-semibold text-xs sm:text-sm line-clamp-1">{member.role}</p>
                         </div>
-                        <p className="text-gray-600 text-xs sm:text-sm leading-relaxed flex-1 line-clamp-4 mb-3">{member.bio}</p>
+                        <p className="text-gray-600 text-xs sm:text-sm leading-relaxed flex-1 line-clamp-4 mb-3 dark:text-gray-300">{member.bio}</p>
 
                         {/* Enhanced tech expertise visualization */}
                         <div className="mt-auto flex-shrink-0">
-                            <div className="text-xs text-gray-400 mb-1 font-mono">EXPERTISE_LEVEL</div>
+                            <div className="text-xs text-gray-400 mb-1 font-mono dark:text-gray-500">EXPERTISE_LEVEL</div>
                             <div className="flex gap-1">
                                 {[1, 2, 3, 4, 5].map(i => (
                                     <motion.div
                                         key={i}
-                                        className="h-1.5 bg-gray-200 rounded-full flex-1 overflow-hidden"
+                                        className="h-1.5 bg-gray-200 rounded-full flex-1 overflow-hidden dark:bg-white/10"
                                         animate={{
                                             backgroundColor: isHovered && i <= member.level ? '#6366f1' : '#e5e7eb'
                                         }}
@@ -340,7 +340,7 @@ const ValueCard = ({ title, description, index, icon }) => {
                     y: isHovered ? -8 : 0,
                     scale: isHovered ? 1.03 : 1,
                 }}
-                className="bg-white rounded-lg sm:rounded-xl md:rounded-2xl p-4 sm:p-6 md:p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 relative overflow-hidden h-full flex flex-col"
+                className="bg-white rounded-lg sm:rounded-xl md:rounded-2xl p-4 sm:p-6 md:p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 relative overflow-hidden h-full flex flex-col dark:bg-white/7 dark:border-white/10 dark:backdrop-blur-xl dark:hover:shadow-indigo-500/15"
             >
                 {/* Tech grid background */}
                 {/* <div className="absolute inset-0 opacity-50">
@@ -384,17 +384,17 @@ const ValueCard = ({ title, description, index, icon }) => {
                         <span className="text-xl sm:text-2xl md:text-3xl">{icon}</span>
                     </motion.div>
 
-                    <h3 className="text-base sm:text-lg md:text-xl font-bold text-gray-900 mb-2 sm:mb-4 flex-shrink-0">{title}</h3>
-                    <p className="text-gray-600 leading-relaxed flex-1 text-sm sm:text-base mb-4">{description}</p>
+                    <h3 className="text-base sm:text-lg md:text-xl font-bold text-gray-900 mb-2 sm:mb-4 flex-shrink-0 dark:text-white">{title}</h3>
+                    <p className="text-gray-600 leading-relaxed flex-1 text-sm sm:text-base mb-4 dark:text-gray-300">{description}</p>
 
                     {/* Enhanced progress indicator with data visualization */}
                     <div className="mt-auto space-y-1 sm:space-y-2 flex-shrink-0">
-                        <div className="flex justify-between text-xs font-mono text-gray-400">
+                        <div className="flex justify-between text-xs font-mono text-gray-400 dark:text-gray-500">
                             <span>PROGRESS</span>
                             <span>{isHovered ? '100%' : '0%'}</span>
                         </div>
                         <motion.div
-                            className="h-1.5 sm:h-2 bg-gray-200 rounded-full overflow-hidden relative"
+                            className="h-1.5 sm:h-2 bg-gray-200 rounded-full overflow-hidden relative dark:bg-white/10"
                         >
                             <motion.div
                                 className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 relative"
@@ -511,7 +511,7 @@ const AboutPage = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-gray-50 relative overflow-hidden">
+        <div className="min-h-screen bg-gray-50 relative overflow-hidden text-gray-900 transition-colors duration-300 dark:bg-[#101022] dark:text-gray-100">
             {/* Enhanced animated background */}
             <div className="fixed inset-0 z-0">
                 <NeuralNetwork excludeZones={storyRef.current ? [storyRef.current] : []} />
@@ -527,7 +527,7 @@ const AboutPage = () => {
                 {/* Enhanced Hero Section */}
                 <motion.div variants={itemVariants} className="text-center mb-8 sm:mb-12 md:mb-20 relative">
                     <motion.h1
-                        className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-gray-900 relative font-mono px-4"
+                        className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-gray-900 relative font-mono px-4 dark:text-white"
                         animate={{
                             backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
                         }}
@@ -543,7 +543,7 @@ const AboutPage = () => {
                     </motion.h1>
 
                     <motion.p
-                        className="mt-4 sm:mt-6 md:mt-8 max-w-3xl mx-auto text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 font-medium px-4"
+                        className="mt-4 sm:mt-6 md:mt-8 max-w-3xl mx-auto text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 font-medium px-4 dark:text-gray-300"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.5, duration: 0.8 }}
@@ -588,11 +588,11 @@ const AboutPage = () => {
                                 >
                                     {tech.progress}%
                                 </motion.div>
-                                <div className="text-xs sm:text-sm font-mono text-gray-600 group-hover:text-indigo-600 transition-colors">
+                                <div className="text-xs sm:text-sm font-mono text-gray-600 group-hover:text-indigo-600 transition-colors dark:text-gray-400 dark:group-hover:text-indigo-300">
                                     {tech.name}
                                 </div>
                                 <motion.div
-                                    className="w-full h-0.5 sm:h-1 bg-gray-200 rounded-full mt-1 overflow-hidden"
+                                    className="w-full h-0.5 sm:h-1 bg-gray-200 rounded-full mt-1 overflow-hidden dark:bg-white/10"
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
                                     transition={{ delay: 1 + i * 0.2 }}
@@ -616,7 +616,7 @@ const AboutPage = () => {
                     className="mb-8 sm:mb-12 md:mb-20 relative"
                 >
                     {/* Clean background for readability */}
-                    <div className="bg-white/90 backdrop-blur-sm rounded-xl sm:rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 lg:p-12 shadow-xl border border-gray-200 relative overflow-hidden">
+                    <div className="bg-white/90 backdrop-blur-sm rounded-xl sm:rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 lg:p-12 shadow-xl border border-gray-200 relative overflow-hidden dark:bg-white/7 dark:border-white/10 dark:shadow-black/30">
                         {/* Subtle tech accent border */}
                         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
 
@@ -630,7 +630,7 @@ const AboutPage = () => {
                                     <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-md sm:rounded-lg md:rounded-xl flex items-center justify-center">
                                         <span className="text-white font-mono text-xs sm:text-sm md:text-base lg:text-lg">{'<>'}</span>
                                     </div>
-                                    <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 font-mono">
+                                    <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 font-mono dark:text-white">
                                         Our.Story();
                                     </h2>
                                 </motion.div>
@@ -643,7 +643,7 @@ const AboutPage = () => {
                                     ].map((text, i) => (
                                         <motion.p
                                             key={i}
-                                            className="text-gray-700 leading-relaxed text-sm sm:text-base md:text-lg"
+                                            className="text-gray-700 leading-relaxed text-sm sm:text-base md:text-lg dark:text-gray-300"
                                             initial={{ opacity: 0, x: -30 }}
                                             whileInView={{ opacity: 1, x: 0 }}
                                             transition={{ delay: i * 0.3, duration: 0.6 }}
@@ -668,7 +668,7 @@ const AboutPage = () => {
                                     ].map((stat, i) => (
                                         <motion.div
                                             key={stat.label}
-                                            className="text-center p-2 sm:p-3 md:p-4 bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg sm:rounded-xl md:rounded-2xl border border-gray-200 relative overflow-hidden group"
+                                            className="text-center p-2 sm:p-3 md:p-4 bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg sm:rounded-xl md:rounded-2xl border border-gray-200 relative overflow-hidden group dark:from-white/10 dark:to-white/5 dark:border-white/10"
                                             whileHover={{ scale: 1.05, y: -5 }}
                                             animate={{
                                                 boxShadow: [
@@ -698,8 +698,8 @@ const AboutPage = () => {
                                                 >
                                                     {stat.icon}
                                                 </motion.div>
-                                                <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 font-mono mb-1">{stat.value}</div>
-                                                <div className="text-[0.55rem] sm:text-xs text-gray-500 font-mono tracking-wider">{stat.label}</div>
+                                                <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 font-mono mb-1 dark:text-white">{stat.value}</div>
+                                                <div className="text-[0.55rem] sm:text-xs text-gray-500 font-mono tracking-wider dark:text-gray-400">{stat.label}</div>
                                             </div>
                                         </motion.div>
                                     ))}
@@ -754,7 +754,7 @@ const AboutPage = () => {
                         }}
                         transition={{ duration: 2 }}
                     >
-                        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 font-mono px-4">
+                        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 font-mono px-4 dark:text-white">
                             core.Values[]
                         </h2>
                         <div className="w-12 sm:w-16 md:w-20 lg:w-24 h-1 bg-gradient-to-r from-indigo-500 to-purple-500 mx-auto rounded-full">
@@ -791,10 +791,10 @@ const AboutPage = () => {
                         }}
                         transition={{ duration: 2, repeat: Infinity }}
                     >
-                        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 font-mono px-4">
+                        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 font-mono px-4 dark:text-white">
                             team.Members()
                         </h2>
-                        <p className="text-gray-600 max-w-2xl mx-auto text-sm sm:text-base md:text-lg px-4">
+                        <p className="text-gray-600 max-w-2xl mx-auto text-sm sm:text-base md:text-lg px-4 dark:text-gray-300">
                             Meet the minds behind the code. Our diverse team of developers, creators, and innovators.
                         </p>
                     </motion.div>
@@ -812,7 +812,7 @@ const AboutPage = () => {
                 {/* Enhanced CTA Section */}
                 <motion.div
                     variants={itemVariants}
-                    className="relative overflow-hidden rounded-xl sm:rounded-2xl md:rounded-3xl bg-gradient-to-br from-gray-900 via-indigo-900 to-purple-900 p-4 sm:p-6 md:p-8 lg:p-12 xl:p-16 shadow-2xl border border-indigo-500/20"
+                    className="relative overflow-hidden rounded-xl sm:rounded-2xl md:rounded-3xl bg-gradient-to-br from-gray-900 via-indigo-900 to-purple-900 p-4 sm:p-6 md:p-8 lg:p-12 xl:p-16 shadow-2xl border border-indigo-500/20 dark:from-slate-950 dark:via-indigo-950 dark:to-purple-950"
                 >
                     {/* Matrix-style background */}
                     <div className="absolute inset-0 opacity-10">
@@ -991,7 +991,7 @@ const AboutPage = () => {
                     whileInView={{ opacity: 1 }}
                     viewport={{ once: true }}
                 >
-                    <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-4 sm:mb-6 md:mb-8 font-mono px-4">
+                    <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-4 sm:mb-6 md:mb-8 font-mono px-4 dark:text-white">
                         techStack.dependencies
                     </h3>
 

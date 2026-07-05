@@ -5,17 +5,53 @@ import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useAuth } from "@clerk/clerk-react";
 import { useClerk } from "@clerk/clerk-react";
+import { useTheme } from "next-themes";
 import AvatarDropdown from './AvatarDropdown';
-import { ChevronRight, LogOut, LogIn } from "lucide-react";
+import { ChevronRight, LogOut, LogIn, Moon, Sun } from "lucide-react";
 
 const navLinks = [
     { to: '/', label: 'Home' },
     { to: '/articles', label: 'Articles' },
     { to: '/categories', label: 'Categories' },
-    { to: '/research', label: 'Research' },
-    { to: '/code', label: 'Code' },
     { to: '/about', label: 'About' }
 ];
+
+function ThemeToggle({ className = "" }) {
+    const { theme, setTheme } = useTheme();
+    const [mounted, setMounted] = useState(false);
+    const isDark = mounted && theme === "dark";
+
+    React.useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    const toggleTheme = () => {
+        setTheme(isDark ? "light" : "dark");
+    };
+
+    return (
+        <motion.button
+            type="button"
+            aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+            title={isDark ? "Light mode" : "Dark mode"}
+            onClick={toggleTheme}
+            disabled={!mounted}
+            whileHover={{ scale: 1.06 }}
+            whileTap={{ scale: 0.94 }}
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-indigo-200/60 bg-white/55 text-indigo-700 shadow-sm backdrop-blur-md transition-colors hover:bg-indigo-50 dark:border-indigo-800/60 dark:bg-gray-900/55 dark:text-indigo-200 dark:hover:bg-indigo-950/70"
+        >
+            <motion.span
+                key={isDark ? "moon" : "sun"}
+                initial={{ rotate: -90, opacity: 0, scale: 0.75 }}
+                animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                transition={{ duration: 0.22, ease: "easeOut" }}
+                className="flex"
+            >
+                {isDark ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+            </motion.span>
+        </motion.button>
+    );
+}
 
 export default function Navbar() {
     const location = useLocation();
@@ -145,20 +181,24 @@ export default function Navbar() {
                     {/* Right side: sign in/out (desktop) and mobile menu button */}
 
                     {/* desktop sign-in/out */}
-                    <div className="block">
-                        {!isSignedIn && (
-                            <Link to="/auth/login">
-                                <Button variant="ghost" className="hidden sm:block bg-indigo-600/65 text-white cursor-pointer text-sm font-medium">
-                                    Sign in
-                                </Button>
-                                <Button variant="ghost" size="sm" className="sm:hidden block bg-indigo-600/65 text-white cursor-pointer text-xs font-medium">
-                                    Sign in
-                                </Button>
-                            </Link>
-                        )}
-                    </div>
+                    <div className="flex items-center gap-2">
+                        <ThemeToggle />
 
-                    <AvatarDropdown />
+                        <div className="block">
+                            {!isSignedIn && (
+                                <Link to="/auth/login">
+                                    <Button variant="ghost" className="hidden sm:block bg-indigo-600/65 text-white cursor-pointer text-sm font-medium">
+                                        Sign in
+                                    </Button>
+                                    <Button variant="ghost" size="sm" className="sm:hidden block bg-indigo-600/65 text-white cursor-pointer text-xs font-medium">
+                                        Sign in
+                                    </Button>
+                                </Link>
+                            )}
+                        </div>
+
+                        <AvatarDropdown />
+                    </div>
                 </div>
 
                 {/* Mobile dropdown - overlayed and absolutely positioned so it doesn't stretch the navbar */}
@@ -217,7 +257,11 @@ export default function Navbar() {
                                 <div className="border-t border-white/10 dark:border-gray-800/40" />
 
                                 {/* auth actions */}
-                                <motion.div variants={itemVariants} className="px-3 py-3">
+                                <motion.div variants={itemVariants} className="px-3 py-3 space-y-3">
+                                    <div className="flex items-center justify-between rounded-xl border border-indigo-100/70 bg-indigo-50/60 px-3 py-2 dark:border-indigo-900/50 dark:bg-indigo-950/25">
+                                        <span className="text-sm font-medium text-gray-700 dark:text-gray-200">Theme</span>
+                                        <ThemeToggle className="h-9 w-9" />
+                                    </div>
                                     {isSignedIn ? (
                                         <Button
                                             onClick={() => {

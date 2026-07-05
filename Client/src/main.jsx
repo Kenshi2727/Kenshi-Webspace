@@ -5,6 +5,7 @@ import App from './App.jsx'
 import { ClerkProvider } from '@clerk/clerk-react'
 import { GoogleOneTap } from '@clerk/clerk-react'
 import { BrowserRouter } from 'react-router-dom'
+import { ThemeProvider } from 'next-themes'
 import { pingServer } from './services/GlobalApi.js'
 import * as Sentry from "@sentry/react";
 import { Provider } from 'react-redux'
@@ -33,9 +34,11 @@ createRoot(document.getElementById('root')).render(
     <Provider store={store}>
       <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
         <GoogleOneTap />
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} storageKey="kenshi-theme">
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </ThemeProvider>
       </ClerkProvider>
     </Provider>
   </>,

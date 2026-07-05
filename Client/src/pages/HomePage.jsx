@@ -140,12 +140,12 @@ const HomePage = () => {
             initial="hidden"
             animate="visible"
             variants={containerVariants}
-            className="min-h-screen bg-gray-50"
+            className="min-h-screen bg-gray-50 text-gray-900 transition-colors duration-300 dark:bg-[#111122] dark:text-gray-100"
         >
             {/* ---------- HERO ---------- */}
             <motion.section
                 variants={itemVariants}
-                className="min-h-[92vh] relative flex items-center hero-section overflow-hidden bg-gradient-to-r from-indigo-600 to-purple-600"
+                className="min-h-[92vh] relative flex items-center hero-section overflow-hidden bg-gradient-to-r from-indigo-600 to-purple-600 transition-colors duration-300 dark:from-indigo-950 dark:via-purple-950 dark:to-slate-950"
             >
                 <FloatingOrbs />
                 <AnimatedDots />
@@ -245,7 +245,7 @@ const HomePage = () => {
                                                 animate={{ opacity: 1, y: 0, rotate: 0 }}
                                                 transition={{ delay: 0.08 * i, duration: 0.5, type: 'spring', stiffness: 150 }}
                                                 whileHover={{ y: -10, scale: 1.035, zIndex: 80 }}
-                                                className="pointer-events-auto absolute left-1/2 -translate-x-1/2 w-[320px] rounded-2xl shadow-2xl overflow-hidden border border-white/8 bg-white/5 backdrop-blur-md"
+                                                className="pointer-events-auto absolute left-1/2 -translate-x-1/2 w-[320px] rounded-2xl shadow-2xl overflow-hidden border border-white/8 bg-white/5 backdrop-blur-md dark:bg-white/8 dark:border-indigo-300/15"
                                                 style={{
                                                     top: `${topOffsetPx + 24}px`,
                                                     transform: `translateX(-50%) translateX(${xOffset}px)`,
@@ -325,13 +325,13 @@ const HomePage = () => {
 
             {/* ---------- REST OF PAGE ---------- */}
             {/* Featured Posts */}
-            <motion.section variants={itemVariants} className="py-16 bg-white">
+            <motion.section variants={itemVariants} className="py-16 bg-white transition-colors duration-300 dark:bg-[#121225]">
                 <div className="max-w-7xl mx-auto px-4">
                     <motion.div className="text-center mb-10" variants={itemVariants}>
-                        <h2 className="text-4xl font-semibold text-gray-900">
+                        <h2 className="text-4xl font-semibold text-gray-900 dark:text-white">
                             Featured Articles
                         </h2>
-                        <p className="mt-2 text-lg text-gray-500">
+                        <p className="mt-2 text-lg text-gray-500 dark:text-gray-300">
                             Discover our most popular and trending content
                         </p>
                     </motion.div>
@@ -347,7 +347,7 @@ const HomePage = () => {
                                 {...cardHover}
                                 className="flex flex-col"
                             >
-                                <Card className="p-0 flex flex-col h-full transition-shadow">
+                                <Card className="p-0 flex flex-col h-full border-gray-200 bg-white transition-colors dark:border-white/10 dark:bg-white/7 dark:backdrop-blur-xl">
                                     <Link
                                         to={errorFlag || loading ? '#' : `/articles/${post.id}`}
                                         onClick={() => {
@@ -364,19 +364,19 @@ const HomePage = () => {
                                         </motion.div>
 
                                         <CardContent className="p-6 space-y-4 flex-grow">
-                                            <p className="text-sm font-medium text-indigo-600">{post.category}</p>
+                                            <p className="text-sm font-medium text-indigo-600 dark:text-indigo-300">{post.category}</p>
 
                                             <motion.h3
-                                                className="text-xl font-semibold text-gray-900 min-h-20 line-clamp-3"
+                                                className="text-xl font-semibold text-gray-900 min-h-20 line-clamp-3 dark:text-white"
                                                 whileHover={{ color: '#4f46e5' }}
                                             >
                                                 {post.title}
                                             </motion.h3>
-                                            <p className="text-gray-500 mt-2 line-clamp-3">{post.excerpt}</p>
+                                            <p className="text-gray-500 mt-2 line-clamp-3 dark:text-gray-300">{post.excerpt}</p>
 
                                             <div className="flex justify-between items-center gap-1 pt-4">
-                                                <span className="text-sm text-gray-400">{formatDate(post.createdAt)} · {post.readTime} min read</span>
-                                                <div className="text-indigo-600 hover:underline text-sm">
+                                                <span className="text-sm text-gray-400 dark:text-gray-400">{formatDate(post.createdAt)} · {post.readTime} min read</span>
+                                                <div className="text-indigo-600 hover:underline text-sm dark:text-indigo-300">
                                                     Read more →
                                                 </div>
                                             </div>
@@ -388,7 +388,7 @@ const HomePage = () => {
                     </motion.div>
 
                     <motion.div variants={itemVariants} className="mt-10 text-center">
-                        <Link to="/articles" className="text-indigo-600 hover:underline text-lg">
+                        <Link to="/articles" className="text-indigo-600 hover:underline text-lg dark:text-indigo-300">
                             View all articles →
                         </Link>
                     </motion.div>
@@ -398,7 +398,7 @@ const HomePage = () => {
             {/* CTA Section */}
             <motion.section
                 variants={itemVariants}
-                className="relative overflow-hidden bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-800 shadow-2xl"
+                className="relative overflow-hidden bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-800 shadow-2xl transition-colors duration-300 dark:from-violet-950 dark:via-purple-950 dark:to-indigo-950"
             >
                 {/* Animated Background Effects */}
                 <div className="absolute inset-0">
@@ -501,7 +501,7 @@ const HomePage = () => {
                         {/* Primary CTA */}
                         <Button
                             asChild
-                            className="group relative overflow-hidden rounded-2xl px-8 py-4 bg-white text-purple-600 hover:bg-gray-50 shadow-2xl transform transition-all duration-300 hover:scale-105 hover:shadow-white/25 focus:outline-none focus:ring-4 focus:ring-white/30 font-bold text-lg"
+                            className="group relative overflow-hidden rounded-2xl px-8 py-4 bg-white text-purple-600 hover:bg-gray-50 shadow-2xl transform transition-all duration-300 hover:scale-105 hover:shadow-white/25 focus:outline-none focus:ring-4 focus:ring-white/30 font-bold text-lg dark:bg-indigo-100 dark:text-purple-900 dark:hover:bg-white"
                         >
                             <Link to={isSignedIn ? "/articles/edit/new" : "/auth/sign-up"} aria-label="Create your free account">
                                 <span className="relative z-10 inline-flex items-center">

@@ -67,7 +67,7 @@ const categories = [
         trending: true,
         accent: "from-blue-500 to-indigo-600",
         tint: "bg-blue-50 text-blue-700 border-blue-100",
-        chip: "bg-blue-100 text-blue-700",
+        chip: "bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-200",
     },
     {
         id: 2,
@@ -76,7 +76,7 @@ const categories = [
         description: "Power, diplomacy, borders, and global strategy in motion.",
         accent: "from-emerald-500 to-teal-600",
         tint: "bg-emerald-50 text-emerald-700 border-emerald-100",
-        chip: "bg-emerald-100 text-emerald-700",
+        chip: "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-200",
     },
     {
         id: 3,
@@ -86,7 +86,7 @@ const categories = [
         trending: true,
         accent: "from-amber-400 to-orange-500",
         tint: "bg-amber-50 text-amber-700 border-amber-100",
-        chip: "bg-amber-100 text-amber-700",
+        chip: "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-200",
     },
     {
         id: 4,
@@ -95,7 +95,7 @@ const categories = [
         description: "Cosmic discoveries, night-sky wonder, and space science.",
         accent: "from-violet-500 to-purple-600",
         tint: "bg-violet-50 text-violet-700 border-violet-100",
-        chip: "bg-violet-100 text-violet-700",
+        chip: "bg-violet-100 text-violet-700 dark:bg-violet-500/15 dark:text-violet-200",
     },
     {
         id: 5,
@@ -104,7 +104,7 @@ const categories = [
         description: "Traditions, meaning, philosophy, and cultural memory.",
         accent: "from-rose-500 to-pink-600",
         tint: "bg-rose-50 text-rose-700 border-rose-100",
-        chip: "bg-rose-100 text-rose-700",
+        chip: "bg-rose-100 text-rose-700 dark:bg-rose-500/15 dark:text-rose-200",
     },
     {
         id: 6,
@@ -113,7 +113,7 @@ const categories = [
         description: "Stories, studios, characters, and Japanese pop culture.",
         accent: "from-fuchsia-500 to-purple-600",
         tint: "bg-fuchsia-50 text-fuchsia-700 border-fuchsia-100",
-        chip: "bg-fuchsia-100 text-fuchsia-700",
+        chip: "bg-fuchsia-100 text-fuchsia-700 dark:bg-fuchsia-500/15 dark:text-fuchsia-200",
     },
     {
         id: 7,
@@ -122,7 +122,7 @@ const categories = [
         description: "Books, poetry, essays, criticism, and the written imagination.",
         accent: "from-lime-500 to-green-600",
         tint: "bg-lime-50 text-lime-700 border-lime-100",
-        chip: "bg-lime-100 text-lime-700",
+        chip: "bg-lime-100 text-lime-700 dark:bg-lime-500/15 dark:text-lime-200",
     },
     {
         id: 8,
@@ -132,7 +132,7 @@ const categories = [
         trending: true,
         accent: "from-sky-500 to-indigo-600",
         tint: "bg-sky-50 text-sky-700 border-sky-100",
-        chip: "bg-sky-100 text-sky-700",
+        chip: "bg-sky-100 text-sky-700 dark:bg-sky-500/15 dark:text-sky-200",
     },
 ];
 
@@ -228,23 +228,23 @@ const CategoriesPage = () => {
             idle: {
                 icon: Star,
                 label: "Browse topic",
-                className: "border-indigo-100 bg-indigo-50 text-indigo-700",
+                className: "border-indigo-100 bg-indigo-50 text-indigo-700 dark:border-indigo-400/20 dark:bg-indigo-500/15 dark:text-indigo-200",
             },
             checking: {
                 icon: LoaderCircle,
                 label: "Checking...",
-                className: "border-sky-100 bg-sky-50 text-sky-700",
+                className: "border-sky-100 bg-sky-50 text-sky-700 dark:border-sky-400/20 dark:bg-sky-500/15 dark:text-sky-200",
                 iconClassName: "animate-spin",
             },
             available: {
                 icon: CheckCircle2,
                 label: "Available",
-                className: "border-emerald-100 bg-emerald-50 text-emerald-700",
+                className: "border-emerald-100 bg-emerald-50 text-emerald-700 dark:border-emerald-400/20 dark:bg-emerald-500/15 dark:text-emerald-200",
             },
             empty: {
                 icon: XCircle,
                 label: "No articles yet",
-                className: "border-amber-100 bg-amber-50 text-amber-700",
+                className: "border-amber-100 bg-amber-50 text-amber-700 dark:border-amber-400/20 dark:bg-amber-500/15 dark:text-amber-200",
             },
         }[categoryStatus];
         const FooterStatusIcon = footerStatus.icon;
@@ -260,9 +260,9 @@ const CategoriesPage = () => {
                 disabled={checkingCategoryId !== null}
                 className="group h-full text-left disabled:cursor-wait disabled:opacity-80"
             >
-                <Card className="relative h-full overflow-hidden rounded-lg border-white/75 bg-white/72 py-0 shadow-xl shadow-indigo-300/18 backdrop-blur-md ring-1 ring-white/55 transition-all duration-300 group-hover:border-white group-hover:bg-white/82 group-hover:shadow-2xl group-hover:shadow-indigo-300/30">
+                <Card className="relative h-full overflow-hidden rounded-lg border-white/75 bg-white/72 py-0 shadow-xl shadow-indigo-300/18 backdrop-blur-md ring-1 ring-white/55 transition-all duration-300 group-hover:border-white group-hover:bg-white/82 group-hover:shadow-2xl group-hover:shadow-indigo-300/30 dark:border-white/10 dark:bg-white/7 dark:shadow-black/30 dark:ring-white/10 dark:group-hover:border-indigo-300/30 dark:group-hover:bg-white/10">
                     <div className={`absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r ${category.accent}`} />
-                    <div className="pointer-events-none absolute inset-x-4 top-3 h-20 rounded-full bg-white/45 blur-xl" />
+                    <div className="pointer-events-none absolute inset-x-4 top-3 h-20 rounded-full bg-white/45 blur-xl dark:bg-indigo-300/10" />
                     <motion.div
                         className={`absolute -right-12 -top-12 size-32 rounded-full bg-gradient-to-br ${category.accent} opacity-18 blur-xl transform-gpu`}
                         animate={{ scale: [1, 1.16, 1], opacity: [0.14, 0.24, 0.14] }}
@@ -272,7 +272,7 @@ const CategoriesPage = () => {
                     <CardContent className="relative flex h-full flex-col p-5">
                         <div className="mb-5 flex items-start justify-between gap-4">
                             <motion.div
-                                className={`flex size-12 items-center justify-center rounded-lg border bg-white/65 shadow-inner ${category.tint}`}
+                                className={`flex size-12 items-center justify-center rounded-lg border bg-white/65 shadow-inner dark:bg-white/10 dark:border-white/10 ${category.tint}`}
                                 whileHover={{ rotate: -4 }}
                                 transition={{ type: "spring", stiffness: 260, damping: 16 }}
                             >
@@ -294,20 +294,20 @@ const CategoriesPage = () => {
                         </div>
 
                         <div className="flex-1">
-                            <h2 className="mb-2 text-xl font-bold tracking-tight text-gray-900 transition-colors group-hover:text-indigo-600">
+                            <h2 className="mb-2 text-xl font-bold tracking-tight text-gray-900 transition-colors group-hover:text-indigo-600 dark:text-white dark:group-hover:text-indigo-200">
                                 {category.name}
                             </h2>
-                            <p className="text-sm leading-6 text-gray-500">
+                            <p className="text-sm leading-6 text-gray-500 dark:text-gray-300">
                                 {category.description}
                             </p>
                         </div>
 
-                        <div className="mt-6 flex items-center justify-between border-t border-white/70 pt-4 text-sm">
+                        <div className="mt-6 flex items-center justify-between border-t border-white/70 pt-4 text-sm dark:border-white/10">
                             <Badge className={`rounded-full border px-2.5 py-1 font-medium shadow-sm ${footerStatus.className}`}>
                                 <FooterStatusIcon className={`mr-1.5 size-3.5 ${footerStatus.iconClassName ?? ""}`} />
                                 {footerStatus.label}
                             </Badge>
-                            <span className="flex items-center gap-2 font-semibold text-indigo-600">
+                            <span className="flex items-center gap-2 font-semibold text-indigo-600 dark:text-indigo-300">
                                 {isChecking ? (
                                     <>
                                         Checking
@@ -334,24 +334,24 @@ const CategoriesPage = () => {
     };
 
     return (
-        <div className="relative isolate min-h-screen overflow-hidden bg-[#f8fbff] text-gray-900">
-            <div className="pointer-events-none fixed inset-0 -z-10 bg-[linear-gradient(135deg,#f8fbff_0%,#f4efff_42%,#fff7fb_100%)]" />
-            <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(circle_at_16%_12%,rgba(99,102,241,0.28),transparent_28%),radial-gradient(circle_at_82%_8%,rgba(236,72,153,0.2),transparent_26%),radial-gradient(circle_at_68%_78%,rgba(14,165,233,0.18),transparent_30%)]" />
+        <div className="relative isolate min-h-screen overflow-hidden bg-[#f8fbff] text-gray-900 transition-colors duration-300 dark:bg-[#101022] dark:text-gray-100">
+            <div className="pointer-events-none fixed inset-0 -z-10 bg-[linear-gradient(135deg,#f8fbff_0%,#f4efff_42%,#fff7fb_100%)] dark:bg-[linear-gradient(135deg,#101022_0%,#181431_45%,#111827_100%)]" />
+            <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(circle_at_16%_12%,rgba(99,102,241,0.28),transparent_28%),radial-gradient(circle_at_82%_8%,rgba(236,72,153,0.2),transparent_26%),radial-gradient(circle_at_68%_78%,rgba(14,165,233,0.18),transparent_30%)] dark:bg-[radial-gradient(circle_at_16%_12%,rgba(99,102,241,0.22),transparent_28%),radial-gradient(circle_at_82%_8%,rgba(236,72,153,0.16),transparent_26%),radial-gradient(circle_at_68%_78%,rgba(14,165,233,0.12),transparent_30%)]" />
             <motion.div
                 aria-hidden
-                className="pointer-events-none fixed left-[8%] top-24 -z-10 h-64 w-64 rounded-full bg-indigo-300/30 blur-3xl transform-gpu"
+                className="pointer-events-none fixed left-[8%] top-24 -z-10 h-64 w-64 rounded-full bg-indigo-300/30 blur-3xl transform-gpu dark:bg-indigo-500/15"
                 animate={{ y: [0, 24, 0], scale: [1, 1.08, 1] }}
                 transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
             />
             <motion.div
                 aria-hidden
-                className="pointer-events-none fixed right-[7%] top-20 -z-10 h-72 w-72 rounded-full bg-pink-300/25 blur-3xl transform-gpu"
+                className="pointer-events-none fixed right-[7%] top-20 -z-10 h-72 w-72 rounded-full bg-pink-300/25 blur-3xl transform-gpu dark:bg-pink-500/12"
                 animate={{ y: [0, -18, 0], scale: [1, 1.1, 1] }}
                 transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
             />
             <motion.div
                 aria-hidden
-                className="pointer-events-none fixed bottom-12 left-1/2 -z-10 h-80 w-80 -translate-x-1/2 rounded-full bg-cyan-200/30 blur-3xl transform-gpu"
+                className="pointer-events-none fixed bottom-12 left-1/2 -z-10 h-80 w-80 -translate-x-1/2 rounded-full bg-cyan-200/30 blur-3xl transform-gpu dark:bg-cyan-500/12"
                 animate={{ x: [0, 28, 0], scale: [1, 1.06, 1] }}
                 transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
             />
@@ -372,17 +372,17 @@ const CategoriesPage = () => {
                         transition={{ duration: 0.55, ease: "easeOut" }}
                         className="relative"
                     >
-                        <Badge className="mb-5 rounded-full border-white/70 bg-white/60 px-3 py-1.5 text-indigo-700 shadow-lg shadow-indigo-200/30 backdrop-blur-md hover:bg-white/75">
+                        <Badge className="mb-5 rounded-full border-white/70 bg-white/60 px-3 py-1.5 text-indigo-700 shadow-lg shadow-indigo-200/30 backdrop-blur-md hover:bg-white/75 dark:border-white/10 dark:bg-white/10 dark:text-indigo-200 dark:shadow-black/20 dark:hover:bg-white/15">
                             <BookOpen className="mr-2 size-4" />
                             {countsLoading ? "Loading" : totalArticles} curated reads across {categories.length} category flags
                         </Badge>
-                        <h1 className="max-w-3xl text-4xl font-black leading-tight tracking-tight text-gray-950 sm:text-5xl lg:text-6xl">
+                        <h1 className="max-w-3xl text-4xl font-black leading-tight tracking-tight text-gray-950 sm:text-5xl lg:text-6xl dark:text-white">
                             Browse categories
                             <span className="block bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">
                                 with a sharper signal.
                             </span>
                         </h1>
-                        <p className="mt-5 max-w-2xl text-base leading-7 text-gray-600 sm:text-lg">
+                        <p className="mt-5 max-w-2xl text-base leading-7 text-gray-600 sm:text-lg dark:text-gray-300">
                             Tap any category flag and Kenshi Webspace checks the backend first, then opens the matching article collection when content exists.
                         </p>
                     </motion.div>
@@ -391,17 +391,17 @@ const CategoriesPage = () => {
                         initial={{ opacity: 0, x: 18 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.12, duration: 0.55, ease: "easeOut" }}
-                        className="grid gap-3 rounded-2xl border border-white/70 bg-white/55 p-3 shadow-2xl shadow-indigo-300/25 backdrop-blur-lg ring-1 ring-white/50"
+                        className="grid gap-3 rounded-2xl border border-white/70 bg-white/55 p-3 shadow-2xl shadow-indigo-300/25 backdrop-blur-lg ring-1 ring-white/50 dark:border-white/10 dark:bg-white/7 dark:shadow-black/30 dark:ring-white/10"
                     >
                         {[
                             { label: "Categories", value: categories.length, tone: "from-indigo-500 to-purple-500" },
                             { label: "Articles", value: countsLoading ? "..." : totalArticles, tone: "from-sky-500 to-indigo-500" },
                             { label: "Trending", value: trendingCount, tone: "from-amber-400 to-pink-500" },
                         ].map((stat) => (
-                            <div key={stat.label} className="flex items-center justify-between rounded-lg border border-white/80 bg-white/75 px-4 py-3 shadow-lg shadow-indigo-100/35 backdrop-blur-sm">
+                            <div key={stat.label} className="flex items-center justify-between rounded-lg border border-white/80 bg-white/75 px-4 py-3 shadow-lg shadow-indigo-100/35 backdrop-blur-sm dark:border-white/10 dark:bg-white/8 dark:shadow-black/20">
                                 <div>
-                                    <div className="text-xs font-semibold uppercase tracking-wide text-gray-400">{stat.label}</div>
-                                    <div className="text-2xl font-black text-gray-950">{stat.value}</div>
+                                    <div className="text-xs font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-400">{stat.label}</div>
+                                    <div className="text-2xl font-black text-gray-950 dark:text-white">{stat.value}</div>
                                 </div>
                                 <div className={`size-10 rounded-lg bg-gradient-to-br ${stat.tone} shadow-lg shadow-indigo-200`} />
                             </div>
@@ -413,23 +413,23 @@ const CategoriesPage = () => {
                     initial={{ opacity: 0, y: 14 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.16, duration: 0.45 }}
-                    className="mb-8 rounded-2xl border border-white/70 bg-white/60 p-4 shadow-2xl shadow-indigo-300/20 backdrop-blur-lg ring-1 ring-white/50"
+                    className="mb-8 rounded-2xl border border-white/70 bg-white/60 p-4 shadow-2xl shadow-indigo-300/20 backdrop-blur-lg ring-1 ring-white/50 dark:border-white/10 dark:bg-white/7 dark:shadow-black/25 dark:ring-white/10"
                 >
                     <div className="grid gap-3 lg:grid-cols-[1fr_auto_auto]">
                         <div className="relative">
-                            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-400" />
+                            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
                             <Input
                                 type="text"
                                 placeholder="Search category flags..."
                                 value={searchTerm}
                                 onChange={(event) => setSearchTerm(event.target.value)}
-                                className="h-11 rounded-lg border-indigo-100 bg-white pl-10 text-gray-900 placeholder:text-gray-400 focus-visible:border-indigo-300 focus-visible:ring-indigo-200"
+                                className="h-11 rounded-lg border-indigo-100 bg-white pl-10 text-gray-900 placeholder:text-gray-400 focus-visible:border-indigo-300 focus-visible:ring-indigo-200 dark:border-white/10 dark:bg-white/8 dark:text-white dark:placeholder:text-gray-500 dark:focus-visible:border-indigo-400 dark:focus-visible:ring-indigo-400/30"
                             />
                         </div>
 
                         <Select value={sortBy} onValueChange={setSortBy}>
-                            <SelectTrigger className="h-11 w-full rounded-lg border-indigo-100 bg-white text-gray-700 focus:ring-indigo-200 lg:w-[180px]">
-                                <Filter className="size-4 text-gray-400" />
+                            <SelectTrigger className="h-11 w-full rounded-lg border-indigo-100 bg-white text-gray-700 focus:ring-indigo-200 lg:w-[180px] dark:border-white/10 dark:bg-white/8 dark:text-gray-100 dark:focus:ring-indigo-400/30">
+                                <Filter className="size-4 text-gray-400 dark:text-gray-500" />
                                 <SelectValue placeholder="Sort categories" />
                             </SelectTrigger>
                             <SelectContent className="rounded-lg">
@@ -439,13 +439,13 @@ const CategoriesPage = () => {
                             </SelectContent>
                         </Select>
 
-                        <div className="grid h-11 grid-cols-2 rounded-lg border border-indigo-100 bg-indigo-50/70 p-1">
+                        <div className="grid h-11 grid-cols-2 rounded-lg border border-indigo-100 bg-indigo-50/70 p-1 dark:border-white/10 dark:bg-white/8">
                             <Button
                                 type="button"
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => setViewMode("grid")}
-                                className={`h-full rounded-md text-gray-500 hover:bg-white hover:text-gray-900 ${viewMode === "grid" ? "bg-white text-indigo-600 shadow-sm" : ""}`}
+                                className={`h-full rounded-md text-gray-500 hover:bg-white hover:text-gray-900 dark:text-gray-300 dark:hover:bg-white/10 dark:hover:text-white ${viewMode === "grid" ? "bg-white text-indigo-600 shadow-sm dark:bg-indigo-500/20 dark:text-indigo-200" : ""}`}
                             >
                                 <Grid className="size-4" />
                                 Grid
@@ -455,7 +455,7 @@ const CategoriesPage = () => {
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => setViewMode("list")}
-                                className={`h-full rounded-md text-gray-500 hover:bg-white hover:text-gray-900 ${viewMode === "list" ? "bg-white text-indigo-600 shadow-sm" : ""}`}
+                                className={`h-full rounded-md text-gray-500 hover:bg-white hover:text-gray-900 dark:text-gray-300 dark:hover:bg-white/10 dark:hover:text-white ${viewMode === "list" ? "bg-white text-indigo-600 shadow-sm dark:bg-indigo-500/20 dark:text-indigo-200" : ""}`}
                             >
                                 <LayoutList className="size-4" />
                                 List
@@ -485,11 +485,11 @@ const CategoriesPage = () => {
                     <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="rounded-2xl border border-white/70 bg-white/65 p-10 text-center shadow-2xl shadow-indigo-300/20 backdrop-blur-lg ring-1 ring-white/50"
+                        className="rounded-2xl border border-white/70 bg-white/65 p-10 text-center shadow-2xl shadow-indigo-300/20 backdrop-blur-lg ring-1 ring-white/50 dark:border-white/10 dark:bg-white/7 dark:shadow-black/25 dark:ring-white/10"
                     >
-                        <Search className="mx-auto mb-4 size-10 text-gray-400" />
-                        <h2 className="text-xl font-semibold text-gray-900">No category flags found</h2>
-                        <p className="mt-2 text-sm text-gray-500">Try a broader search term.</p>
+                        <Search className="mx-auto mb-4 size-10 text-gray-400 dark:text-gray-500" />
+                        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">No category flags found</h2>
+                        <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Try a broader search term.</p>
                     </motion.div>
                 )}
 
@@ -497,16 +497,16 @@ const CategoriesPage = () => {
                     initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.34, duration: 0.5 }}
-                    className="mt-10 overflow-hidden rounded-2xl border border-white/70 bg-white/65 shadow-2xl shadow-indigo-300/20 backdrop-blur-lg ring-1 ring-white/50"
+                    className="mt-10 overflow-hidden rounded-2xl border border-white/70 bg-white/65 shadow-2xl shadow-indigo-300/20 backdrop-blur-lg ring-1 ring-white/50 dark:border-white/10 dark:bg-white/7 dark:shadow-black/25 dark:ring-white/10"
                 >
                     <div className="grid gap-6 p-6 sm:p-8 md:grid-cols-[1fr_auto] md:items-center">
                         <div>
-                            <Badge className="mb-3 rounded-full border-indigo-100 bg-indigo-50 text-indigo-700 hover:bg-indigo-100">
+                            <Badge className="mb-3 rounded-full border-indigo-100 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 dark:border-indigo-400/20 dark:bg-indigo-500/15 dark:text-indigo-200 dark:hover:bg-indigo-500/20">
                                 <Sparkles className="mr-2 size-4" />
                                 Topic request
                             </Badge>
-                            <h2 className="text-2xl font-semibold tracking-tight text-gray-900">Looking for a category that is not here?</h2>
-                            <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-500">
+                            <h2 className="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">Looking for a category that is not here?</h2>
+                            <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-500 dark:text-gray-300">
                                 Request a topic or browse the complete article archive while new collections are being curated.
                             </p>
                         </div>
@@ -515,7 +515,7 @@ const CategoriesPage = () => {
                             <Button asChild className="rounded-lg bg-indigo-600 text-white hover:bg-indigo-500">
                                 <Link to="/maintenance">Request a Topic</Link>
                             </Button>
-                            <Button asChild variant="outline" className="rounded-lg border-indigo-200 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-700">
+                            <Button asChild variant="outline" className="rounded-lg border-indigo-200 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-700 dark:border-indigo-400/30 dark:text-indigo-200 dark:hover:bg-indigo-500/15 dark:hover:text-indigo-100">
                                 <Link to="/articles">Browse All Articles</Link>
                             </Button>
                         </div>
