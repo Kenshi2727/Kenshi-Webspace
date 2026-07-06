@@ -2,6 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import helmet from 'helmet';
+import notificationRoutes from './routes/notification.route.js';
 
 dotenv.config();
 
@@ -19,12 +20,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // routes
+app.use('/notifications', notificationRoutes);
 
 // listening to server
 app.listen(port, () => {
     console.log(`NOTIFICATION SERVER is running on http://localhost:${port}`);
     console.log(`Current Process ID: ${process.pid}`);
     console.log(`CORS is enabled for: ${process.env.CORS_ORIGIN}`);
+});
+
+// root route
+app.get('/', (req, res) => {
+    res.send('<div style="text-align: center;height: 100vh;display: flex;flex-direction: column;justify-content: center;"><h1>Notification Service is running!</h1><p>@Kenshi Webspace Services</p></div>');
 });
 
 //graceful shutdown
