@@ -10,7 +10,7 @@ const TermsPage = () => {
         (_, i, a) => `v1.2.0-beta.${a.length - i}`
     )
     return (
-        <div className='relative min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900'>
+        <div className='relative min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900 dark:from-indigo-950 dark:via-purple-950 dark:to-slate-950'>
             <div className='absolute inset-y-2 inset-x-5 sm:inset-x-10 md:inset-x-20 grid grid-cols-1 md:grid-cols-[3fr_1fr] gap-4'>
 
                 <div className='left-container flex flex-col gap-1 overflow-auto hide-scrollbar'>

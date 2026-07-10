@@ -30,6 +30,10 @@ import {
     Check,
     AlertCircle
 } from 'lucide-react';
+import { useAuth, useUser } from "@clerk/clerk-react";
+import NotFoundPage from './NotFoundPage';
+import { toast } from 'react-hot-toast';
+import { formatDate } from '../lib/dateFormatter';
 
 const ProfilePage = () => {
     const [isEditing, setIsEditing] = useState(false);
@@ -37,16 +41,23 @@ const ProfilePage = () => {
     const [isSaving, setIsSaving] = useState(false);
     const [saveStatus, setSaveStatus] = useState(null);
     const fileInputRef = useRef(null);
+    const { user } = useUser();
+    const { isSignedIn } = useAuth();
+
+    if (!isSignedIn || !user) {
+        return <NotFoundPage />;
+    }
+
 
     // Original profile data (simulating server data)
     const originalProfileData = {
-        name: 'Kenshin Commander',
-        email: 'alex@kenshiwebspace.com',
+        name: user?.fullName,
+        email: user?.emailAddresses[0]?.emailAddress,
         bio: 'Passionate writer and researcher exploring the intersection of technology, philosophy, and human creativity. Always learning, always growing.',
         location: 'San Francisco, CA',
         website: 'https://alexkenshi.dev',
-        joinedDate: 'March 2024',
-        avatar: null,
+        joinedDate: user?.createdAt ? formatDate(new Date(user.createdAt)) : 'N/A',
+        avatar: user?.imageUrl,
         socialLinks: {
             twitter: 'https://twitter.com/alexkenshi',
             github: 'https://github.com/alexkenshi',
@@ -333,7 +344,7 @@ const ProfilePage = () => {
     ));
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 dark:from-indigo-950 dark:via-purple-950 dark:to-slate-950">
             {/* Success/Error Messages */}
             {saveStatus && (
                 <div className="fixed top-4 right-4 z-50 animate-in slide-in-from-top-2">
@@ -540,10 +551,11 @@ const ProfilePage = () => {
                                             <CustomInput
                                                 label="Full Name"
                                                 field="name"
-                                                value={tempProfileData.name}
-                                                onChange={handleInputChange}
-                                                error={errors.name}
-                                                placeholder="Enter your full name"
+                                                placeholder={tempProfileData.name}
+                                                disabled={true}
+                                                // onChange={handleInputChange}
+                                                // error={errors.name}
+                                                // placeholder="Enter your full name"
                                                 icon={User}
                                             />
 
@@ -551,10 +563,11 @@ const ProfilePage = () => {
                                                 label="Email Address"
                                                 field="email"
                                                 type="email"
-                                                value={tempProfileData.email}
-                                                onChange={handleInputChange}
-                                                error={errors.email}
-                                                placeholder="your.email@example.com"
+                                                placeholder={tempProfileData.email}
+                                                disabled={true}
+                                                // onChange={handleInputChange}
+                                                // error={errors.email}
+                                                // placeholder="your.email@example.com"
                                                 icon={Mail}
                                             />
 
@@ -766,7 +779,10 @@ const ProfilePage = () => {
                                             <h3 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
                                                 Recent Articles
                                             </h3>
-                                            <button className="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-sm font-medium rounded-lg transition-all duration-300 transform hover:scale-105 flex items-center gap-2 self-start sm:self-auto">
+                                            <button
+                                                className="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-sm font-medium rounded-lg transition-all duration-300 transform hover:scale-105 flex items-center gap-2 self-start sm:self-auto"
+                                                onClick={() => toast.error("Some error occured!")}
+                                            >
                                                 View All <ExternalLink className="w-4 h-4" />
                                             </button>
                                         </div>

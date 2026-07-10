@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Clock, Eye, Calendar, Filter, Search, BookOpen, TrendingUp, Heart, Share2, LoaderCircle, BookMarked, DownloadIcon } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { getAllPosts, updatePostLikes } from '../services/GlobalApi';
@@ -58,6 +59,8 @@ const cardVariants = {
 const categories = [
     "Trending", "Technology", "Geopolitics", "History", "Astronomy", "Religion & Culture", "Anime", "Literature", "Travel"
 ];
+
+const categoryFilterOptions = ['All', ...categories];
 
 // Floating bubbles component
 const FloatingParticles = () => {
@@ -416,38 +419,53 @@ const ArticlesPage = () => {
                                                 placeholder="Discover amazing articles..."
                                                 value={searchTerm}
                                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                                className="w-full pl-12 pr-6 py-4 bg-gradient-to-r from-purple-500/20 to-violet-500/20 border border-purple-300/30 rounded-2xl text-white placeholder-purple-300/60 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 backdrop-blur-sm transition-all duration-300 text-lg"
+                                                className="w-full pl-12 pr-6 py-2 sm:py-4 bg-gradient-to-r from-purple-500/20 to-violet-500/20 border border-purple-300/30 rounded-2xl text-white placeholder-purple-300/60 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 backdrop-blur-sm transition-all duration-300 text-sm sm:text-lg focus:placeholder-transparent"
                                             />
                                         </motion.div>
                                     </div>
 
                                     {/* Category Filters */}
-                                    <div className="flex items-center gap-3 flex-wrap">
-                                        <div className="flex items-center gap-2 text-purple-300/80">
+                                    <div className="w-full">
+                                        <div className="mb-3 flex items-center justify-center gap-2 text-purple-300/80 sm:justify-start md:justify-center">
                                             <Filter size={20} />
                                             <span className="font-medium">Filter:</span>
                                         </div>
-                                        {categories.map((category) => (
-                                            <motion.button
-                                                key={category}
-                                                whileHover={{ scale: 1.05, y: -2 }}
-                                                whileTap={{ scale: 0.95 }}
-                                                onClick={() => {
-                                                    if (selectedCategory === category) {
-                                                        setSelectedCategory('All')
-                                                    }
-                                                    else
-                                                        setSelectedCategory(category)
-                                                }}
 
-                                                className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 backdrop-blur-sm ${selectedCategory === category
-                                                    ? 'bg-gradient-to-r from-purple-500 to-violet-500 text-white shadow-lg shadow-purple-500/30 border border-purple-400/50'
-                                                    : 'bg-purple-500/20 text-purple-200 hover:bg-purple-500/30 hover:text-white border border-purple-400/20 hover:border-purple-400/40'
-                                                    }`}
-                                            >
-                                                {category}
-                                            </motion.button>
-                                        ))}
+                                        <div className="sm:hidden">
+                                            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                                                <SelectTrigger className="h-12 w-full rounded-2xl border-purple-300/30 bg-gradient-to-r from-purple-500/20 to-violet-500/20 px-4 text-purple-100 shadow-lg backdrop-blur-sm focus:ring-purple-400/50">
+                                                    <SelectValue placeholder="Choose a category" />
+                                                </SelectTrigger>
+                                                <SelectContent className="border-purple-300/30 bg-purple-950/95 text-purple-100 backdrop-blur-xl">
+                                                    {categoryFilterOptions.map((category) => (
+                                                        <SelectItem
+                                                            key={category}
+                                                            value={category}
+                                                            className="focus:bg-purple-500/30 focus:text-white"
+                                                        >
+                                                            {category}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+
+                                        <div className="hidden sm:grid sm:grid-cols-2 sm:gap-3 md:flex md:flex-wrap md:justify-center lg:gap-4">
+                                            {categoryFilterOptions.map((category) => (
+                                                <motion.button
+                                                    key={category}
+                                                    whileHover={{ scale: 1.05, y: -2 }}
+                                                    whileTap={{ scale: 0.95 }}
+                                                    onClick={() => setSelectedCategory(category)}
+                                                    className={`min-h-11 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-300 backdrop-blur-sm sm:w-full md:w-auto lg:px-5 ${selectedCategory === category
+                                                        ? 'bg-gradient-to-r from-purple-500 to-violet-500 text-white shadow-lg shadow-purple-500/30 border border-purple-400/50'
+                                                        : 'bg-purple-500/20 text-purple-200 hover:bg-purple-500/30 hover:text-white border border-purple-400/20 hover:border-purple-400/40'
+                                                        }`}
+                                                >
+                                                    {category}
+                                                </motion.button>
+                                            ))}
+                                        </div>
                                     </div>
                                 </div>
                             </CardContent>

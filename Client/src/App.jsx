@@ -41,11 +41,12 @@ import { setUser } from './features/users/userSlice.js';
 import { getUser } from './services/GlobalApi';
 import { useAuth } from '@clerk/clerk-react';
 import ArticlePDF from './components/ArticlePDF';
+import LoadingPage from './pages/LoadingPage.jsx';
 
 function App() {
   const isMaintenanceMode = false;
   // const [showDarkPrompt, setShowDarkPrompt] = useState(false);
-  const { isSignedIn } = useUser();
+  const { isSignedIn, isLoaded } = useUser();
   const [params] = useSearchParams();
   const dispatch = useDispatch();
   const { userId, getToken: getAuthToken } = useAuth();
@@ -71,7 +72,7 @@ function App() {
     }
 
     fetchUserInfo();
-  }, [isSignedIn, userId, dispatch, getAuthToken]);
+  }, [isSignedIn, isLoaded, userId, dispatch, getAuthToken]);
 
 
   //notficaton permission request for firebase messaging
@@ -159,15 +160,15 @@ function App() {
             <Route path="/auth/sso-callback" element={isMaintenanceMode ? <MaintenancePage /> : <SsoCallback />} />
             <Route path="/articles/:id" element={isMaintenanceMode ? <MaintenancePage /> : <ArticlePage />} />
             <Route path="/articles/edit" >
-              <Route path='new' element={isMaintenanceMode ? <MaintenancePage /> : isSignedIn ? <EditorPage type='new' /> : <SignInPage />} />
-              <Route path=':id' element={isMaintenanceMode ? <MaintenancePage /> : isSignedIn ? <EditorPage type='edit' /> : <SignInPage />} />
+              <Route path='new' element={isMaintenanceMode ? <MaintenancePage /> : isSignedIn ? <EditorPage type='new' /> : isLoaded ? <SignInPage /> : <LoadingPage />} />
+              <Route path=':id' element={isMaintenanceMode ? <MaintenancePage /> : isSignedIn ? <EditorPage type='edit' /> : isLoaded ? <SignInPage /> : <LoadingPage />} />
             </Route>
             <Route path="/auth/forgot-password" element={isMaintenanceMode ? <MaintenancePage /> : <ForgotPasswordPage />} />
-            <Route path="/my-articles" element={isMaintenanceMode ? <MaintenancePage /> : isSignedIn ? <MyArticlesPage /> : <SignInPage />} />
+            <Route path="/my-articles" element={isMaintenanceMode ? <MaintenancePage /> : isSignedIn ? <MyArticlesPage /> : isLoaded ? <SignInPage /> : <LoadingPage />} />
             <Route path="/dark" element={isMaintenanceMode ? <MaintenancePage /> : <DarkHomePage />} />
-            <Route path="/review" element={isMaintenanceMode ? <MaintenancePage /> : isSignedIn ? <ReviewPage /> : <SignInPage />} />
-            <Route path="/profile" element={isMaintenanceMode ? <MaintenancePage /> : isSignedIn ? <ProfilePage /> : <SignInPage />} />
-            <Route path="/super-admin/maintainer" element={isMaintenanceMode ? <MaintenancePage /> : isSignedIn ? <MaintainerPage /> : <SignInPage />} />
+            <Route path="/review" element={isMaintenanceMode ? <MaintenancePage /> : isSignedIn ? <ReviewPage /> : isLoaded ? <SignInPage /> : <LoadingPage />} />
+            <Route path="/profile" element={isMaintenanceMode ? <MaintenancePage /> : isSignedIn ? <ProfilePage /> : isLoaded ? <SignInPage /> : <LoadingPage />} />
+            <Route path="/super-admin/maintainer" element={isMaintenanceMode ? <MaintenancePage /> : isSignedIn ? <MaintainerPage /> : isLoaded ? <SignInPage /> : <LoadingPage />} />
             {/* Add more routes as needed */}
 
 

@@ -27,6 +27,33 @@ model User {
   Posts       Post[]
   PostActions PostActions[]
   fcmToken    FcmToken?
+  profile     UserProfile?
+}
+
+model UserProfile {
+  id          String           @id
+  bio         String?
+  location    String?
+  website     String?
+  followers   Int              @default(0)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  socialLinks UserSocialLink[]
+  about       String?
+  focus       String?
+  tags        String[]
+  user        User             @relation(fields: [id], references: [id], onDelete: Cascade)
+}
+
+model UserSocialLink {
+  id        String      @id
+  platform  String
+  url       String
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  profile   UserProfile @relation(fields: [id], references: [id], onDelete: Cascade)
+
+  @@unique([id, platform]) //a user can have only one link per platform
 }
 
 enum Role {

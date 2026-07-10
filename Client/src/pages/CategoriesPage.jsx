@@ -14,6 +14,7 @@ import {
     History,
     Landmark,
     LayoutList,
+    List,
     LoaderCircle,
     MonitorCog,
     Search,
@@ -83,7 +84,7 @@ const categories = [
         name: "History",
         icon: History,
         description: "Civilizations, turning points, and the echoes behind today.",
-        trending: true,
+        // trending: true,
         accent: "from-amber-400 to-orange-500",
         tint: "bg-amber-50 text-amber-700 border-amber-100",
         chip: "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-200",
@@ -93,6 +94,7 @@ const categories = [
         name: "Astronomy",
         icon: Atom,
         description: "Cosmic discoveries, night-sky wonder, and space science.",
+        trending: true,
         accent: "from-violet-500 to-purple-600",
         tint: "bg-violet-50 text-violet-700 border-violet-100",
         chip: "bg-violet-100 text-violet-700 dark:bg-violet-500/15 dark:text-violet-200",
@@ -129,7 +131,7 @@ const categories = [
         name: "Travel",
         icon: Compass,
         description: "Places, routes, field notes, and journeys worth remembering.",
-        trending: true,
+        // trending: true,
         accent: "from-sky-500 to-indigo-600",
         tint: "bg-sky-50 text-sky-700 border-sky-100",
         chip: "bg-sky-100 text-sky-700 dark:bg-sky-500/15 dark:text-sky-200",
@@ -279,15 +281,15 @@ const CategoriesPage = () => {
                                 <Icon className="size-6" />
                             </motion.div>
 
-                            <div className="flex flex-col items-end gap-2">
+                            <div className="flex items-end gap-2">
                                 {category.trending && (
-                                    <Badge className="rounded-full border-amber-200 bg-amber-50 text-amber-700 shadow-sm hover:bg-amber-100">
+                                    <Badge className="rounded-full border-amber-200 bg-amber-50 text-amber-700 shadow-sm hover:bg-amber-100 dark:*:border-amber-400/20 dark:bg-amber-500/15 dark:text-amber-200 dark:hover:bg-amber-500/20">
                                         <TrendingUp className="mr-1 size-3" />
                                         Trending
                                     </Badge>
                                 )}
                                 <Badge className={`rounded-full border-0 shadow-sm ${category.chip}`}>
-                                    <Flag className="mr-1 size-3" />
+                                    <List className="mr-1 size-3" />
                                     {countsLoading ? <LoaderCircle className="size-3 animate-spin" /> : category.count}
                                 </Badge>
                             </div>
@@ -359,7 +361,7 @@ const CategoriesPage = () => {
                 className="pointer-events-none fixed inset-0 -z-10 opacity-[0.14]"
                 style={{
                     backgroundImage:
-                            "linear-gradient(rgba(79,70,229,.16) 1px, transparent 1px), linear-gradient(90deg, rgba(79,70,229,.16) 1px, transparent 1px)",
+                        "linear-gradient(rgba(79,70,229,.16) 1px, transparent 1px), linear-gradient(90deg, rgba(79,70,229,.16) 1px, transparent 1px)",
                     backgroundSize: "34px 34px",
                 }}
             />
