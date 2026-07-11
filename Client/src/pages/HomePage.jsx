@@ -245,7 +245,7 @@ const HomePage = () => {
                                                 animate={{ opacity: 1, y: 0, rotate: 0 }}
                                                 transition={{ delay: 0.08 * i, duration: 0.5, type: 'spring', stiffness: 150 }}
                                                 whileHover={{ y: -10, scale: 1.035, zIndex: 80 }}
-                                                className="pointer-events-auto absolute left-1/2 -translate-x-1/2 w-[320px] rounded-2xl shadow-2xl overflow-hidden border border-white/8 bg-white/5 backdrop-blur-md dark:bg-white/8 dark:border-indigo-300/15"
+                                                className="pointer-events-auto absolute left-1/2 -translate-x-1/2 w-[320px] rounded-2xl shadow-2xl dark:shadow-xl dark:shadow-indigo-300/50 overflow-hidden border border-white/8 bg-white/5 backdrop-blur-md dark:bg-white/8 dark:border-indigo-300/15"
                                                 style={{
                                                     top: `${topOffsetPx + 24}px`,
                                                     transform: `translateX(-50%) translateX(${xOffset}px)`,
@@ -347,7 +347,7 @@ const HomePage = () => {
                                 {...cardHover}
                                 className="flex flex-col"
                             >
-                                <Card className="p-0 flex flex-col h-full border-gray-200 bg-white transition-colors dark:border-white/10 dark:bg-white/7 dark:backdrop-blur-xl">
+                                <Card className="p-0 flex flex-col h-full border-gray-200 bg-white transition-colors dark:shadow-xl dark:shadow-indigo-300/50 dark:border-white/10 dark:bg-white/7 dark:backdrop-blur-xl">
                                     <Link
                                         to={errorFlag || loading ? '#' : `/articles/${post.id}`}
                                         onClick={() => {
@@ -357,7 +357,12 @@ const HomePage = () => {
                                     >
                                         <motion.div className="h-48 w-full overflow-hidden rounded-t-xl">
                                             <img
-                                                src={post.thumbnail}
+                                                // src={post.thumbnail}
+                                                src={(!post.thumbnail || post.thumbnail.trim() === '') ? '/placeholder.png' : post.thumbnail}
+                                                onError={(e) => {
+                                                    e.target.onerror = null;
+                                                    e.target.src = '/placeholder.png';
+                                                }}
                                                 alt={post.title}
                                                 className="h-full w-full object-cover"
                                             />

@@ -221,7 +221,7 @@ const TeamCard = ({ member, index }) => {
                     z: isHovered ? 50 : 0,
                 }}
                 transition={{ duration: 0.4, type: "spring" }}
-                className="bg-white rounded-lg sm:rounded-xl md:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden h-full flex flex-col dark:bg-white/7 dark:border-white/10 dark:backdrop-blur-xl dark:hover:shadow-indigo-500/15"
+                className="bg-white rounded-lg sm:rounded-xl md:rounded-2xl shadow-lg dark:shadow-indigo-300/50 hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden h-full flex flex-col dark:bg-white/7 dark:border-white/10 dark:backdrop-blur-xl dark:hover:shadow-indigo-500/15"
             >
                 {/* Binary code background pattern - hidden on small screens */}
                 {/* <div className="absolute inset-0 opacity-5 font-mono text-xs leading-none hidden md:block">
@@ -340,7 +340,7 @@ const ValueCard = ({ title, description, index, icon }) => {
                     y: isHovered ? -8 : 0,
                     scale: isHovered ? 1.03 : 1,
                 }}
-                className="bg-white rounded-lg sm:rounded-xl md:rounded-2xl p-4 sm:p-6 md:p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 relative overflow-hidden h-full flex flex-col dark:bg-white/7 dark:border-white/10 dark:backdrop-blur-xl dark:hover:shadow-indigo-500/15"
+                className="bg-white rounded-lg sm:rounded-xl md:rounded-2xl p-4 sm:p-6 md:p-8 shadow-lg dark:shadow-indigo-300/50 hover:shadow-2xl transition-all duration-300 border border-gray-100 relative overflow-hidden h-full flex flex-col dark:bg-white/7 dark:border-white/10 dark:backdrop-blur-xl dark:hover:shadow-indigo-500/15"
             >
                 {/* Tech grid background */}
                 {/* <div className="absolute inset-0 opacity-50">
@@ -511,7 +511,7 @@ const AboutPage = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-gray-50 relative overflow-hidden text-gray-900 transition-colors duration-300 dark:bg-[#101022] dark:text-gray-100">
+        <div className="min-h-screen relative overflow-hidden text-gray-900 transition-colors duration-300 bg-gradient-to-br from-purple-950 to-indigo-700/60 dark:from-indigo-950 dark:to-purple-950 dark:text-gray-100">
             {/* Enhanced animated background */}
             <div className="fixed inset-0 z-0">
                 <NeuralNetwork excludeZones={storyRef.current ? [storyRef.current] : []} />
@@ -533,7 +533,7 @@ const AboutPage = () => {
                         }}
                         transition={{ duration: 4, repeat: Infinity }}
                         style={{
-                            background: 'linear-gradient(90deg, #1f2937, #6366f1, #8b5cf6, #ec4899, #1f2937)',
+                            background: 'linear-gradient(90deg,#ffffff,#93c5fd,#818cf8,#c084fc,#f472b6,#ffffff)',
                             backgroundSize: '300% 100%',
                             WebkitBackgroundClip: 'text',
                             WebkitTextFillColor: 'transparent',
@@ -543,13 +543,13 @@ const AboutPage = () => {
                     </motion.h1>
 
                     <motion.p
-                        className="mt-4 sm:mt-6 md:mt-8 max-w-3xl mx-auto text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 font-medium px-4 dark:text-gray-300"
+                        className="mt-4 sm:mt-6 md:mt-8 max-w-3xl mx-auto text-sm sm:text-base md:text-lg lg:text-xl px-4 text-gray-300"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.5, duration: 0.8 }}
                     >
-                        The digital realm of <span className="font-mono text-indigo-600">Abhishek Mathur</span> and
-                        <span className="font-mono text-purple-600"> contributors</span> — where we decode complex technologies,
+                        The digital realm of <span className="font-mono text-pink-400">Abhishek Mathur</span> and
+                        <span className="font-mono text-pink-400"> contributors</span> — where we decode complex technologies,
                         share breakthrough insights, and where technology, creativity, history, and storytelling meet.
                     </motion.p>
 
@@ -588,7 +588,7 @@ const AboutPage = () => {
                                 >
                                     {tech.progress}%
                                 </motion.div>
-                                <div className="text-xs sm:text-sm font-mono text-gray-600 group-hover:text-indigo-600 transition-colors dark:text-gray-400 dark:group-hover:text-indigo-300">
+                                <div className="text-xs sm:text-sm font-mono text-gray-300 group-hover:text-indigo-600 transition-colors dark:text-gray-400 dark:group-hover:text-indigo-300">
                                     {tech.name}
                                 </div>
                                 <motion.div
@@ -616,7 +616,7 @@ const AboutPage = () => {
                     className="mb-8 sm:mb-12 md:mb-20 relative"
                 >
                     {/* Clean background for readability */}
-                    <div className="bg-white/90 backdrop-blur-sm rounded-xl sm:rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 lg:p-12 shadow-xl border border-gray-200 relative overflow-hidden dark:bg-white/7 dark:border-white/10 dark:shadow-black/30">
+                    <div className="bg-white/90 backdrop-blur-sm rounded-xl sm:rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 lg:p-12 shadow-xl border border-gray-200 relative overflow-hidden dark:bg-white/7 dark:border-white/10 dark:shadow-indigo-300/50">
                         {/* Subtle tech accent border */}
                         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
 
@@ -754,7 +754,7 @@ const AboutPage = () => {
                         }}
                         transition={{ duration: 2 }}
                     >
-                        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 font-mono px-4 dark:text-white">
+                        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-300 mb-4 font-mono px-4 dark:text-white">
                             core.Values[]
                         </h2>
                         <div className="w-12 sm:w-16 md:w-20 lg:w-24 h-1 bg-gradient-to-r from-indigo-500 to-purple-500 mx-auto rounded-full">
@@ -791,10 +791,10 @@ const AboutPage = () => {
                         }}
                         transition={{ duration: 2, repeat: Infinity }}
                     >
-                        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 font-mono px-4 dark:text-white">
+                        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-300 mb-4 font-mono px-4 dark:text-white">
                             team.Members()
                         </h2>
-                        <p className="text-gray-600 max-w-2xl mx-auto text-sm sm:text-base md:text-lg px-4 dark:text-gray-300">
+                        <p className="text-pink-300 max-w-2xl mx-auto text-sm sm:text-base md:text-lg px-4 dark:text-gray-300">
                             Meet the minds behind the code. Our diverse team of developers, creators, and innovators.
                         </p>
                     </motion.div>
@@ -812,7 +812,7 @@ const AboutPage = () => {
                 {/* Enhanced CTA Section */}
                 <motion.div
                     variants={itemVariants}
-                    className="relative overflow-hidden rounded-xl sm:rounded-2xl md:rounded-3xl bg-gradient-to-br from-gray-900 via-indigo-900 to-purple-900 p-4 sm:p-6 md:p-8 lg:p-12 xl:p-16 shadow-2xl border border-indigo-500/20 dark:from-slate-950 dark:via-indigo-950 dark:to-purple-950"
+                    className="relative overflow-hidden rounded-xl sm:rounded-2xl md:rounded-3xl bg-gradient-to-br from-gray-900 via-indigo-900 to-purple-900 p-4 sm:p-6 md:p-8 lg:p-12 xl:p-16 shadow-2xl dark:shadow-xl dark:shadow-indigo-300/50 border border-indigo-500/20 dark:from-slate-950 dark:via-indigo-950 dark:to-purple-950"
                 >
                     {/* Matrix-style background */}
                     <div className="absolute inset-0 opacity-10">
@@ -991,7 +991,7 @@ const AboutPage = () => {
                     whileInView={{ opacity: 1 }}
                     viewport={{ once: true }}
                 >
-                    <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-4 sm:mb-6 md:mb-8 font-mono px-4 dark:text-white">
+                    <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-300 mb-4 sm:mb-6 md:mb-8 font-mono px-4 dark:text-white">
                         techStack.dependencies
                     </h3>
 
@@ -1024,7 +1024,7 @@ const AboutPage = () => {
                                         hover: { duration: 0.2 }
                                     }}
                                 >
-                                    <div className={`h-14 sm:h-16 md:h-20 lg:h-24 w-full bg-gradient-to-br ${tech.color} text-white rounded-lg sm:rounded-xl md:rounded-2xl flex flex-col items-center justify-center shadow-lg relative overflow-hidden`}>
+                                    <div className={`h-14 sm:h-16 md:h-20 lg:h-24 w-full bg-gradient-to-br ${tech.color} text-white rounded-lg sm:rounded-xl md:rounded-2xl flex flex-col items-center justify-center shadow-lg dark:shadow-indigo-300/50 relative overflow-hidden`}>
                                         {/* Circuit pattern - simplified for mobile */}
                                         <div className="absolute inset-0 opacity-20 hidden sm:block">
                                             <svg className="w-full h-full" viewBox="0 0 100 100">
@@ -1077,7 +1077,7 @@ const AboutPage = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.5 }}
                     >
-                        <div className="bg-gray-900 rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-6 border border-gray-700 relative overflow-hidden">
+                        <div className="bg-gray-900 rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-6 border border-gray-700 relative overflow-hidden dark:shadow-xl dark:shadow-indigo-300/50">
                             <div className="flex items-center gap-1 sm:gap-2 mb-2 sm:mb-3 md:mb-4">
                                 <div className="w-2 h-2 sm:w-3 sm:h-3 bg-red-500 rounded-full"></div>
                                 <div className="w-2 h-2 sm:w-3 sm:h-3 bg-yellow-500 rounded-full"></div>

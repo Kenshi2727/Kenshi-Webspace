@@ -90,7 +90,7 @@ export default function Navbar() {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5, ease: 'easeOut' }}
             id="non-printable"
-            className="fixed w-full z-50 backdrop-blur-lg bg-white/30 dark:bg-gray-900/30 border-b border-white/20 dark:border-gray-800/20 shadow-md dark:shadow-lg dark:shadow-white/20"
+            className="fixed w-full z-50 backdrop-blur-lg bg-white/30 dark:bg-gray-900/30 border-b border-white/20 dark:border-gray-800/20 shadow-md dark:shadow-lg dark:shadow-indigo-300/50"
         >
             {/* make this container relative so the mobile dropdown can be absolutely positioned */}
             <div className="max-w-7xl mx-auto px-6 lg:px-8 relative">

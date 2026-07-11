@@ -191,7 +191,7 @@ const ArticlesPage = () => {
         }
 
         return (
-            <Card className="overflow-hidden p-0 bg-gradient-to-br from-purple-500/10 to-violet-500/10 hover:from-purple-500/30 hover:to-violet-500/30 backdrop-blur-xl border border-purple-300/20 hover:border-purple-300/40 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-500/20 h-full">
+            <Card className="overflow-hidden p-0 bg-gradient-to-br from-purple-500/10 to-violet-500/10 hover:from-purple-500/30 hover:to-violet-500/30 backdrop-blur-xl border border-purple-300/20 hover:border-purple-300/40 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-500/20 dark:shadow-indigo-300/50 h-full">
                 {/* Article Image */}
                 <div className="relative overflow-hidden h-52 bg-gradient-to-br from-purple-400/20 to-violet-600/20">
                     <motion.img
@@ -404,7 +404,7 @@ const ArticlesPage = () => {
 
                     {/* Filter and Search Bar */}
                     <motion.div variants={itemVariants} className="mb-16">
-                        <Card className="bg-gradient-to-r from-purple-500/10 to-violet-500/10 backdrop-blur-xl border border-purple-300/20 rounded-3xl shadow-2xl overflow-hidden">
+                        <Card className="bg-gradient-to-r from-purple-500/10 to-violet-500/10 backdrop-blur-xl border border-purple-300/20 rounded-3xl shadow-2xl dark:shadow-indigo-300/50 overflow-hidden">
                             <CardContent className="p-8">
                                 <div className="flex flex-col gap-8 items-center">
                                     {/* Search Bar */}
@@ -570,7 +570,7 @@ const ArticlesPage = () => {
                                 whileHover={{ scale: 1.05, y: -8 }}
                                 className="group"
                             >
-                                <Card className="bg-gradient-to-br from-purple-500/10 to-violet-500/10 backdrop-blur-xl border border-purple-300/20 hover:border-purple-300/40 hover:bg-gradient-to-br hover:from-purple-500/15 hover:to-violet-500/15 transition-all duration-500 text-center group-hover:shadow-xl group-hover:shadow-purple-500/20 h-full">
+                                <Card className="bg-gradient-to-br from-purple-500/10 to-violet-500/10 backdrop-blur-xl border border-purple-300/20 hover:border-purple-300/40 hover:bg-gradient-to-br hover:from-purple-500/15 hover:to-violet-500/15 transition-all duration-500 text-center group-hover:shadow-xl group-hover:shadow-purple-500/20 dark:shadow-indigo-300/50 h-full">
                                     <CardContent className="p-4 sm:p-6 md:p-8 flex flex-col items-center justify-center h-full">
                                         <motion.div
                                             className="flex justify-center mb-3 md:mb-4"

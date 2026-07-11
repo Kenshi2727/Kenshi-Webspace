@@ -336,7 +336,7 @@ export default function ArticlePage() {
                             whileHover={{
                                 z: 20
                             }}
-                            className="no-pdf h-50 sm:h-100 md:h-[calc(100vh-176px)] max-w-5xl mx-auto mb-12 overflow-hidden rounded-3xl shadow-2xl relative group"
+                            className="no-pdf h-[calc(15vh)] sm:h-[calc(20vh)] md:h-[calc(40vh)] max-w-5xl mx-auto mb-12 overflow-hidden rounded-3xl shadow-2xl dark:shadow-xl dark:shadow-indigo-300/50 relative group"
                         >
                             <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent z-10 hover:opacity-0 transition-opacity delay-300 duration-500" />
 
@@ -387,7 +387,7 @@ export default function ArticlePage() {
                                 className="absolute inset-0 z-20"
                             >
 
-                                <div className="absolute top-6 left-6" >
+                                <div className="absolute top-6 left-6 mr-6" >
                                     {/* article title */}
                                     <h1 className="text-xl sm:text-3xl md:text-5xl lg:text-6xl font-bold text-white">{article.title}</h1>
 
@@ -412,13 +412,13 @@ export default function ArticlePage() {
                                 transition={{ delay: 0.5, duration: 0.6 }}
                                 className="absolute bottom-6 left-6 z-20"
                             >
-                                {article.featured && <Badge className="bg-indigo-500/80 text-white border-0 backdrop-blur-sm">
-                                    Featured Article
+                                {article.featured && <Badge className="bg-indigo-500/80 text-white border-0 backdrop-blur-sm text-[0.5rem] md:text-xs px-1 py-0.5 md:px-2 md:py-1">
+                                    Featured
                                 </Badge>}
                             </motion.div>
                         </motion.div>
 
-                        <Card className="max-w-5xl mx-auto rounded-3xl shadow-2xl bg-white/20 border border-white/30 backdrop-blur-xl relative overflow-hidden">
+                        <Card className="max-w-5xl mx-auto rounded-3xl shadow-2xl dark:shadow-indigo-300/50 bg-white/20 border border-white/30 backdrop-blur-xl relative overflow-hidden">
                             <CardContent id="print-area" className="relative p-4 sm:p-10 space-y-8">
                                 {/* Header */}
                                 <motion.div variants={itemVariants} className="flex flex-wrap items-center justify-between gap-4">
@@ -712,7 +712,7 @@ export default function ArticlePage() {
                         </motion.div>
                     </motion.div>
                 </div>
-            </div>
+            </div >
         </>
     );
 }

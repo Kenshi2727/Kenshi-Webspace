@@ -116,7 +116,7 @@ export default function CustomSignInPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 flex items-center justify-center p-6">
+        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 dark:from-indigo-950 dark:via-purple-950 flex items-center justify-center p-6">
             <motion.div
                 initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -135,7 +135,7 @@ export default function CustomSignInPage() {
                         className="flex items-center justify-center"
                     >
                         <motion.div whileHover={{ y: -4 }} transition={{ type: "spring", stiffness: 220 }} className="w-full max-w-md">
-                            <Card className="rounded-2xl bg-[#071020] border border-white/6 shadow-2xl">
+                            <Card className="rounded-2xl bg-[#071020] border border-white/6 shadow-2xl dark:shadow-xl dark:shadow-indigo-300/50">
                                 <CardContent className="p-6">
                                     <div className="mb-4 text-center">
                                         <img src="/logo.png" alt="Kenshi Webspace Logo" className="h-24 mb-4 w-full rounded-md" />

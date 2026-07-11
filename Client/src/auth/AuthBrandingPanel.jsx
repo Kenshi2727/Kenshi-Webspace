@@ -19,7 +19,7 @@ export default function AuthBrandingPanel() {
             initial={{ x: -18, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ delay: 0.06, duration: 0.6 }}
-            className="relative overflow-hidden rounded-2xl p-8 md:p-10 hidden md:flex flex-col justify-between bg-gradient-to-br from-indigo-800 via-purple-800 to-slate-900 text-white shadow-lg"
+            className="relative overflow-hidden rounded-2xl p-8 md:p-10 hidden md:flex flex-col justify-between bg-gradient-to-br from-indigo-800 via-purple-800 to-slate-900 text-white shadow-lg dark:shadow-indigo-300/50"
         >
             {/* subtle decorative shapes */}
             <div className="absolute -right-24 -top-10 w-72 h-72 rounded-full bg-gradient-to-br from-purple-500/15 to-indigo-400/10 blur-3xl pointer-events-none" />
