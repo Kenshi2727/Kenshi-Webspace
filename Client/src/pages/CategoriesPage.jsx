@@ -9,6 +9,7 @@ import {
     Compass,
     Filter,
     Flag,
+    FolderTree,
     Globe2,
     Grid,
     History,
@@ -17,6 +18,7 @@ import {
     List,
     LoaderCircle,
     MonitorCog,
+    Newspaper,
     Search,
     Sparkles,
     Star,
@@ -262,7 +264,7 @@ const CategoriesPage = () => {
                 disabled={checkingCategoryId !== null}
                 className="group h-full text-left disabled:cursor-wait disabled:opacity-80"
             >
-                <Card className="relative h-full overflow-hidden rounded-lg border-white/75 bg-white/72 py-0 shadow-xl shadow-indigo-300/18 backdrop-blur-md ring-1 ring-white/55 transition-all duration-300 group-hover:border-white group-hover:bg-white/82 group-hover:shadow-2xl group-hover:shadow-indigo-300/30 dark:border-white/10 dark:bg-white/7 dark:shadow-black/30 dark:ring-white/10 dark:group-hover:border-indigo-300/30 dark:group-hover:bg-white/10">
+                <Card className={`relative h-full overflow-hidden rounded-lg border-white/75 bg-white/65 py-0 shadow-xl shadow-black/50 dark:shadow-indigo-300/18 backdrop-blur-md ring-1 ring-white/55 transition-all duration-300 group-hover:border-white group-hover:bg-white/82 group-hover:shadow-2xl group-hover:shadow-indigo-300/30 dark:border-white/10 dark:bg-white/7 dark:ring-white/10 dark:group-hover:border-indigo-300/30 dark:group-hover:bg-white/10`}>
                     <div className={`absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r ${category.accent}`} />
                     <div className="pointer-events-none absolute inset-x-4 top-3 h-20 rounded-full bg-white/45 blur-xl dark:bg-indigo-300/10" />
                     <motion.div
@@ -336,36 +338,7 @@ const CategoriesPage = () => {
     };
 
     return (
-        <div className="relative isolate min-h-screen overflow-hidden bg-[#f8fbff] text-gray-900 transition-colors duration-300 dark:bg-[#101022] dark:text-gray-100">
-            <div className="pointer-events-none fixed inset-0 -z-10 bg-[linear-gradient(135deg,#f8fbff_0%,#f4efff_42%,#fff7fb_100%)] dark:bg-[linear-gradient(135deg,#101022_0%,#181431_45%,#111827_100%)]" />
-            <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(circle_at_16%_12%,rgba(99,102,241,0.28),transparent_28%),radial-gradient(circle_at_82%_8%,rgba(236,72,153,0.2),transparent_26%),radial-gradient(circle_at_68%_78%,rgba(14,165,233,0.18),transparent_30%)] dark:bg-[radial-gradient(circle_at_16%_12%,rgba(99,102,241,0.22),transparent_28%),radial-gradient(circle_at_82%_8%,rgba(236,72,153,0.16),transparent_26%),radial-gradient(circle_at_68%_78%,rgba(14,165,233,0.12),transparent_30%)]" />
-            <motion.div
-                aria-hidden
-                className="pointer-events-none fixed left-[8%] top-24 -z-10 h-64 w-64 rounded-full bg-indigo-300/30 blur-3xl transform-gpu dark:bg-indigo-500/15"
-                animate={{ y: [0, 24, 0], scale: [1, 1.08, 1] }}
-                transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-            />
-            <motion.div
-                aria-hidden
-                className="pointer-events-none fixed right-[7%] top-20 -z-10 h-72 w-72 rounded-full bg-pink-300/25 blur-3xl transform-gpu dark:bg-pink-500/12"
-                animate={{ y: [0, -18, 0], scale: [1, 1.1, 1] }}
-                transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-            />
-            <motion.div
-                aria-hidden
-                className="pointer-events-none fixed bottom-12 left-1/2 -z-10 h-80 w-80 -translate-x-1/2 rounded-full bg-cyan-200/30 blur-3xl transform-gpu dark:bg-cyan-500/12"
-                animate={{ x: [0, 28, 0], scale: [1, 1.06, 1] }}
-                transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
-            />
-            <div
-                className="pointer-events-none fixed inset-0 -z-10 opacity-[0.14]"
-                style={{
-                    backgroundImage:
-                        "linear-gradient(rgba(79,70,229,.16) 1px, transparent 1px), linear-gradient(90deg, rgba(79,70,229,.16) 1px, transparent 1px)",
-                    backgroundSize: "34px 34px",
-                }}
-            />
-
+        <div className="relative isolate min-h-screen bg-gradient-to-bl from-indigo-500 to-purple-400 dark:from-indigo-950 dark:to-purple-950 overflow-hidden">
             <main className="relative mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
                 <section className="mb-8 grid gap-6 lg:grid-cols-[1fr_360px] lg:items-center">
                     <motion.div
@@ -374,17 +347,17 @@ const CategoriesPage = () => {
                         transition={{ duration: 0.55, ease: "easeOut" }}
                         className="relative"
                     >
-                        <Badge className="mb-5 rounded-full border-white/70 bg-white/60 px-3 py-1.5 text-indigo-700 shadow-lg shadow-indigo-200/30 backdrop-blur-md hover:bg-white/75 dark:border-white/10 dark:bg-white/10 dark:text-indigo-200 dark:shadow-black/20 dark:hover:bg-white/15">
+                        <Badge className="mb-5 rounded-full border-white/70 bg-white/60 px-3 py-1.5 text-indigo-700 shadow-lg dark:shadow-indigo-300/50 backdrop-blur-md hover:bg-white/75 dark:border-white/10 dark:bg-white/10 dark:text-indigo-200 dark:hover:bg-white/15">
                             <BookOpen className="mr-2 size-4" />
                             {countsLoading ? "Loading" : totalArticles} curated reads across {categories.length} category flags
                         </Badge>
-                        <h1 className="max-w-3xl text-4xl font-black leading-tight tracking-tight text-gray-950 sm:text-5xl lg:text-6xl dark:text-white">
+                        <h1 className="max-w-3xl text-4xl font-black leading-tight tracking-tight text-gray-900 sm:text-5xl lg:text-6xl dark:text-white">
                             Browse categories
-                            <span className="block bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">
+                            <span className="block animate-gradient-x bg-gradient-to-r from-gray-50 to-pink-600 dark:from-pink-300 dark:to-pink-400 bg-clip-text text-transparent">
                                 with a sharper signal.
                             </span>
                         </h1>
-                        <p className="mt-5 max-w-2xl text-base leading-7 text-gray-600 sm:text-lg dark:text-gray-300">
+                        <p className="mt-5 max-w-2xl text-base leading-7 text-gray-300 sm:text-lg dark:text-gray-300">
                             Tap any category flag and Kenshi Webspace checks the backend first, then opens the matching article collection when content exists.
                         </p>
                     </motion.div>
@@ -393,19 +366,21 @@ const CategoriesPage = () => {
                         initial={{ opacity: 0, x: 18 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.12, duration: 0.55, ease: "easeOut" }}
-                        className="grid gap-3 rounded-2xl border border-white/70 bg-white/55 p-3 shadow-2xl shadow-indigo-300/25 backdrop-blur-lg ring-1 ring-white/50 dark:border-white/10 dark:bg-white/7 dark:shadow-black/30 dark:ring-white/10"
+                        className="grid gap-3 rounded-2xl border border-white/70 bg-white/5 p-3 shadow-2xl dark:shadow-indigo-300/50 backdrop-blur-lg ring-1 ring-white/50 dark:border-white/10 dark:bg-white/7 dark:ring-white/10"
                     >
                         {[
-                            { label: "Categories", value: categories.length, tone: "from-indigo-500 to-purple-500" },
-                            { label: "Articles", value: countsLoading ? "..." : totalArticles, tone: "from-sky-500 to-indigo-500" },
-                            { label: "Trending", value: trendingCount, tone: "from-amber-400 to-pink-500" },
+                            { label: "Categories", value: categories.length, tone: "from-indigo-500 to-purple-500", icon: <FolderTree /> },
+                            { label: "Articles", value: countsLoading ? "..." : totalArticles, tone: "from-sky-500 to-indigo-500", icon: <Newspaper /> },
+                            { label: "Trending", value: trendingCount, tone: "from-amber-400 to-pink-500", icon: <TrendingUp /> },
                         ].map((stat) => (
                             <div key={stat.label} className="flex items-center justify-between rounded-lg border border-white/80 bg-white/75 px-4 py-3 shadow-lg shadow-indigo-100/35 backdrop-blur-sm dark:border-white/10 dark:bg-white/8 dark:shadow-black/20">
                                 <div>
                                     <div className="text-xs font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-400">{stat.label}</div>
                                     <div className="text-2xl font-black text-gray-950 dark:text-white">{stat.value}</div>
                                 </div>
-                                <div className={`size-10 rounded-lg bg-gradient-to-br ${stat.tone} shadow-lg shadow-indigo-200`} />
+                                <div className={`flex justify-center items-center size-10 rounded-lg bg-gradient-to-br ${stat.tone} text-white shadow-lg shadow-indigo-200`}>
+                                    {stat.icon}
+                                </div>
                             </div>
                         ))}
                     </motion.div>
@@ -415,9 +390,9 @@ const CategoriesPage = () => {
                     initial={{ opacity: 0, y: 14 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.16, duration: 0.45 }}
-                    className="mb-8 rounded-2xl border border-white/70 bg-white/60 p-4 shadow-2xl shadow-indigo-300/20 backdrop-blur-lg ring-1 ring-white/50 dark:border-white/10 dark:bg-white/7 dark:shadow-black/25 dark:ring-white/10"
+                    className="mb-8 rounded-2xl border border-white/70 bg-white/5 p-4 shadow-xl dark:shadow-indigo-300/50 backdrop-blur-lg ring-1 ring-white/50 dark:border-white/10 dark:bg-white/7 dark:ring-white/10"
                 >
-                    <div className="grid gap-3 lg:grid-cols-[1fr_auto_auto]">
+                    <div className="grid gap-3 items-center lg:grid-cols-[1fr_auto_auto]">
                         <div className="relative">
                             <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
                             <Input
@@ -499,7 +474,7 @@ const CategoriesPage = () => {
                     initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.34, duration: 0.5 }}
-                    className="mt-10 overflow-hidden rounded-2xl border border-white/70 bg-white/65 shadow-2xl shadow-indigo-300/20 backdrop-blur-lg ring-1 ring-white/50 dark:border-white/10 dark:bg-white/7 dark:shadow-black/25 dark:ring-white/10"
+                    className="mt-10 overflow-hidden rounded-2xl border border-white/70 bg-white/65 shadow-2xl shadow-black/50 dark:shadow-indigo-300/50 backdrop-blur-lg ring-1 ring-white/50 dark:border-white/10 dark:bg-white/7 dark:ring-white/10"
                 >
                     <div className="grid gap-6 p-6 sm:p-8 md:grid-cols-[1fr_auto] md:items-center">
                         <div>
@@ -525,7 +500,7 @@ const CategoriesPage = () => {
                     <div className="h-1 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500" />
                 </motion.section>
             </main>
-        </div>
+        </div >
     );
 };
 

@@ -90,7 +90,7 @@ export default function Navbar() {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5, ease: 'easeOut' }}
             id="non-printable"
-            className="fixed w-full z-50 backdrop-blur-lg bg-white/30 dark:bg-gray-900/30 border-b border-white/20 dark:border-gray-800/20 shadow-md"
+            className="fixed w-full z-50 backdrop-blur-lg bg-white/30 dark:bg-gray-900/30 border-b border-white/20 dark:border-gray-800/20 shadow-md dark:shadow-lg dark:shadow-white/20"
         >
             {/* make this container relative so the mobile dropdown can be absolutely positioned */}
             <div className="max-w-7xl mx-auto px-6 lg:px-8 relative">
@@ -157,7 +157,7 @@ export default function Navbar() {
                         </button>
 
                         <Link to="/" className="text-indigo-600 dark:text-indigo-400 font-bold text-xl sm:text-2xl">
-                            <span className='hidden sm:block'>Kenshi Webspace</span><span className='sm:hidden flex items-center gap-1.5'><img src="/logo-min.png" alt="Kenshi Logo" className="size-6 rounded-sm border border-indigo-600 dark:border-indigo-400" /><span className='flex flex-col text-[0.675rem] leading-tight'><span>Kenshi</span><span>Webspace</span></span></span>
+                            <span className='hidden sm:block'>Kenshi Webspace</span><span className='sm:hidden flex items-center gap-1.5'><img src="/logo-min.png" alt="Kenshi Logo" className="size-8 rounded-sm" /><span className='flex flex-col text-[0.8rem] leading-tight'><span>Kenshi</span><span>Webspace</span></span></span>
                         </Link>
                     </div>
                     {/* Desktop links */}
