@@ -157,7 +157,7 @@ export default function Navbar() {
                         </button>
 
                         <Link to="/" className="text-indigo-600 dark:text-indigo-400 font-bold text-xl sm:text-2xl">
-                            Kenshi Webspace
+                            <span className='hidden sm:block'>Kenshi Webspace</span><span className='sm:hidden flex items-center gap-1.5'><img src="/logo-min.png" alt="Kenshi Logo" className="size-6 rounded-sm border border-indigo-600 dark:border-indigo-400" /><span className='flex flex-col text-[0.675rem] leading-tight'><span>Kenshi</span><span>Webspace</span></span></span>
                         </Link>
                     </div>
                     {/* Desktop links */}
