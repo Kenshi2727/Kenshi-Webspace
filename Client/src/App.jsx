@@ -1,6 +1,5 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-// import { motion } from 'framer-motion';
 import { Routes, Route, useSearchParams } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import ArticlesPage from './pages/ArticlesPage';
@@ -16,8 +15,6 @@ import SsoCallback from './auth/SsoCallback';
 import ForgotPasswordPage from './auth/ForgotPasswordPage';
 import MaintenancePage from './components/MaintenancePage';
 import MyArticlesPage from './pages/MyArticlesPage';
-import DarkHomePage from './pages/DarkHomePage';
-// import DarkModePrompt from './components/DarkModePrompt';
 import ScrollToTopButton from './components/ScrollToTopButton';
 import Progress from './components/Progress';
 import ScrollToTop from './navigate/ScrollToTop';
@@ -45,7 +42,6 @@ import LoadingPage from './pages/LoadingPage.jsx';
 
 function App() {
   const isMaintenanceMode = false;
-  // const [showDarkPrompt, setShowDarkPrompt] = useState(false);
   const { isSignedIn, isLoaded } = useUser();
   const [params] = useSearchParams();
   const dispatch = useDispatch();
@@ -110,15 +106,6 @@ function App() {
 
   }, [])
 
-
-  // useEffect(() => {
-  //   // show dialog immediately on first render
-  //   if (window.location.pathname !== "/dark") {
-  //     setShowDarkPrompt(true);
-  //   }
-  // }, []);
-
-
   // simulating error for Sentry testing
   // useEffect(() => {
   //   throw new Error("Test Sentry Error from App.jsx");
@@ -165,7 +152,6 @@ function App() {
             </Route>
             <Route path="/auth/forgot-password" element={isMaintenanceMode ? <MaintenancePage /> : <ForgotPasswordPage />} />
             <Route path="/my-articles" element={isMaintenanceMode ? <MaintenancePage /> : isSignedIn ? <MyArticlesPage /> : isLoaded ? <SignInPage /> : <LoadingPage />} />
-            <Route path="/dark" element={isMaintenanceMode ? <MaintenancePage /> : <DarkHomePage />} />
             <Route path="/review" element={isMaintenanceMode ? <MaintenancePage /> : isSignedIn ? <ReviewPage /> : isLoaded ? <SignInPage /> : <LoadingPage />} />
             <Route path="/profile" element={isMaintenanceMode ? <MaintenancePage /> : isSignedIn ? <ProfilePage /> : isLoaded ? <SignInPage /> : <LoadingPage />} />
             <Route path="/super-admin/maintainer" element={isMaintenanceMode ? <MaintenancePage /> : isSignedIn ? <MaintainerPage /> : isLoaded ? <SignInPage /> : <LoadingPage />} />
@@ -179,10 +165,6 @@ function App() {
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         )}
-
-        {/* <motion.div>
-          <DarkModePrompt open={showDarkPrompt} onOpenChange={setShowDarkPrompt} />
-        </motion.div> */}
 
         <ScrollToTopButton />
         <Toaster

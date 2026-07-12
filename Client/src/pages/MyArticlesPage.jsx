@@ -143,9 +143,9 @@ export default function MyArticlesPage() {
                                 <Tabs defaultValue="all" onValueChange={(v) => setFilter(v)} className="bg-white/5 rounded-full p-1">
                                     <TabsList className="flex gap-1">
                                         <TabsTrigger value="all" className={`px-3 py-1 rounded-full ${filter === 'all' ? 'data-[state=active]:bg-black text-white' : ''}`}>All</TabsTrigger>
-                                        <TabsTrigger value="published" className={`px-3 py-1 rounded-full ${filter === 'published' ? 'data-[state=active]:bg-emerald-500 text-white' : ''}`}>Published</TabsTrigger>
-                                        <TabsTrigger value="draft" className={`px-3 py-1 rounded-full ${filter === 'draft' ? 'data-[state=active]:bg-yellow-500 text-white' : ''}`}>Drafts</TabsTrigger>
-                                        <TabsTrigger value="rejected" className={`px-3 py-1 rounded-full ${filter === 'rejected' ? 'data-[state=active]:bg-red-500 text-white' : ''}`}>Rejected</TabsTrigger>
+                                        <TabsTrigger value="published" className={`px-3 py-1 rounded-full ${filter === 'published' ? 'data-[state=active]:bg-emerald-500 dark:data-[state=active]:bg-emerald-500 text-white' : ''}`}>Published</TabsTrigger>
+                                        <TabsTrigger value="draft" className={`px-3 py-1 rounded-full ${filter === 'draft' ? 'data-[state=active]:bg-yellow-500 dark:data-[state=active]:bg-yellow-500 text-white' : ''}`}>Drafts</TabsTrigger>
+                                        <TabsTrigger value="rejected" className={`px-3 py-1 rounded-full ${filter === 'rejected' ? 'data-[state=active]:bg-red-500 dark:data-[state=active]:bg-red-500 text-white' : ''}`}>Rejected</TabsTrigger>
                                     </TabsList>
                                 </Tabs>
                             </div>
@@ -165,11 +165,11 @@ export default function MyArticlesPage() {
 
                                             {/* cover */}
                                             <div className="h-36 sm:h-40 lg:h-36 w-full flex-shrink-0 overflow-hidden bg-slate-700">
-                                                {article.coverImage ? (
-                                                    <img src={article.coverImage} alt={article.title} className="w-full h-full object-cover" />
+                                                {article.thumbnail ? (
+                                                    <img src={article.thumbnail} alt={article.title} className="w-full h-full object-cover" />
                                                 ) : (
                                                     <div className="w-full h-full bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 flex items-center justify-center">
-                                                        <span className="text-white text-sm font-semibold">No cover</span>
+                                                        <span className="text-white text-sm font-semibold">No thumbnail</span>
                                                     </div>
                                                 )}
                                             </div>

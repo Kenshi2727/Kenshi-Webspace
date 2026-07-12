@@ -1,8 +1,22 @@
+## Quickies-
+- author image 
+- pagination
+- third party services config and integration
+
+## Clerk user managemnt CRUD detailed audit-
+- checking the updation of user data in clerk dashboard and DB
+- checking other access privileges like email verification, password reset, etc
+- media like profile picture, cover picture, etc
+
+## Delete resource cleanup and optimization-
+- are all asscoiated resources not deleted from dtabase when user deleted form clerk db
+- using onDelete Cascade for all resources and checking if all associated resources are deleted or not.
+- adding UI path for account deletion.
+
 ## Configurations-
 - yaml for config management(github workflow)
 
-## Oracle VPS Setup & Validation layer-
-- complete setup for Oracle VPS Websocket Server
+## Validation layer-
 - zod validation for all client and server side inputs
  
 ## LOGGER Service-
@@ -12,8 +26,6 @@
 - all log files under one root log directory to avoid instance spin up
 
 ## V.IMP- Protect ROLE-BASED privileged routes both client and server side
-- rbac is not enough---> need strict checking for specific routes that are meant for specific roles only.
-
 - Example- admin routes, edit-article routes,editor routes,etc
          - cloudinary redundant images deletion route if role based acess is denied.
 
@@ -29,7 +41,6 @@ middleware that will check -> user id
 
 
 ## Client Side & Vercel Analytics & AI Pipeline-
-- Loading pages while client side isSignedIn is being checked 
 - study the vercel client side analytics object
 - integrate client side langchain for client side ai features
 

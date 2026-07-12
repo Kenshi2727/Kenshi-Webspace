@@ -12,8 +12,8 @@ const AvatarDropdown = () => {
     const { isSignedIn } = useAuth();
     const { user } = useUser();
     const { signOut } = useClerk();
-    const currentUser = useSelector(state => state);
-    // console.log("FULL REDUX STATE 👉", currentUser);
+    const currentUser = useSelector(state => state.user);
+    console.log("FULL REDUX STATE 👉", currentUser);
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -114,17 +114,18 @@ const AvatarDropdown = () => {
             >
                 {/* Avatar Image with glow effect */}
                 <div className="relative">
-                    {user.imageUrl ? (
-                        <img
-                            src={user.imageUrl}
-                            alt={userName}
-                            className="w-9 h-9 rounded-full object-cover ring-2 ring-purple-400/50 dark:ring-purple-500/50"
-                        />
-                    ) : (
-                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-purple-600 via-indigo-600 to-purple-700 flex items-center justify-center text-white font-bold text-sm ring-2 ring-purple-400/50 dark:ring-purple-500/50 shadow-lg">
-                            {userInitials}
-                        </div>
-                    )}
+                    {
+                        (currentUser?.profile?.image || user.imageUrl) ? (
+                            <img
+                                src={currentUser?.profile?.image || user.imageUrl}
+                                alt={userName}
+                                className="w-9 h-9 rounded-full object-cover ring-2 ring-purple-400/50 dark:ring-purple-500/50"
+                            />
+                        ) : (
+                            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-purple-600 via-indigo-600 to-purple-700 flex items-center justify-center text-white font-bold text-sm ring-2 ring-purple-400/50 dark:ring-purple-500/50 shadow-lg">
+                                {userInitials}
+                            </div>
+                        )}
                     <div className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full border-2 border-white dark:border-gray-900 shadow-sm"></div>
                 </div>
 

@@ -524,8 +524,8 @@ const HomePage = () => {
                             variant="ghost"
                             className="group rounded-2xl px-6 py-4 border-2 border-white/30 text-white hover:bg-white/10 hover:border-white/50 focus:outline-none focus:ring-4 focus:ring-white/20 transition-all duration-300 backdrop-blur-sm font-semibold"
                         >
-                            <Link to="/about" aria-label="Learn more about Kenshi Webspace" className="inline-flex items-center">
-                                Explore Features
+                            <Link to="/articles" aria-label="Learn more about Kenshi Webspace" className="inline-flex items-center">
+                                Explore Articles
                                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                             </Link>
                         </Button>

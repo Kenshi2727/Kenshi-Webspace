@@ -8,7 +8,8 @@ const initialState = {
     role: null,
     tagline: null,
     createdAt: null,
-    updatedAt: null
+    updatedAt: null,
+    profile: null,
 }
 
 export const userSlice = createSlice({

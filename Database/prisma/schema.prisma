@@ -33,6 +33,7 @@ model User {
 model UserProfile {
   id          String           @id
   bio         String?
+  image       String?
   location    String?
   website     String?
   followers   Int              @default(0)

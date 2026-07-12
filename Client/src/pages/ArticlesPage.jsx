@@ -57,7 +57,7 @@ const cardVariants = {
 };
 
 const categories = [
-    "Trending", "Technology", "Geopolitics", "History", "Astronomy", "Religion & Culture", "Anime", "Literature", "Travel"
+    "Trending", "Technology", "Geopolitics", "History", "Astronomy", "Religion", "Anime", "Literature", "Travel"
 ];
 
 const categoryFilterOptions = ['All', ...categories];
