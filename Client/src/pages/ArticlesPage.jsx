@@ -370,7 +370,7 @@ const ArticlesPage = () => {
                             initial={{ scale: 0.5, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             transition={{ duration: 0.8, ease: "easeOut" }}
-                            className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-gradient-to-r from-purple-500/20 to-violet-500/20 backdrop-blur-xl border border-purple-300/30 text-purple-200 mb-8 shadow-xl"
+                            className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-gradient-to-r from-purple-500/20 to-violet-500/20 backdrop-blur-xl border border-purple-300/30 text-purple-200 mb-8 shadow-xl dark:shadow-indigo-300/50"
                         >
                             <motion.div
                                 animate={{ rotate: [0, 360] }}

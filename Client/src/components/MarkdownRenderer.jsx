@@ -222,9 +222,9 @@ export default function MarkdownRenderer({ content = '', components }) {
         ),
 
         quote: ({ children }) => (
-            <div className="flex gap-2 border-l-4 border-indigo-400 pl-4 italic text-2xl font-bold text-indigo-300/80 my-4">
+            <div className="flex flex-col gap-2 border-l-4 border-indigo-400 pl-4 italic text-sm sm:text-xl md:text-2xl font-bold text-indigo-300/80 my-4">
                 <svg
-                    className='size-7'
+                    className='size-3 sm:size-5 md:size-7'
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 320 320">
                     <path
@@ -232,9 +232,9 @@ export default function MarkdownRenderer({ content = '', components }) {
                         fill="#FFF">
                     </path>
                 </svg>
-                <span className='mt-4'>{children}</span>
+                <span className='children ml-2'>{children}</span>
                 <svg
-                    className="size-7"
+                    className="size-3 sm:size-5 md:size-7"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 320 320"
                 >

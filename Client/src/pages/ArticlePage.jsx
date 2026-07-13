@@ -389,11 +389,11 @@ export default function ArticlePage() {
 
                                 <div className="absolute top-6 left-6 mr-6" >
                                     {/* article title */}
-                                    <h1 className="text-xl sm:text-3xl md:text-5xl lg:text-6xl font-bold text-white">{article.title}</h1>
+                                    <h1 className="text-sm sm:text-2xl md:text-3xl lg:text-5xl font-bold text-white line-clamp-4">{article.title}</h1>
 
                                     {/* article author */}
                                     <motion.div
-                                        className="text-xs sm:text-xl md:text-2xl font-stretch-extra-condensed italic text-white/50 mt-2"
+                                        className="text-[0.5rem] sm:text-xs md:text-xl font-stretch-extra-condensed italic text-white/50 mt-2 line-clamp-1"
                                         whileHover={{
                                             color: '#a855f7',
                                         }}

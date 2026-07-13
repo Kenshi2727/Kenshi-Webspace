@@ -39,6 +39,7 @@ import { getUser } from './services/GlobalApi';
 import { useAuth } from '@clerk/clerk-react';
 import ArticlePDF from './components/ArticlePDF';
 import LoadingPage from './pages/LoadingPage.jsx';
+import { useTheme } from 'next-themes';
 
 function App() {
   const isMaintenanceMode = false;
@@ -46,6 +47,7 @@ function App() {
   const [params] = useSearchParams();
   const dispatch = useDispatch();
   const { userId, getToken: getAuthToken } = useAuth();
+  const { theme } = useTheme();
 
   useEffect(() => {
     if (params.get("toast") === "already-signed-in") {
@@ -171,6 +173,16 @@ function App() {
           position="top-center"
           reverseOrder={false}
           className="no-pdf"
+          toastOptions={
+            theme === "dark" ?
+              {
+                style: {
+                  background: '#1c1c1c',
+                  color: '#e8e8e8',
+                  boxShadow: `0 4px 8px rgba(165, 180, 252, 0.15),0 12px 32px rgba(165, 180, 252, 0.35),0 0 24px rgba(165, 180, 252, 0.5)`
+                }
+              } : {}
+          }
         />
         <Analytics />
         <SpeedInsights />
