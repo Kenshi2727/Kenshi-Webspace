@@ -1,0 +1,7 @@
+./scripts/master.sh dev
+./scripts/master.sh build
+./scripts/master.sh migrate
+./scripts/master.sh reset-db
+./scripts/master.sh sync
+./scripts/master.sh backup
+./scripts/master.sh deploy

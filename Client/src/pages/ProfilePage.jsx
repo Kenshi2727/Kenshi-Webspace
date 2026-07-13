@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
     User,
     Mail,
@@ -34,6 +34,7 @@ import { useAuth, useUser } from "@clerk/clerk-react";
 import NotFoundPage from './NotFoundPage';
 import { toast } from 'react-hot-toast';
 import { formatDate } from '../lib/dateFormatter';
+import { useSelector } from 'react-redux';
 
 const ProfilePage = () => {
     const [isEditing, setIsEditing] = useState(false);
@@ -43,31 +44,52 @@ const ProfilePage = () => {
     const fileInputRef = useRef(null);
     const { user } = useUser();
     const { isSignedIn } = useAuth();
-
-    if (!isSignedIn || !user) {
-        return <NotFoundPage />;
-    }
-
-
-    // Original profile data (simulating server data)
-    const originalProfileData = {
+    const currentUser = useSelector(state => state.user);
+    const [profileData, setProfileData] = useState({
         name: user?.fullName,
         email: user?.emailAddresses[0]?.emailAddress,
-        bio: 'Passionate writer and researcher exploring the intersection of technology, philosophy, and human creativity. Always learning, always growing.',
-        location: 'San Francisco, CA',
-        website: 'https://alexkenshi.dev',
+        bio: 'A wild coyote!',
+        location: 'Some wild location!',
+        website: '#',
         joinedDate: user?.createdAt ? formatDate(new Date(user.createdAt)) : 'N/A',
         avatar: user?.imageUrl,
         socialLinks: {
-            twitter: 'https://twitter.com/alexkenshi',
-            github: 'https://github.com/alexkenshi',
-            linkedin: 'https://linkedin.com/in/alexkenshi'
+            twitter: '#',
+            github: '#',
+            linkedin: '#'
         }
-    };
+    });
 
-    // Editable profile data
-    const [profileData, setProfileData] = useState(originalProfileData);
-    const [tempProfileData, setTempProfileData] = useState(originalProfileData);
+    if (!currentUser && !isSignedIn || !user) {
+        return <NotFoundPage />;
+    }
+
+    useEffect(() => {
+        setProfileData(prev => {
+            return {
+                ...prev,
+                name: (currentUser?.firstName && currentUser?.lastName) ? `${currentUser?.firstName} ${currentUser?.lastName}` : user?.fullName,
+                email: currentUser?.email ? currentUser?.email : user?.emailAddresses[0]?.emailAddress,
+                bio: currentUser?.profile?.bio ? currentUser?.profile?.bio : 'Some wild location!',
+                location: currentUser?.profile?.location ? currentUser?.profile?.location : "Some wild location",
+                website: currentUser?.profile?.website,
+                joinedDate: formatDate(new Date(currentUser?.createdAt)),
+                avatar: currentUser?.profile?.image ? currentUser?.profile?.image : user?.imageUrl,
+                socialLinks: {
+                    twitter: '#',
+                    github: '#',
+                    linkedin: '#'
+                }
+            }
+
+        });
+
+        console.log("data changed!--->", currentUser);
+
+    }, [currentUser]);
+
+    // editing
+    const [tempProfileData, setTempProfileData] = useState(profileData);
 
     // Form validation errors
     const [errors, setErrors] = useState({});
@@ -377,7 +399,7 @@ const ProfilePage = () => {
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         {/* Profile Header Card */}
                         <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl shadow-2xl p-6 sm:p-8 mb-6 sm:mb-8 hover:bg-white/10 transition-all duration-500">
-                            <div className="flex flex-col lg:flex-row items-start lg:items-center gap-6 lg:gap-8">
+                            <div className="flex flex-col lg:flex-row items-center lg:items-center gap-6 lg:gap-8">
                                 {/* Avatar Section */}
                                 <div className="relative group mx-auto lg:mx-0">
                                     <div className="relative">

@@ -155,9 +155,9 @@ const AvatarDropdown = () => {
                         <div className="relative px-6 py-4 bg-gradient-to-br from-purple-50 via-indigo-50 to-purple-100 dark:from-purple-900/20 dark:via-indigo-900/20 dark:to-purple-800/20 border-b border-purple-200/50 dark:border-purple-800/50">
                             <div className="flex items-center space-x-4">
                                 <div className="relative">
-                                    {user.imageUrl ? (
+                                    {(currentUser?.profile?.image || user.imageUrl) ? (
                                         <img
-                                            src={user.imageUrl}
+                                            src={currentUser?.profile?.image || user.imageUrl}
                                             alt={userName}
                                             className="w-12 h-12 rounded-full object-cover ring-3 ring-purple-400/50 shadow-lg"
                                         />
