@@ -1,16 +1,17 @@
 #!/usr/bin/env bash
 
-echo "🚀 Starting Kenshi Webspace..."
+echo "Starting Kenshi Webspace..."
+echo "[Kenshin Command Activated!]"
 
-cd frontend
+cd Client
 npm run dev &
-FRONTEND_PID=$!
+Client_PID=$!
 
-cd ../backend
+cd ../Server
 npm run dev &
-BACKEND_PID=$!
+Main_Server_PID=$!
 
-echo "Frontend PID : $FRONTEND_PID"
-echo "Backend PID  : $BACKEND_PID"
+echo "Client PID : $Client_PID"
+echo "Main Server PID  : $Main_Server_PID"
 
 wait
