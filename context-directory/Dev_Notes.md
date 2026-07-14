@@ -3,6 +3,9 @@
 - pagination
 - third party services config and integration
 
+## System Design Change(PRIORITY!)
+- API Gateway
+
 ## Clerk user managemnt CRUD detailed audit-
 - checking the updation of user data in clerk dashboard and DB
 - checking other access privileges like email verification, password reset, etc

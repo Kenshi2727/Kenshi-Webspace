@@ -2,14 +2,8 @@ import { messaging } from "../services/firebase.js";
 import { renderALLFcmTokens } from './token.controller.js';
 
 
-export const multicast = async (req, res) => {
-    if (!req.body) {
-        return res.status(204).json({ message: "No Content Received!" });
-    }
-
-    console.log("Data received from Client:", req.body);
-
-    const { title, body, image, link } = req.body;
+export const testNotify = async (req, res) => {
+    console.log("Test notif hit!");
 
     try {
         // These registration tokens come from the client FCM SDKs.
@@ -17,13 +11,13 @@ export const multicast = async (req, res) => {
 
         const message = {
             notification: {
-                title,
-                body,
-                image,
+                title: 'Testing',
+                body: 'This is a test notification',
+                image: "https://www.pinkvilla.com/pics/500x500/1879722912_highschool-dxd-f_202401.jpg",
             },
             webpush: {
                 fcmOptions: {
-                    link,
+                    link: "/about",
                 }
             },
             tokens: registrationTokens,

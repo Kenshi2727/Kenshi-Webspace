@@ -3,6 +3,8 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import helmet from 'helmet';
 import notificationRoutes from './routes/notification.route.js';
+import tokenRoutes from './routes/token.route.js';
+import testRoutes from './routes/test.route.js'
 
 dotenv.config();
 
@@ -20,7 +22,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // routes
+app.use('/tokens', tokenRoutes);
 app.use('/notifications', notificationRoutes);
+app.use('/tests', testRoutes);
 
 // listening to server
 app.listen(port, () => {

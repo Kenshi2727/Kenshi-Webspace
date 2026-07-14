@@ -123,12 +123,25 @@ const deleteMedia = (data, token) => instance.delete('/media', {
 });
 
 
+
+// Second temp instance for services 
+const instance1 = axios.create({
+    baseURL: import.meta.env.VITE_BASE_URL_NOTIF_SERVICE,
+    // timeout: 60000,//60 seconds
+    headers: {
+        "Content-Type": "application/json",
+    }
+});
+
+
 // Service APIs
-const sendPublicFcmToken = (data) => instance.post('/services/fcm-token', data, {
+const sendPublicFcmToken = (data) => instance1.post('/tokens/fcm-token', data, {
     headers: {
         'fcm-service-type': 'public', // custom header to identify fcm service type
     }
 });
+
+const multicast = (data) => instance1.post('/notifications/multicast', data);
 
 export {
     pingServer,
@@ -150,6 +163,7 @@ export {
     updatePostBookmarks,
     getUserPosts,
     sendPublicFcmToken,
+    multicast,
 };
 
 

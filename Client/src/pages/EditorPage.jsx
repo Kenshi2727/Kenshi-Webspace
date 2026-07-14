@@ -65,6 +65,7 @@ import {
     uploadMedia,
     deleteMedia,
     updatePost,
+    multicast,
 } from "../services/GlobalApi";
 import toast from "react-hot-toast";
 import { useAuth } from "@clerk/clerk-react";
@@ -789,6 +790,15 @@ export default function EditorPage({ type }) {
         }
     };
 
+    const notifySubmit = async (data) => {
+        try {
+            await multicast(data);
+        } catch (error) {
+            console.log("Some error occured in notifySeubmit:", error);
+        }
+
+    }
+
     const handleSubmit = async () => {
         setLoading(true);
         if (!formValidate()) {
@@ -834,6 +844,12 @@ export default function EditorPage({ type }) {
                     localStorage.removeItem("draft");
                     localStorage.removeItem("lastSaved");
                     toast.success("Draft sent for review successfully !");
+                    notifySubmit({
+                        title: updatedFormData.title,
+                        body: updatedFormData.excerpt,
+                        image: updatedFormData.thumbnail,
+                        link: `${window.location.origin}/articles/${res.data.postId}`,
+                    });
                     copyToClipboard(
                         `${window.location.origin}/articles/${res.data.postId}`,
                     );
