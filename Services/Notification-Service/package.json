@@ -28,6 +28,7 @@
     "ngrok": "ngrok http http://localhost:5000"
   },
   "dependencies": {
+    "@kenshi/database": "*",
     "@sentry/node": "^10.34.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
