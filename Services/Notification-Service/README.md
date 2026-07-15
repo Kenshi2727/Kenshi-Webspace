@@ -3,6 +3,10 @@ Microservice for Kenshi Webspace to handle push notifs, emails and other smtp co
 
 ## System Design-
    <img src="src/public/System_Design_Kenshi-Webspace_Notif_Sys.png" />
+
+## Slack Notifaction Workflow
+   <img src="src/public/slack_sys_dgn.webp" />
+
 ## Plan-
 
 ```

@@ -18,6 +18,7 @@
 
 ## Configurations-
 - yaml for config management(github workflow)
+- eslint config
 
 ## Validation layer-
 - zod validation for all client and server side inputs
@@ -162,7 +163,7 @@ middleware that will check -> user id
                                   |--> web push npm package
                                   |--> author/topic specific notifications
 3. **Security-->Research Encryption Algorithms**
-4. geoip-lite and clerk---> for logs.csv
+4. geoip-lite/turfjs for Geospatial data and clerk---> for logs.csv
 5. tagging users --> react-mentions
 5. Draggable features using react-draggable/html draggable property
 6. Download blogs as pdf
