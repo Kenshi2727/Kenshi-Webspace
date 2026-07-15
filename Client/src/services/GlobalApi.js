@@ -13,7 +13,7 @@ const instance = axios.create({
 const pingServer = async () => {
     const startTime = Date.now();
     // retrying for 60 seconds
-    toast.loading("Waking up server, please wait...", { duration: 60000 });
+    toast.loading("Analysing network, please wait...", { duration: 60000 });
     while (Date.now() - startTime <= 60000) {
         try {
             const response = await instance.get('/ping');
