@@ -351,7 +351,7 @@ const CategoriesPage = () => {
                             <BookOpen className="mr-2 size-4" />
                             {countsLoading ? "Loading" : totalArticles} curated reads across {categories.length} category flags
                         </Badge>
-                        <h1 className="max-w-3xl text-4xl font-black leading-tight tracking-tight text-gray-900 sm:text-5xl lg:text-6xl dark:text-white">
+                        <h1 className="max-w-3xl text-4xl font-black leading-tight tracking-tight text-gray-50 sm:text-5xl lg:text-6xl dark:text-white">
                             Browse categories
                             <span className="block animate-gradient-x bg-gradient-to-r from-gray-50 to-pink-600 dark:from-pink-300 dark:to-pink-400 bg-clip-text text-transparent">
                                 with a sharper signal.

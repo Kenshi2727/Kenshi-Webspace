@@ -7,10 +7,10 @@ const instance = axios.create({
     headers: {
         "Content-Type": "application/json",
     },
-    onDownloadProgress: (progressEvent) => {
-        const downloadPercentage = Math.floor((progressEvent.loaded / progressEvent.total)) * 100
-        console.log("Axios Percentage=>", downloadPercentage);
-    }
+    // onDownloadProgress: (progressEvent) => {
+    //     const downloadPercentage = Math.floor((progressEvent.loaded / progressEvent.total)) * 100
+    //     console.log("Axios Percentage=>", downloadPercentage);
+    // }
 });
 
 // Pinging Server
