@@ -8,7 +8,7 @@ const instance = axios.create({
         "Content-Type": "application/json",
     },
     onDownloadProgress: (progressEvent) => {
-        const downloadPercentage = Math.floor((progressEvent.loaded / progressEvent.total) * 100)
+        const downloadPercentage = Math.floor((progressEvent.loaded / progressEvent.total)) * 100
         console.log("Axios Percentage=>", downloadPercentage);
     }
 });
