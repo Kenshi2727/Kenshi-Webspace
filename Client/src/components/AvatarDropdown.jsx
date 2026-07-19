@@ -13,7 +13,7 @@ const AvatarDropdown = () => {
     const { user } = useUser();
     const { signOut } = useClerk();
     const currentUser = useSelector(state => state.user);
-    console.log("FULL REDUX STATE 👉", currentUser);
+    // console.log("FULL REDUX STATE 👉", currentUser);
 
     // Close dropdown when clicking outside
     useEffect(() => {

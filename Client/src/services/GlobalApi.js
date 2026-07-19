@@ -6,6 +6,10 @@ const instance = axios.create({
     // timeout: 60000,//60 seconds
     headers: {
         "Content-Type": "application/json",
+    },
+    onDownloadProgress: (progressEvent) => {
+        const downloadPercentage = Math.floor((progressEvent.loaded / progressEvent.total) * 100)
+        console.log("Axios Percentage=>", downloadPercentage);
     }
 });
 
