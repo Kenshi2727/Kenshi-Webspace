@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { Routes, Route, useSearchParams } from 'react-router-dom';
+import { Routes, Route, useSearchParams, useLocation } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import ArticlesPage from './pages/ArticlesPage';
 import CategoriesPage from './pages/CategoriesPage';
@@ -48,6 +48,7 @@ function App() {
   const dispatch = useDispatch();
   const { userId, getToken: getAuthToken } = useAuth();
   const { theme } = useTheme();
+  const location = useLocation();
 
   useEffect(() => {
     if (params.get("toast") === "already-signed-in") {
@@ -105,8 +106,64 @@ function App() {
     } catch (error) {
       console.error("An error occurred while requesting notification permission:", error);
     }
-
   }, [])
+
+
+  // jotform embedding
+  useEffect(() => {
+    const locationSet = new Set(['/', '/categories', '/about']);
+    console.log("Current relative path:", locationSet.has(location.pathname), location.pathname);
+
+    if (locationSet.has(location.pathname)) {
+      const script = document.createElement("script");
+      script.src = "https://cdn.jotfor.ms/agent/embedjs/019f892ef9a8700088c8139d77a3f48f17a2/embed.js"
+      script.async = true;
+
+      script.onload = function () {
+        window.AgentInitializer.init({
+          agentRenderURL: import.meta.env.JOTFORM_AGENT_RENDER_URL,
+          rootId: import.meta.env.JOTFORM_ROOT_ID,
+          formID: import.meta.env.JOTFORM_FORM_ID,
+          contextID: import.meta.env.JOTFORM_CONTEXT_ID,
+          initialContext: "",
+          queryParams: ["skipWelcome=1", "maximizable=1"],
+          domain: "https://www.jotform.com",
+          isDraggable: false,
+          background: "linear-gradient(180deg, #4f46e5 0%, #9333ea 100%)",
+          chatBackgroundColor: (theme === "dark") ? "#000000" : "#ffffff",
+          buttonBackgroundColor: "#9013fe",
+          buttonIconColor: "#ffffff",
+          inputTextColor: "#600ea6",
+          variant: false,
+          customizations: {
+            "greeting": "Yes",
+            "greetingMessage": "Meoww! Wanna chat?",
+            "openByDefault": "No",
+            "pulse": "Yes",
+            "position": "left",
+            "autoOpenChatIn": "0",
+            "layout": "extended",
+            "size": "md",
+            "placeholder": "Meoww!",
+            "chatbotLayoutControls": "Yes",
+            "chatbotLayoutType": "overlay",
+            "selectedPosition": "right-bottom"
+          },
+          isVoice: false,
+          isVoiceWebCallEnabled: true
+        });
+      };
+
+      document.body.appendChild(script);
+
+      return () => {
+        if (window.AgentInitializer) {
+          console.log("Unmount intiated!");
+          window.AgentInitializer.unmount();
+        }
+      };
+    }
+  }, [location, theme]);
 
   // simulating error for Sentry testing
   // useEffect(() => {

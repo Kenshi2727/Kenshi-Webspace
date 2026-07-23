@@ -105,11 +105,7 @@ const HomePage = () => {
         }
 
         fetchFeaturedPosts();
-
     }, []);
-
-
-
 
     async function handleConfirm() {
         try {
