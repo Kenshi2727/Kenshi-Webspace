@@ -30,3 +30,6 @@ Thumbs.db
 .env.production.local
 content_image_implementation_strategy.md
 editor_plan.txt
+
+.vercel
+.env*

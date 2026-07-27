@@ -111,59 +111,19 @@ function App() {
 
   // jotform embedding
   useEffect(() => {
-    const locationSet = new Set(['/', '/categories', '/about']);
-    console.log("Current relative path:", locationSet.has(location.pathname), location.pathname);
+    // const locationSet = new Set(['/', '/categories', '/about']);
+    // console.log("Current relative path:", locationSet.has(location.pathname), location.pathname);
 
-    if (locationSet.has(location.pathname)) {
-      const script = document.createElement("script");
-      script.src = "https://cdn.jotfor.ms/agent/embedjs/019f892ef9a8700088c8139d77a3f48f17a2/embed.js"
-      script.async = true;
+    const script = document.createElement("script");
+    script.src = import.meta.env.VITE_JOTFORM_AGENT_RENDER_URL;
+    script.async = true;
+    document.body.appendChild(script);
 
-      script.onload = function () {
-        window.AgentInitializer.init({
-          agentRenderURL: import.meta.env.JOTFORM_AGENT_RENDER_URL,
-          rootId: import.meta.env.JOTFORM_ROOT_ID,
-          formID: import.meta.env.JOTFORM_FORM_ID,
-          contextID: import.meta.env.JOTFORM_CONTEXT_ID,
-          initialContext: "",
-          queryParams: ["skipWelcome=1", "maximizable=1"],
-          domain: "https://www.jotform.com",
-          isDraggable: false,
-          background: "linear-gradient(180deg, #4f46e5 0%, #9333ea 100%)",
-          chatBackgroundColor: (theme === "dark") ? "#000000" : "#ffffff",
-          buttonBackgroundColor: "#9013fe",
-          buttonIconColor: "#ffffff",
-          inputTextColor: "#600ea6",
-          variant: false,
-          customizations: {
-            "greeting": "Yes",
-            "greetingMessage": "Meoww! Wanna chat?",
-            "openByDefault": "No",
-            "pulse": "Yes",
-            "position": "left",
-            "autoOpenChatIn": "0",
-            "layout": "extended",
-            "size": "md",
-            "placeholder": "Meoww!",
-            "chatbotLayoutControls": "Yes",
-            "chatbotLayoutType": "overlay",
-            "selectedPosition": "right-bottom"
-          },
-          isVoice: false,
-          isVoiceWebCallEnabled: true
-        });
-      };
-
-      document.body.appendChild(script);
-
-      return () => {
-        if (window.AgentInitializer) {
-          console.log("Unmount intiated!");
-          window.AgentInitializer.unmount();
-        }
-      };
+    return () => {
+      document.body.removeChild(script);
     }
-  }, [location, theme]);
+
+  }, []);
 
   // simulating error for Sentry testing
   // useEffect(() => {
