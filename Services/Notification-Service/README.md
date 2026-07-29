@@ -1,6 +1,8 @@
 # Kenshi-Webspace-Notif-Microservice
 Microservice for Kenshi Webspace to handle push notifs, emails and other smtp communications.
 
+Buf fix fcm link for foreground notif ignorance-->[click here!](https://firebase.google.com/docs/cloud-messaging/android/receive-messages#sample-receive)
+
 ## System Design-
    <img src="src/public/System_Design_Kenshi-Webspace_Notif_Sys.png" />
 

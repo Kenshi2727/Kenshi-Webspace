@@ -1,3 +1,28 @@
+## New idea-
+- tablet stylus canavas addition 
+[Link](https://openprocessing.org/@msawired/1907365)
+
+```js
+	var p = 0;
+
+	function setup() {
+		createCanvas(windowWidth, windowHeight);
+		background(0);
+		this.addEventListener('pointermove', function(ev) {
+			p = (ev.pressure);
+		}, false);
+		this.canvas.style["touch-action"] = "none"; //doesn't seem to help
+		this.canvas.style["user-select"] = "none"; //neither this one
+		fill('white');
+		noStroke();
+		frameRate(120);
+	}
+
+	function draw() {
+		circle(mouseX, mouseY, 20*p+3);
+	}
+```
+
 ## Quickies-
 - author image 
 - pagination
