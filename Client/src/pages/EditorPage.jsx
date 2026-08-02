@@ -730,7 +730,7 @@ export default function EditorPage({ type }) {
                     newFormattedContext = selectedText; // Toggle OFF
                     newEndPos = newStartPos + selectedText.length;
                 } else {
-                    newFormattedContext = `<${requestedTag}>${selectedText}</${requestedTag}>`; // REPLACE
+                    newFormattedContext = `<${requestedTag}><br/>${selectedText}<br/></${requestedTag}>`; // REPLACE
                     newEndPos = newStartPos + newFormattedContext.length;
                 }
                 handleInputChange("content", newTextBefore + newFormattedContext + textAfterSelection);

@@ -175,7 +175,7 @@ export default function MarkdownRenderer({ content = '', components }) {
         ),
 
         info: ({ children }) => (
-            <div className="bg-yellow-300/50 p-2 rounded w-fit">
+            <div className="bg-yellow-300/50 p-2 rounded w-fit my-2">
                 💡{children}
             </div>
         ),

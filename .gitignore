@@ -1,6 +1,7 @@
 # Local files
 PRIVATE.TXT
 content_image_implementation_strategy.TXT
+.turbo
 
 # Logs
 logs

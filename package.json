@@ -7,5 +7,14 @@
     "Server",
     "Database",
     "Services/*"
-  ]
+  ],
+  "devDependencies": {
+    "turbo": "^2.10.8"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "npm",
+      "version": "10.9.2"
+    }
+  }
 }
