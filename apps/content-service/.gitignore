@@ -1,6 +1,9 @@
 # Server secrets
 server_secrets/
 
+# Prisma
+/generated/prisma
+
 # Logs
 logs
 *.log
