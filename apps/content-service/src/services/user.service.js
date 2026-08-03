@@ -1,7 +1,7 @@
-import { clerkClient } from "@clerk/express";
 import { Webhook } from "svix";
 import dotenv from "dotenv";
 import * as repo from "../repositories/user.repository.js";
+import * as clerkService from "./clerk.service.js";
 
 dotenv.config();
 
@@ -71,7 +71,6 @@ const getUser = async (req, res) => {
     }
 }
 
-// start here
 const deleteUser = async (req, res) => {
     console.log("User deletion initiated");
     try {
@@ -85,7 +84,11 @@ const deleteUser = async (req, res) => {
             };
         }
 
-        const response = await clerkClient.users.deleteUser(userId);
+        const response = await clerkService.deleteClerkUserById(userId);
+
+        if (!response) {
+            throw new Error("Failed to delete user from Clerk API, response was null or undefined");
+        }
         console.log("User deleted:", response);
         return {
             status: 200,
@@ -106,9 +109,10 @@ const deleteUserWebhook = async (req, res, evt, id) => {
     try {
         console.log("User ID to delete:", id);
         //deleting user from db
-        await prisma.user.delete({
-            where: { id }
-        });
+        const response = await repo.deleteUserById(id);
+        if (!response) {
+            throw new Error("Record not found or failed to delete user from database, response was null or undefined");
+        }
         console.log("User deleted from database with ID:", id);
         return {
             status: 200,

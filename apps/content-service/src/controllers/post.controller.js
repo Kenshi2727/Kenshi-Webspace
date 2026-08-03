@@ -1,6 +1,7 @@
 import prisma from "@kenshi/database/prisma.client.js";
 import { setServiceRef, deleteMediaMetaData, deleteServiceRef, deleteMedia, getPublicIds } from "./media.controller.js";
 import { parseDataTypes } from "../lib/typeParser.js";
+import * as services from "../services/user.service.js";
 
 // Note-
 /* Reference 1 -
@@ -19,8 +20,6 @@ This is called a Mass Assignment vulnerability.
 // { [key]: 1 }  // becomes { increment: 1 }
 // We use [] here so the key can be either "increment" or "decrement" dynamically.
 
-
-// Helper functions/ non-exported functions
 const countLike = async (postId, actionId, operation) => {
     try {
         const post = await prisma.post.update({
@@ -83,7 +82,7 @@ const countBookmark = async (postId, actionId, operation) => {
     }
 }
 
-export const createNewPost = async (req, res) => {
+const createNewPost = async (req, res) => {
     console.log("Request body:", req.body);
     console.log("Creating a new post for author ID:", req.params.authorId);
     const { title, excerpt, category, thumbnail, coverImage, content, readTime, thumb_id, cover_id, referenceStatus } = req.body;
@@ -158,7 +157,7 @@ export const createNewPost = async (req, res) => {
     }
 }
 
-export const getSinglePost = async (req, res) => {
+const getSinglePost = async (req, res) => {
     const { postId } = req.params;
     console.log("Fetching post with ID:", postId);
 
@@ -185,7 +184,7 @@ export const getSinglePost = async (req, res) => {
     }
 }
 
-export const getAllPosts = async (req, res, next) => {
+const getAllPosts = async (req, res, next) => {
     console.log("Fetching all posts");
     try {
         if (req.query.isFeatured === 'true') {
@@ -226,7 +225,7 @@ export const getAllPosts = async (req, res, next) => {
     }
 }
 
-export const getFeaturedPosts = async (req, res) => {
+const getFeaturedPosts = async (req, res) => {
     console.log("Fetching featured posts");
     try {
         const featuredPosts = await prisma.post.findMany({
@@ -241,7 +240,7 @@ export const getFeaturedPosts = async (req, res) => {
     }
 }
 
-export const checkCategoryPosts = async (req, res) => {
+const checkCategoryPosts = async (req, res) => {
     const { categoryName } = req.params;
     const decodedCategory = decodeURIComponent(categoryName || "").trim();
     console.log("Checking posts for category:", decodedCategory);
@@ -272,7 +271,7 @@ export const checkCategoryPosts = async (req, res) => {
     }
 }
 
-export const getCategoryPostCounts = async (req, res) => {
+const getCategoryPostCounts = async (req, res) => {
     console.log("Fetching post counts by category");
 
     try {
@@ -296,7 +295,7 @@ export const getCategoryPostCounts = async (req, res) => {
     }
 }
 
-export const getUserPosts = async (req, res) => {
+const getUserPosts = async (req, res) => {
     try {
         const { userId } = req.params;
         console.log("Fetch request for user with ID", userId);
@@ -331,7 +330,7 @@ export const getUserPosts = async (req, res) => {
     }
 }
 
-export const deletePost = async (req, res) => {
+const deletePost = async (req, res) => {
     const { postId } = req.params;
     console.log("Deleting post with ID:", postId);
 
@@ -391,7 +390,7 @@ export const deletePost = async (req, res) => {
     }
 }
 
-export const updatePost = async (req, res) => {
+const updatePost = async (req, res) => {
     console.log("Update post request body:", req.body);
 
     try {
@@ -525,7 +524,7 @@ export const updatePost = async (req, res) => {
     }
 }
 
-export const updatePostLikes = async (req, res) => {
+const updatePostLikes = async (req, res) => {
     try {
         const { postId } = req.params;
         const { userId } = req.body;
@@ -587,7 +586,7 @@ export const updatePostLikes = async (req, res) => {
     }
 }
 
-export const countView = async (req, res) => {
+const countView = async (req, res) => {
     try {
         const { postId } = req.params;
         //todo:implementing unique views using IP tracking or user authentication
@@ -610,7 +609,7 @@ export const countView = async (req, res) => {
     }
 }
 
-export const updatePostBookmarks = async (req, res) => {
+const updatePostBookmarks = async (req, res) => {
     try {
         const { postId } = req.params;
         const { userId } = req.body;
@@ -671,3 +670,19 @@ export const updatePostBookmarks = async (req, res) => {
     }
 }
 
+export {
+    countLike,
+    countBookmark,
+    createNewPost,
+    getSinglePost,
+    getAllPosts,
+    getFeaturedPosts,
+    checkCategoryPosts,
+    getCategoryPostCounts,
+    getUserPosts,
+    deletePost,
+    updatePost,
+    updatePostLikes,
+    countView,
+    updatePostBookmarks
+}

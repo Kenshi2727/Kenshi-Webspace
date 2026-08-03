@@ -1,15 +1,15 @@
 import express from 'express';
-import { handleWebhook, deleteUser, getUser } from '../controllers/user.controller.js';
+import * as controller from '../controllers/user.controller.js';
 import { protectRoute } from '../middlewares/auth.middleware.js';
 
 const router = express.Router();
 
 //NOTE-CLERK WEBHOOKS ALWAYS SEND POST REQUESTS
-router.post('/webhook', handleWebhook);
+router.post('/webhook', controller.handleWebhook);
 
 // express.json() used in other routes 
-router.delete('/delete', express.json(), protectRoute, deleteUser);
+router.delete('/delete', express.json(), protectRoute, controller.deleteUser);
 
-router.get('/:userId', protectRoute, getUser);
+router.get('/:userId', protectRoute, controller.getUser);
 
 export default router;
