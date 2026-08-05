@@ -1,6 +1,7 @@
 import prisma from "@kenshi/database/prisma.client.js";
 import { setServiceRef, deleteMediaMetaData, deleteServiceRef, deleteMedia, getPublicIds } from "./media.controller.js";
-import { parseDataTypes } from "../lib/typeParser.js";
+import { parseDataTypes } from "@kenshi/shared";
+import * as repo from "../repositories/post.repository.js";
 
 // Note-
 /* Reference 1 -
@@ -83,10 +84,21 @@ const countBookmark = async (postId, actionId, operation) => {
     }
 }
 
-export const createNewPost = async (req, res) => {
+const createNewPost = async (req, res) => {
     console.log("Request body:", req.body);
     console.log("Creating a new post for author ID:", req.params.authorId);
-    const { title, excerpt, category, thumbnail, coverImage, content, readTime, thumb_id, cover_id, referenceStatus } = req.body;
+    const {
+        title,
+        excerpt,
+        category,
+        thumbnail,
+        coverImage,
+        content,
+        readTime,
+        thumb_id,
+        cover_id,
+        referenceStatus
+    } = req.body;
 
     try {
         const newPost = await prisma.post.create({
@@ -148,17 +160,22 @@ export const createNewPost = async (req, res) => {
 
         console.log("Post created successfully for author ID:", req.params.authorId);
 
-        return res.status(201).json({
+        return {
+            status: "201",
             message: "New post created!",
             postId: newPost.id
-        });
+        };
     } catch (error) {
         console.error("Error creating post:", error);
-        return res.status(500).json({ error: "Failed to create post" });
+        return {
+            status: "500",
+            message: "Internal server error while creating post",
+            error: error.message
+        };
     }
 }
 
-export const getSinglePost = async (req, res) => {
+const getSinglePost = async (req, res) => {
     const { postId } = req.params;
     console.log("Fetching post with ID:", postId);
 
@@ -174,59 +191,65 @@ export const getSinglePost = async (req, res) => {
         });
 
         if (!post) {
-            return res.status(404).json({ error: "Post not found !" });
+            return {
+                status: "404",
+                error: "Post not found !"
+            };
         }
 
         console.log("Post fetched successfully:", post);
-        return res.status(200).json(post);
+        return {
+            status: "200",
+            message: "Post fetched successfully",
+            post
+        };
     } catch (error) {
         console.error("Error fetching post:", error);
-        return res.status(500).json({ error: "Failed to fetch post" });
+        return {
+            status: "500",
+            error: "Failed to fetch post"
+        };
     }
 }
 
-export const getAllPosts = async (req, res, next) => {
+const getAllPosts = async (req, res, next) => {
     console.log("Fetching all posts");
     try {
-        if (req.query.isFeatured === 'true') {
-            console.log("Request for featured posts");
-            return next();
-        }
+        const posts = await prisma.post.findMany({
+            orderBy: {
+                createdAt: 'desc'
+            },
+            include: {
+                PostActions: true,
+            }
+        });
 
-        if (req.query.populate === '*') {
-            const posts = await prisma.post.findMany({
-                orderBy: {
-                    createdAt: 'desc'
-                },
-                include: {
-                    PostActions: true,
-                }
-            });
+        console.log(`Fetched ${posts.length} posts`);
+        return {
+            status: "200",
+            message: "All posts fetched successfully",
+            params: req.query,
+            posts
+        };
 
-            console.log(`Fetched ${posts.length} posts`);
-            return res.status(200).json({
-                params: req.query,
-                posts
-            });
+        // Simulating network delay for testing loading states
+        // setTimeout(() => {
+        //     return res.status(200).json({
+        //         params: req.query,
+        //         posts
+        //     });
+        // }, 2000);
 
-            // Simulating network delay for testing loading states
-            // setTimeout(() => {
-            //     return res.status(200).json({
-            //         params: req.query,
-            //         posts
-            //     });
-            // }, 2000);
-        }
-        else {
-            return res.status(400).json({ error: "Invalid query parameter" });
-        }
     } catch (error) {
         console.error("Error fetching all posts:", error);
-        return res.status(500).json({ error: "Failed to fetch all posts" });
+        return {
+            status: "500",
+            error: "Failed to fetch all posts"
+        };
     }
 }
 
-export const getFeaturedPosts = async (req, res) => {
+const getFeaturedPosts = async (req, res) => {
     console.log("Fetching featured posts");
     try {
         const featuredPosts = await prisma.post.findMany({
@@ -234,22 +257,21 @@ export const getFeaturedPosts = async (req, res) => {
                 featured: true
             }
         });
-        return res.status(200).json({ message: "Featured posts fetched successfully", featuredPosts });
+        return {
+            status: "200",
+            message: "Featured posts fetched successfully",
+            featuredPosts
+        };
     } catch (error) {
         console.error("Error fetching featured posts:", error);
-        return res.status(500).json({ error: "Failed to fetch featured posts" });
+        return {
+            status: "500",
+            error: "Failed to fetch featured posts"
+        };
     }
 }
 
-export const checkCategoryPosts = async (req, res) => {
-    const { categoryName } = req.params;
-    const decodedCategory = decodeURIComponent(categoryName || "").trim();
-    console.log("Checking posts for category:", decodedCategory);
-
-    if (!decodedCategory) {
-        return res.status(400).json({ error: "Category name is required" });
-    }
-
+const checkCategoryPosts = async (req, res) => {
     try {
         const count = await prisma.post.count({
             where: {
@@ -261,18 +283,23 @@ export const checkCategoryPosts = async (req, res) => {
         });
 
         console.log(`Found ${count} posts for category:`, decodedCategory);
-        return res.status(200).json({
+        return {
+            status: "200",
+            message: "Category post count fetched successfully",
             category: decodedCategory,
             exists: count > 0,
             count,
-        });
+        };
     } catch (error) {
         console.error("Error checking category posts:", error);
-        return res.status(500).json({ error: "Failed to check category posts" });
+        return {
+            status: "500",
+            error: "Failed to check category posts"
+        };
     }
 }
 
-export const getCategoryPostCounts = async (req, res) => {
+const getCategoryPostCounts = async (req, res) => {
     console.log("Fetching post counts by category");
 
     try {
@@ -289,14 +316,21 @@ export const getCategoryPostCounts = async (req, res) => {
             return categoryCounts;
         }, {});
 
-        return res.status(200).json({ counts });
+        return {
+            status: "200",
+            message: "Category post counts fetched successfully",
+            counts
+        };
     } catch (error) {
         console.error("Error fetching category post counts:", error);
-        return res.status(500).json({ error: "Failed to fetch category post counts" });
+        return {
+            status: "500",
+            error: "Failed to fetch category post counts"
+        };
     }
 }
 
-export const getUserPosts = async (req, res) => {
+const getUserPosts = async (req, res) => {
     try {
         const { userId } = req.params;
         console.log("Fetch request for user with ID", userId);
@@ -323,15 +357,30 @@ export const getUserPosts = async (req, res) => {
             }
         });
 
+        if (!posts || posts.length === 0) {
+            console.log("No posts found for user with ID:", userId);
+            return {
+                status: "404",
+                error: "No posts found for this user",
+            };
+        }
+
         console.log("Posts fetched successully:", posts);
-        return res.status(200).json(posts);
+        return {
+            status: "200",
+            message: "Posts fetched successfully",
+            posts
+        };
     } catch (error) {
         console.error("Error fetching posts for user:", error);
-        return res.status(500).json({ error: "Failed to fetch posts of user" });
+        return {
+            status: "500",
+            error: "Failed to fetch posts of user"
+        };
     }
 }
 
-export const deletePost = async (req, res) => {
+const deletePost = async (req, res) => {
     const { postId } = req.params;
     console.log("Deleting post with ID:", postId);
 
@@ -384,14 +433,20 @@ export const deletePost = async (req, res) => {
         });
         console.log("Post deleted successfully:", deletedPost);
 
-        return res.status(200).json({ message: "Post deleted successfully" });
+        return {
+            status: "200",
+            message: "Post deleted successfully"
+        };
     } catch (error) {
         console.error("Error deleting post:", error);
-        return res.status(500).json({ error: "Failed to delete post" });
+        return {
+            status: "500",
+            error: "Failed to delete post"
+        };
     }
 }
 
-export const updatePost = async (req, res) => {
+const updatePost = async (req, res) => {
     console.log("Update post request body:", req.body);
 
     try {
@@ -402,7 +457,9 @@ export const updatePost = async (req, res) => {
             console.log("Service reference deletion requested(del_req request)");
             const deletedServiceRef = await deleteServiceRef(postId, prisma.ServiceType.POST);
             if (deletedServiceRef === null) {
+                // silent error 
                 console.error("Failed to delete service reference");
+                // todo: implemnt logger to log this error for further investigation
             }
             console.log("Service reference deleted:", deletedServiceRef);
         }
@@ -518,14 +575,20 @@ export const updatePost = async (req, res) => {
             data: updatedData
         });
         console.log("Post updated successfully:", updatedPost);
-        return res.status(200).json({ message: "Post updated successfully" });
+        return {
+            status: "200",
+            message: "Post updated successfully"
+        };
     } catch (error) {
         console.error("Error updating post:", error);
-        return res.status(500).json({ error: "Failed to update post" });
+        return {
+            status: "500",
+            error: "Failed to update post"
+        };
     }
 }
 
-export const updatePostLikes = async (req, res) => {
+const updatePostLikes = async (req, res) => {
     try {
         const { postId } = req.params;
         const { userId } = req.body;
@@ -580,14 +643,20 @@ export const updatePostLikes = async (req, res) => {
             }
             console.log("Post succesfully updated with like count:", postLikeUpdate);
         }
-        return res.status(200).json({ message: "Post like status updated successfully" });
+        return {
+            status: "200",
+            message: "Post like status updated successfully"
+        };
     } catch (error) {
         console.error("Error updating post likes:", error);
-        return res.status(500).json({ error: "Failed to update post likes" });
+        return {
+            status: "500",
+            error: "Failed to update post likes"
+        };
     }
 }
 
-export const countView = async (req, res) => {
+const countView = async (req, res) => {
     try {
         const { postId } = req.params;
         //todo:implementing unique views using IP tracking or user authentication
@@ -600,17 +669,21 @@ export const countView = async (req, res) => {
             }
         });
         console.log("View count incremented for post ID:", postId);
-        return res.status(200).json({
+        return {
+            status: "200",
             message: "View count updated successfully",
             viewCount: post.views
-        });
+        };
     } catch (error) {
         console.log("Error updating view count for post Id", postId);
-        return res.status(500).json({ error: "Failed to update view count" });
+        return {
+            status: "500",
+            error: "Failed to update view count"
+        };
     }
 }
 
-export const updatePostBookmarks = async (req, res) => {
+const updatePostBookmarks = async (req, res) => {
     try {
         const { postId } = req.params;
         const { userId } = req.body;
@@ -664,10 +737,33 @@ export const updatePostBookmarks = async (req, res) => {
             }
             console.log("Post succesfully updated with bookmark count:", postBookmarkUpdate);
         }
-        return res.status(200).json({ message: "Post bookmark status updated successfully" });
+        return {
+            status: "200",
+            message: "Post bookmark status updated successfully"
+        };
     } catch (error) {
         console.error("Error updating post bookmarks:", error);
-        return res.status(500).json({ error: "Failed to update post bookmarks" });
+        return {
+            status: "500",
+            error: "Failed to update post bookmarks"
+        };
     }
+}
+
+export {
+    countLike,
+    countBookmark,
+    createNewPost,
+    getSinglePost,
+    getAllPosts,
+    getFeaturedPosts,
+    checkCategoryPosts,
+    getCategoryPostCounts,
+    getUserPosts,
+    deletePost,
+    updatePost,
+    updatePostLikes,
+    countView,
+    updatePostBookmarks
 }
 
