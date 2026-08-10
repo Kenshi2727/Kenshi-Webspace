@@ -1,7 +1,7 @@
 import prisma from "@kenshi/database/prisma.client.js";
-import { setServiceRef, deleteMediaMetaData, deleteServiceRef, deleteMedia, getPublicIds } from "./media.controller.js";
 import { parseDataTypes } from "@kenshi/shared";
 import * as repo from "../repositories/post.repository.js";
+import * as mediaService from "./media.service.js";
 
 // Note-
 /* Reference 1 -
@@ -12,73 +12,89 @@ you don’t actually want users to control (e.g., role, isAdmin, passwordHash), 
 This is called a Mass Assignment vulnerability.
  */
 
-/*Reference 2 */
-// The [] syntax is a "computed property name" in JavaScript.
-// Whatever expression is inside [] becomes the actual object key.
-// Example:
-// const key = "increment";
-// { [key]: 1 }  // becomes { increment: 1 }
-// We use [] here so the key can be either "increment" or "decrement" dynamically.
-
 
 // Helper functions/ non-exported functions
-const countLike = async (postId, actionId, operation) => {
+const countLike = async (postId, action, operation) => {
     try {
-        const post = await prisma.post.update({
-            where: { id: postId },
-            data: {
-                // refer to Reference 2
-                likes: {
-                    [operation === "increment" ? "increment" : "decrement"]: 1
-                }
-            }
-        });
+        const post = await repo.incrementPostField(postId, "likes", operation);
 
         console.log(`Like ${operation}ed to post with ID:`, postId);
         return post;
     } catch (error) {
         console.error(`Error ${operation}ing like to post:`, error);
 
-        // setting back like to previous state
-        try {
-            const likeReset = await prisma.postActions.update({
-                where: { id: actionId },
-                data: { likeStatus: false }
-            });
-            console.log("Like status reset due to error:", likeReset);
-        } catch (error) {
-            console.error("Error resetting like status:", error);
+        if (action?.id) {
+            try {
+                const likeReset = await repo.updatePostActionById(action.id, {
+                    likeStatus: false
+                });
+
+                if (likeReset === null) {
+                    throw new Error("Like status received null from repo.updatePostActionById");
+                }
+
+                console.log("Like status reset due to error:", likeReset);
+            } catch (error) {
+                console.error("Error resetting like status:", error);
+            }
+        } else if (action?.userId && action?.postId) {
+            try {
+                const likeReset = await repo.updatePostAction(action.userId, action.postId, {
+                    likeStatus: false
+                });
+
+                if (likeReset === null) {
+                    throw new Error("Like status received null from repo.updatePostAction also!");
+                }
+
+                console.log("Like status reset due to error:", likeReset);
+                console.warn("Previous attempt to reset like status by action.id failed, so tried to reset by userId and postId");
+            } catch (error) {
+                console.error("Error resetting like status:", error);
+            }
         }
         return null;
     }
 }
 
-const countBookmark = async (postId, actionId, operation) => {
+const countBookmark = async (postId, action, operation) => {
     try {
-        const post = await prisma.post.update({
-            where: { id: postId },
-            data: {
-                // refer to Reference 2
-                bookmarks: {
-                    [operation === "increment" ? "increment" : "decrement"]: 1
-                }
-            }
-        });
+        const post = await repo.incrementPostField(postId, "bookmarks", operation);
 
         console.log(`Bookmark ${operation}ed to post with ID:`, postId);
         return post;
     } catch (error) {
         console.error(`Error ${operation}ing bookmark to post:`, error);
 
-        // setting back bookmark to previous state
-        try {
-            const bookmarkReset = await prisma.postActions.update({
-                where: { id: actionId },
-                data: { bookmarkStatus: false }
-            });
-            console.log("Bookmark status reset due to error:", bookmarkReset);
-        } catch (error) {
-            console.error("Error resetting bookmark status:", error);
+        if (action?.id) {
+            try {
+                const bookmarkReset = await repo.updatePostActionById(action.id, {
+                    bookmarkStatus: false
+                });
+
+                if (bookmarkReset === null) {
+                    throw new Error("Bookmark status received null from repo.updatePostActionById");
+                }
+
+                console.log("Bookmark status reset due to error:", bookmarkReset);
+            } catch (error) {
+                console.error("Error resetting bookmark status:", error);
+            }
+        } else if (action?.userId && action?.postId) {
+            try {
+                const bookmarkReset = await repo.updatePostAction(action.userId, action.postId, {
+                    bookmarkStatus: false
+                });
+
+                if (bookmarkReset === null) {
+                    throw new Error("Bookmark status received null from repo.updatePostAction also!");
+                }
+
+                console.log("Bookmark status reset due to error:", bookmarkReset);
+                console.warn("Previous attempt to reset bookmark status by action.id failed, so tried to reset by userId and postId");
+            } catch (error) {
+                console.error("Error resetting bookmark status:", error);
+            }
         }
         return null;
     }
@@ -87,6 +103,7 @@ const countBookmark = async (postId, actionId, operation) => {
 const createNewPost = async (req, res) => {
     console.log("Request body:", req.body);
     console.log("Creating a new post for author ID:", req.params.authorId);
+
     const {
         title,
         excerpt,
@@ -101,59 +118,50 @@ const createNewPost = async (req, res) => {
     } = req.body;
 
     try {
-        const newPost = await prisma.post.create({
-            data: {
-                title,
-                excerpt,
-                category,
-                thumbnail,
-                coverImage,
-                content,
-                readTime: Number(readTime),
-                authorId: req.params.authorId,
-                referenceStatus: Boolean(referenceStatus)
-            }
+        const newPost = await repo.createPost({
+            title,
+            excerpt,
+            category,
+            thumbnail,
+            coverImage,
+            content,
+            readTime: Number(readTime),
+            authorId: req.params.authorId,
+            referenceStatus: Boolean(referenceStatus)
         });
 
-        if (referenceStatus) {
+        if (!newPost) {
+            throw new Error("Failed to create post");
+        }
 
-            // setting service reference for media
-            const serviceRef = await setServiceRef(newPost.id, prisma.ServiceType.POST);
+        if (referenceStatus) {
+            const serviceRef = await mediaService.setServiceRef(newPost.id, prisma.ServiceType.POST);
             console.log("Service reference created for media:", serviceRef);
+
             if (serviceRef) {
                 if (thumb_id) {
-                    // update media meta data
-                    const updatedThumbMetaData = await prisma.mediaMetaData.update({
-                        where: {
-                            publicId: thumb_id
-                        },
-                        data: {
-                            serviceRefId: serviceRef.id
-                        }
-                    });
+                    const updatedThumbMetaData = await mediaService.updateMediaMetaDataServiceRef(thumb_id, serviceRef.id);
                     console.log("Thumbnail metadata updated with serviceRefId:", updatedThumbMetaData);
-                }
 
+                    if (updatedThumbMetaData === null) {
+                        throw new Error("Failed to update thumbnail metadata with serviceRefId");
+                    }
+                }
                 if (cover_id) {
-                    // update media meta data
-                    const updatedCoverMetaData = await prisma.mediaMetaData.update({
-                        where: {
-                            publicId: cover_id
-                        },
-                        data: {
-                            serviceRefId: serviceRef.id
-                        }
-                    });
+                    const updatedCoverMetaData = await mediaService.updateMediaMetaDataServiceRef(cover_id, serviceRef.id);
                     console.log("Cover image metadata updated with serviceRefId:", updatedCoverMetaData);
+                    if (updatedCoverMetaData === null) {
+                        throw new Error("Failed to update cover image metadata with serviceRefId");
+                    }
                 }
-            }
-            else {
-                console.log("Service Refrence creation failed! Deleting post...");
+            } else {
+                console.log("Service Reference creation failed! Deleting post...");
+                const deletedPost = await repo.deletePostById(newPost.id);
 
-                const deletedPost = await prisma.post.delete({
-                    where: { id: newPost.id }
-                });
-                console.log("Post deleted successfully:", deletedPost);
+                if (!deletedPost) {
+                    throw new Error("Failed to delete post after service reference creation failure");
+                }
+
                 throw new Error("Service reference is null");
             }
         }
@@ -180,15 +188,7 @@ const getSinglePost = async (req, res) => {
     console.log("Fetching post with ID:", postId);
 
     try {
-        const post = await prisma.post.findUnique({
-            where: {
-                id: postId
-            },
-            include: {
-                author: true,
-                PostActions: true,
-            },
-        });
+        const post = await repo.getPostById(postId);
 
         if (!post) {
             return {
@@ -215,19 +215,16 @@ const getSinglePost = async (req, res) => {
 const getAllPosts = async (req, res, next) => {
     console.log("Fetching all posts");
     try {
-        const posts = await prisma.post.findMany({
-            orderBy: {
-                createdAt: 'desc'
-            },
-            include: {
-                PostActions: true,
-            }
-        });
+        const posts = await repo.getAllPosts();
+        console.log(`Fetched ${posts?.length ?? 0} posts`);
 
-        console.log(`Fetched ${posts.length} posts`);
+        if (posts === null) {
+            throw new Error("Failed to fetch posts from repository");
+        }
+
         return {
             status: "200",
-            message: "All posts fetched successfully",
+            message: posts && posts.length > 0 ? "All posts fetched successfully" : "No posts found",
             params: req.query,
             posts
         };
@@ -252,11 +249,12 @@ const getAllPosts = async (req, res, next) => {
 const getFeaturedPosts = async (req, res) => {
     console.log("Fetching featured posts");
     try {
-        const featuredPosts = await prisma.post.findMany({
-            where: {
-                featured: true
-            }
-        });
+        const featuredPosts = await repo.getFeaturedPosts();
+
+        if (featuredPosts === null) {
+            throw new Error("Failed to fetch featured posts from repository");
+        }
+
         return {
             status: "200",
             message: "Featured posts fetched successfully",
@@ -271,18 +269,15 @@ const getFeaturedPosts = async (req, res) => {
     }
 }
 
-const checkCategoryPosts = async (req, res) => {
+const checkCategoryPosts = async (req, res, next, category) => {
     try {
-        const count = await prisma.post.count({
-            where: {
-                category: {
-                    equals: decodedCategory,
-                    mode: "insensitive",
-                },
-            },
-        });
+        const count = await repo.countPostsByCategory(category);
 
-        console.log(`Found ${count} posts for category:`, decodedCategory);
+        if (count === null) {
+            throw new Error("Failed to count posts by category");
+        }
+
+        console.log(`Found ${count} posts for category:`, category);
         return {
             status: "200",
             message: "Category post count fetched successfully",
@@ -303,12 +298,11 @@ const getCategoryPostCounts = async (req, res) => {
     console.log("Fetching post counts by category");
 
     try {
-        const groupedCounts = await prisma.post.groupBy({
-            by: ["category"],
-            _count: {
-                _all: true,
-            },
-        });
+        const groupedCounts = await repo.getCategoryPostCounts();
+
+        if (groupedCounts === null) {
+            throw new Error("Failed to fetch category post counts from repository");
+        }
 
         const counts = groupedCounts.reduce((categoryCounts, categoryGroup) => {
             const key = categoryGroup.category.trim().toLowerCase();
@@ -334,28 +328,7 @@ const getUserPosts = async (req, res) => {
     try {
         const { userId } = req.params;
         console.log("Fetch request for user with ID", userId);
-        const posts = await prisma.post.findMany({
-            where: {
-                authorId: userId
-            },
-            select: {
-                id: true,
-                title: true,
-                excerpt: true,
-                category: true,
-                readTime: true,
-                thumbnail: true,
-                authorImage: true,
-                coverImage: true,
-                likes: true,
-                views: true,
-                bookmarks: true,
-                downloads: true,
-                updatedAt: true,
-                status: true,
-                content: true
-            }
-        });
+        const posts = await repo.getPostsByAuthor(userId);
 
         if (!posts || posts.length === 0) {
             console.log("No posts found for user with ID:", userId);
@@ -385,39 +358,35 @@ const deletePost = async (req, res) => {
     console.log("Deleting post with ID:", postId);
 
     try {
-        // checking reference status
-        const referenceStatus = await prisma.post.findUnique({
-            where: { id: postId },
-            select: { referenceStatus: true }
-        });
+        const referenceStatus = await repo.getPostReferenceStatus(postId);
+        if (referenceStatus === null) {
+            throw new Error("Failed to fetch post reference status");
+        }
 
-        // fetch public ids
-        const publicIds = await getPublicIds(postId);
+
+        const publicIds = await mediaService.getPublicIds(postId);
         console.log("Public IDs associated with the post:", publicIds);
 
         if (publicIds === null) {
             throw new Error("Failed to fetch public IDs");
         }
 
-        // delete all meta data first to avoid foreign key constraint error(many to one relation)
-        publicIds.forEach(async (publicId) => {
-            const deletedMediaMetaData = await deleteMediaMetaData(publicId.publicId);
+        for (const publicId of publicIds) {
+            const deletedMediaMetaData = await mediaService.deleteMediaMetaData(publicId.publicId);
             if (deletedMediaMetaData === null) {
                 throw new Error("Failed to delete media metadata");
             }
-        });
+        }
 
-        // delete service reference
         if (referenceStatus && referenceStatus.referenceStatus === true) {
-            const deletedServiceRef = await deleteServiceRef(postId, prisma.ServiceType.POST);
+            const deletedServiceRef = await mediaService.deleteServiceRef(postId, prisma.ServiceType.POST);
             if (deletedServiceRef === null) {
                 throw new Error("Failed to delete service reference");
             }
         }
 
-        // delete all media from cloudinary
-        publicIds.forEach(async (publicId) => {
-            const response = await deleteMedia(publicId.publicId);
+        for (const publicId of publicIds) {
+            const response = await mediaService.deleteMedia(publicId.publicId);
             if (response === null) {
                 throw new Error("Failed to delete media from cloudinary");
             }
@@ -425,12 +394,13 @@ const deletePost = async (req, res) => {
                 console.warn(`Media with public ID ${publicId.publicId} not found in Cloudinary.`);
                 throw new Error("Media not found in Cloudinary");
             }
-        });
+        }
 
-        // delete the post
-        const deletedPost = await prisma.post.delete({
-            where: { id: postId }
-        });
+        const deletedPost = await repo.deletePostById(postId);
+        if (!deletedPost) {
+            throw new Error("Failed to delete post");
+        }
+
         console.log("Post deleted successfully:", deletedPost);
 
         return {
@@ -455,7 +425,7 @@ const updatePost = async (req, res) => {
         // delete service reference if del_req is true
         if (del_req && Boolean(del_req) === true) {
             console.log("Service reference deletion requested(del_req request)");
-            const deletedServiceRef = await deleteServiceRef(postId, prisma.ServiceType.POST);
+            const deletedServiceRef = await mediaService.deleteServiceRef(postId, prisma.ServiceType.POST);
             if (deletedServiceRef === null) {
                 // silent error 
                 console.error("Failed to delete service reference");
@@ -478,102 +448,65 @@ const updatePost = async (req, res) => {
             referenceStatus: Boolean,
         });
 
-        // checking service reference
         const { thumb_id, cover_id } = req.body;
         if (thumb_id || cover_id) {
-            const checkRef = await prisma.serviceRef.findUnique({
-                where: {
-                    id: postId
-                }
-            });
+            const checkRef = await mediaService.getServiceRefById(postId);
+
+            if (checkRef && checkRef.error) {
+                throw new Error("Failed to check service reference as mediaService.getServiceRefById returned an error: " + checkRef.error);
+            }
 
             if (checkRef) {
                 console.log("Service Reference already exists!", checkRef);
-
                 console.log("Updating timestamp...");
-                const updatedServiceRef = await prisma.serviceRef.update({
-                    where: {
-                        id: postId
-                    },
-                    data: {
-                        updatedAt: new Date()
-                    }
-                });
+                const updatedServiceRef = await mediaService.setServiceRef(postId, prisma.ServiceType.POST);
 
-                // media meta data update
                 if (thumb_id) {
-                    // update media meta data
-                    const updatedThumbMetaData = await prisma.mediaMetaData.update({
-                        where: {
-                            publicId: thumb_id
-                        },
-                        data: {
-                            serviceRefId: postId
-                        }
-                    });
+                    const updatedThumbMetaData = await mediaService.updateMediaMetaDataServiceRef(thumb_id, postId);
                     console.log("Thumbnail metadata updated with serviceRefId:", updatedThumbMetaData);
                 }
 
                 if (cover_id) {
-                    // update media meta data
-                    const updatedCoverMetaData = await prisma.mediaMetaData.update({
-                        where: {
-                            publicId: cover_id
-                        },
-                        data: {
-                            serviceRefId: postId
-                        }
-                    });
+                    const updatedCoverMetaData = await mediaService.updateMediaMetaDataServiceRef(cover_id, postId);
                     console.log("Cover image metadata updated with serviceRefId:", updatedCoverMetaData);
                 }
 
                 console.log("Updated Service Reference:", updatedServiceRef);
             } else {
-                console.log("No Service Reference exits! Initiating Service Reference creation");
-                const newServiceRef = await setServiceRef(postId, prisma.ServiceType.POST);
+                console.log("No Service Reference exists! Initiating Service Reference creation");
+                const newServiceRef = await mediaService.setServiceRef(postId, prisma.ServiceType.POST);
 
                 if (newServiceRef) {
                     console.log("New Service Reference created! Appending ServiceRefId to Media Meta data...");
 
-                    // media meta data update
                     if (thumb_id) {
-                        // update media meta data
-                        const updatedThumbMetaData = await prisma.mediaMetaData.update({
-                            where: {
-                                publicId: thumb_id
-                            },
-                            data: {
-                                serviceRefId: postId
-                            }
-                        });
+                        const updatedThumbMetaData = await mediaService.updateMediaMetaDataServiceRef(thumb_id, postId);
                         console.log("Thumbnail metadata updated with serviceRefId:", updatedThumbMetaData);
+
+                        if (updatedThumbMetaData === null) {
+                            throw new Error("Failed to update thumbnail metadata with serviceRefId");
+                        }
                     }
 
                     if (cover_id) {
-                        // update media meta data
-                        const updatedCoverMetaData = await prisma.mediaMetaData.update({
-                            where: {
-                                publicId: cover_id
-                            },
-                            data: {
-                                serviceRefId: postId
-                            }
-                        });
+                        const updatedCoverMetaData = await mediaService.updateMediaMetaDataServiceRef(cover_id, postId);
                         console.log("Cover image metadata updated with serviceRefId:", updatedCoverMetaData);
-                    }
 
-                }
-                else {
+                        if (updatedCoverMetaData === null) {
+                            throw new Error("Failed to update cover image metadata with serviceRefId");
+                        }
+                    }
+                } else {
                     console.error("Service Reference creation failed!");
-                    throw new Error("New Service Refrence Creation failed!");
+                    throw new Error("New Service Reference Creation failed!");
                 }
             }
         }
 
-        const updatedPost = await prisma.post.update({
-            where: { id: postId },
-            data: updatedData
-        });
+        const updatedPost = await repo.updatePostById(postId, updatedData);
+        if (!updatedPost) {
+            throw new Error("Failed to update post");
+        }
         console.log("Post updated successfully:", updatedPost);
         return {
             status: "200",
@@ -595,49 +528,40 @@ const updatePostLikes = async (req, res) => {
         console.log(`Updating like status for post ID: ${postId} by user ID: ${userId}`);
 
         // Check if a post action already exists
-        const existingAction = await prisma.postActions.findUnique({
-            where: {
-                userId_postId: {
-                    userId,
-                    postId
-                }
-            }
-        });
+        const existingAction = await repo.findPostAction(userId, postId);
+
+        if (existingAction && existingAction.error) {
+            throw new Error("Failed to find post action as repo.findPostAction returned an error: " + existingAction.error);
+        }
 
         if (existingAction) {
             // update operation - toggle status
-            const updatedLike = await prisma.postActions.update({
-                where: {
-                    userId_postId: {
-                        userId,
-                        postId
-                    }
-                },
-                data: {
-                    likeStatus: !existingAction.likeStatus
-                }
+            const updatedLike = await repo.updatePostActionById(existingAction.id, {
+                likeStatus: !existingAction.likeStatus
             });
+
+            if (updatedLike === null) {
+                throw new Error("Failed to update post action as repo.updatePostActionById returned null");
+            }
 
             console.log("Like status updated:", updatedLike);
 
-            const postLikeUpdate = await countLike(postId, updatedLike.id, updatedLike.likeStatus ? "increment" : "decrement");
+            const postLikeUpdate = await countLike(postId, updatedLike, updatedLike.likeStatus ? "increment" : "decrement");
             if (postLikeUpdate === null) {
                 throw new Error("Failed to update post like count");
             }
             console.log("Post succesfully updated with like count:", postLikeUpdate);
         } else {
             // If a post action does not exist, create it (like)
-            const newLike = await prisma.postActions.create({
-                data: {
-                    postId,
-                    userId,
-                    likeStatus: true
-                }
+            const newLike = await repo.createPostAction({
+                postId,
+                userId,
+                likeStatus: true
             });
 
             console.log("Like created:", newLike);
 
-            const postLikeUpdate = await countLike(postId, newLike.id, newLike.likeStatus ? "increment" : "decrement");
+            const postLikeUpdate = await countLike(postId, newLike, newLike.likeStatus ? "increment" : "decrement");
             if (postLikeUpdate === null) {
                 throw new Error("Failed to update post like count");
             }
@@ -659,15 +583,7 @@ const updatePostLikes = async (req, res) => {
 const countView = async (req, res) => {
     try {
         const { postId } = req.params;
-        //todo:implementing unique views using IP tracking or user authentication
-        const post = await prisma.post.update({
-            where: { id: postId },
-            data: {
-                views: {
-                    increment: 1
-                }
-            }
-        });
+        const post = await repo.incrementPostField(postId, "views", "increment");
         console.log("View count incremented for post ID:", postId);
         return {
             status: "200",
@@ -690,48 +606,35 @@ const updatePostBookmarks = async (req, res) => {
         console.log(`Updating bookmark status for post ID: ${postId} by user ID: ${userId}`);
 
         // Check if a post action already exists
-        const existingAction = await prisma.postActions.findUnique({
-            where: {
-                userId_postId: {
-                    userId,
-                    postId
-                }
-            }
-        });
+        const existingAction = await repo.findPostAction(userId, postId);
+
+        if (existingAction && existingAction.error) {
+            throw new Error("Failed to find post action as repo.findPostAction returned an error: " + existingAction.error);
+        }
 
         if (existingAction) {
             // update operation - toggle status
-            const updatedBookmark = await prisma.postActions.update({
-                where: {
-                    userId_postId: {
-                        userId,
-                        postId
-                    }
-                },
-                data: {
-                    bookmarkStatus: !existingAction.bookmarkStatus
-                }
+            const updatedBookmark = await repo.updatePostActionById(existingAction.id, {
+                bookmarkStatus: !existingAction.bookmarkStatus
             });
 
             console.log("Bookmark status updated:", updatedBookmark);
-            const postBookmarkUpdate = await countBookmark(postId, updatedBookmark.id, updatedBookmark.bookmarkStatus ? "increment" : "decrement");
+            const postBookmarkUpdate = await countBookmark(postId, updatedBookmark, updatedBookmark.bookmarkStatus ? "increment" : "decrement");
             if (postBookmarkUpdate === null) {
                 throw new Error("Failed to update post bookmark count");
             }
             console.log("Post succesfully updated with bookmark count:", postBookmarkUpdate);
         } else {
             // If a post action does not exist, create it (bookmark)
-            const newBookmark = await prisma.postActions.create({
-                data: {
-                    postId,
-                    userId,
-                    bookmarkStatus: true
-                }
+            const newBookmark = await repo.createPostAction({
+                postId,
+                userId,
+                bookmarkStatus: true
             });
 
             console.log("Bookmark created:", newBookmark);
 
-            const postBookmarkUpdate = await countBookmark(postId, newBookmark.id, newBookmark.bookmarkStatus ? "increment" : "decrement");
+            const postBookmarkUpdate = await countBookmark(postId, newBookmark, newBookmark.bookmarkStatus ? "increment" : "decrement");
             if (postBookmarkUpdate === null) {
                 throw new Error("Failed to update post bookmark count");
             }

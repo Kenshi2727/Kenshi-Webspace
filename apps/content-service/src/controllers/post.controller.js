@@ -79,7 +79,7 @@ const checkCategoryPosts = async (req, res) => {
         return res.status(400).json({ error: "Category name is required" });
     }
 
-    const { status, message, category, exists, count, error } = await service.checkCategoryPosts(req, res);
+    const { status, message, category, exists, count, error } = await service.checkCategoryPosts(req, res, next, decodedCategory);
 
     if (status === "200") {
         return res.status(200).json({
