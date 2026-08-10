@@ -1,59 +1,10 @@
-import { messaging } from "../services/firebase.js";
-import { renderALLFcmTokens } from './token.controller.js';
-
+import * as notificationService from "../services/notification.service.js";
 
 export const multicast = async (req, res) => {
-    if (!req.body) {
-        return res.status(204).json({ message: "No Content Received!" });
-    }
-
-    console.log("Data received from Client:", req.body);
-
-    const { title, body, image, link } = req.body;
-
-    try {
-        // These registration tokens come from the client FCM SDKs.
-        const registrationTokens = await renderALLFcmTokens();
-
-        const message = {
-            notification: {
-                title,
-                body,
-                image,
-            },
-            webpush: {
-                fcmOptions: {
-                    link,
-                }
-            },
-            tokens: registrationTokens,
-        };
-
-        messaging.sendEachForMulticast(message)
-            .then((response) => {
-                console.log(response.successCount + ' messages were sent successfully');
-                console.log("Message:", response);
-                if (response.failureCount > 0) {
-                    const failedTokens = [];
-                    response.responses.forEach((resp, idx) => {
-                        if (!resp.success) {
-                            failedTokens.push(registrationTokens[idx]);
-                        }
-                    });
-                    console.log('List of tokens that caused failures: ' + failedTokens);
-                    return res.status(500).json({ message: "Some notifications failed to send", failedTokens });
-                }
-                else {
-                    return res.status(200).json({ message: "Test notification sent!" });
-                }
-            });
-    } catch (error) {
-        console.log("Some error occured in testNotify:", error);
-        return res.status(500).json({ message: "Internal Server Error" });
-    }
-
-
-}
+    console.log("Multicast notification received:", req.body);
+    const result = await notificationService.multicast(req.body);
+    return res.status(result.status).json(result);
+};
 
 
 
