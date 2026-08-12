@@ -1,5 +1,5 @@
 {
-  "name": "@kenshi/shared",
+  "name": "@repo/shared",
   "version": "1.0.0",
   "description": "Shared functions across monorepo",
   "keywords": [
@@ -17,6 +17,9 @@
   "author": "Abhishek Mathur",
   "type": "module",
   "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   }

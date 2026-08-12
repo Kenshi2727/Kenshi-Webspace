@@ -1,4 +1,4 @@
-import prisma from "@kenshi/database/prisma.client.js";
+import prisma from "@repo/database";
 
 const createPost = async (data) => {
     try {

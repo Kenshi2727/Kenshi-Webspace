@@ -1,7 +1,4 @@
-import prisma from "@kenshi/database/prisma.client.js";
-import dotenv from "dotenv";
-
-dotenv.config();
+import prisma from "@repo/database";
 
 const createUser = async (id, firstName, lastName, email) => {
     //creating user in Database

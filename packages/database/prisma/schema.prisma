@@ -1,0 +1,158 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  // Required
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL") // DEPRECATED SINCE V7 but currently under use
+}
+
+model User {
+  id          String        @id @default(uuid())
+  firstName   String
+  lastName    String
+  email       String        @unique
+  role        Role          @default(USER)
+  tagline     String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  Posts       Post[]
+  PostActions PostActions[]
+  fcmToken    FcmToken?
+  profile     UserProfile?
+}
+
+model UserProfile {
+  id          String           @id
+  bio         String?
+  image       String?
+  location    String?
+  website     String?
+  followers   Int              @default(0)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  socialLinks UserSocialLink[]
+  about       String?
+  focus       String?
+  tags        String[]
+  user        User             @relation(fields: [id], references: [id], onDelete: Cascade)
+}
+
+model UserSocialLink {
+  id        String      @id
+  platform  String
+  url       String
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  profile   UserProfile @relation(fields: [id], references: [id], onDelete: Cascade)
+
+  @@unique([id, platform]) //a user can have only one link per platform
+}
+
+enum Role {
+  OWNER // Supreme power
+  MODERATOR // Can appoint/demote Admins, manage space
+  ADMIN // Reviews posts, cannot demote Admins
+  COLLABORATOR // Default contributor/member
+  USER // Regular user with limited permissions
+}
+
+model PostActions {
+  id             String   @id @default(uuid())
+  userId         String
+  postId         String
+  likeStatus     Boolean  @default(false) // true = liked, false = unliked
+  bookmarkStatus Boolean  @default(false) // true = bookmarked, false = unbookmarked  
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post           Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([userId, postId]) // Ensure a user can like a post only once
+}
+
+model Post {
+  id              String        @id @default(uuid())
+  title           String
+  excerpt         String
+  category        String
+  readTime        Int
+  content         String
+  authorId        String
+  author          User          @relation(fields: [authorId], references: [id])
+  thumbnail       String?
+  authorImage     String?
+  coverImage      String?
+  trending        Boolean       @default(false)
+  featured        Boolean       @default(false)
+  likes           Int           @default(0)
+  views           Int           @default(0)
+  bookmarks       Int           @default(0)
+  downloads       Int           @default(0)
+  referenceStatus Boolean       @default(false) // Whether the post has an associated ServiceRef
+  status          PostStatus    @default(draft)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  PostActions     PostActions[]
+
+  @@unique([id, authorId]) // Composite primary key
+}
+
+model MediaMetaData {
+  id           Int         @id @default(autoincrement())
+  publicId     String      @unique // Cloudinary public_id (required for deletion)
+  mediaType    MediaType
+  serviceRefId String?
+  serviceRef   ServiceRef? @relation(fields: [serviceRefId], references: [id])
+  userId       String? // Author/owner ID
+  orphan       Boolean     @default(true) // Marks media uploaded but unattached to a finalized service reference
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+model FcmToken {
+  userId    String?   @unique
+  token     String    @unique
+  createdAt DateTime  @default(now())
+  type      TokenType @default(PUBLIC)
+  updatedAt DateTime  @updatedAt
+  user      User?     @relation(fields: [userId], references: [id])
+}
+
+enum TokenType {
+  PUBLIC
+  PRIVATE
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+}
+
+enum PostStatus {
+  draft
+  published
+  rejected
+}
+
+enum ServiceType {
+  POST
+  PROFILE
+  CONTENT
+}
+
+model ServiceRef {
+  id        String          @id
+  type      ServiceType // e.g. "POST", "PROFILE"
+  media     MediaMetaData[]
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt // manual updation required becoz of custom nature of ServiceRef ID
+}

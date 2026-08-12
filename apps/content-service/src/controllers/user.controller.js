@@ -1,7 +1,5 @@
 import * as service from "../services/user.service.js";
 
-dotenv.config();
-
 const createUser = async (req, res, evt, id) => {
     const { status, message } = await service.createUser(req, res, evt, id);
     return res.status(status).json({ message });

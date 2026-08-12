@@ -1,4 +1,4 @@
-import * as service from "../services/user.service.js";
+import * as service from "../services/post.service.js";
 
 const createNewPost = async (req, res) => {
     const { status, message, postId, error } = await service.createNewPost(req, res);

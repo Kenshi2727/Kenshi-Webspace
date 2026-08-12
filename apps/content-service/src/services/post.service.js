@@ -1,5 +1,4 @@
-import prisma from "@kenshi/database/prisma.client.js";
-import { parseDataTypes } from "@kenshi/shared";
+import { parseDataTypes } from "@repo/shared";
 import * as repo from "../repositories/post.repository.js";
 import * as mediaService from "./media.service.js";
 
@@ -135,7 +134,7 @@ const createNewPost = async (req, res) => {
         }
 
         if (referenceStatus) {
-            const serviceRef = await mediaService.setServiceRef(newPost.id, prisma.ServiceType.POST);
+            const serviceRef = await mediaService.setServiceRef(newPost.id, "POST");
             console.log("Service reference created for media:", serviceRef);
 
             if (serviceRef) {
@@ -379,7 +378,7 @@ const deletePost = async (req, res) => {
         }
 
         if (referenceStatus && referenceStatus.referenceStatus === true) {
-            const deletedServiceRef = await mediaService.deleteServiceRef(postId, prisma.ServiceType.POST);
+            const deletedServiceRef = await mediaService.deleteServiceRef(postId, "POST");
             if (deletedServiceRef === null) {
                 throw new Error("Failed to delete service reference");
             }
@@ -425,7 +424,7 @@ const updatePost = async (req, res) => {
         // delete service reference if del_req is true
         if (del_req && Boolean(del_req) === true) {
             console.log("Service reference deletion requested(del_req request)");
-            const deletedServiceRef = await mediaService.deleteServiceRef(postId, prisma.ServiceType.POST);
+            const deletedServiceRef = await mediaService.deleteServiceRef(postId, "POST");
             if (deletedServiceRef === null) {
                 // silent error 
                 console.error("Failed to delete service reference");
@@ -459,7 +458,7 @@ const updatePost = async (req, res) => {
             if (checkRef) {
                 console.log("Service Reference already exists!", checkRef);
                 console.log("Updating timestamp...");
-                const updatedServiceRef = await mediaService.setServiceRef(postId, prisma.ServiceType.POST);
+                const updatedServiceRef = await mediaService.setServiceRef(postId, "POST");
 
                 if (thumb_id) {
                     const updatedThumbMetaData = await mediaService.updateMediaMetaDataServiceRef(thumb_id, postId);
@@ -474,7 +473,7 @@ const updatePost = async (req, res) => {
                 console.log("Updated Service Reference:", updatedServiceRef);
             } else {
                 console.log("No Service Reference exists! Initiating Service Reference creation");
-                const newServiceRef = await mediaService.setServiceRef(postId, prisma.ServiceType.POST);
+                const newServiceRef = await mediaService.setServiceRef(postId, "POST");
 
                 if (newServiceRef) {
                     console.log("New Service Reference created! Appending ServiceRefId to Media Meta data...");

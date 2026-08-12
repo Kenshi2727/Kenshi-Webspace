@@ -3,18 +3,16 @@ import "./instrument.js";
 // All other imports below
 import express from "express";
 import dotenv from "dotenv";
-import prisma from "@kenshi/database/prisma.client.js";
+import prisma from "@repo/database";
 import cors from "cors";
 import userRoutes from "./routes/user.route.js";
 import postRoutes from "./routes/post.route.js";
 import mediaRoutes from "./routes/media.route.js";
-import serviceRoutes from "./routes/service.route.js";
 import { clerkMiddleware } from '@clerk/express';
 import bodyParser from 'body-parser';
 import helmet from "helmet";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
-import './services/firebase.js'; // Firebase service initialization
 
 dotenv.config();
 
@@ -42,8 +40,6 @@ app.use(express.json());
 // rest middlewares for json type
 app.use("/posts", postRoutes);
 app.use("/media", mediaRoutes);
-app.use("/services", serviceRoutes);
-
 
 // app.use(express.static('public'));// do not place above cors, cors will not work
 const publicPath = join(__dirname, "public");
