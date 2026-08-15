@@ -37,7 +37,7 @@ const createUser = async (req, res, evt, id) => {
         //deleting user from db
         res.locals.userId = id;
         // res.status(500).send("Internal Server Error: Failed to create user");
-        return deleteUser(req, res);
+        return deleteUser(res);
     }
     return {
         status: 201,
@@ -45,7 +45,7 @@ const createUser = async (req, res, evt, id) => {
     };
 };
 
-const getUser = async (req, res) => {
+const getUser = async (req) => {
     console.log("User info request for id:", req.params.userId);
     try {
         const user = await repo.getUserById(req.params.userId);
@@ -71,7 +71,7 @@ const getUser = async (req, res) => {
     }
 }
 
-const deleteUser = async (req, res) => {
+const deleteUser = async (res) => {
     console.log("User deletion initiated");
     try {
         const userId = res.locals.userId;
@@ -104,7 +104,7 @@ const deleteUser = async (req, res) => {
     }
 };
 
-const deleteUserWebhook = async (req, res, evt, id) => {
+const deleteUserWebhookById = async (id) => {
     console.log("User deletion via webhook initiated");
     try {
         console.log("User ID to delete:", id);
@@ -194,6 +194,6 @@ export {
     createUser,
     getUser,
     deleteUser,
-    deleteUserWebhook,
+    deleteUserWebhookById,
     handleWebhook
 }

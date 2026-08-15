@@ -9,10 +9,8 @@ if req.body passed directly-
 If someone sends a field that does exist in your schema but 
 you don’t actually want users to control (e.g., role, isAdmin, passwordHash), Prisma will happily write it.
 This is called a Mass Assignment vulnerability.
- */
+*/
 
-
-// Helper functions/ non-exported functions
 const countLike = async (postId, action, operation) => {
     try {
         const post = await repo.incrementPostField(postId, "likes", operation);
@@ -99,7 +97,7 @@ const countBookmark = async (postId, action, operation) => {
     }
 }
 
-const createNewPost = async (req, res) => {
+const createNewPost = async (req) => {
     console.log("Request body:", req.body);
     console.log("Creating a new post for author ID:", req.params.authorId);
 
@@ -182,7 +180,7 @@ const createNewPost = async (req, res) => {
     }
 }
 
-const getSinglePost = async (req, res) => {
+const getSinglePost = async (req) => {
     const { postId } = req.params;
     console.log("Fetching post with ID:", postId);
 
@@ -211,7 +209,7 @@ const getSinglePost = async (req, res) => {
     }
 }
 
-const getAllPosts = async (req, res, next) => {
+const getAllPosts = async (req) => {
     console.log("Fetching all posts");
     try {
         const posts = await repo.getAllPosts();
@@ -245,7 +243,7 @@ const getAllPosts = async (req, res, next) => {
     }
 }
 
-const getFeaturedPosts = async (req, res) => {
+const getFeaturedPosts = async () => {
     console.log("Fetching featured posts");
     try {
         const featuredPosts = await repo.getFeaturedPosts();
@@ -268,7 +266,7 @@ const getFeaturedPosts = async (req, res) => {
     }
 }
 
-const checkCategoryPosts = async (req, res, next, category) => {
+const checkCategoryPosts = async (category) => {
     try {
         const count = await repo.countPostsByCategory(category);
 
@@ -280,7 +278,7 @@ const checkCategoryPosts = async (req, res, next, category) => {
         return {
             status: "200",
             message: "Category post count fetched successfully",
-            category: decodedCategory,
+            category,
             exists: count > 0,
             count,
         };
@@ -293,7 +291,7 @@ const checkCategoryPosts = async (req, res, next, category) => {
     }
 }
 
-const getCategoryPostCounts = async (req, res) => {
+const getCategoryPostCounts = async () => {
     console.log("Fetching post counts by category");
 
     try {
@@ -323,7 +321,7 @@ const getCategoryPostCounts = async (req, res) => {
     }
 }
 
-const getUserPosts = async (req, res) => {
+const getUserPosts = async (req) => {
     try {
         const { userId } = req.params;
         console.log("Fetch request for user with ID", userId);
@@ -352,7 +350,7 @@ const getUserPosts = async (req, res) => {
     }
 }
 
-const deletePost = async (req, res) => {
+const deletePost = async (req) => {
     const { postId } = req.params;
     console.log("Deleting post with ID:", postId);
 
@@ -415,7 +413,7 @@ const deletePost = async (req, res) => {
     }
 }
 
-const updatePost = async (req, res) => {
+const updatePost = async (req) => {
     console.log("Update post request body:", req.body);
 
     try {
@@ -520,7 +518,7 @@ const updatePost = async (req, res) => {
     }
 }
 
-const updatePostLikes = async (req, res) => {
+const updatePostLikes = async (req) => {
     try {
         const { postId } = req.params;
         const { userId } = req.body;
@@ -579,7 +577,7 @@ const updatePostLikes = async (req, res) => {
     }
 }
 
-const countView = async (req, res) => {
+const countView = async (req) => {
     try {
         const { postId } = req.params;
         const post = await repo.incrementPostField(postId, "views", "increment");
@@ -598,7 +596,7 @@ const countView = async (req, res) => {
     }
 }
 
-const updatePostBookmarks = async (req, res) => {
+const updatePostBookmarks = async (req) => {
     try {
         const { postId } = req.params;
         const { userId } = req.body;

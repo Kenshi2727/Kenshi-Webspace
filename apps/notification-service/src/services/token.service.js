@@ -1,4 +1,3 @@
-import prisma from "@kenshi/database/prisma.client.js";
 import * as repo from "../repositories/token.repository.js";
 
 const saveFcmToken = async (token, type) => {
@@ -19,7 +18,7 @@ const saveFcmToken = async (token, type) => {
     }
 
     try {
-        const tokenType = type === 'private' ? prisma.TokenType.PRIVATE : prisma.TokenType.PUBLIC;
+        const tokenType = type === 'private' ? "PRIVATE" : "PUBLIC";
         const savedToken = await repo.saveFcmToken(token, tokenType);
 
         if (!savedToken) {

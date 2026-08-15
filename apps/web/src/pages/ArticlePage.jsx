@@ -55,15 +55,16 @@ export default function ArticlePage() {
             setLoading(true);
             try {
                 const res = await getSinglePost(id);
-                setArticle(res.data);
-                dispatch(setCurrentArticle(res.data));
+                setArticle(res.data.post);
+                dispatch(setCurrentArticle(res.data.post));
+                console.log("Response from servers:", res.data.message);
 
                 // Check if the user has liked the post
-                const likeStatus = res.data.PostActions?.find(action => action.userId === user?.id)?.likeStatus;
+                const likeStatus = res.data.post.PostActions?.find(action => action.userId === user?.id)?.likeStatus;
                 likeStatus ? setIsLiked(likeStatus) : setIsLiked(false);
 
                 // Check if the user has bookmarked the post
-                const bookmarkStatus = res.data.PostActions?.find(action => action.userId === user?.id)?.bookmarkStatus;
+                const bookmarkStatus = res.data.post.PostActions?.find(action => action.userId === user?.id)?.bookmarkStatus;
                 bookmarkStatus ? setIsBookmarked(bookmarkStatus) : setIsBookmarked(false);
             } catch (error) {
                 toast.error(error?.response?.data?.error || "Failed to fetch the article");

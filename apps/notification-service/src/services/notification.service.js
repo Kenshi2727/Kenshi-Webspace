@@ -1,4 +1,4 @@
-import { messaging } from "./firebase.service.js";
+import * as firebaseService from "./firebase.service.js";
 import * as tokenService from "./token.service.js";
 
 const multicast = async ({ title, body, image, link }) => {
@@ -32,7 +32,7 @@ const multicast = async ({ title, body, image, link }) => {
             tokens: registrationTokens
         };
 
-        const response = await messaging.sendEachForMulticast(message);
+        const response = await firebaseService.messaging.sendEachForMulticast(message);
         console.log("Notification multicast response:", response);
 
         if (response.failureCount > 0) {

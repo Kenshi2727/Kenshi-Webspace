@@ -157,20 +157,27 @@ export default function EditorPage({ type }) {
             async function fetchPost() {
                 try {
                     setLoading(true);
-                    const post = await getSinglePost(params.id);
-                    if (!post || post?.data.author.id !== userId) {
+                    const response = (await getSinglePost(params.id)).data;
+                    const post = response.post;
+                    // console.log("Post object received:", post);
+                    console.log("Response: ", response.message);
+
+                    if (!post) {
+                        toast.error("Sorry, our servers are currently unavailable !");
+                    }
+                    else if (post?.author.id !== userId) {
                         toast.error("You are not authorized to edit this post !");
                         // todo:send breach logs
                         throw new Error(`Unauthorized access detected for user: ${userId} and post: ${params.id}!`);
                     }
-                    setFormData(post.data);
-                    setOldData(post.data);
+                    setFormData(post);
+                    setOldData(post);
                 } catch (error) {
                     console.error(error);
                     toast.loading("Error editing post, redirecting...", {
                         duration: 3000,
                     });
-                    window.history.back();
+                    // window.history.back();
                 } finally {
                     setLoading(false);
                 }

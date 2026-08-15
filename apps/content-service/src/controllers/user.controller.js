@@ -6,7 +6,7 @@ const createUser = async (req, res, evt, id) => {
 };
 
 const getUser = async (req, res) => {
-    const { status, message, user } = await service.getUser(req, res);
+    const { status, message, user } = await service.getUser(req);
     if (user) {
         return res.status(status).json({ user });
     }
@@ -14,7 +14,7 @@ const getUser = async (req, res) => {
 }
 
 const deleteUser = async (req, res) => {
-    const { status, message, data } = await service.deleteUser(req, res);
+    const { status, message, data } = await service.deleteUser(res);
     if (data) {
         return res.status(status).json({ message, data });
     }
@@ -22,7 +22,7 @@ const deleteUser = async (req, res) => {
 };
 
 const deleteUserWebhook = async (req, res, evt, id) => {
-    const { status, message } = await service.deleteUserWebhook(req, res, evt, id);
+    const { status, message } = await service.deleteUserWebhookById(id);
     return res.status(status).json({ message });
 };
 

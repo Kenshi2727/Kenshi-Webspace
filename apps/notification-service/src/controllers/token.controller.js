@@ -1,4 +1,4 @@
-import * as tokenService from "../services/token.service.js";
+import * as service from "../services/token.service.js";
 
 // TODO: IMPLEMENT LOGIC FOR HANDLING TOKEN EXPIRY AND CLEANUP
 
@@ -9,10 +9,10 @@ export const saveFcmToken = async (req, res) => {
     const token = req.body.token;
     const type = req.headers["fcm-service-type"];
 
-    const result = await tokenService.saveFcmToken(token, type);
+    const result = await service.saveFcmToken(token, type);
     return res.status(result.status).json(result);
 };
 
 export const renderALLFcmTokens = async () => {
-    return await tokenService.getAllFcmTokens();
+    return await service.getAllFcmTokens();
 };

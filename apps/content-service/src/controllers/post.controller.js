@@ -1,7 +1,7 @@
 import * as service from "../services/post.service.js";
 
 const createNewPost = async (req, res) => {
-    const { status, message, postId, error } = await service.createNewPost(req, res);
+    const { status, message, postId, error } = await service.createNewPost(req);
     if (status === "201") {
         return res.status(201).json({
             message,
@@ -15,7 +15,7 @@ const createNewPost = async (req, res) => {
 }
 
 const getSinglePost = async (req, res) => {
-    const { status, message, post, error } = await service.getSinglePost(req, res);
+    const { status, message, post, error } = await service.getSinglePost(req);
     if (status === "200") {
         return res.status(200).json({
             message,
@@ -38,7 +38,7 @@ const getAllPosts = async (req, res, next) => {
     }
 
     if (req.query.populate === '*') {
-        const { status, message, posts, params, error } = await service.getAllPosts(req, res);
+        const { status, message, posts, params, error } = await service.getAllPosts(req);
         if (status === "200") {
             return res.status(200).json({
                 message,
@@ -57,7 +57,7 @@ const getAllPosts = async (req, res, next) => {
 }
 
 const getFeaturedPosts = async (req, res) => {
-    const { status, message, featuredPosts, error } = await service.getFeaturedPosts(req, res);
+    const { status, message, featuredPosts, error } = await service.getFeaturedPosts();
     if (status === "200") {
         return res.status(200).json({
             message,
@@ -79,7 +79,7 @@ const checkCategoryPosts = async (req, res) => {
         return res.status(400).json({ error: "Category name is required" });
     }
 
-    const { status, message, category, exists, count, error } = await service.checkCategoryPosts(req, res, next, decodedCategory);
+    const { status, message, category, exists, count, error } = await service.checkCategoryPosts(decodedCategory);
 
     if (status === "200") {
         return res.status(200).json({
@@ -96,7 +96,7 @@ const checkCategoryPosts = async (req, res) => {
 }
 
 const getCategoryPostCounts = async (req, res) => {
-    const { status, message, counts, error } = await service.getCategoryPostCounts(req, res);
+    const { status, message, counts, error } = await service.getCategoryPostCounts();
     if (status === "200") {
         return res.status(200).json({
             message,
@@ -110,7 +110,7 @@ const getCategoryPostCounts = async (req, res) => {
 }
 
 const getUserPosts = async (req, res) => {
-    const { status, message, posts, error } = await service.getUserPosts(req, res);
+    const { status, message, posts, error } = await service.getUserPosts(req);
     if (status === "200") {
         return res.status(200).json({
             message,
@@ -127,7 +127,7 @@ const getUserPosts = async (req, res) => {
 }
 
 const deletePost = async (req, res) => {
-    const { status, message, error } = await service.deletePost(req, res);
+    const { status, message, error } = await service.deletePost(req);
     if (status === "200") {
         return res.status(200).json({
             message
@@ -140,7 +140,7 @@ const deletePost = async (req, res) => {
 }
 
 const updatePost = async (req, res) => {
-    const { status, message, error } = await service.updatePost(req, res);
+    const { status, message, error } = await service.updatePost(req);
     if (status === "200") {
         return res.status(200).json({
             message
@@ -153,7 +153,7 @@ const updatePost = async (req, res) => {
 }
 
 const updatePostLikes = async (req, res) => {
-    const { status, message, error } = await service.updatePostLikes(req, res);
+    const { status, message, error } = await service.updatePostLikes(req);
     if (status === "200") {
         return res.status(200).json({
             message
@@ -166,7 +166,7 @@ const updatePostLikes = async (req, res) => {
 }
 
 const countView = async (req, res) => {
-    const { status, message, viewCount, error } = await service.countView(req, res);
+    const { status, message, viewCount, error } = await service.countView(req);
     if (status === "200") {
         return res.status(200).json({
             message,
@@ -180,7 +180,7 @@ const countView = async (req, res) => {
 }
 
 const updatePostBookmarks = async (req, res) => {
-    const { status, message, error } = await service.updatePostBookmarks(req, res);
+    const { status, message, error } = await service.updatePostBookmarks(req);
     if (status === "200") {
         return res.status(200).json({
             message
