@@ -36,7 +36,10 @@ const getAllPosts = async () => {
 const getFeaturedPosts = async () => {
     try {
         return await prisma.post.findMany({
-            where: { featured: true }
+            where: { featured: true },
+            orderBy: {
+                createdAt: "desc",
+            },
         });
     } catch (error) {
         console.error("Post Repo getFeaturedPosts error:", error);
