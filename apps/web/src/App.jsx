@@ -29,7 +29,7 @@ import { useUser } from '@clerk/clerk-react';
 import NotFoundPage from './pages/NotFoundPage';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
-import { getToken } from "firebase/messaging";
+import { getToken, getMessaging, onMessage } from "firebase/messaging";
 import { messaging } from './services/firebase';
 import { sendPublicFcmToken } from './services/GlobalApi';
 import PopupBanner from './components/banners/PopupBanner';
@@ -81,7 +81,24 @@ function App() {
         await Notification.requestPermission().then(async (permission) => {
           if (permission === 'granted') {
             console.log('Notification permission granted.');
-            // toast.success("Thanks for allowing notifications.");
+            const messaging = getMessaging();
+            onMessage(messaging, (payload) => {
+              console.log('Message received. ', payload);
+              const { title, body, image } = payload?.notification || {};
+              const notification = new Notification(title, {
+                body: body,
+                icon: image
+              });
+
+              notification.onclick = (event) => {
+                event.preventDefault();
+
+                if (payload?.fcmOptions.link) {
+                  window.focus();
+                  window.location.href = payload?.fcmOptions.link;
+                }
+              };
+            });
 
             // generate the FCM token
             const token = await getToken(messaging, {
