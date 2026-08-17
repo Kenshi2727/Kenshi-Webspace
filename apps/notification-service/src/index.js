@@ -28,7 +28,7 @@ app.use('/tests', testRoutes);
 
 // listening to server
 app.listen(port, () => {
-    console.log(`NOTIFICATION SERVER is running on http://localhost:${port}`);
+    console.log(`NOTIFICATION SERVER is running on PORT:${port}`);
     console.log(`Current Process ID: ${process.pid}`);
     console.log(`CORS is enabled for: ${process.env.CORS_ORIGIN}`);
 });

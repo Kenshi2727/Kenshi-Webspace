@@ -1,5 +1,5 @@
 {
-  "name": "kenshi-webspace-notif-microservice",
+  "name": "notification-service",
   "version": "1.0.0",
   "description": "This is a service to handle notifications and mail communications in the main Kenshi webspace server",
   "keywords": [
@@ -18,7 +18,7 @@
   "license": "Apache-2.0",
   "author": "Abhishek Mathur",
   "type": "module",
-  "main": "src/index.js",
+  "main": "index.js",
   "scripts": {
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
