@@ -1,0 +1,26 @@
+{
+  "name": "@repo/shared",
+  "version": "1.0.0",
+  "description": "Shared functions across monorepo",
+  "keywords": [
+    "shared"
+  ],
+  "homepage": "https://github.com/Kenshi2727/Kenshi-Webspace#readme",
+  "bugs": {
+    "url": "https://github.com/Kenshi2727/Kenshi-Webspace/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kenshi2727/Kenshi-Webspace.git"
+  },
+  "license": "ISC",
+  "author": "Abhishek Mathur",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

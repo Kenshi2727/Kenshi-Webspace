@@ -1,1 +1,0 @@
-# Kenshi WebSpace - Client Side
