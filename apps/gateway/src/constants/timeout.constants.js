@@ -1,6 +1,6 @@
 /*
 Connection timeout:  3 seconds
-Proxy timeout:      10 seconds
+Proxy timeout:      30 seconds
 Request timeout:    15 seconds
 */
 

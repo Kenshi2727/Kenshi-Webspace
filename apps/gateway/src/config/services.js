@@ -4,4 +4,5 @@ const services = {
     notification: process.env.NOTIFICATION_SERVICE_URL,
 };
 
+
 export default services;    

@@ -1,0 +1,120 @@
+import { createProxyMiddleware } from 'http-proxy-middleware';
+import { TIMEOUTS } from '../constants/timeout.constants.js';
+import { HEADERS } from '../constants/header.constants.js';
+import logger from '../observability/logger.js';
+import { handleProxyError } from '../middlewares/error.middleware.js';
+// import { addBreadcrumb } from '../observability/sentry.js';
+import http from 'http';
+import https from 'https';
+
+/*
+* proxy middleware with timeouts
+*/
+const createServiceProxy = (target, serviceName, options = {}) => {
+    const { pathRewrite = {} } = options;
+
+    // HTTP/HTTPS Node Networking agents with connection pooling and timeouts
+    const { protocol } = new URL(target);
+    const Agent = protocol === 'https' ? https.Agent : http.Agent;
+
+    const agent = new Agent({
+        keepAlive: true,
+        keepAliveMsecs: 30000,
+        maxSockets: 50,
+        maxFreeSockets: 10,
+        // timeout: TIMEOUTS.CONNECTION,
+    });
+
+    return createProxyMiddleware({
+        target,
+        changeOrigin: true,
+        agent,
+        pathRewrite,
+
+        // Timeout settings
+        timeout: TIMEOUTS.REQUEST,
+        proxyTimeout: TIMEOUTS.PROXY,
+
+
+        /* httpxy events */
+        on: {
+            proxyReq: (proxyReq, req, res) => {
+                // socket timeout for the proxy request
+                proxyReq.setTimeout(TIMEOUTS.PROXY);
+
+                // Add request headers
+                proxyReq.setHeader(HEADERS.REQUEST_ID, req.requestId);
+                proxyReq.setHeader(HEADERS.FORWARDED_FOR, req.ip);
+                proxyReq.setHeader(HEADERS.FORWARDED_PROTO, req.protocol);
+                proxyReq.setHeader(HEADERS.GATEWAY_SECRET, 'api-gateway-secret');
+                proxyReq.setHeader(HEADERS.TARGET_SERVICE, serviceName);
+
+                // Log proxy request
+                // logger.debug(`Proxying request to ${serviceName}`, {
+                //     requestId: req.requestId,
+                //     service: serviceName,
+                //     target,
+                //     method: req.method,
+                //     path: req.path,
+                //     timeout: TIMEOUTS.PROXY
+                // });
+
+                /*Sentry Service */
+                // addBreadcrumb(
+                //     `Proxy to ${serviceName}`,
+                //     'proxy.request',
+                //     'info',
+                //     { service: serviceName, target }
+                // );
+            },
+
+            // proxy response
+            proxyRes: (proxyRes, req, res) => {
+                proxyRes.setHeader(HEADERS.RESPONSE_SERVICE, serviceName);
+
+                // logger.debug(`Received response from ${serviceName}`, {
+                //     requestId: req.requestId,
+                //     service: serviceName,
+                //     statusCode: proxyRes.statusCode
+                // });
+
+                // addBreadcrumb(
+                //     `Response from ${serviceName}`,
+                //     'proxy.response',
+                //     proxyRes.statusCode >= 400 ? 'warning' : 'info',
+                //     {
+                //         service: serviceName,
+                //         statusCode: proxyRes.statusCode
+                //     }
+                // );
+            },
+
+            // Handle errors
+            error: (err, req, res) => {
+                // logger.error(`Proxy error for ${serviceName}`, {
+                //     requestId: req.requestId,
+                //     service: serviceName,
+                //     error: err.message,
+                //     code: err.code
+                // });
+
+                // addBreadcrumb(
+                //     `Proxy error from ${serviceName}`,
+                //     'proxy.error',
+                //     'error',
+                //     {
+                //         service: serviceName,
+                //         error: err.message,
+                //         code: err.code
+                //     }
+                // );
+
+                handleProxyError(err, req, res, serviceName);
+            }
+        }
+    });
+};
+
+export {
+    createServiceProxy
+}
