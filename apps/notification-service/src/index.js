@@ -24,7 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 // routes
 app.use('/tokens', tokenRoutes);
 app.use('/notifications', notificationRoutes);
-app.use('/tests', testRoutes);
+process.env.MODE === 'development' && app.use('/tests', testRoutes);
 
 // listening to server
 app.listen(port, () => {
