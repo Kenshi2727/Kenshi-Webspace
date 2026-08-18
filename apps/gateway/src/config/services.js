@@ -1,3 +1,6 @@
+import { config } from 'dotenv';
+config();
+
 const services = {
     auth: process.env.AUTH_SERVICE_URL,
     content: process.env.CONTENT_SERVICE_URL,

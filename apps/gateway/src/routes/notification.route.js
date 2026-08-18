@@ -18,10 +18,13 @@ if (!target) {
     });
 } else {
     const proxy = createServiceProxy(target, 'notification-service', {
-        pathRewrite: (path) => `/notification${path}`
+        pathRewrite: {
+            "^/notification": ""
+        }
     });
 
     router.use((req, res, next) => {
+        logger.info('Notification service route registered', { target });
         req.headers[HEADERS.SERVICE_TARGET] = 'notification-service';
         req.headers[HEADERS.SERVICE] = 'notification-service';
 

@@ -28,7 +28,7 @@ class Logger {
             message,
             requestId: data.requestId,
             ...data
-        });
+        }, null, 2);
     }
 
     #shouldLog(level) {

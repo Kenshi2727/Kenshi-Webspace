@@ -70,7 +70,7 @@ const createServiceProxy = (target, serviceName, options = {}) => {
 
             // proxy response
             proxyRes: (proxyRes, req, res) => {
-                proxyRes.setHeader(HEADERS.RESPONSE_SERVICE, serviceName);
+                proxyRes.headers[HEADERS.RESPONSE_SERVICE] = serviceName;
 
                 // logger.debug(`Received response from ${serviceName}`, {
                 //     requestId: req.requestId,
