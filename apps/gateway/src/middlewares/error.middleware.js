@@ -1,9 +1,9 @@
 import { HTTP_STATUS } from '../constants/http.constants.js';
-import logger from '../observability/logger.js';
+// import logger from '../logger/gatewayLogger.js';
 // import { captureException } from '../observability/sentry.js';
 
 /**
- * Error handling middleware for production-grade API Gateway
+ * Error handling middleware for API Gateway
  * Catches and formats errors consistently
  */
 
@@ -11,11 +11,11 @@ import logger from '../observability/logger.js';
  * Handle 404 errors
  */
 export const handle404 = (req, res) => {
-    logger.warn('Route not found', {
-        requestId: req.requestId,
-        method: req.method,
-        path: req.path
-    });
+    // logger.warn('Route not found', {
+    //     requestId: req.requestId,
+    //     method: req.method,
+    //     path: req.path
+    // });
 
     res.status(HTTP_STATUS.NOT_FOUND).json({
         success: false,
@@ -34,14 +34,14 @@ export const errorHandler = (err, req, res, next) => {
     const requestId = req.requestId || 'unknown';
 
     // Log the error
-    logger.error('Unhandled error', {
-        requestId,
-        message: err.message,
-        stack: process.env.NODE_ENV !== 'production' ? err.stack : undefined,
-        statusCode: err.statusCode || HTTP_STATUS.INTERNAL_SERVER_ERROR,
-        path: req.path,
-        method: req.method
-    });
+    // logger.error('Unhandled error', {
+    //     requestId,
+    //     message: err.message,
+    //     stack: process.env.NODE_ENV !== 'production' ? err.stack : undefined,
+    //     statusCode: err.statusCode || HTTP_STATUS.INTERNAL_SERVER_ERROR,
+    //     path: req.path,
+    //     method: req.method
+    // });
 
     // Capture exception in Sentry
     // if (err.statusCode !== HTTP_STATUS.BAD_REQUEST) {
@@ -150,7 +150,7 @@ export const handleProxyError = (error, req, res, targetService) => {
         message = `${targetService} service timeout`;
     }
 
-    logger.logProxyError(requestId, targetService, error, statusCode);
+    // logger.logProxyError(requestId, targetService, error, statusCode);
 
     res.status(statusCode).json({
         success: false,

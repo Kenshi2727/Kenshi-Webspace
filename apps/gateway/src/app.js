@@ -3,7 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
-import logger from './observability/logger.js';
+// import logger from './logger/index.js';
 // import { initSentry, attachSentryErrorHandler } from './observability/sentry.js';
 import requestIdMiddleware from './middlewares/requestId.middleware.js';
 import { validateRequest } from './middlewares/validation.middleware.js';
@@ -46,7 +46,7 @@ app.get('/health', (req, res) => {
     const uptime = process.uptime();
     const memoryUsage = process.memoryUsage();
 
-    logger.debug('Health check', { requestId: req.requestId });
+    // logger.debug('Health check', { requestId: req.requestId });
 
     res.status(200).json({
         success: true,

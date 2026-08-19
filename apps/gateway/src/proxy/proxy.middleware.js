@@ -1,7 +1,7 @@
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import { TIMEOUTS } from '../constants/timeout.constants.js';
 import { HEADERS } from '../constants/header.constants.js';
-import logger from '../observability/logger.js';
+// import logger from '../logger/gatewayLogger.js';
 import { handleProxyError } from '../middlewares/error.middleware.js';
 // import { addBreadcrumb } from '../observability/sentry.js';
 import http from 'http';

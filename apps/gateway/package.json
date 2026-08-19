@@ -29,6 +29,7 @@
     "express-rate-limit": "^8.6.2",
     "helmet": "^8.3.0",
     "http-proxy-middleware": "^4.2.0",
-    "shared": "^0.2.0"
+    "shared": "^0.2.0",
+    "winston": "^3.19.0"
   }
 }
