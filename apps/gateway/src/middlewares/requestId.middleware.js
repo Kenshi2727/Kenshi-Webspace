@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { HEADERS } from "../constants/header.constants.js";
 import { HTTP_STATUS } from "../constants/http.constants.js";
+import logger from "../logger/index.js";
 
 const requestIdMiddleware = (req, res, next) => {
     const incomingRequestId = req.get(HEADERS.REQUEST_ID);
@@ -10,13 +11,16 @@ const requestIdMiddleware = (req, res, next) => {
             message: "[POTENTIAL MALACIOUS ATTACK!] Inavlid Request ID receieved!"
         });
 
-        // todo: logging and error handling
+        logger.error("Request ID is inavlid!", {
+            threat: "Potential Malicious Attack",
+            incomingRequestId,
+            ip: req.ip
+        })
     }
 
     const requestId = incomingRequestId || randomUUID();
     req.requestId = requestId;
     res.setHeader(HEADERS.REQUEST_ID, requestId);
-
     next();
 };
 

@@ -1,5 +1,7 @@
 import gatewayDevelopmentLogger from "./gatewayDevelopmentLogger.js";
 import gatewayProductionLogger from './gatewayProductionLogger.js';
+import { config } from 'dotenv';
+config();
 
 let logger = null;
 

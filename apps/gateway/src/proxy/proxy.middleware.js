@@ -1,11 +1,11 @@
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import { TIMEOUTS } from '../constants/timeout.constants.js';
 import { HEADERS } from '../constants/header.constants.js';
-// import logger from '../logger/gatewayLogger.js';
-import { handleProxyError } from '../middlewares/error.middleware.js';
+import logger from '../logger/index.js';
 // import { addBreadcrumb } from '../observability/sentry.js';
 import http from 'http';
 import https from 'https';
+import { HTTP_STATUS } from '../constants/http.constants.js'
 
 /*
 * proxy middleware with timeouts
@@ -50,14 +50,25 @@ const createServiceProxy = (target, serviceName, options = {}) => {
                 proxyReq.setHeader(HEADERS.TARGET_SERVICE, serviceName);
 
                 // Log proxy request
-                // logger.debug(`Proxying request to ${serviceName}`, {
-                //     requestId: req.requestId,
-                //     service: serviceName,
-                //     target,
-                //     method: req.method,
-                //     path: req.path,
-                //     timeout: TIMEOUTS.PROXY
-                // });
+                logger.debug(`Proxying request to ${serviceName}`, {
+                    requestId: req.requestId,
+                    service: serviceName,
+                    target,
+                    method: req.method,
+                    path: req.path,
+                    timeout: TIMEOUTS.PROXY
+                });
+
+
+                // Network Agent Status
+                logger.debug('Agent status:', {
+                    sockets: Object.keys(agent.sockets).length,
+                    freeSockets: Object.keys(agent.freeSockets).length,
+                    requests: Object.keys(agent.requests).length,
+
+                    socketsDetail: agent.sockets,
+                    freeSocketsDetail: agent.freeSockets,
+                });
 
                 /*Sentry Service */
                 // addBreadcrumb(
@@ -72,11 +83,11 @@ const createServiceProxy = (target, serviceName, options = {}) => {
             proxyRes: (proxyRes, req, res) => {
                 proxyRes.headers[HEADERS.RESPONSE_SERVICE] = serviceName;
 
-                // logger.debug(`Received response from ${serviceName}`, {
-                //     requestId: req.requestId,
-                //     service: serviceName,
-                //     statusCode: proxyRes.statusCode
-                // });
+                logger.debug(`Received response from ${serviceName}`, {
+                    requestId: req.requestId,
+                    service: serviceName,
+                    statusCode: proxyRes.statusCode
+                });
 
                 // addBreadcrumb(
                 //     `Response from ${serviceName}`,
@@ -91,12 +102,12 @@ const createServiceProxy = (target, serviceName, options = {}) => {
 
             // Handle errors
             error: (err, req, res) => {
-                // logger.error(`Proxy error for ${serviceName}`, {
-                //     requestId: req.requestId,
-                //     service: serviceName,
-                //     error: err.message,
-                //     code: err.code
-                // });
+                logger.error(`Proxy error for ${serviceName}`, {
+                    requestId: req.requestId,
+                    service: serviceName,
+                    error: err.message,
+                    code: err.code
+                });
 
                 // addBreadcrumb(
                 //     `Proxy error from ${serviceName}`,
@@ -109,7 +120,17 @@ const createServiceProxy = (target, serviceName, options = {}) => {
                 //     }
                 // );
 
-                handleProxyError(err, req, res, serviceName);
+                if (!res.headersSent) {
+                    res.status(HTTP_STATUS.BAD_GATEWAY).json({
+                        success: false,
+                        error: {
+                            code: 'BAD_GATEWAY',
+                            message: `Unable to reach ${serviceName}`,
+                            requestId: req.requestId
+                        }
+                    });
+                }
+
             }
         }
     });

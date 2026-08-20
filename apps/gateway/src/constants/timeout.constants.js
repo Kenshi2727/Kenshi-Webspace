@@ -5,7 +5,7 @@ Request timeout
 */
 
 export const TIMEOUTS = {
-    CONNECTION: process.env.CONNECTION_TIMEOUT,
-    REQUEST: process.env.REQUEST_TIMEOUT,
-    PROXY: process.env.PROXY_TIMEOUT
+    CONNECTION: Number(process.env.CONNECTION_TIMEOUT),
+    REQUEST: Number(process.env.REQUEST_TIMEOUT),
+    PROXY: Number(process.env.PROXY_TIMEOUT)
 };

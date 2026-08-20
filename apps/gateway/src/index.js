@@ -1,6 +1,5 @@
 import { config } from 'dotenv';
 import app from './app.js';
-// import logger from './observability/logger.js';
 import logger from './logger/index.js'
 
 config();

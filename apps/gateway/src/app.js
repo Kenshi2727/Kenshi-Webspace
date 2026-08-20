@@ -3,14 +3,15 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
-// import logger from './logger/index.js';
+import logger from './logger/index.js';
 // import { initSentry, attachSentryErrorHandler } from './observability/sentry.js';
 import requestIdMiddleware from './middlewares/requestId.middleware.js';
-import { validateRequest } from './middlewares/validation.middleware.js';
-import { handle404, errorHandler } from './middlewares/error.middleware.js';
+// import { validateRequest } from './middlewares/validation.middleware.js';
 import services from './config/services.js';
 import contentRoutes from './routes/content.route.js';
 import notificationRoutes from './routes/notification.route.js';
+import { HTTP_STATUS } from '../src/constants/http.constants.js';
+import { HEADERS } from './constants/header.constants.js';
 
 const app = express();
 
@@ -22,7 +23,7 @@ app.use(cors(
     {
         origin: process.env.CORS_ORIGIN,
         methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-        // allowedHeaders: [],
+        allowedHeaders: Object.values(HEADERS),
         credentials: true,
     }
 ));
@@ -36,19 +37,17 @@ app.use(rateLimit({
     // store: ... , // Redis, Memcached, etc. 
 }
 ));
-
 app.use(requestIdMiddleware);
-
-// // Request validation
+// Request validation
 // app.use(validateRequest);
 
 app.get('/health', (req, res) => {
     const uptime = process.uptime();
     const memoryUsage = process.memoryUsage();
 
-    // logger.debug('Health check', { requestId: req.requestId });
+    logger.debug('Health check', { requestId: req.requestId });
 
-    res.status(200).json({
+    res.status(HTTP_STATUS.SUCCESS).json({
         success: true,
         message: 'API Gateway is running successfully!',
         timestamp: new Date().toISOString(),
@@ -63,7 +62,7 @@ app.get('/health', (req, res) => {
 });
 
 app.get('/status', (req, res) => {
-    res.status(200).json({
+    res.status(HTTP_STATUS.SUCCESS).json({
         status: 'operational',
         timestamp: new Date().toISOString(),
         services: {
@@ -128,17 +127,5 @@ app.get('/', (req, res) => {
 // Service Routes
 app.use('/notification', notificationRoutes);
 app.use('/content', contentRoutes);
-
-// ========================
-// Error Handling
-// ========================
-// Attach Sentry error handler
-// attachSentryErrorHandler(app);
-
-// 404 handler
-app.use(handle404);
-
-// Global error handler (must be last)
-app.use(errorHandler);
 
 export default app;
