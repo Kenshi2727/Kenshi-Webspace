@@ -125,7 +125,7 @@ app.get('/', (req, res) => {
 });
 
 // Service Routes
-app.use('/notification', notificationRoutes);
-app.use('/content', contentRoutes);
+app.use('/api/notification', notificationRoutes);
+app.use('/api/content', contentRoutes);
 
 export default app;

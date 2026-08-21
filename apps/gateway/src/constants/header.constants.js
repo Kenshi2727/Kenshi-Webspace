@@ -7,6 +7,6 @@ export const HEADERS = {
     TARGET_SERVICE: 'x-target-service',
     TRACE_ID: 'x-trace-id',
     // CONTENT_TYPE: 'content-type',
-    // AUTHORIZATION: 'authorization',
+    AUTHORIZATION: 'authorization',
     // HOST: 'host'
 };

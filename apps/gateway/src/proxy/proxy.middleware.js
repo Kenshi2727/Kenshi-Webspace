@@ -66,8 +66,26 @@ const createServiceProxy = (target, serviceName, options = {}) => {
                     freeSockets: Object.keys(agent.freeSockets).length,
                     requests: Object.keys(agent.requests).length,
 
-                    socketsDetail: agent.sockets,
-                    freeSocketsDetail: agent.freeSockets,
+                    socketPools: Object.fromEntries(
+                        Object.entries(agent.sockets).map(([key, sockets]) => [
+                            key,
+                            sockets.length
+                        ])
+                    ),
+
+                    freeSocketPools: Object.fromEntries(
+                        Object.entries(agent.freeSockets).map(([key, sockets]) => [
+                            key,
+                            sockets.length
+                        ])
+                    ),
+
+                    requestPools: Object.fromEntries(
+                        Object.entries(agent.requests).map(([key, requests]) => [
+                            key,
+                            requests.length
+                        ])
+                    )
                 });
 
                 /*Sentry Service */

@@ -28,13 +28,12 @@
     "ngrok": "ngrok http http://localhost:3000"
   },
   "dependencies": {
-    "@repo/shared": "*",
-    "@repo/database": "*",
     "@clerk/express": "^1.7.40",
+    "@repo/database": "*",
+    "@repo/shared": "*",
     "@sentry/node": "^10.25.0",
     "axios": "^1.11.0",
     "cloudinary": "^2.7.0",
-    "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "helmet": "^8.1.0",

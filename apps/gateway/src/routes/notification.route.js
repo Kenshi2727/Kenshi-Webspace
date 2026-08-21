@@ -19,7 +19,7 @@ if (!target) {
 } else {
     const proxy = createServiceProxy(target, 'notification-service', {
         pathRewrite: {
-            "^/notification": ""
+            "^/api/notification": ""
         }
     });
 

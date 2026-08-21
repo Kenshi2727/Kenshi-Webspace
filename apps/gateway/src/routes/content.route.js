@@ -19,7 +19,7 @@ if (!target) {
 } else {
     const proxy = createServiceProxy(target, 'content-service', {
         pathRewrite: {
-            "^/content": ""
+            "^/api/content": ""
         }
     });
 

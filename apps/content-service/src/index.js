@@ -4,7 +4,6 @@ import "./instrument.js";
 import express from "express";
 import dotenv from "dotenv";
 import prisma from "@repo/database";
-import cors from "cors";
 import userRoutes from "./routes/user.route.js";
 import postRoutes from "./routes/post.route.js";
 import mediaRoutes from "./routes/media.route.js";
@@ -22,14 +21,6 @@ const port = process.env.PORT || 3000;
 
 //middlewares
 app.use(helmet());// security middleware for setting various HTTP response headers
-app.use(cors(
-    {
-        origin: process.env.CORS_ORIGIN,
-        methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-        // allowedHeaders: ["fcm-service-type"],
-        credentials: true,
-    }
-));
 app.use(express.urlencoded({ extended: true }));
 app.use(clerkMiddleware({
     audience: process.env.CORS_ORIGIN,
