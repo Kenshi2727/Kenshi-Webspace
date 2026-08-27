@@ -23,7 +23,7 @@ const port = process.env.PORT || 3000;
 app.use(helmet());// security middleware for setting various HTTP response headers
 app.use(express.urlencoded({ extended: true }));
 app.use(clerkMiddleware({
-    audience: process.env.CORS_ORIGIN,
+    // audience: process.env.CORS_ORIGIN,
 }));
 // sending raw buffer to /users/create instead of json as webhook verify expects raw buffer
 app.use("/users", bodyParser.raw({ type: "application/json" }), userRoutes);
@@ -50,7 +50,6 @@ app.get('/ping', (req, res) => {
 app.listen(port, () => {
     console.log(`MAIN SERVER is running on http://localhost:${port}`);
     console.log(`Current Process ID: ${process.pid}`);
-    console.log(`CORS is enabled for: ${process.env.CORS_ORIGIN}`);
     console.log(`Prisma Client is connected: ${prisma !== null && prisma !== undefined}`);
 });
 

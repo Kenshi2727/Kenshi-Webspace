@@ -7,15 +7,15 @@ const requestIdMiddleware = (req, res, next) => {
     const incomingRequestId = req.get(HEADERS.REQUEST_ID);
 
     if (incomingRequestId && typeof incomingRequestId !== 'string') {
-        return res.status(HTTP_STATUS.BAD_REQUEST).json({
-            message: "[POTENTIAL MALACIOUS ATTACK!] Inavlid Request ID receieved!"
-        });
-
         logger.error("Request ID is inavlid!", {
             threat: "Potential Malicious Attack",
             incomingRequestId,
             ip: req.ip
         })
+
+        return res.status(HTTP_STATUS.BAD_REQUEST).json({
+            message: "[POTENTIAL MALACIOUS ATTACK!] Inavlid Request ID receieved!"
+        });
     }
 
     const requestId = incomingRequestId || randomUUID();

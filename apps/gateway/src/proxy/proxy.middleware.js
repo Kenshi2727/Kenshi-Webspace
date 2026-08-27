@@ -6,6 +6,7 @@ import logger from '../logger/index.js';
 import http from 'http';
 import https from 'https';
 import { HTTP_STATUS } from '../constants/http.constants.js'
+import attachGatewaySecret from './attachGatewaySecret.js';
 
 /*
 * proxy middleware with timeouts
@@ -46,8 +47,18 @@ const createServiceProxy = (target, serviceName, options = {}) => {
                 proxyReq.setHeader(HEADERS.REQUEST_ID, req.requestId);
                 proxyReq.setHeader(HEADERS.FORWARDED_FOR, req.ip);
                 proxyReq.setHeader(HEADERS.FORWARDED_PROTO, req.protocol);
-                proxyReq.setHeader(HEADERS.GATEWAY_SECRET, 'api-gateway-secret');
                 proxyReq.setHeader(HEADERS.TARGET_SERVICE, serviceName);
+
+                // Attach Gateway Secret
+                const attachGatewaySecretResponse = attachGatewaySecret(proxyReq);
+
+                if (attachGatewaySecretResponse === false) {
+                    const secretError = new Error("Gateway Secret Not Configured!");
+                    secretError.statusCode = HTTP_STATUS.INTERNAL_SERVER_ERROR;
+                    secretError.message = "Internal Server Error!";
+
+                    proxyReq.destroy(secretError);
+                }
 
                 // Log proxy request
                 logger.debug(`Proxying request to ${serviceName}`, {
@@ -144,6 +155,7 @@ const createServiceProxy = (target, serviceName, options = {}) => {
                         error: {
                             code: 'BAD_GATEWAY',
                             message: `Unable to reach ${serviceName}`,
+                            cause: err.message,
                             requestId: req.requestId
                         }
                     });

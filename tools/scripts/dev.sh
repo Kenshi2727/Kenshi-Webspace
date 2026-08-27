@@ -3,15 +3,25 @@
 echo "Starting Kenshi Webspace..."
 echo "[Kenshin Command Activated!]"
 
-cd ../../apps/web
+cd ../../apps/web/
 npm run dev &
-Client_PID=$!
+Web_PID=$!
 
-cd ../../apps/content-service
+cd ../../apps/content-service/
 npm run dev &
 Content_Service_PID=$!
 
-echo "Client PID : $Client_PID"
+cd ../../apps/notification-service/
+npm run dev &
+Notification_Service_PID=$!
+
+cd ../../apps/gateway/
+npm run dev &
+Gateway_PID=$!
+
+echo "Client PID : $Web_PID"
 echo "Content Service PID  : $Content_Service_PID"
+echo "Notification Service PID  : $Notification_Service_PID"
+echo "Gateway PID  : $Gateway_PID"
 
 wait

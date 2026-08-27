@@ -7,6 +7,8 @@ import logger from './logger/index.js';
 // import { initSentry, attachSentryErrorHandler } from './observability/sentry.js';
 import requestIdMiddleware from './middlewares/requestId.middleware.js';
 // import { validateRequest } from './middlewares/validation.middleware.js';
+import stripIdentityHeaders from './middlewares/stripIdentityHeaders.middleware.js';
+import injectVerifiedIdentityHeaders from './middlewares/injectVerifiedIdentityHeaders.middleware.js';
 import services from './config/services.js';
 import contentRoutes from './routes/content.route.js';
 import notificationRoutes from './routes/notification.route.js';
@@ -40,6 +42,9 @@ app.use(rateLimit({
 app.use(requestIdMiddleware);
 // Request validation
 // app.use(validateRequest);
+
+// app.use(stripIdentityHeaders);
+// app.use(injectVerifiedIdentityHeaders);
 
 app.get('/health', (req, res) => {
     const uptime = process.uptime();
