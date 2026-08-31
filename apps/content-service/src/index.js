@@ -8,6 +8,7 @@ import userRoutes from "./routes/user.route.js";
 import postRoutes from "./routes/post.route.js";
 import mediaRoutes from "./routes/media.route.js";
 import { clerkMiddleware } from '@clerk/express';
+import validateGatewaySecret from "./middlewares/validateGatewaySecret.middleware.js";
 import bodyParser from 'body-parser';
 import helmet from "helmet";
 import { dirname, join } from "path";
@@ -22,6 +23,7 @@ const port = process.env.PORT || 3000;
 //middlewares
 app.use(helmet());// security middleware for setting various HTTP response headers
 app.use(express.urlencoded({ extended: true }));
+app.use(validateGatewaySecret);
 app.use(clerkMiddleware({
     // audience: process.env.CORS_ORIGIN,
 }));
