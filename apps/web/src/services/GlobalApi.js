@@ -36,7 +36,7 @@ const pingServer = async () => {
 // Content Service APIs
 const createUser = (data) => instance.post('/api/content/users/create', data);
 
-const getUser = (userId, token) => instance.get(`/users/${userId}`, {
+const getUser = (userId, token) => instance.get(`/api/content/users/${userId}`, {
     headers: {
         Authorization: `Bearer ${token}`,
     },

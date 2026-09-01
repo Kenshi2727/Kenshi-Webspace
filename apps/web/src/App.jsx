@@ -124,14 +124,14 @@ function App() {
                 </div>
               ));
 
-              notification.onclick = (event) => {
-                event.preventDefault();
+              // notification.onclick = (event) => {
+              //   event.preventDefault();
 
-                if (payload?.fcmOptions.link) {
-                  window.focus();
-                  window.location.href = payload?.fcmOptions.link;
-                }
-              };
+              //   if (payload?.fcmOptions.link) {
+              //     window.focus();
+              //     window.location.href = payload?.fcmOptions.link;
+              //   }
+              // };
             });
 
             // generate the FCM token
