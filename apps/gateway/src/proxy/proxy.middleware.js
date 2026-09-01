@@ -16,7 +16,7 @@ const createServiceProxy = (target, serviceName, options = {}) => {
 
     // HTTP/HTTPS Node Networking agents with connection pooling and timeouts
     const { protocol } = new URL(target);
-    const Agent = protocol === 'https' ? https.Agent : http.Agent;
+    const Agent = protocol === 'https:' ? https.Agent : http.Agent;
 
     const agent = new Agent({
         keepAlive: true,
