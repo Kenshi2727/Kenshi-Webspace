@@ -21,6 +21,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/index.js",
+    "build": "npm run migrate --workspace=@repo/database && npm run generate --workspace=@repo/database",
     "start": "node src/index.js"
   },
   "dependencies": {
