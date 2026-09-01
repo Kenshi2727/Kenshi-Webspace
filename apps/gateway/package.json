@@ -1,0 +1,35 @@
+{
+  "name": "gateway",
+  "version": "1.0.0",
+  "description": "Gateway for client-services communication over http",
+  "keywords": [
+    "gateway",
+    "api-gateway"
+  ],
+  "homepage": "https://github.com/Kenshi2727/Kenshi-Webspace#readme",
+  "bugs": {
+    "url": "https://github.com/Kenshi2727/Kenshi-Webspace/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kenshi2727/Kenshi-Webspace.git"
+  },
+  "license": "ISC",
+  "author": "Abhishek Mathur",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon src/index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.6.2",
+    "helmet": "^8.3.0",
+    "http-proxy-middleware": "^4.2.0",
+    "shared": "^0.2.0",
+    "winston": "^3.19.0"
+  }
+}
