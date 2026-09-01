@@ -1,0 +1,43 @@
+{
+  "name": "content-service",
+  "version": "1.0.0",
+  "description": "Server Side Service for Kenshi Webspace",
+  "keywords": [
+    "server",
+    "backend",
+    "kenshi"
+  ],
+  "homepage": "https://github.com/Kenshi2727/Kenshi-Webspace#readme",
+  "bugs": {
+    "url": "https://github.com/Kenshi2727/Kenshi-Webspace/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kenshi2727/Kenshi-Webspace.git"
+  },
+  "license": "Apache-2.0",
+  "author": "Abhishek Mathur",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js",
+    "build": "npm run migrate --workspace=@kenshi/database && npm run generate --workspace=@kenshi/database",
+    "log": "npm run dev -- --color 2>&1 | tee -a logs.txt",
+    "tunnel": "lt --port 3000",
+    "ngrok": "ngrok http http://localhost:3000"
+  },
+  "dependencies": {
+    "@clerk/express": "^1.7.40",
+    "@repo/database": "*",
+    "@repo/shared": "*",
+    "@sentry/node": "^10.25.0",
+    "axios": "^1.11.0",
+    "cloudinary": "^2.7.0",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "helmet": "^8.1.0",
+    "multer": "^2.0.2",
+    "svix": "^1.75.0"
+  }
+}

@@ -1,3 +1,8 @@
+## Frontend Recration
+[Idea source](https://blaxel.ai/blog/typescript-vs-python-ai-agents)
+
+
+
 ## New idea-
 - tablet stylus canavas addition 
 [Link](https://openprocessing.org/@msawired/1907365)
