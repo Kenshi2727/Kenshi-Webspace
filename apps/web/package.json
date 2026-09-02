@@ -83,6 +83,8 @@
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.18",
     "globals": "^15.14.0",
+    "sharp": "^0.32.6",
+    "sharp-ico": "^0.1.5",
     "tw-animate-css": "^1.3.6",
     "vite": "^6.0.11",
     "vite-plugin-pwa": "^1.3.0",
