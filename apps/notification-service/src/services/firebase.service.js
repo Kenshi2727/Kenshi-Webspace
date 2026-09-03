@@ -1,5 +1,5 @@
-// import { initializeApp } from 'firebase-admin/app';
-import admin from 'firebase-admin';
+import { cert, initializeApp, getApp } from "firebase-admin/app";
+import { getMessaging } from "firebase-admin/messaging";
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -10,8 +10,8 @@ try {
         throw new Error('FIREBASE_SERVICE_ACCOUNT is not defined[env var err]');
     }
 
-    admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount)
+    initializeApp({
+        credential: cert(serviceAccount)
     });
 
     console.log("Firebase admin sdk initialzed!");
@@ -20,4 +20,4 @@ try {
     console.error('Firebase admin initialization error', error.message);
 }
 
-export const messaging = admin.messaging();
+export const messaging = getMessaging(getApp());
