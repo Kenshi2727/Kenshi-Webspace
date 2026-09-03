@@ -11,17 +11,6 @@ import toast from 'react-hot-toast';
 import { formatDate } from '../lib/dateFormatter';
 import { useUser, useAuth } from '@clerk/clerk-react';
 
-const containerVariants = {
-    hidden: { opacity: 0 },
-    show: {
-        opacity: 1,
-        transition: {
-            staggerChildren: 0.08,
-            delayChildren: 0.2
-        },
-    },
-};
-
 const itemVariants = {
     hidden: { opacity: 0, y: 30 },
     show: {
@@ -64,9 +53,13 @@ const categoryFilterOptions = ['All', ...categories];
 
 // Floating bubbles component
 const FloatingParticles = () => {
-    const bubbles = Array.from({ length: 20 }, (_, i) => ({
+    const bubbles = Array.from({ length: 150 }, (_, i) => ({
         id: i,
         size: Math.random() * 50 + 30, // 30px to 80px
+        targetX: Math.random() * window.innerWidth,
+        targetY: Math.random() * window.innerHeight * 2,
+        duration: Math.random() * 8 + 6,
+        delay: Math.random() * 5,
     }));
 
     return (
@@ -74,27 +67,29 @@ const FloatingParticles = () => {
             {bubbles.map((bubble) => (
                 <motion.div
                     key={bubble.id}
-                    className="absolute rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-gray-50 dark:to-gray-300 backdrop-blur-sm dark:shadow-2xl dark:shadow-white"
+                    className="absolute rounded-full bg-pink-400 dark:bg-linear-to-b dark:from-gray-50 dark:to-gray-300 backdrop-blur-sm dark:shadow-2xl dark:shadow-white"
                     style={{
                         width: bubble.size,
                         height: bubble.size,
                     }}
                     initial={{
-                        x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1200),
-                        y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight * 2 : 1600),
-                        scale: Math.random() * 0.5 + 0.5,
+                        x: 0,
+                        y: 0,
+                        scale: 0,
+                        opacity: 0,
                     }}
                     animate={{
-                        y: [null, -40, 40],
-                        x: [null, Math.random() * 80 - 40],
-                        opacity: [0.25, 0.55, 0.25],
-                        scale: [null, Math.random() * 0.4 + 0.8],
+                        x: [0, bubble.targetX],
+                        y: [0, bubble.targetY],
+                        opacity: [0, 0.55, 0],
+                        scale: [0, 1, 0.8],
                     }}
                     transition={{
-                        duration: Math.random() * 15 + 15,
+                        duration: bubble.duration,
+                        repeatType: "loop",
                         repeat: Infinity,
-                        ease: "easeInOut",
-                        delay: Math.random() * 10,
+                        ease: "easeOut",
+                        delay: bubble.delay,
                     }}
                 />
             ))}
@@ -191,7 +186,7 @@ const ArticlesPage = () => {
         }
 
         return (
-            <Card className="overflow-hidden p-0 bg-gradient-to-br from-purple-500/10 to-violet-500/10 hover:from-purple-500/30 hover:to-violet-500/30 backdrop-blur-xl border border-purple-300/20 hover:border-purple-300/40 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-500/20 dark:shadow-indigo-300/50 h-full">
+            <Card className="overflow-hidden p-0 bg-gradient-to-br from-purple-600/50 to-indigo-600/50 hover:from-purple-400/60 hover:to-indigo-400/60 backdrop-blur-xl border border-purple-300/50 hover:border-purple-300/40 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-500/20 dark:shadow-indigo-300/50 h-full">
                 {/* Article Image */}
                 <div className="relative overflow-hidden h-52 bg-gradient-to-br from-purple-400/20 to-violet-600/20">
                     <motion.img
@@ -347,7 +342,7 @@ const ArticlesPage = () => {
 
     // Main Render
     return (
-        <div className="min-h-screen bg-gradient-to-br from-purple-950 to-purple-800 dark:from-indigo-950 dark:via-purple-950 dark:to-slate-950 relative overflow-hidden">
+        <div className="min-h-screen bg-gradient-to-br from-indigo-600 to-purple-600 dark:from-indigo-950 dark:via-purple-950 dark:to-slate-950 relative overflow-hidden">
 
             <FloatingParticles />
 
@@ -356,7 +351,6 @@ const ArticlesPage = () => {
 
             <main className="relative z-10 flex-grow py-20 px-6 lg:px-16">
                 <motion.div
-                    variants={containerVariants}
                     initial="hidden"
                     animate="show"
                     className="max-w-7xl mx-auto"
@@ -389,7 +383,7 @@ const ArticlesPage = () => {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.3, duration: 0.8 }}
                         >
-                            All Articles
+                            <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-100 to-pink-300">All Articles</span>
                         </motion.h1>
 
                         <motion.p
@@ -404,7 +398,7 @@ const ArticlesPage = () => {
 
                     {/* Filter and Search Bar */}
                     <motion.div variants={itemVariants} className="mb-16">
-                        <Card className="bg-gradient-to-r from-purple-500/10 to-violet-500/10 backdrop-blur-xl border border-purple-300/20 rounded-3xl shadow-2xl dark:shadow-indigo-300/50 overflow-hidden">
+                        <Card className="bg-gradient-to-r from-pink-500/10 to-pink-500/10 backdrop-blur-xl border border-purple-300/20 rounded-3xl shadow-2xl dark:shadow-indigo-300/50 overflow-hidden">
                             <CardContent className="p-8">
                                 <div className="flex flex-col gap-8 items-center">
                                     {/* Search Bar */}
@@ -413,13 +407,13 @@ const ArticlesPage = () => {
                                             whileHover={{ scale: 1.02 }}
                                             className="relative"
                                         >
-                                            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-purple-300/70" size={20} />
+                                            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-purple-300" size={20} />
                                             <input
                                                 type="text"
                                                 placeholder="Discover amazing articles..."
                                                 value={searchTerm}
                                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                                className="w-full pl-12 pr-6 py-2 sm:py-4 bg-gradient-to-r from-purple-500/20 to-violet-500/20 border border-purple-300/30 rounded-2xl text-white placeholder-purple-300/60 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 backdrop-blur-sm transition-all duration-300 text-sm sm:text-lg focus:placeholder-transparent"
+                                                className="w-full pl-12 pr-6 py-2 sm:py-4 bg-gradient-to-r from-pink-200/30 via-pink-100/30 to-pink-200/10 border border-purple-300/30 rounded-2xl text-white placeholder-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 backdrop-blur-sm transition-all duration-300 text-sm sm:text-lg focus:placeholder-transparent"
                                             />
                                         </motion.div>
                                     </div>
@@ -476,7 +470,6 @@ const ArticlesPage = () => {
                     {!loading && articles.length > 0 && (<AnimatePresence mode="wait">
                         <motion.div
                             key={selectedCategory + searchTerm}
-                            variants={containerVariants}
                             initial="hidden"
                             animate="show"
                             exit="hidden"
@@ -523,7 +516,6 @@ const ArticlesPage = () => {
 
                     {/* Load More Section */}
                     <motion.div
-                        variants={itemVariants}
                         className="mt-20 text-center"
                     >
                         <motion.div
@@ -533,7 +525,7 @@ const ArticlesPage = () => {
                             <Button
                                 size="lg"
                                 onClick={() => toast('Feature coming soon!', { icon: '🔍' })}
-                                className="bg-gradient-to-r from-purple-500/20 to-violet-500/20 hover:from-purple-500/30 hover:to-violet-500/30 text-white border border-purple-300/30 hover:border-purple-300/50 backdrop-blur-xl px-10 py-4 rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl hover:shadow-purple-500/20"
+                                className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-white border border-purple-300/30 backdrop-blur-xl px-10 py-4 rounded-2xl transition-all duration-300 shadow-xl cursor-pointer"
                             >
                                 <span className="bg-gradient-to-r from-white via-purple-200 to-violet-200 bg-clip-text text-transparent font-bold text-xs sm:text-lg">
                                     Discover More Articles
@@ -547,13 +539,12 @@ const ArticlesPage = () => {
                             animate={{ opacity: 1 }}
                             transition={{ delay: 1.5, duration: 0.6 }}
                         >
-                            Showing {filteredArticles.length} of {articles.length} carefully curated articles
+                            Showing <span className='font-bold text-purple-300'>{filteredArticles.length}</span> of <span className='font-bold text-purple-300'>{articles.length}</span> carefully curated articles
                         </motion.p>
                     </motion.div>
 
                     {/* Stats Section */}
                     <motion.div
-                        variants={itemVariants}
                         className="mt-24 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6"
                     >
                         {[
@@ -566,11 +557,11 @@ const ArticlesPage = () => {
                                 key={index}
                                 initial={{ opacity: 0, y: 30 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.5 + index * 0.15, duration: 0.6 }}
+                                transition={{ type: "spring" }}
                                 whileHover={{ scale: 1.05, y: -8 }}
                                 className="group"
                             >
-                                <Card className="bg-gradient-to-br from-purple-500/10 to-violet-500/10 backdrop-blur-xl border border-purple-300/20 hover:border-purple-300/40 hover:bg-gradient-to-br hover:from-purple-500/15 hover:to-violet-500/15 transition-all duration-500 text-center group-hover:shadow-xl group-hover:shadow-purple-500/20 dark:shadow-indigo-300/50 h-full">
+                                <Card className="bg-gradient-to-br from-purple-600/50 to-indigo-600/50 backdrop-blur-xl border border-purple-300/20 hover:border-purple-300/40 hover:bg-gradient-to-br hover:from-purple-500/15 hover:to-violet-500/15 transition-all duration-500 text-center group-hover:shadow-xl group-hover:shadow-purple-500/20 dark:shadow-indigo-300/50 h-full">
                                     <CardContent className="p-4 sm:p-6 md:p-8 flex flex-col items-center justify-center h-full">
                                         <motion.div
                                             className="flex justify-center mb-3 md:mb-4"
@@ -585,7 +576,7 @@ const ArticlesPage = () => {
                                             className="text-xl sm:text-2xl md:text-3xl font-black text-transparent bg-gradient-to-r from-purple-200 to-violet-200 bg-clip-text mb-1 md:mb-2 leading-tight"
                                             initial={{ scale: 0.8 }}
                                             animate={{ scale: 1 }}
-                                            transition={{ delay: 2.2 + index * 0.1, duration: 0.4, type: "spring" }}
+                                            transition={{ type: "spring" }}
                                         >
                                             {stat.value}
                                         </motion.div>
