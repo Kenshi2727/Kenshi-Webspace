@@ -18,7 +18,7 @@ if (!PUBLISHABLE_KEY) {
 }
 
 // Pinging Server
-pingServer();
+// pingServer();
 
 // Sentry Initialization
 Sentry.init({

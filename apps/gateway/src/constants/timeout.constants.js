@@ -1,11 +1,11 @@
 /*
-Connection timeout:  3 seconds
-Proxy timeout:      30 seconds
-Request timeout:    15 seconds
+Connection timeout
+Proxy timeout 
+Request timeout  
 */
 
 export const TIMEOUTS = {
-    CONNECTION: 3000,
-    REQUEST: 15000,
-    PROXY: 10000
+    CONNECTION: Number(process.env.CONNECTION_TIMEOUT),
+    REQUEST: Number(process.env.REQUEST_TIMEOUT),
+    PROXY: Number(process.env.PROXY_TIMEOUT)
 };

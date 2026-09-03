@@ -1,10 +1,10 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import cors from 'cors';
 import helmet from 'helmet';
 import notificationRoutes from './routes/notification.route.js';
 import tokenRoutes from './routes/token.route.js';
 import testRoutes from './routes/test.route.js'
+import validateGatewaySecret from './middlewares/validateGatewaySecret.middleware.js';
 
 dotenv.config();
 
@@ -13,13 +13,9 @@ const port = process.env.PORT || 5000;
 
 // middlewares
 app.use(helmet());
-app.use(cors({
-    origin: process.env.CORS_ORIGIN,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-    credentials: true,
-}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(validateGatewaySecret);
 
 // routes
 app.use('/tokens', tokenRoutes);
@@ -30,7 +26,6 @@ process.env.MODE === 'development' && app.use('/tests', testRoutes);
 app.listen(port, () => {
     console.log(`NOTIFICATION SERVER is running on PORT:${port}`);
     console.log(`Current Process ID: ${process.pid}`);
-    console.log(`CORS is enabled for: ${process.env.CORS_ORIGIN}`);
 });
 
 // root route

@@ -4,11 +4,11 @@ import "./instrument.js";
 import express from "express";
 import dotenv from "dotenv";
 import prisma from "@repo/database";
-import cors from "cors";
 import userRoutes from "./routes/user.route.js";
 import postRoutes from "./routes/post.route.js";
 import mediaRoutes from "./routes/media.route.js";
 import { clerkMiddleware } from '@clerk/express';
+import validateGatewaySecret from "./middlewares/validateGatewaySecret.middleware.js";
 import bodyParser from 'body-parser';
 import helmet from "helmet";
 import { dirname, join } from "path";
@@ -22,17 +22,10 @@ const port = process.env.PORT || 3000;
 
 //middlewares
 app.use(helmet());// security middleware for setting various HTTP response headers
-app.use(cors(
-    {
-        origin: process.env.CORS_ORIGIN,
-        methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-        // allowedHeaders: ["fcm-service-type"],
-        credentials: true,
-    }
-));
 app.use(express.urlencoded({ extended: true }));
+app.use(validateGatewaySecret);
 app.use(clerkMiddleware({
-    audience: process.env.CORS_ORIGIN,
+    // audience: process.env.CORS_ORIGIN,
 }));
 // sending raw buffer to /users/create instead of json as webhook verify expects raw buffer
 app.use("/users", bodyParser.raw({ type: "application/json" }), userRoutes);
@@ -59,7 +52,6 @@ app.get('/ping', (req, res) => {
 app.listen(port, () => {
     console.log(`MAIN SERVER is running on http://localhost:${port}`);
     console.log(`Current Process ID: ${process.pid}`);
-    console.log(`CORS is enabled for: ${process.env.CORS_ORIGIN}`);
     console.log(`Prisma Client is connected: ${prisma !== null && prisma !== undefined}`);
 });
 

@@ -1,5 +1,5 @@
 import { HTTP_STATUS } from '../constants/http.constants.js';
-import logger from '../observability/logger.js';
+// import logger from '../logger/gatewayLogger.js';
 
 /**
  * Validation middleware for request validation
@@ -21,11 +21,11 @@ export const validateRequest = (req, res, next) => {
         // Check for required headers
         const contentType = req.get('content-type');
         if (!contentType) {
-            logger.warn('Missing content-type header', {
-                requestId: req.requestId,
-                method: req.method,
-                path: req.path
-            });
+            // logger.warn('Missing content-type header', {
+            //     requestId: req.requestId,
+            //     method: req.method,
+            //     path: req.path
+            // });
 
             return res.status(HTTP_STATUS.BAD_REQUEST).json({
                 success: false,
@@ -39,12 +39,12 @@ export const validateRequest = (req, res, next) => {
         const isValidContentType = validContentTypes.some(type => contentType.includes(type));
 
         if (!isValidContentType) {
-            logger.warn('Invalid content-type header', {
-                requestId: req.requestId,
-                contentType,
-                method: req.method,
-                path: req.path
-            });
+            // logger.warn('Invalid content-type header', {
+            //     requestId: req.requestId,
+            //     contentType,
+            //     method: req.method,
+            //     path: req.path
+            // });
 
             return res.status(HTTP_STATUS.BAD_REQUEST).json({
                 success: false,
@@ -58,11 +58,11 @@ export const validateRequest = (req, res, next) => {
         const MAX_BODY_SIZE = 10 * 1024 * 1024; // 10MB
 
         if (contentLength > MAX_BODY_SIZE) {
-            logger.warn('Request body exceeds size limit', {
-                requestId: req.requestId,
-                contentLength,
-                maxAllowed: MAX_BODY_SIZE
-            });
+            // logger.warn('Request body exceeds size limit', {
+            //     requestId: req.requestId,
+            //     contentLength,
+            //     maxAllowed: MAX_BODY_SIZE
+            // });
 
             return res.status(HTTP_STATUS.BAD_REQUEST).json({
                 success: false,
@@ -73,10 +73,10 @@ export const validateRequest = (req, res, next) => {
 
         next();
     } catch (error) {
-        logger.error('Validation middleware error', {
-            requestId: req.requestId,
-            error: error.message
-        });
+        // logger.error('Validation middleware error', {
+        //     requestId: req.requestId,
+        //     error: error.message
+        // });
 
         return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
@@ -93,11 +93,11 @@ export const validatePathParam = (paramName) => (req, res, next) => {
     const paramValue = req.params[paramName];
 
     if (!paramValue) {
-        logger.warn('Missing required path parameter', {
-            requestId: req.requestId,
-            paramName,
-            path: req.path
-        });
+        // logger.warn('Missing required path parameter', {
+        //     requestId: req.requestId,
+        //     paramName,
+        //     path: req.path
+        // });
 
         return res.status(HTTP_STATUS.BAD_REQUEST).json({
             success: false,
@@ -116,11 +116,11 @@ export const validateQueryParams = (requiredParams) => (req, res, next) => {
     const missingParams = requiredParams.filter(param => !req.query[param]);
 
     if (missingParams.length > 0) {
-        logger.warn('Missing required query parameters', {
-            requestId: req.requestId,
-            missingParams,
-            path: req.path
-        });
+        // logger.warn('Missing required query parameters', {
+        //     requestId: req.requestId,
+        //     missingParams,
+        //     path: req.path
+        // });
 
         return res.status(HTTP_STATUS.BAD_REQUEST).json({
             success: false,
@@ -142,10 +142,10 @@ export const validateSchema = (schema) => (req, res, next) => {
         // For now, basic validation is performed by validateRequest middleware
         next();
     } catch (error) {
-        logger.error('Schema validation error', {
-            requestId: req.requestId,
-            error: error.message
-        });
+        // logger.error('Schema validation error', {
+        //     requestId: req.requestId,
+        //     error: error.message
+        // });
 
         return res.status(HTTP_STATUS.BAD_REQUEST).json({
             success: false,

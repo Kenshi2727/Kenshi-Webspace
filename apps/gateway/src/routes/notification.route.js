@@ -3,7 +3,7 @@ import { createServiceProxy } from '../proxy/proxy.middleware.js';
 import services from '../config/services.js';
 import { HEADERS } from '../constants/header.constants.js';
 import { HTTP_STATUS } from '../constants/http.constants.js'
-import logger from '../observability/logger.js';
+import logger from '../logger/index.js';
 
 const router = express.Router();
 const target = services.notification;
@@ -19,14 +19,13 @@ if (!target) {
 } else {
     const proxy = createServiceProxy(target, 'notification-service', {
         pathRewrite: {
-            "^/notification": ""
+            "^/api/notification": ""
         }
     });
 
     router.use((req, res, next) => {
         logger.info('Notification service route registered', { target });
-        req.headers[HEADERS.SERVICE_TARGET] = 'notification-service';
-        req.headers[HEADERS.SERVICE] = 'notification-service';
+        req.headers[HEADERS.TARGET_SERVICE] = 'notification-service';
 
         logger.debug('Proxying notification service request', {
             requestId: req.requestId,

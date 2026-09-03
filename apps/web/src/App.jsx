@@ -85,19 +85,53 @@ function App() {
             onMessage(messaging, (payload) => {
               console.log('Message received. ', payload);
               const { title, body, image } = payload?.notification || {};
-              const notification = new Notification(title, {
-                body: body,
-                icon: image
-              });
+              // const notification = new Notification(title, {
+              //   body: body,
+              //   icon: image
+              // });
 
-              notification.onclick = (event) => {
-                event.preventDefault();
+              toast.custom((t) => (
+                <div
+                  className={`flex w-[380px] items-start gap-3 rounded-xl bg-white p-4 shadow-lg border border-gray-200 transition-all duration-300 ${t.visible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-5"}`}
+                >
+                  {/* Image */}
+                  {image && (
+                    <img
+                      src={image}
+                      alt=""
+                      className="h-12 w-12 shrink-0 rounded-lg object-cover"
+                    />
+                  )}
 
-                if (payload?.fcmOptions.link) {
-                  window.focus();
-                  window.location.href = payload?.fcmOptions.link;
-                }
-              };
+                  {/* Content */}
+                  <div className="min-w-0 flex-1">
+                    <h4 className="truncate text-sm font-semibold text-gray-900">
+                      {title}
+                    </h4>
+
+                    <p className="mt-1 line-clamp-2 text-sm text-gray-600">
+                      {body}
+                    </p>
+                  </div>
+
+                  {/* Close button */}
+                  <button
+                    onClick={() => toast.dismiss(t.id)}
+                    className="text-gray-400 hover:text-gray-700"
+                  >
+                    ×
+                  </button>
+                </div>
+              ));
+
+              // notification.onclick = (event) => {
+              //   event.preventDefault();
+
+              //   if (payload?.fcmOptions.link) {
+              //     window.focus();
+              //     window.location.href = payload?.fcmOptions.link;
+              //   }
+              // };
             });
 
             // generate the FCM token
