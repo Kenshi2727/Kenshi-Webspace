@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -53,14 +53,16 @@ const categoryFilterOptions = ['All', ...categories];
 
 // Floating bubbles component
 const FloatingParticles = () => {
-    const bubbles = Array.from({ length: 150 }, (_, i) => ({
-        id: i,
-        size: Math.random() * 50 + 30, // 30px to 80px
-        targetX: Math.random() * window.innerWidth,
-        targetY: Math.random() * window.innerHeight * 2,
-        duration: Math.random() * 8 + 6,
-        delay: Math.random() * 5,
-    }));
+    const bubbles = useMemo(() => {
+        return Array.from({ length: 100 }, (_, i) => ({
+            id: i,
+            size: Math.random() * 50 + 30, // 30px to 80px
+            targetX: Math.random() * window.innerWidth,
+            targetY: Math.random() * window.innerHeight * 2,
+            duration: Math.random() * 8 + 6,
+            delay: Math.random() * 5,
+        }));
+    }, []);
 
     return (
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -186,7 +188,7 @@ const ArticlesPage = () => {
         }
 
         return (
-            <Card className="overflow-hidden p-0 bg-gradient-to-br from-purple-600/50 to-indigo-600/50 hover:from-purple-400/60 hover:to-indigo-400/60 backdrop-blur-xl border border-purple-300/50 hover:border-purple-300/40 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-500/20 dark:shadow-indigo-300/50 h-full">
+            <Card className="overflow-hidden p-0 bg-gradient-to-br from-purple-600/90 to-indigo-600/90 hover:from-purple-400/90 hover:to-indigo-400/60 dark:from-purple-500/10 dark:to-violet-500/10 dark:hover:from-purple-500/30 backdrop-blur-xl border border-purple-300/50 hover:border-purple-300/40 transition-all duration-500 shadow-purple-800 shadow-2xl hover:shadow-purple-500/20 dark:shadow-indigo-300/50 h-full">
                 {/* Article Image */}
                 <div className="relative overflow-hidden h-52 bg-gradient-to-br from-purple-400/20 to-violet-600/20">
                     <motion.img
@@ -275,7 +277,7 @@ const ArticlesPage = () => {
                     </p>
 
                     {/* Article Meta */}
-                    <div className="space-y-3 pt-4 border-t border-purple-300/20">
+                    <div className="space-y-3 pt-4 border-t border-purple-300/50 dark:border-purple-300/20">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-4 text-xs text-purple-300/80">
                                 <div className="flex items-center gap-1">
@@ -326,15 +328,6 @@ const ArticlesPage = () => {
                         </div>
                     </div>
                 </CardContent>
-
-                {/* Animated Border */}
-                <motion.div
-                    className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-purple-400 via-violet-500 to-indigo-500"
-                    initial={{ scaleX: 0, opacity: 0 }}
-                    whileHover={{ scaleX: 1, opacity: 1 }}
-                    transition={{ duration: 0.4, ease: "easeOut" }}
-                    style={{ originX: 0 }}
-                />
             </Card>
         )
     }
@@ -398,7 +391,7 @@ const ArticlesPage = () => {
 
                     {/* Filter and Search Bar */}
                     <motion.div variants={itemVariants} className="mb-16">
-                        <Card className="bg-gradient-to-r from-pink-500/10 to-pink-500/10 backdrop-blur-xl border border-purple-300/20 rounded-3xl shadow-2xl dark:shadow-indigo-300/50 overflow-hidden">
+                        <Card className="bg-gradient-to-r from-pink-500/10 to-pink-500/10 dark:from-purple-500/10 dark:to-violet-500/10 backdrop-blur-xl border border-purple-300/20 rounded-3xl shadow-2xl dark:shadow-indigo-300/50 overflow-hidden">
                             <CardContent className="p-8">
                                 <div className="flex flex-col gap-8 items-center">
                                     {/* Search Bar */}
@@ -561,7 +554,7 @@ const ArticlesPage = () => {
                                 whileHover={{ scale: 1.05, y: -8 }}
                                 className="group"
                             >
-                                <Card className="bg-gradient-to-br from-purple-600/50 to-indigo-600/50 backdrop-blur-xl border border-purple-300/20 hover:border-purple-300/40 hover:bg-gradient-to-br hover:from-purple-500/15 hover:to-violet-500/15 transition-all duration-500 text-center group-hover:shadow-xl group-hover:shadow-purple-500/20 dark:shadow-indigo-300/50 h-full">
+                                <Card className="bg-gradient-to-br from-purple-600/50 to-indigo-600/50 dark:from-purple-500/10 dark:to-violet-500/10 dark:hover:from-purple-500/30 backdrop-blur-xl border border-purple-300/20 hover:border-purple-300/40 hover:bg-gradient-to-br hover:from-purple-500/15 hover:to-violet-500/15 transition-all duration-500 text-center group-hover:shadow-xl group-hover:shadow-purple-500/20 dark:shadow-indigo-300/50 h-full">
                                     <CardContent className="p-4 sm:p-6 md:p-8 flex flex-col items-center justify-center h-full">
                                         <motion.div
                                             className="flex justify-center mb-3 md:mb-4"
