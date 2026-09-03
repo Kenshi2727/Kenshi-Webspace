@@ -2,6 +2,21 @@
     "$schema": "https://turborepo.dev/schema.json",
     "tasks": {
         "build": {
+            "env": [
+                "PORT",
+                "CLERK_PUBLISHABLE_KEY",
+                "CLERK_SECRET_KEY",
+                "CLERK_WEBHOOK_SECRET",
+                "CLOUDINARY_CLOUD_NAME",
+                "CLOUDINARY_API_KEY",
+                "CLOUDINARY_API_SECRET",
+                "SENTRY_DSN",
+                "GATEWAY_SECRET",
+                "MODE",
+                "FIREBASE_SERVICE_ACCOUNT",
+                "DATABASE_URL",
+                "FIREBASE_SERVICE_ACCOUNT"
+            ],
             "outputs": [
                 "dist/**"
             ]
