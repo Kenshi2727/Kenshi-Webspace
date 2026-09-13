@@ -323,7 +323,7 @@ export default function ArticlePage() {
                 </motion.button>
             </motion.div>
 
-            <div className="min-h-screen bg-gradient-to-br from-purple-950 to-purple-800 dark:from-indigo-950 dark:via-purple-950 dark:to-slate-950 relative overflow-hidden">
+            <div className="min-h-screen bg-gradient-to-br from-indigo-700 to-purple-700 dark:from-indigo-950 dark:via-purple-950 dark:to-slate-950 relative overflow-hidden">
                 <div className="relative z-10 py-16 px-6 lg:px-16">
                     <motion.div
                         variants={containerVariants}
@@ -419,7 +419,7 @@ export default function ArticlePage() {
                             </motion.div>
                         </motion.div>
 
-                        <Card className="max-w-5xl mx-auto rounded-3xl shadow-2xl dark:shadow-indigo-300/50 bg-white/20 border border-white/30 backdrop-blur-xl relative overflow-hidden">
+                        <Card className="max-w-5xl mx-auto rounded-3xl shadow-2xl dark:shadow-indigo-300/50 bg-white/40 dark:bg-white/20 border border-white/30 backdrop-blur-xl relative overflow-hidden">
                             <CardContent id="print-area" className="relative p-4 sm:p-10 space-y-8">
                                 {/* Header */}
                                 <motion.div variants={itemVariants} className="flex flex-wrap items-center justify-between gap-4">
@@ -524,7 +524,7 @@ export default function ArticlePage() {
                                 </motion.div>
 
                                 <motion.h1
-                                    className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-white text-left drop-shadow-lg leading-tight"
+                                    className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-black dark:text-white text-left drop-shadow-lg leading-tight"
                                     initial={{ opacity: 0, x: -50 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}

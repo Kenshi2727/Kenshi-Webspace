@@ -511,7 +511,7 @@ const AboutPage = () => {
     ];
 
     return (
-        <div className="min-h-screen relative overflow-hidden text-gray-900 transition-colors duration-300 bg-gradient-to-br from-purple-950 to-indigo-700/60 dark:from-indigo-950 dark:to-purple-950 dark:text-gray-100">
+        <div className="min-h-screen relative overflow-hidden text-gray-900 transition-colors duration-300 bg-gradient-to-br from-indigo-600 to-purple-700 dark:from-indigo-950 dark:to-purple-950 dark:text-gray-100">
             {/* Enhanced animated background */}
             <div className="fixed inset-0 z-0">
                 <NeuralNetwork excludeZones={storyRef.current ? [storyRef.current] : []} />
