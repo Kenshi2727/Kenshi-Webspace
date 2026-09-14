@@ -1,1 +1,0 @@
-# Image providers package

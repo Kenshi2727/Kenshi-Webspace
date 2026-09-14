@@ -323,7 +323,7 @@ export default function ArticlePage() {
                 </motion.button>
             </motion.div>
 
-            <div className="min-h-screen bg-gradient-to-br from-purple-950 to-purple-800 dark:from-indigo-950 dark:via-purple-950 dark:to-slate-950 relative overflow-hidden">
+            <div className="min-h-screen bg-gradient-to-br from-indigo-700 to-purple-700 dark:from-indigo-950 dark:via-purple-950 dark:to-slate-950 relative overflow-hidden">
                 <div className="relative z-10 py-16 px-6 lg:px-16">
                     <motion.div
                         variants={containerVariants}
@@ -419,7 +419,7 @@ export default function ArticlePage() {
                             </motion.div>
                         </motion.div>
 
-                        <Card className="max-w-5xl mx-auto rounded-3xl shadow-2xl dark:shadow-indigo-300/50 bg-white/20 border border-white/30 backdrop-blur-xl relative overflow-hidden">
+                        <Card className="max-w-5xl mx-auto rounded-3xl shadow-2xl dark:shadow-indigo-300/50 bg-purple-300/50 dark:bg-white/20 border border-white/30 backdrop-blur-xl relative overflow-hidden">
                             <CardContent id="print-area" className="relative p-4 sm:p-10 space-y-8">
                                 {/* Header */}
                                 <motion.div variants={itemVariants} className="flex flex-wrap items-center justify-between gap-4">
@@ -429,7 +429,7 @@ export default function ArticlePage() {
                                     >
                                         <Badge
                                             variant="outline"
-                                            className="text-indigo-200 border-indigo-200/50 bg-indigo-500/20 backdrop-blur-sm px-4 py-2 text-sm font-medium"
+                                            className="text-white border-indigo-200/60 bg-indigo-500/60 backdrop-blur-sm px-4 py-2 text-sm font-medium"
                                         >
                                             {article.category}
                                         </Badge>
@@ -470,7 +470,7 @@ export default function ArticlePage() {
                                                     variant="outline"
                                                     size="sm"
                                                     onClick={() => setOpen(true)}
-                                                    className="flex items-center gap-2 bg-white/5 border-white/30 hover:bg-white/30 hover:border-white/50 text-white transition-all duration-300 backdrop-blur-sm cursor-pointer"
+                                                    className="flex items-center gap-2 border-indigo-200/60 bg-indigo-500/60 dark:bg-indigo-500/60 hover:bg-indigo-500/30 hover:border-indigo-200/50 text-white transition-all duration-300 backdrop-blur-sm cursor-pointer"
                                                 >
                                                     <Trash size={16} />
                                                     <span className="hidden [@media(min-width:240px)]:inline">Delete</span>
@@ -513,7 +513,7 @@ export default function ArticlePage() {
                                                     <Button
                                                         variant="outline"
                                                         size="sm"
-                                                        className="flex items-center gap-2 bg-white/5 border-white/30 hover:bg-white/30 hover:border-white/50 text-white transition-all duration-300 backdrop-blur-sm cursor-pointer"
+                                                        className="flex items-center gap-2 border-indigo-200/60 bg-indigo-500/60 dark:bg-indigo-500/60 hover:bg-indigo-500/30 hover:border-indigo-200/50 text-white transition-all duration-300 backdrop-blur-sm cursor-pointer"
                                                     >
                                                         <Pencil size={16} />
                                                         <span className="hidden [@media(min-width:240px)]:inline">Edit</span>
@@ -524,7 +524,7 @@ export default function ArticlePage() {
                                 </motion.div>
 
                                 <motion.h1
-                                    className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-white text-left drop-shadow-lg leading-tight"
+                                    className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-gray-100 dark:text-white text-left drop-shadow-lg leading-tight"
                                     initial={{ opacity: 0, x: -50 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
@@ -556,7 +556,7 @@ export default function ArticlePage() {
                                                 {article.author.firstName} {article.author.lastName}
                                             </span>
                                         </p>
-                                        <p className="text-sm text-gray-400">{article.author.tagline || 'Some wild author !'}</p>
+                                        <p className="text-sm text-gray-300">{article.author.tagline || 'Some wild author !'}</p>
                                     </motion.div>
                                 </motion.div>
 
@@ -567,7 +567,7 @@ export default function ArticlePage() {
                                 {/* Content with Scroll Animations */}
                                 <motion.div
                                     variants={itemVariants}
-                                    className="prose prose-lg max-w-none dark:prose-invert prose-headings:text-white prose-p:text-gray-200 prose-strong:text-white prose-code:text-indigo-200 prose-code:bg-indigo-900/30 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-pre:bg-gray-900/50 prose-pre:border prose-pre:border-white/10 wrap-break-word"
+                                    className="prose prose-lg max-w-none dark:prose-invert prose-headings:text-black prose-p:text-gray-50 prose-strong:text-white prose-code:text-indigo-200 prose-code:bg-indigo-900/30 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-pre:bg-gray-900/50 prose-pre:border prose-pre:border-white/10 wrap-break-word"
                                 >
                                     <MarkdownRenderer content={article.content} />
                                 </motion.div>

@@ -53,8 +53,24 @@ const categoryFilterOptions = ['All', ...categories];
 
 // Floating bubbles component
 const FloatingParticles = () => {
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+    useEffect(() => {
+        // for tilting device orientation
+        const handleResize = () => {
+            setWindowWidth(window.innerWidth);
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
+    const length = windowWidth > 768 ? 100 : 10;
+
     const bubbles = useMemo(() => {
-        return Array.from({ length: 100 }, (_, i) => ({
+        return Array.from({ length }, (_, i) => ({
             id: i,
             size: Math.random() * 50 + 30, // 30px to 80px
             targetX: Math.random() * window.innerWidth,
@@ -335,7 +351,7 @@ const ArticlesPage = () => {
 
     // Main Render
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-600 to-purple-600 dark:from-indigo-950 dark:via-purple-950 dark:to-slate-950 relative overflow-hidden">
+        <div className="min-h-screen bg-gradient-to-br from-indigo-600 to-purple-700 dark:from-indigo-950 dark:via-purple-950 dark:to-slate-950 relative overflow-hidden">
 
             <FloatingParticles />
 

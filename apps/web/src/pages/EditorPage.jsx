@@ -1137,12 +1137,12 @@ export default function EditorPage({ type }) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
                 className={isZenMode
-                    ? "fixed inset-0 z-50 overflow-y-auto bg-gradient-to-br from-purple-950 via-purple-900 to-indigo-900 py-4 md:py-8 lg:py-12 px-4 md:px-6 lg:px-16"
-                    : "min-h-screen bg-gradient-to-br from-purple-950 via-purple-900 to-indigo-900 py-4 md:py-8 lg:py-16 px-4 md:px-6 lg:px-16"
+                    ? "fixed inset-0 z-50 overflow-y-hidden bg-gradient-to-br from-indigo-700 to-purple-700 dark:from-indigo-950 dark:via-purple-950 dark:to-slate-950 py-4 md:py-8 lg:py-12 px-4 md:px-6 lg:px-16"
+                    : "min-h-screen bg-gradient-to-br from-indigo-700 to-purple-700 dark:from-indigo-950 dark:via-purple-950 dark:to-slate-950 py-4 md:py-8 lg:py-16 px-4 md:px-6 lg:px-16"
                 }
             >
                 <div className="max-w-7xl mx-auto">
-                    <Card className={`rounded-2xl md:rounded-3xl shadow-2xl bg-white/10 border border-white/20 backdrop-blur-xl ${isZenMode ? "min-h-[90vh]" : ""}`}>
+                    <Card className={`rounded-2xl md:rounded-3xl shadow-xl shadow-pink-400 bg-white/10 border border-white/20 backdrop-blur-xl overflow-hidden isZenMode ? "min-h-[90vh]" : ""}`}>
                         <CardHeader className={isZenMode ? "hidden" : "p-4 md:p-6 lg:p-8"}>
                             <CardTitle className="flex items-center gap-2 md:gap-3 text-white text-xl md:text-2xl lg:text-3xl font-extrabold">
                                 <FileText size={20} className="md:hidden" />
@@ -1177,7 +1177,7 @@ export default function EditorPage({ type }) {
                                                 handleInputChange("title", e.target.value)
                                             }
                                             placeholder="Enter your article title..."
-                                            className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 text-sm md:text-base"
+                                            className="bg-pink-300/40 border-white/50 text-white placeholder:text-indigo-950 text-sm md:text-base"
                                         />
                                     </div>
 
@@ -1196,7 +1196,7 @@ export default function EditorPage({ type }) {
                                             }
                                             placeholder="Brief description of your article..."
                                             rows={3}
-                                            className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 resize-none text-sm md:text-base"
+                                            className="bg-pink-300/40 placeholder:text-indigo-950 border-white/50 text-white resize-none text-sm md:text-base"
                                         />
                                     </div>
 
@@ -1212,7 +1212,7 @@ export default function EditorPage({ type }) {
                                                     handleInputChange("category", value)
                                                 }
                                             >
-                                                <SelectTrigger className="bg-white/5 border-white/20 text-white text-sm md:text-base focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                                                <SelectTrigger className="bg-pink-300/40 placeholder:text-indigo-950 border-white/50 text-white text-sm md:text-base focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
                                                     <SelectValue placeholder="Select category" />
                                                 </SelectTrigger>
                                                 <SelectContent>
@@ -1242,7 +1242,7 @@ export default function EditorPage({ type }) {
                                                 }
                                                 placeholder="5"
                                                 min="1"
-                                                className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 text-sm md:text-base"
+                                                className="bg-pink-300/40 placeholder:text-indigo-950 border-white/50 text-white text-sm md:text-base"
                                             />
                                         </div>
                                     </div>
@@ -1273,7 +1273,7 @@ export default function EditorPage({ type }) {
                                                     handleInputChange("thumbnail", e.target.value);
                                                 }}
                                                 placeholder="https://example.com/thumbnail.jpg"
-                                                className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 text-sm md:text-base"
+                                                className="bg-pink-300/40 placeholder:text-indigo-950 border-white/50 text-white text-sm md:text-base"
                                             />
 
                                             <Tooltip>
@@ -1281,7 +1281,7 @@ export default function EditorPage({ type }) {
                                                     <Button
                                                         htmlFor="thumbUpload"
                                                         size="sm"
-                                                        className="bg-white/10 hover:bg-white/20 text-white border-white/20 px-2 md:px-3"
+                                                        className="bg-white/10 hover:bg-white/30 text-white border-white/20 px-2 md:px-3"
                                                     >
                                                         <Upload size={16} />
                                                         <input
@@ -1308,7 +1308,7 @@ export default function EditorPage({ type }) {
                                                 <TooltipTrigger asChild>
                                                     <Button
                                                         size="sm"
-                                                        className="bg-white/10 hover:bg-white/20 text-white border-white/20 px-2 md:px-3"
+                                                        className="bg-white/10 hover:bg-white/30 text-white border-white/20 px-2 md:px-3"
                                                         onClick={() => handleImageDelete("thumbnail")}
                                                     >
                                                         <Trash size={16} />
@@ -1342,7 +1342,7 @@ export default function EditorPage({ type }) {
                                                     handleInputChange("coverImage", e.target.value);
                                                 }}
                                                 placeholder="https://example.com/cover.jpg"
-                                                className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 text-sm md:text-base"
+                                                className="bg-pink-300/40 placeholder:text-indigo-950 border-white/50 text-white text-sm md:text-base"
                                             />
 
                                             <Tooltip>
@@ -1350,7 +1350,7 @@ export default function EditorPage({ type }) {
                                                     <Button
                                                         size="sm"
                                                         htmlFor="coverUpload"
-                                                        className="bg-white/10 hover:bg-white/20 text-white border-white/20 px-2 md:px-3"
+                                                        className="bg-white/10 hover:bg-white/30 text-white border-white/20 px-2 md:px-3"
                                                     >
                                                         <Upload size={16} />
                                                         <input
@@ -1375,7 +1375,7 @@ export default function EditorPage({ type }) {
                                                 <TooltipTrigger asChild>
                                                     <Button
                                                         size="sm"
-                                                        className="bg-white/10 hover:bg-white/20 text-white border-white/20 px-2 md:px-3"
+                                                        className="bg-white/10 hover:bg-white/30 text-white border-white/20 px-2 md:px-3"
                                                         onClick={() => handleImageDelete("cover")}
                                                     >
                                                         <Trash size={16} />
@@ -1387,7 +1387,7 @@ export default function EditorPage({ type }) {
                                     </div>
 
                                     {/* Image Preview */}
-                                    <div className="bg-white/5 p-3 md:p-4 rounded-lg border border-white/20">
+                                    <div className="bg-pink-300/35 dark:bg-white/10 p-3 md:p-4 rounded-lg border border-white/50">
                                         <Label className="text-white font-medium text-sm mb-2 block">
                                             Preview
                                         </Label>
@@ -1447,7 +1447,7 @@ export default function EditorPage({ type }) {
                                 transition={{ duration: 0.5, delay: 0.2 }}
                             >
                                 <Tabs defaultValue="write" className="h-full">
-                                    <TabsList className="mb-4 flex flex-wrap h-auto gap-1 md:gap-2 justify-start items-center bg-white/10 p-1 rounded-xl w-full">
+                                    <TabsList className="mb-4 flex flex-wrap h-auto gap-1 md:gap-2 justify-start items-center bg-pink-300/30 p-1 rounded-xl w-full">
                                         {/* clear and copy buttons */}
                                         <div className="mr-auto flex flex-wrap items-center justify-start gap-1">
                                             <Tooltip>
@@ -1934,7 +1934,7 @@ export default function EditorPage({ type }) {
                                                     onDrop={handleEditorDrop}
                                                     onPaste={handleEditorPaste}
                                                     placeholder="Write your markdown content here... Press Ctrl + Space for Basic Blocks."
-                                                    className={`p-3 md:p-4 font-mono text-xs md:text-sm bg-white/5 text-white border-white/20 resize-none hide-scrollbar ${isSplitScreen ? (isZenMode ? "max-h-[85vh] h-[85vh] overflow-y-auto" : "max-h-[300px] md:max-h-[400px] lg:max-h-[500px] h-[300px] md:h-[400px] lg:h-[500px] overflow-y-auto") : (isZenMode ? "min-h-[85vh]" : "min-h-[300px] md:min-h-[400px] lg:min-h-[500px]")}`}
+                                                    className={`placeholder:text-indigo-950 p-3 md:p-4 font-mono text-xs md:text-sm bg-pink-300/30 text-white border-white/50 resize-none hide-scrollbar ${isSplitScreen ? (isZenMode ? "max-h-[85vh] h-[85vh] overflow-y-auto" : "max-h-[300px] md:max-h-[400px] lg:max-h-[500px] h-[300px] md:h-[400px] lg:h-[500px] overflow-y-auto") : (isZenMode ? "min-h-[85vh]" : "min-h-[300px] md:min-h-[400px] lg:min-h-[500px]")}`}
                                                 />
 
                                                 {showSlashMenu && filteredSlashCommands.length > 0 && (
@@ -1973,7 +1973,7 @@ export default function EditorPage({ type }) {
                                             </div>
                                             {isSplitScreen && (
                                                 <div
-                                                    className={`px-4 py-3 wrap-break-word overflow-y-auto bg-white/5 border border-white/20 rounded-md hide-scrollbar scroll-smooth ${isZenMode ? "max-h-[85vh] h-[85vh]" : "max-h-[300px] md:max-h-[400px] lg:max-h-[500px] h-[300px] md:h-[400px] lg:h-[500px]"}`}
+                                                    className={`px-4 py-3 wrap-break-word overflow-y-auto bg-purple-500/60 border border-white/50 rounded-md hide-scrollbar scroll-smooth ${isZenMode ? "max-h-[85vh] h-[85vh]" : "max-h-[300px] md:max-h-[400px] lg:max-h-[500px] h-[300px] md:h-[400px] lg:h-[500px]"}`}
                                                 >
                                                     <MarkdownRenderer
                                                         content={formData.content || "_Nothing to preview_"}
@@ -1984,7 +1984,7 @@ export default function EditorPage({ type }) {
                                     </TabsContent>
 
                                     <TabsContent value="preview">
-                                        <div className="px-1 wrap-break-word">
+                                        <div className="px-1 wrap-break-word bg-pink-400/30 p-4 md:p-6 rounded-xl border border-white/50 overflow-auto hide-scrollbar scroll-smooth h-[300px] md:h-[400px] lg:h-[500px]">
                                             <MarkdownRenderer
                                                 content={formData.content || "_Nothing to preview_"}
                                             />
