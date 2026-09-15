@@ -415,7 +415,7 @@ export default function ArticlePage() {
                         animate="visible"
                     >
                         <div className="grid items-stretch gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(18rem,1fr)]">
-                            <div ref={articleScrollRef} className="hide-scrollbar min-w-0 overflow-y-auto overscroll-contain pr-2 scroll-smooth lg:h-[calc(100vh+4rem)]">
+                            <div ref={articleScrollRef} className="hide-scrollbar min-w-0 overflow-y-auto overscroll-contain pr-2 scroll-smooth h-[calc(100vh+4rem)]">
                                 {/* Enhanced Cover with Parallax */}
                                 <motion.div
                                     variants={itemVariants}
