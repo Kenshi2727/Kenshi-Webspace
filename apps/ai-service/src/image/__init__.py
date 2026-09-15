@@ -1,1 +1,0 @@
-# Image generation provider package
