@@ -16,6 +16,7 @@ import remarkDirective from "remark-directive";
 import remarkToc from 'remark-toc'
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
+import { useTheme } from 'next-themes';
 
 // import 'highlight.js/styles/github-dark.css';
 // import 'highlight.js/styles/rose-pine-moon.css';
@@ -24,6 +25,7 @@ import { Check, CopyIcon } from 'lucide-react';
 
 export default function MarkdownRenderer({ content = '', components }) {
     const mdRef = useRef(null);
+    const { theme } = useTheme();
 
     useEffect(() => {
         if (!mdRef.current) return;
@@ -81,12 +83,12 @@ export default function MarkdownRenderer({ content = '', components }) {
     }
 
     const mdComponents = {
-        h1: ({ node, ...props }) => <h1 className="text-2xl md:text-4xl lg:text-5xl font-extrabold mt-2 mb-4 text-white" {...props} />,
-        h2: ({ node, ...props }) => <h2 className="text-xl md:text-3xl lg:text-4xl font-semibold mt-4 mb-3 text-white" {...props} />,
-        h3: ({ node, ...props }) => <h3 className="text-lg md:text-2xl lg:text-3xl font-semibold mt-3 mb-2 text-white" {...props} />,
-        h4: ({ node, ...props }) => <h4 className="text-base md:text-xl font-medium mt-3 mb-2 text-white" {...props} />,
-        h5: ({ node, ...props }) => <h5 className="text-sm md:text-lg font-medium mt-2 mb-1 text-white" {...props} />,
-        h6: ({ node, ...props }) => <h6 className="text-sm md:text-base font-medium mt-2 mb-1 text-white" {...props} />,
+        h1: ({ node, ...props }) => <h1 className="text-2xl md:text-4xl lg:text-5xl font-extrabold mt-2 mb-4 text-black dark:text-white" {...props} />,
+        h2: ({ node, ...props }) => <h2 className="text-xl md:text-3xl lg:text-4xl font-semibold mt-4 mb-3 text-black dark:text-white" {...props} />,
+        h3: ({ node, ...props }) => <h3 className="text-lg md:text-2xl lg:text-3xl font-semibold mt-3 mb-2 text-black dark:text-white" {...props} />,
+        h4: ({ node, ...props }) => <h4 className="text-base md:text-xl font-medium mt-3 mb-2 text-black dark:text-white" {...props} />,
+        h5: ({ node, ...props }) => <h5 className="text-sm md:text-lg font-medium mt-2 mb-1 text-black dark:text-white" {...props} />,
+        h6: ({ node, ...props }) => <h6 className="text-sm md:text-base font-medium mt-2 mb-1 text-black dark:text-white" {...props} />,
         p: ({ node, ...props }) => <p className="text-gray-200 leading-relaxed mb-4" {...props} />,
         a: ({ node, href, ...props }) => {
             const isExternal = href && !href.startsWith("#") && !href.startsWith("/");
@@ -102,52 +104,18 @@ export default function MarkdownRenderer({ content = '', components }) {
         },
         ul: ({ node, ...props }) => <ul className="list-disc pl-6 space-y-2 mb-4" {...props} />,
         ol: ({ node, ...props }) => <ol className="list-decimal pl-6 space-y-2 mb-4" {...props} />,
-        li: ({ node, ...props }) => <li className="text-gray-200" {...props} />,
-        strong: ({ node, ...props }) => <strong className="font-semibold text-white" {...props} />,
-        em: ({ node, ...props }) => <em className="italic text-gray-200" {...props} />,
-        blockquote: ({ node, ...props }) => <blockquote className="border-l-4 border-indigo-400 pl-4 italic text-gray-200 my-4" {...props} />,
+        li: ({ node, ...props }) => <li className="text-gray-700 dark:text-gray-200" {...props} />,
+        strong: ({ node, ...props }) => <strong className="font-semibold text-black dark:text-white" {...props} />,
+        em: ({ node, ...props }) => <em className="italic text-gray-900 dark:text-gray-200" {...props} />,
+        blockquote: ({ node, ...props }) => <blockquote className="border-l-4 border-indigo-700 dark:border-indigo-400 pl-4 italic text-gray-800 dark:text-gray-200 my-4" {...props} />,
         img: ({ node, ...props }) => (
             <figure className="my-4">
 
                 <div className="relative w-fit mx-auto">
                     <img className="mx-auto rounded-lg shadow-sm max-h-[420px] object-contain" {...props} />
-                    <svg
-                        className="absolute inset-0 w-full h-full z-30 pointer-events-none"
-                    >
-                        <motion.rect
-                            x="2"
-                            y="2"
-                            width="calc(100% - 4px)"
-                            height="calc(100% - 4px)"
-                            rx="8"
-                            fill="none"
-                            stroke="white"
-                            strokeWidth="3"
-                            strokeDasharray="200 3000"
-                            style={{
-                                filter: "drop-shadow(0 0 12px white)",
-                            }}
-
-                            initial={{
-                                strokeDashoffset: 0,
-                                opacity: 0
-                            }}
-                            whileInView={{
-                                opacity: [1, 0.8, 0.8, 1],
-                                strokeDashoffset: [0, -3080],
-                            }}
-                            transition={{
-                                duration: 4,
-                                repeat: Infinity,
-                                repeatDelay: 0,
-                                repeatType: "loop",
-                                ease: "linear",
-                            }}
-                        />
-                    </svg>
                 </div>
 
-                {props.alt && <figcaption className="text-sm text-gray-200 text-center mt-2"><span className='font-bold'>Fig. </span>{props.alt}</figcaption>}
+                {props.alt && <figcaption className="text-sm text-gray-950 dark:text-gray-200 text-center mt-2"><span className='font-bold'>Fig. </span>{props.alt}</figcaption>}
             </figure>
         ),
         table: ({ node, ...props }) => (
@@ -155,8 +123,8 @@ export default function MarkdownRenderer({ content = '', components }) {
                 <table className="w-full table-auto border-collapse" {...props} />
             </div>
         ),
-        th: ({ node, ...props }) => <th className="px-3 py-2 bg-white/5 text-left text-sm font-semibold text-white border-b border-white/10" {...props} />,
-        td: ({ node, ...props }) => <td className="px-3 py-2 text-sm text-gray-200 border-b border-white/10" {...props} />,
+        th: ({ node, ...props }) => <th className="px-3 py-2 bg-white/10 text-left text-sm font-semibold text-black dark:text-white border-b border-x-1 border-white/30 dark:border-white/10" {...props} />,
+        td: ({ node, ...props }) => <td className="px-3 py-2 text-sm text-gray-200 dark:text-gray-200 border-b border-x border-white/40 dark:border-white/20" {...props} />,
         code: ({ inline, className, children, ...props }) => {
             if (inline) {
                 return <code className="bg-white/10 text-indigo-200 rounded px-1 py-[0.06rem] text-sm" {...props}>{children}</code>;
@@ -169,47 +137,46 @@ export default function MarkdownRenderer({ content = '', components }) {
 
         // custom elemnts
         danger: ({ children }) => (
-            <div className="bg-red-500/20 text-red-300 p-2 rounded w-fit">
-                ❗{children}
+            <div className="flex bg-red-500/80 dark:bg-red-500/20 text-red-200 dark:text-red-300 p-2 rounded w-fit">
+                <span className='hidden dark:block'>❗</span><span className='dark:hidden block'>❕</span>{children}
             </div>
         ),
 
         info: ({ children }) => (
-            <div className="bg-yellow-300/50 p-2 rounded w-fit my-2">
+            <div className="bg-yellow-300 dark:bg-yellow-300/50 text-yellow-950 dark:text-yellow-50 p-2 rounded w-fit my-2">
                 💡{children}
             </div>
         ),
 
         note: ({ children }) => (
-            <div className="bg-blue-500/20 text-blue-300 p-2 rounded w-fit">
+            <div className="bg-blue-500 dark:bg-blue-500/20 text-blue-100 dark:text-blue-300 p-2 rounded w-fit">
                 📝 {children}
             </div>
         ),
 
         like: ({ children }) => (
-            <div className="bg-pink-500/20 text-pink-300 p-2 rounded w-fit">
+            <div className="bg-pink-400/80 dark:bg-pink-500/20 text-pink-200 dark:text-pink-300 p-2 rounded w-fit">
                 🩷 {children}
             </div>
         ),
         warn: ({ children }) => (
-            <div className="bg-orange-500/20 text-orange-300 p-2 rounded w-fit">
+            <div className="bg-orange-500 dark:bg-orange-500/20 text-orange-200 dark:text-orange-300 p-2 rounded w-fit">
                 ⚠️ {children}
             </div>
         ),
         success: ({ children }) => (
-            <div className="bg-green-500/20 text-green-300 p-2 rounded w-fit">
+            <div className="bg-green-500 dark:bg-green-500/20 text-green-100 dark:text-green-300 p-2 rounded w-fit">
                 ✅ {children}
             </div>
         ),
         tip: ({ children }) => (
-            <div className="bg-teal-500/20 text-teal-300 p-2 rounded w-fit">
+            <div className="bg-teal-500/50 dark:bg-teal-500/20 text-teal-200 dark:text-teal-300 p-2 rounded w-fit">
                 💡 {children}
             </div>
         ),
         todo: ({ children }) => (
             <ul className="bg-purple-500/20 text-purple-300 p-2 space-y-0 rounded w-fit">
-                <hr />
-                <div className='w-full flex justify-start items-center'>
+                <div className='w-full flex justify-start items-center pb-2 border-b'>
                     <strong className='text-xl'>📋 To-Do:</strong>
                 </div>
                 {React.Children.map(children, (child, i) => (
@@ -217,23 +184,22 @@ export default function MarkdownRenderer({ content = '', components }) {
                         {child}
                     </li>
                 ))}
-                <hr />
             </ul>
         ),
 
         quote: ({ children }) => (
-            <div className="flex flex-col gap-2 border-l-4 border-indigo-400 pl-4 italic text-sm sm:text-xl md:text-2xl font-bold text-indigo-300/80 my-4">
-                <svg
+            <div className="flex border-l-4 border-indigo-600/80 dark:border-indigo-400 pl-4 italic text-sm sm:text-xl md:text-2xl font-bold text-indigo-200 dark:text-indigo-300/80 my-4 wrap-break-word">
+                <span><svg
                     className='size-3 sm:size-5 md:size-7'
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 320 320">
                     <path
                         d="M82.87 129.48S77.32 98.96 114.31 74c-12.95 0-89.7 30.52-89.7 113.74 0 33.09 27.59 59.73 61.01 58.19 29.85-1.37 54.07-25.6 55.44-55.45 1.54-33.41-25.1-61-58.19-61zm154.26 0S231.58 98.96 268.57 74c-12.95 0-89.7 30.52-89.7 113.74 0 33.09 27.58 59.73 61.01 58.19 29.85-1.37 54.07-25.6 55.44-55.45 1.54-33.41-25.1-61-58.19-61z"
-                        fill="#FFF">
+                        fill={theme === "dark" ? "#FFF" : "#4f39f6"}>
                     </path>
-                </svg>
-                <span className='children ml-2'>{children}</span>
-                <svg
+                </svg></span>
+                <span className='children ml-2 wrap-break-word'>{children}</span>
+                <span><svg
                     className="size-3 sm:size-5 md:size-7"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 320 320"
@@ -241,10 +207,10 @@ export default function MarkdownRenderer({ content = '', components }) {
                     <g transform="scale(-1,1) translate(-320,0)">
                         <path
                             d="M82.87 129.48S77.32 98.96 114.31 74c-12.95 0-89.7 30.52-89.7 113.74 0 33.09 27.59 59.73 61.01 58.19 29.85-1.37 54.07-25.6 55.44-55.45 1.54-33.41-25.1-61-58.19-61zm154.26 0S231.58 98.96 268.57 74c-12.95 0-89.7 30.52-89.7 113.74 0 33.09 27.58 59.73 61.01 58.19 29.85-1.37 54.07-25.6 55.44-55.45 1.54-33.41-25.1-61-58.19-61z"
-                            fill="#FFF"
+                            fill={theme === "dark" ? "#FFF" : "#4f39f2"}
                         />
                     </g>
-                </svg>
+                </svg></span>
 
             </div>
         ),

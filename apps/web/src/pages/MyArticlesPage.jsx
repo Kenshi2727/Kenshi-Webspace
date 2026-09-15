@@ -47,7 +47,7 @@ export default function MyArticlesPage() {
         const token = await getToken();
         try {
             const res = await getUserPosts(userId, token);
-            const data = res.data;
+            const data = res.data.posts;
             setArticles(data);
         } catch (err) {
             console.error(err);
