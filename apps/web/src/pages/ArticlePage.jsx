@@ -6,7 +6,7 @@ import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
-import { Facebook, Twitter, Linkedin, Pencil, Clock, Eye, Heart, Bookmark, Share2, Delete, DeleteIcon, Trash, DownloadIcon } from 'lucide-react';
+import { Facebook, Twitter, Linkedin, Pencil, Clock, Eye, Heart, Bookmark, Share2, Delete, DeleteIcon, Trash, DownloadIcon, BrainCircuit, MessageCircle, Send, Sparkles } from 'lucide-react';
 import MarkdownRenderer from '@/components/MarkdownRenderer';
 import NotFoundPage from './NotFoundPage';
 import LoadingPage from './LoadingPage';
@@ -20,12 +20,75 @@ import {
 import { useAuth } from '@clerk/clerk-react';
 import { useDispatch } from 'react-redux';
 import { setCurrentArticle } from '@/features/articles/currentArticleSlice';
+import { Textarea } from '@/components/ui/textarea';
 
 const related = [
     { id: 2, title: 'Coming soon...', readTime: '0 min', category: 'Crying Kitty' },
     { id: 4, title: 'Coming soon...', readTime: '0 min', category: 'Crying Kitty' },
     { id: 3, title: 'Coming soon...', readTime: '0 min', category: 'Crying Kitty' },
 ];
+
+function AIInsightsPanel({ article, mobile = false }) {
+    return (
+        <Card className={`border border-fuchsia-300/20 bg-slate-950/40 text-white shadow-2xl shadow-indigo-950/30 backdrop-blur-xl ${mobile ? 'rounded-2xl' : 'rounded-3xl'}`}>
+            <CardContent className="space-y-6 p-5 sm:p-6">
+                <div className="flex items-start justify-between gap-3">
+                    <div>
+                        <div className="mb-2 flex items-center gap-2 text-fuchsia-200">
+                            <BrainCircuit size={19} />
+                            <span className="text-xs font-semibold uppercase tracking-[0.18em]">AI Insights</span>
+                        </div>
+                        <h2 className="text-xl font-bold text-white">{mobile ? 'Ask about this article' : 'Understand this article faster'}</h2>
+                    </div>
+                    <Sparkles className="shrink-0 text-pink-300" size={20} />
+                </div>
+
+                {!mobile && (
+                    <div className="space-y-3">
+                        {[
+                            { label: 'Summary', text: 'A concise AI summary will appear here once AI features are connected.' },
+                            { label: 'Key ideas', text: 'Important themes and takeaways will be extracted from this article.' },
+                            { label: 'Ask about it', text: 'The article-aware assistant will answer questions using this article.' },
+                        ].map((insight) => (
+                            <div key={insight.label} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                                <p className="mb-1 text-sm font-semibold text-indigo-100">{insight.label}</p>
+                                <p className="text-sm leading-relaxed text-slate-300">{insight.text}</p>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                <div className="rounded-2xl border border-fuchsia-300/20 bg-linear-to-br from-fuchsia-500/10 to-indigo-500/10 p-4">
+                    <div className="mb-3 flex items-center gap-2">
+                        <MessageCircle size={17} className="text-fuchsia-200" />
+                        <h3 className="font-semibold text-white">Chat with this article</h3>
+                    </div>
+                    <p className="mb-4 text-sm leading-relaxed text-slate-300">
+                        Ask questions about “{article.title}” when the AI service is available.
+                    </p>
+                    <div className="relative">
+                        <Textarea
+                            disabled
+                            placeholder="AI chat will be available soon..."
+                            aria-label="Ask the AI about this article"
+                            className="min-h-24 resize-none border-white/10 bg-black/20 pr-12 text-white placeholder:text-slate-400 disabled:cursor-not-allowed disabled:opacity-70"
+                        />
+                        <Button
+                            type="button"
+                            size="icon"
+                            disabled
+                            aria-label="Send question"
+                            className="absolute bottom-3 right-3 bg-fuchsia-500/40 text-white"
+                        >
+                            <Send size={16} />
+                        </Button>
+                    </div>
+                    <p className="mt-3 text-xs text-slate-400">Frontend placeholder only. No question will be sent.</p>
+                </div>
+            </CardContent>
+        </Card>
+    );
+}
 
 export default function ArticlePage() {
     const { id } = useParams();
@@ -39,9 +102,11 @@ export default function ArticlePage() {
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
     const [deleting, setDeleting] = useState(false);
+    const [isAiChatOpen, setIsAiChatOpen] = useState(false);
+    const articleScrollRef = useRef(null);
 
     // Fixed scroll hook
-    const { scrollYProgress, scrollY } = useScroll();
+    const { scrollYProgress, scrollY } = useScroll({ container: articleScrollRef });
     const readingProgress = useTransform(scrollYProgress, [0, 1], [0, 100]);
     const [progress, setProgress] = useState(0);
     const scaleX = useTransform(scrollYProgress, [0, 1], [0, 1]);
@@ -321,396 +386,414 @@ export default function ArticlePage() {
                 >
                     <DownloadIcon size={20} />
                 </motion.button>
+
+                <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setIsAiChatOpen(true)}
+                    className="flex cursor-pointer items-center gap-2 rounded-full border border-fuchsia-300/30 bg-fuchsia-500/20 p-3 text-fuchsia-100 backdrop-blur-lg transition-all duration-300 hover:bg-fuchsia-500/40 lg:hidden"
+                    aria-label="Open AI chat"
+                >
+                    <MessageCircle size={20} />
+                </motion.button>
             </motion.div>
 
-            <div className="min-h-screen bg-gradient-to-br from-indigo-700 to-purple-700 dark:from-indigo-950 dark:via-purple-950 dark:to-slate-950 relative overflow-hidden">
-                <div className="relative z-10 py-16 px-6 lg:px-16">
+            <Dialog open={isAiChatOpen} onOpenChange={setIsAiChatOpen}>
+                <DialogContent className="w-[calc(100%-2rem)] max-w-md rounded-2xl border-white/10 bg-slate-950 p-0 text-white shadow-2xl">
+                    <DialogHeader className="sr-only">
+                        <DialogTitle>AI insights and article chat</DialogTitle>
+                    </DialogHeader>
+                    <AIInsightsPanel article={article} mobile />
+                </DialogContent>
+            </Dialog>
+
+            <div className="min-h-screen bg-gradient-to-br from-indigo-700 to-purple-700 dark:from-indigo-950 dark:via-purple-950 dark:to-slate-950 relative">
+                <div className="relative z-10 min-h-screen px-6 pb-4 pt-20 lg:px-16">
                     <motion.div
                         variants={containerVariants}
                         initial="hidden"
                         animate="visible"
                     >
-                        {/* Enhanced Cover with Parallax */}
-                        <motion.div
-                            variants={itemVariants}
-                            style={{ opacity, scale, y }}
-                            whileHover={{
-                                z: 20
-                            }}
-                            className="no-pdf h-[calc(15vh)] sm:h-[calc(20vh)] md:h-[calc(40vh)] max-w-5xl mx-auto mb-12 overflow-hidden rounded-3xl shadow-2xl dark:shadow-xl dark:shadow-indigo-300/50 relative group"
-                        >
-                            <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent z-10 hover:opacity-0 transition-opacity delay-300 duration-500" />
-
-                            <svg
-                                className="absolute inset-0 w-full h-full z-30 pointer-events-none"
-                            >
-                                <motion.rect
-                                    x="2"
-                                    y="2"
-                                    width="calc(100% - 4px)"
-                                    height="calc(100% - 4px)"
-                                    rx="24"
-                                    fill="none"
-                                    stroke="#a855f7"
-                                    strokeWidth="3"
-                                    strokeDasharray="200 3000"
-                                    style={{
-                                        filter: "drop-shadow(0 0 12px #a855f7)",
-                                    }}
-                                    whileInView={{
-                                        strokeDashoffset: [0, -3080],
-                                    }}
-                                    transition={{
-                                        duration: 3,
-                                        repeat: Infinity,
-                                        ease: "linear",
-                                    }}
-                                />
-                            </svg>
-
-                            <motion.img
-                                src={(!article.coverImage) || article.coverImage.trim() === '' ? '/placeholder.png' : article.coverImage}
-                                onError={(e) => {
-                                    e.target.onerror = null;//prevent loop if placeholder fails
-                                    e.target.src = '/placeholder.png';
-                                }}
-                                alt="Cover"
-                                className="w-full h-full object-fill transition-transform duration-700 group-hover:scale-105"
-                                whileHover={{ scale: 1.02 }}
-                                transition={{ duration: 0.3 }}
-                            />
-
-                            {/*Cover - Article title and author overlay */}
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.5, duration: 0.6 }}
-                                className="absolute inset-0 z-20"
-                            >
-
-                                <div className="absolute top-6 left-6 mr-6" >
-                                    {/* article title */}
-                                    <h1 className="text-sm sm:text-2xl md:text-3xl lg:text-5xl font-bold text-white line-clamp-4">{article.title}</h1>
-
-                                    {/* article author */}
-                                    <motion.div
-                                        className="text-[0.5rem] sm:text-xs md:text-xl font-stretch-extra-condensed italic text-white/50 mt-2 line-clamp-1"
-                                        whileHover={{
-                                            color: '#a855f7',
-                                        }}
-                                        transition={{ delay: 0.2, duration: 0.3 }}
-                                    >
-                                        - by {article.author.firstName} {article.author.lastName}
-                                    </motion.div>
-
-                                </div>
-                            </motion.div>
-
-                            {/* article badge */}
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.5, duration: 0.6 }}
-                                className="absolute bottom-6 left-6 z-20"
-                            >
-                                {article.featured && <Badge className="bg-indigo-500/80 text-white border-0 backdrop-blur-sm text-[0.5rem] md:text-xs px-1 py-0.5 md:px-2 md:py-1">
-                                    Featured
-                                </Badge>}
-                            </motion.div>
-                        </motion.div>
-
-                        <Card className="max-w-5xl mx-auto rounded-3xl shadow-2xl dark:shadow-indigo-300/50 bg-purple-300/50 dark:bg-white/20 border border-white/30 backdrop-blur-xl relative overflow-hidden">
-                            <CardContent id="print-area" className="relative p-4 sm:p-10 space-y-8">
-                                {/* Header */}
-                                <motion.div variants={itemVariants} className="flex flex-wrap items-center justify-between gap-4">
-                                    <motion.div
-                                        whileHover={{ scale: 1.05 }}
-                                        transition={{ type: "spring", stiffness: 300 }}
-                                    >
-                                        <Badge
-                                            variant="outline"
-                                            className="text-white border-indigo-200/60 bg-indigo-500/60 backdrop-blur-sm px-4 py-2 text-sm font-medium"
-                                        >
-                                            {article.category}
-                                        </Badge>
-                                    </motion.div>
-
-                                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-0.5 sm:gap-4 text-xs sm:text-sm text-gray-300">
-                                        <motion.div
-                                            whileHover={{ scale: 1.05 }}
-                                            className="flex items-center gap-2"
-                                        >
-                                            <Clock size={16} className="text-indigo-300" />
-                                            <span className='hidden [@media(min-width:422px)]:block'>{formatMessageTime(article.updatedAt)}</span>
-                                            {/* <span className='block [@media(min-width:422px)]:hidden'>{formatDate(article.updatedAt)}</span> */}
-                                            <span className='block [@media(min-width:422px)]:hidden'>{formatOnlyNumericDate(article.updatedAt)}</span>
-                                        </motion.div>
-                                        <motion.div
-                                            whileHover={{ scale: 1.05 }}
-                                            className="flex items-center gap-2"
-                                        >
-                                            <Eye size={16} className="text-indigo-300" />
-                                            <span>{article.readTime} min read</span>
-                                        </motion.div>
-                                    </div>
-                                </motion.div>
-
-                                {/* Title and Edit Button */}
-                                <motion.div variants={itemVariants} id="non-printable" className="flex w-full">
-                                    {user && (user.id === article.authorId) &&
-                                        <div className='flex w-full justify-end gap-2 sm:gap-4'>
-                                            <motion.div
-                                                initial={{ opacity: 0, scale: 0.8 }}
-                                                animate={{ opacity: 1, scale: 1 }}
-                                                transition={{ delay: 0.2, duration: 0.2 }}
-                                                whileHover={{ scale: 1.1 }}
-                                                whileTap={{ scale: 0.95 }}
-                                            >
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    onClick={() => setOpen(true)}
-                                                    className="flex items-center gap-2 border-indigo-200/60 bg-indigo-500/60 dark:bg-indigo-500/60 hover:bg-indigo-500/30 hover:border-indigo-200/50 text-white transition-all duration-300 backdrop-blur-sm cursor-pointer"
-                                                >
-                                                    <Trash size={16} />
-                                                    <span className="hidden [@media(min-width:240px)]:inline">Delete</span>
-                                                </Button>
-                                            </motion.div>
-
-
-                                            <Dialog open={open} onOpenChange={setOpen}>
-                                                <DialogContent className="max-w-md w-full sm:mx-4 rounded-2xl shadow-xl border border-white/10 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white p-0 overflow-hidden">
-                                                    <motion.div initial={{ opacity: 0, scale: 0.95, y: 10 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 10 }} transition={{ duration: 0.2, ease: "easeOut" }}>
-                                                        <div className="px-6 pt-6 pb-4 border-b border-white/10">
-                                                            <DialogHeader>
-                                                                <DialogTitle className="text-xl font-bold tracking-wide bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent">
-                                                                    Are you sure you want to delete?
-                                                                </DialogTitle>
-                                                            </DialogHeader>
-                                                            <p className="text-sm text-gray-300 mt-1">This action cannot be undone. Do you want to proceed?</p>
-                                                        </div>
-
-                                                        <DialogFooter className="px-6 py-4 flex-row items-center justify-end gap-3 bg-gray-800/40">
-                                                            <Button variant="ghost" onClick={() => setOpen(false)} disabled={deleting} className="hover:bg-gray-700/50 text-gray-300">No, thanks</Button>
-
-                                                            <Button onClick={handleDelete} disabled={deleting} className="bg-gradient-to-r from-indigo-500 to-pink-500 hover:from-indigo-400 hover:to-pink-400 text-white shadow-md">
-                                                                {deleting ? "Deleting…" : "Yes, delete it"}
-                                                            </Button>
-
-                                                        </DialogFooter>
-                                                    </motion.div>
-                                                </DialogContent>
-                                            </Dialog>
-
-                                            <Link to={`/articles/edit/${article.id}`}>
-                                                <motion.div
-                                                    initial={{ opacity: 0, scale: 0.8 }}
-                                                    animate={{ opacity: 1, scale: 1 }}
-                                                    transition={{ delay: 0.2, duration: 0.2 }}
-                                                    whileHover={{ scale: 1.1 }}
-                                                    whileTap={{ scale: 0.95 }}
-                                                >
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        className="flex items-center gap-2 border-indigo-200/60 bg-indigo-500/60 dark:bg-indigo-500/60 hover:bg-indigo-500/30 hover:border-indigo-200/50 text-white transition-all duration-300 backdrop-blur-sm cursor-pointer"
-                                                    >
-                                                        <Pencil size={16} />
-                                                        <span className="hidden [@media(min-width:240px)]:inline">Edit</span>
-                                                    </Button>
-                                                </motion.div>
-                                            </Link>
-                                        </div>}
-                                </motion.div>
-
-                                <motion.h1
-                                    className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-gray-100 dark:text-white text-left drop-shadow-lg leading-tight"
-                                    initial={{ opacity: 0, x: -50 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
-                                >
-                                    {article.title}
-                                </motion.h1>
-
-
-                                {/* Author Section */}
-                                <motion.div variants={itemVariants} className="flex items-center space-x-4">
-                                    <motion.div
-                                        whileHover={{ scale: 1.1, rotate: 5 }}
-                                        transition={{ type: "spring", stiffness: 300 }}
-                                    >
-                                        <Avatar className="ring-2 ring-white/30 ring-offset-2 ring-offset-transparent">
-                                            <AvatarImage src={article.authorImage} />
-                                            <AvatarFallback className="bg-indigo-500 text-white">
-                                                {article.author.firstName.charAt(0)}{article.author.lastName.charAt(0)}
-                                            </AvatarFallback>
-                                        </Avatar>
-                                    </motion.div>
-                                    <motion.div
-                                        initial={{ opacity: 0, x: -20 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        transition={{ delay: 0.7, duration: 0.5 }}
-                                    >
-                                        <p className="text-base text-gray-200 line-clamp-2">
-                                            By <span className="font-medium text-white hover:text-indigo-200 transition-colors duration-200 cursor-pointer">
-                                                {article.author.firstName} {article.author.lastName}
-                                            </span>
-                                        </p>
-                                        <p className="text-sm text-gray-300">{article.author.tagline || 'Some wild author !'}</p>
-                                    </motion.div>
-                                </motion.div>
-
-                                <motion.div variants={itemVariants}>
-                                    <Separator className="my-6 bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-                                </motion.div>
-
-                                {/* Content with Scroll Animations */}
+                        <div className="grid items-stretch gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(18rem,1fr)]">
+                            <div ref={articleScrollRef} className="hide-scrollbar min-w-0 overflow-y-auto overscroll-contain pr-2 scroll-smooth lg:h-[calc(100vh+4rem)]">
+                                {/* Enhanced Cover with Parallax */}
                                 <motion.div
                                     variants={itemVariants}
-                                    className="prose prose-lg max-w-none dark:prose-invert prose-headings:text-black prose-p:text-gray-50 prose-strong:text-white prose-code:text-indigo-200 prose-code:bg-indigo-900/30 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-pre:bg-gray-900/50 prose-pre:border prose-pre:border-white/10 wrap-break-word"
+                                    style={{ opacity, scale, y }}
+                                    whileHover={{
+                                        z: 20
+                                    }}
+                                    className="no-pdf relative mb-12 h-[calc(15vh)] w-full overflow-hidden rounded-3xl shadow-xl dark:shadow-2xs dark:shadow-indigo-300/50 sm:h-[calc(20vh)] md:h-[calc(40vh)]"
                                 >
-                                    <MarkdownRenderer content={article.content} />
-                                </motion.div>
+                                    <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent z-10 hover:opacity-0 transition-opacity delay-300 duration-500" />
 
-                                <motion.div variants={itemVariants}>
-                                    <Separator className="my-8 bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-                                </motion.div>
-
-                                {/* Enhanced Share Section */}
-                                <motion.div id="non-printable" variants={itemVariants} className="space-y-6">
-                                    <motion.h3
-                                        className="text-xl font-semibold text-white text-center"
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        transition={{ delay: 1, duration: 0.5 }}
+                                    <svg
+                                        className="absolute inset-0 w-full h-full z-30 pointer-events-none"
                                     >
-                                        Share this article
-                                    </motion.h3>
+                                        <motion.rect
+                                            x="2"
+                                            y="2"
+                                            width="calc(100% - 4px)"
+                                            height="calc(100% - 4px)"
+                                            rx="24"
+                                            fill="none"
+                                            stroke="#a855f7"
+                                            strokeWidth="3"
+                                            strokeDasharray="200 3000"
+                                            style={{
+                                                filter: "drop-shadow(0 0 12px #a855f7)",
+                                            }}
+                                            whileInView={{
+                                                strokeDashoffset: [0, -3080],
+                                            }}
+                                            transition={{
+                                                duration: 3,
+                                                repeat: Infinity,
+                                                ease: "linear",
+                                            }}
+                                        />
+                                    </svg>
 
-                                    <div className="flex justify-center space-x-4">
-                                        {[
-                                            { icon: <Twitter size={20} />, url: '#', label: 'Twitter', color: 'hover:bg-blue-500/80' },
-                                            { icon: <Facebook size={20} />, url: '#', label: 'Facebook', color: 'hover:bg-blue-600/80' },
-                                            { icon: <Linkedin size={20} />, url: '#', label: 'LinkedIn', color: 'hover:bg-blue-700/80' }
-                                        ].map((social, i) => (
+                                    <motion.img
+                                        src={(!article.coverImage) || article.coverImage.trim() === '' ? '/placeholder.png' : article.coverImage}
+                                        onError={(e) => {
+                                            e.target.onerror = null;//prevent loop if placeholder fails
+                                            e.target.src = '/placeholder.png';
+                                        }}
+                                        alt="Cover"
+                                        className="w-full h-full object-fill transition-transform duration-700 group-hover:scale-105"
+                                        whileHover={{ scale: 1.02 }}
+                                        transition={{ duration: 0.3 }}
+                                    />
+
+                                    {/*Cover - Article title and author overlay */}
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.5, duration: 0.6 }}
+                                        className="absolute inset-0 z-20"
+                                    >
+
+                                        <div className="absolute top-6 left-6 mr-6" >
+                                            {/* article title */}
+                                            <h1 className="text-sm sm:text-2xl md:text-3xl lg:text-5xl font-bold text-white line-clamp-4">{article.title}</h1>
+
+                                            {/* article author */}
                                             <motion.div
-                                                key={i}
-                                                initial={{ opacity: 0, y: 20 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                transition={{ delay: 1.2 + i * 0.1, duration: 0.5 }}
-                                                whileHover={{ scale: 1.1, y: -2 }}
-                                                whileTap={{ scale: 0.95 }}
+                                                className="text-[0.5rem] sm:text-xs md:text-xl font-stretch-extra-condensed italic text-white/50 mt-2 line-clamp-1"
+                                                whileHover={{
+                                                    color: '#a855f7',
+                                                }}
+                                                transition={{ delay: 0.2, duration: 0.3 }}
                                             >
-                                                <Button
+                                                - by {article.author.firstName} {article.author.lastName}
+                                            </motion.div>
+
+                                        </div>
+                                    </motion.div>
+
+                                    {/* article badge */}
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.5, duration: 0.6 }}
+                                        className="absolute bottom-6 left-6 z-20"
+                                    >
+                                        {article.featured && <Badge className="bg-indigo-500/80 text-white border-0 backdrop-blur-sm text-[0.5rem] md:text-xs px-1 py-0.5 md:px-2 md:py-1">
+                                            Featured
+                                        </Badge>}
+                                    </motion.div>
+                                </motion.div>
+
+                                <Card className="relative w-full overflow-hidden rounded-3xl border border-white/30 bg-purple-300/50 shadow-xl backdrop-blur-xl dark:bg-white/20 dark:shadow-xs dark:shadow-indigo-300/50">
+                                    <CardContent id="print-area" className="relative p-4 sm:p-10 space-y-8">
+                                        {/* Header */}
+                                        <motion.div variants={itemVariants} className="flex flex-wrap items-center justify-between gap-4">
+                                            <motion.div
+                                                whileHover={{ scale: 1.05 }}
+                                                transition={{ type: "spring", stiffness: 300 }}
+                                            >
+                                                <Badge
                                                     variant="outline"
-                                                    size="icon"
-                                                    asChild
-                                                    onClick={() => handleShareSocial(social.label)}
-                                                    className={`bg-white/10 border-white/20 text-white backdrop-blur-sm transition-all duration-300 ${social.color} hover:border-white/40 hover:shadow-lg hover:shadow-white/10 cursor-pointer`}
+                                                    className="text-white border-indigo-200/60 bg-indigo-500/60 backdrop-blur-sm px-4 py-2 text-sm font-medium"
                                                 >
-                                                    <div>
-                                                        {social.icon}
-                                                    </div>
-                                                </Button>
+                                                    {article.category}
+                                                </Badge>
+                                            </motion.div>
+
+                                            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-0.5 sm:gap-4 text-xs sm:text-sm text-gray-300">
+                                                <motion.div
+                                                    whileHover={{ scale: 1.05 }}
+                                                    className="flex items-center gap-2"
+                                                >
+                                                    <Clock size={16} className="text-indigo-300" />
+                                                    <span className='hidden [@media(min-width:422px)]:block'>{formatMessageTime(article.updatedAt)}</span>
+                                                    {/* <span className='block [@media(min-width:422px)]:hidden'>{formatDate(article.updatedAt)}</span> */}
+                                                    <span className='block [@media(min-width:422px)]:hidden'>{formatOnlyNumericDate(article.updatedAt)}</span>
+                                                </motion.div>
+                                                <motion.div
+                                                    whileHover={{ scale: 1.05 }}
+                                                    className="flex items-center gap-2"
+                                                >
+                                                    <Eye size={16} className="text-indigo-300" />
+                                                    <span>{article.readTime} min read</span>
+                                                </motion.div>
+                                            </div>
+                                        </motion.div>
+
+                                        {/* Title and Edit Button */}
+                                        <motion.div variants={itemVariants} id="non-printable" className="flex w-full">
+                                            {user && (user.id === article.authorId) &&
+                                                <div className='flex w-full justify-end gap-2 sm:gap-4'>
+                                                    <motion.div
+                                                        initial={{ opacity: 0, scale: 0.8 }}
+                                                        animate={{ opacity: 1, scale: 1 }}
+                                                        transition={{ delay: 0.2, duration: 0.2 }}
+                                                        whileHover={{ scale: 1.1 }}
+                                                        whileTap={{ scale: 0.95 }}
+                                                    >
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            onClick={() => setOpen(true)}
+                                                            className="flex items-center gap-2 border-indigo-200/60 bg-indigo-500/60 dark:bg-indigo-500/60 hover:bg-indigo-500/30 hover:border-indigo-200/50 text-white transition-all duration-300 backdrop-blur-sm cursor-pointer"
+                                                        >
+                                                            <Trash size={16} />
+                                                            <span className="hidden [@media(min-width:240px)]:inline">Delete</span>
+                                                        </Button>
+                                                    </motion.div>
+
+
+                                                    <Dialog open={open} onOpenChange={setOpen}>
+                                                        <DialogContent className="max-w-md w-full sm:mx-4 rounded-2xl shadow-xl border border-white/10 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white p-0 overflow-hidden">
+                                                            <motion.div initial={{ opacity: 0, scale: 0.95, y: 10 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 10 }} transition={{ duration: 0.2, ease: "easeOut" }}>
+                                                                <div className="px-6 pt-6 pb-4 border-b border-white/10">
+                                                                    <DialogHeader>
+                                                                        <DialogTitle className="text-xl font-bold tracking-wide bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent">
+                                                                            Are you sure you want to delete?
+                                                                        </DialogTitle>
+                                                                    </DialogHeader>
+                                                                    <p className="text-sm text-gray-300 mt-1">This action cannot be undone. Do you want to proceed?</p>
+                                                                </div>
+
+                                                                <DialogFooter className="px-6 py-4 flex-row items-center justify-end gap-3 bg-gray-800/40">
+                                                                    <Button variant="ghost" onClick={() => setOpen(false)} disabled={deleting} className="hover:bg-gray-700/50 text-gray-300">No, thanks</Button>
+
+                                                                    <Button onClick={handleDelete} disabled={deleting} className="bg-gradient-to-r from-indigo-500 to-pink-500 hover:from-indigo-400 hover:to-pink-400 text-white shadow-md">
+                                                                        {deleting ? "Deleting…" : "Yes, delete it"}
+                                                                    </Button>
+
+                                                                </DialogFooter>
+                                                            </motion.div>
+                                                        </DialogContent>
+                                                    </Dialog>
+
+                                                    <Link to={`/articles/edit/${article.id}`}>
+                                                        <motion.div
+                                                            initial={{ opacity: 0, scale: 0.8 }}
+                                                            animate={{ opacity: 1, scale: 1 }}
+                                                            transition={{ delay: 0.2, duration: 0.2 }}
+                                                            whileHover={{ scale: 1.1 }}
+                                                            whileTap={{ scale: 0.95 }}
+                                                        >
+                                                            <Button
+                                                                variant="outline"
+                                                                size="sm"
+                                                                className="flex items-center gap-2 border-indigo-200/60 bg-indigo-500/60 dark:bg-indigo-500/60 hover:bg-indigo-500/30 hover:border-indigo-200/50 text-white transition-all duration-300 backdrop-blur-sm cursor-pointer"
+                                                            >
+                                                                <Pencil size={16} />
+                                                                <span className="hidden [@media(min-width:240px)]:inline">Edit</span>
+                                                            </Button>
+                                                        </motion.div>
+                                                    </Link>
+                                                </div>}
+                                        </motion.div>
+
+                                        {/* Author Section */}
+                                        <motion.div variants={itemVariants} className="flex items-center space-x-4">
+                                            <motion.div
+                                                whileHover={{ scale: 1.1, rotate: 5 }}
+                                                transition={{ type: "spring", stiffness: 300 }}
+                                            >
+                                                <Avatar className="ring-2 ring-white/30 ring-offset-2 ring-offset-transparent">
+                                                    <AvatarImage src={article.authorImage} />
+                                                    <AvatarFallback className="bg-indigo-500 text-white">
+                                                        {article.author.firstName.charAt(0)}{article.author.lastName.charAt(0)}
+                                                    </AvatarFallback>
+                                                </Avatar>
+                                            </motion.div>
+                                            <motion.div
+                                                initial={{ opacity: 0, x: -20 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                transition={{ delay: 0.7, duration: 0.5 }}
+                                            >
+                                                <p className="text-base text-gray-200 line-clamp-2">
+                                                    By <span className="font-medium text-white hover:text-indigo-200 transition-colors duration-200 cursor-pointer">
+                                                        {article.author.firstName} {article.author.lastName}
+                                                    </span>
+                                                </p>
+                                                <p className="text-sm text-gray-300">{article.author.tagline || 'Some wild author !'}</p>
+                                            </motion.div>
+                                        </motion.div>
+
+                                        <motion.div variants={itemVariants}>
+                                            <Separator className="my-6 bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+                                        </motion.div>
+
+                                        {/* Content with Scroll Animations */}
+                                        <motion.div
+                                            variants={itemVariants}
+                                            className="prose prose-lg max-w-none dark:prose-invert prose-headings:text-black prose-p:text-gray-50 prose-strong:text-white prose-code:text-indigo-200 prose-code:bg-indigo-900/30 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-pre:bg-gray-900/50 prose-pre:border prose-pre:border-white/10 wrap-break-word"
+                                        >
+                                            <MarkdownRenderer content={article.content} />
+                                        </motion.div>
+
+                                        <motion.div variants={itemVariants}>
+                                            <Separator className="my-8 bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+                                        </motion.div>
+
+                                        {/* Enhanced Share Section */}
+                                        <motion.div id="non-printable" variants={itemVariants} className="space-y-6">
+                                            <motion.h3
+                                                className="text-xl font-semibold text-white text-center"
+                                                initial={{ opacity: 0 }}
+                                                animate={{ opacity: 1 }}
+                                                transition={{ delay: 1, duration: 0.5 }}
+                                            >
+                                                Share this article
+                                            </motion.h3>
+
+                                            <div className="flex justify-center space-x-4">
+                                                {[
+                                                    { icon: <Twitter size={20} />, url: '#', label: 'Twitter', color: 'hover:bg-blue-500/80' },
+                                                    { icon: <Facebook size={20} />, url: '#', label: 'Facebook', color: 'hover:bg-blue-600/80' },
+                                                    { icon: <Linkedin size={20} />, url: '#', label: 'LinkedIn', color: 'hover:bg-blue-700/80' }
+                                                ].map((social, i) => (
+                                                    <motion.div
+                                                        key={i}
+                                                        initial={{ opacity: 0, y: 20 }}
+                                                        animate={{ opacity: 1, y: 0 }}
+                                                        transition={{ delay: 1.2 + i * 0.1, duration: 0.5 }}
+                                                        whileHover={{ scale: 1.1, y: -2 }}
+                                                        whileTap={{ scale: 0.95 }}
+                                                    >
+                                                        <Button
+                                                            variant="outline"
+                                                            size="icon"
+                                                            asChild
+                                                            onClick={() => handleShareSocial(social.label)}
+                                                            className={`bg-white/10 border-white/20 text-white backdrop-blur-sm transition-all duration-300 ${social.color} hover:border-white/40 hover:shadow-lg hover:shadow-white/10 cursor-pointer`}
+                                                        >
+                                                            <div>
+                                                                {social.icon}
+                                                            </div>
+                                                        </Button>
+                                                    </motion.div>
+                                                ))}
+                                            </div>
+                                        </motion.div>
+                                    </CardContent>
+                                </Card>
+
+                                {/* Enhanced Related Articles Section */}
+                                <motion.div
+                                    variants={itemVariants}
+                                    className="max-w-5xl mx-auto mt-16"
+                                    id="non-printable"
+                                >
+                                    <motion.h2
+                                        className="text-3xl font-bold text-white mb-8 text-center"
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 1.5, duration: 0.6 }}
+                                    >
+                                        Related Articles
+                                    </motion.h2>
+
+                                    <div className="grid md:grid-cols-3 gap-6">
+                                        {related.map((item, index) => (
+                                            <motion.div
+                                                key={item.id}
+                                                initial={{ opacity: 0, y: 50 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                transition={{ delay: 1.0 + index * 0.2, duration: 0.6 }}
+                                                whileHover={{ y: -8, scale: 1.02 }}
+                                                className="group"
+                                            >
+                                                <Card className="bg-white/10 border border-white/20 backdrop-blur-lg hover:bg-white/15 transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/10 cursor-pointer overflow-hidden">
+                                                    <CardContent className="p-6 space-y-4">
+                                                        <div className="flex items-center justify-between">
+                                                            <Badge variant="secondary" className="bg-indigo-500/20 text-indigo-200 border-0">
+                                                                {item.category}
+                                                            </Badge>
+                                                            <span className="text-xs text-gray-400 flex items-center gap-1">
+                                                                <Clock size={12} />
+                                                                {item.readTime}
+                                                            </span>
+                                                        </div>
+
+                                                        <motion.h3
+                                                            className="text-lg font-semibold text-white group-hover:text-indigo-200 transition-colors duration-200"
+                                                            whileHover={{ x: 5 }}
+                                                            transition={{ type: "spring", stiffness: 300 }}
+                                                        >
+                                                            {item.title}
+                                                        </motion.h3>
+
+                                                        <motion.div
+                                                            className="w-0 h-0.5 bg-gradient-to-r from-indigo-400 to-purple-400 group-hover:w-full transition-all duration-300"
+                                                        />
+                                                    </CardContent>
+                                                </Card>
                                             </motion.div>
                                         ))}
                                     </div>
                                 </motion.div>
-                            </CardContent>
-                        </Card>
 
-                        {/* Enhanced Related Articles Section */}
-                        <motion.div
-                            variants={itemVariants}
-                            className="max-w-5xl mx-auto mt-16"
-                            id="non-printable"
-                        >
-                            <motion.h2
-                                className="text-3xl font-bold text-white mb-8 text-center"
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 1.5, duration: 0.6 }}
-                            >
-                                Related Articles
-                            </motion.h2>
+                                {/* Enhanced Comments Section Placeholder */}
+                                <motion.div
+                                    variants={itemVariants}
+                                    className="max-w-5xl mx-auto mt-16"
+                                    id="non-printable"
+                                >
+                                    <Card className="bg-white/5 border border-white/10 backdrop-blur-lg rounded-3xl overflow-hidden">
+                                        <CardContent className="p-8">
+                                            <motion.h3
+                                                className="text-2xl font-bold text-white mb-6 text-center"
+                                                initial={{ opacity: 0 }}
+                                                animate={{ opacity: 1 }}
+                                                transition={{ delay: 2.2, duration: 0.6 }}
+                                            >
+                                                Join the Discussion
+                                            </motion.h3>
 
-                            <div className="grid md:grid-cols-3 gap-6">
-                                {related.map((item, index) => (
-                                    <motion.div
-                                        key={item.id}
-                                        initial={{ opacity: 0, y: 50 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: 1.0 + index * 0.2, duration: 0.6 }}
-                                        whileHover={{ y: -8, scale: 1.02 }}
-                                        className="group"
-                                    >
-                                        <Card className="bg-white/10 border border-white/20 backdrop-blur-lg hover:bg-white/15 transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/10 cursor-pointer overflow-hidden">
-                                            <CardContent className="p-6 space-y-4">
-                                                <div className="flex items-center justify-between">
-                                                    <Badge variant="secondary" className="bg-indigo-500/20 text-indigo-200 border-0">
-                                                        {item.category}
-                                                    </Badge>
-                                                    <span className="text-xs text-gray-400 flex items-center gap-1">
-                                                        <Clock size={12} />
-                                                        {item.readTime}
-                                                    </span>
-                                                </div>
-
-                                                <motion.h3
-                                                    className="text-lg font-semibold text-white group-hover:text-indigo-200 transition-colors duration-200"
-                                                    whileHover={{ x: 5 }}
-                                                    transition={{ type: "spring", stiffness: 300 }}
+                                            <motion.div
+                                                initial={{ opacity: 0, y: 20 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                transition={{ delay: 2.4, duration: 0.6 }}
+                                                className="text-center py-12 border-2 border-dashed border-white/20 rounded-2xl bg-white/5"
+                                            >
+                                                <motion.p
+                                                    className="text-gray-300 text-lg"
+                                                    animate={{ opacity: [0.7, 1, 0.7] }}
+                                                    transition={{ duration: 2, repeat: Infinity }}
                                                 >
-                                                    {item.title}
-                                                </motion.h3>
+                                                    Comments section coming soon...
+                                                </motion.p>
+                                                <p className="text-gray-400 text-sm mt-2">
+                                                    Share your thoughts and connect with other readers
+                                                </p>
+                                            </motion.div>
+                                        </CardContent>
+                                    </Card>
+                                </motion.div>
 
-                                                <motion.div
-                                                    className="w-0 h-0.5 bg-gradient-to-r from-indigo-400 to-purple-400 group-hover:w-full transition-all duration-300"
-                                                />
-                                            </CardContent>
-                                        </Card>
-                                    </motion.div>
-                                ))}
                             </div>
-                        </motion.div>
 
-                        {/* Enhanced Comments Section Placeholder */}
-                        <motion.div
-                            variants={itemVariants}
-                            className="max-w-5xl mx-auto mt-16"
-                            id="non-printable"
-                        >
-                            <Card className="bg-white/5 border border-white/10 backdrop-blur-lg rounded-3xl overflow-hidden">
-                                <CardContent className="p-8">
-                                    <motion.h3
-                                        className="text-2xl font-bold text-white mb-6 text-center"
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        transition={{ delay: 2.2, duration: 0.6 }}
-                                    >
-                                        Join the Discussion
-                                    </motion.h3>
-
-                                    <motion.div
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: 2.4, duration: 0.6 }}
-                                        className="text-center py-12 border-2 border-dashed border-white/20 rounded-2xl bg-white/5"
-                                    >
-                                        <motion.p
-                                            className="text-gray-300 text-lg"
-                                            animate={{ opacity: [0.7, 1, 0.7] }}
-                                            transition={{ duration: 2, repeat: Infinity }}
-                                        >
-                                            Comments section coming soon...
-                                        </motion.p>
-                                        <p className="text-gray-400 text-sm mt-2">
-                                            Share your thoughts and connect with other readers
-                                        </p>
-                                    </motion.div>
-                                </CardContent>
-                            </Card>
-                        </motion.div>
+                            <div className="hidden min-w-0 lg:block">
+                                <AIInsightsPanel article={article} />
+                            </div>
+                        </div>
                     </motion.div>
                 </div>
             </div >
