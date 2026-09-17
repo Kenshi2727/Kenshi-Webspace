@@ -34,16 +34,16 @@ const pingServer = async () => {
 
 
 // Content Service APIs
-const createUser = (data) => instance.post('/api/content/users/create', data);
+const createUser = (data) => instance.post('/api/v1/content/users/create', data);
 
-const getUser = (userId, token) => instance.get(`/api/content/users/${userId}`, {
+const getUser = (userId, token) => instance.get(`/api/v1/content/users/${userId}`, {
     headers: {
         Authorization: `Bearer ${token}`,
     },
     withCredentials: true,
 });
 
-const deleteUser = (data) => instance.delete('/api/content/users/delete',
+const deleteUser = (data) => instance.delete('/api/v1/content/users/delete',
     {
         data,// data field in CONFIG only for delete method
         headers: {
@@ -52,61 +52,61 @@ const deleteUser = (data) => instance.delete('/api/content/users/delete',
         withCredentials: true,//sending auth token
     });
 
-const createPost = (data, authorId, token) => instance.post(`/api/content/posts/new/${authorId}`, data, {
+const createPost = (data, authorId, token) => instance.post(`/api/v1/content/posts/new/${authorId}`, data, {
     headers: {
         Authorization: `Bearer ${token}`,
     },
     withCredentials: true,
 });
 
-const getSinglePost = (postId) => instance.get(`/api/content/posts/${postId}`);
+const getSinglePost = (postId) => instance.get(`/api/v1/content/posts/${postId}`);
 
-const getAllPosts = () => instance.get('/api/content/posts?populate=*');
+const getAllPosts = () => instance.get('/api/v1/content/posts?populate=*');
 
-const getUserPosts = (userId, token) => instance.get(`/api/content/posts/user-posts/${userId}`, {
+const getUserPosts = (userId, token) => instance.get(`/api/v1/content/posts/user-posts/${userId}`, {
     headers: {
         Authorization: `Bearer ${token}`,
     },
     withCredentials: true,
 });
 
-const getFeaturedPosts = () => instance.get('/api/content/posts?isFeatured=true');
+const getFeaturedPosts = () => instance.get('/api/v1/content/posts?isFeatured=true');
 
-const getCategoryPostCounts = () => instance.get('/api/content/posts/category/counts');
+const getCategoryPostCounts = () => instance.get('/api/v1/content/posts/category/counts');
 
-const checkCategoryPosts = (categoryName) => instance.get(`/api/content/posts/category/check/${encodeURIComponent(categoryName)}`);
+const checkCategoryPosts = (categoryName) => instance.get(`/api/v1/content/posts/category/check/${encodeURIComponent(categoryName)}`);
 
-const deletePost = (postId, token) => instance.delete(`/api/content/posts/${postId}`, {
+const deletePost = (postId, token) => instance.delete(`/api/v1/content/posts/${postId}`, {
     headers: {
         Authorization: `Bearer ${token}`,
     },
     withCredentials: true,
 });
 
-const updatePost = (postId, data, token) => instance.patch(`/api/content/posts/${postId}`, data, {
+const updatePost = (postId, data, token) => instance.patch(`/api/v1/content/posts/${postId}`, data, {
     headers: {
         Authorization: `Bearer ${token}`,
     },
     withCredentials: true,
 });
 
-const updatePostLikes = (postId, data, token) => instance.put(`/api/content/posts/likes/${postId}`, data, {
+const updatePostLikes = (postId, data, token) => instance.put(`/api/v1/content/posts/likes/${postId}`, data, {
     headers: {
         Authorization: `Bearer ${token}`,
     },
     withCredentials: true,
 });
 
-const updatePostViews = (postId) => instance.put(`/api/content/posts/views/${postId}`);
+const updatePostViews = (postId) => instance.put(`/api/v1/content/posts/views/${postId}`);
 
-const updatePostBookmarks = (postId, data, token) => instance.put(`/api/content/posts/bookmarks/${postId}`, data, {
+const updatePostBookmarks = (postId, data, token) => instance.put(`/api/v1/content/posts/bookmarks/${postId}`, data, {
     headers: {
         Authorization: `Bearer ${token}`,
     },
     withCredentials: true,
 });
 
-const uploadMedia = (data, token) => instance.post('/api/content/media/upload/image', data, {
+const uploadMedia = (data, token) => instance.post('/api/v1/content/media/upload/image', data, {
     headers: {
         'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${token}`,
@@ -114,7 +114,7 @@ const uploadMedia = (data, token) => instance.post('/api/content/media/upload/im
     withCredentials: true,
 });
 
-const deleteMedia = (data, token) => instance.delete('/api/content/media', {
+const deleteMedia = (data, token) => instance.delete('/api/v1/content/media', {
     data,
     headers: {
         Authorization: `Bearer ${token}`,
@@ -124,13 +124,13 @@ const deleteMedia = (data, token) => instance.delete('/api/content/media', {
 
 
 // Notification Service APIs
-const sendPublicFcmToken = (data) => instance.post('/api/notification/tokens/fcm-token', data, {
+const sendPublicFcmToken = (data) => instance.post('/api/v1/notification/tokens/fcm-token', data, {
     headers: {
         'fcm-service-type': 'public', // custom header to identify fcm service type
     }
 });
 
-const multicast = (data) => instance.post('/api/notification/notifications/multicast', data);
+const multicast = (data) => instance.post('/api/v1/notification/notifications/multicast', data);
 
 export {
     pingServer,

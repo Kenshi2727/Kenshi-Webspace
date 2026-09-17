@@ -10,8 +10,7 @@ import requestIdMiddleware from './middlewares/requestId.middleware.js';
 import stripIdentityHeaders from './middlewares/stripIdentityHeaders.middleware.js';
 import injectVerifiedIdentityHeaders from './middlewares/injectVerifiedIdentityHeaders.middleware.js';
 import services from './config/services.js';
-import contentRoutes from './routes/content.route.js';
-import notificationRoutes from './routes/notification.route.js';
+import v1Routes from './routes/v1/index.route.js';
 import { HTTP_STATUS } from '../src/constants/http.constants.js';
 import { HEADERS } from './constants/header.constants.js';
 
@@ -129,8 +128,7 @@ app.get('/', (req, res) => {
     `);
 });
 
-// Service Routes
-app.use('/api/notification', notificationRoutes);
-app.use('/api/content', contentRoutes);
+// Version 1 Routes
+app.use('/api/v1', v1Routes);
 
 export default app;

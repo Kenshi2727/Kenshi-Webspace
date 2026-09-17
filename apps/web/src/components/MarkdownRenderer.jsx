@@ -83,12 +83,12 @@ export default function MarkdownRenderer({ content = '', components }) {
     }
 
     const mdComponents = {
-        h1: ({ node, ...props }) => <h1 className="text-2xl md:text-4xl lg:text-5xl font-extrabold mt-2 mb-4 text-black dark:text-white" {...props} />,
-        h2: ({ node, ...props }) => <h2 className="text-xl md:text-3xl lg:text-4xl font-semibold mt-4 mb-3 text-black dark:text-white" {...props} />,
-        h3: ({ node, ...props }) => <h3 className="text-lg md:text-2xl lg:text-3xl font-semibold mt-3 mb-2 text-black dark:text-white" {...props} />,
-        h4: ({ node, ...props }) => <h4 className="text-base md:text-xl font-medium mt-3 mb-2 text-black dark:text-white" {...props} />,
-        h5: ({ node, ...props }) => <h5 className="text-sm md:text-lg font-medium mt-2 mb-1 text-black dark:text-white" {...props} />,
-        h6: ({ node, ...props }) => <h6 className="text-sm md:text-base font-medium mt-2 mb-1 text-black dark:text-white" {...props} />,
+        h1: ({ node, ...props }) => <h1 className="text-2xl md:text-4xl lg:text-5xl font-extrabold mt-2 mb-4 text-gray-50 dark:text-white" {...props} />,
+        h2: ({ node, ...props }) => <h2 className="text-xl md:text-3xl lg:text-4xl font-semibold mt-4 mb-3 text-gray-50 dark:text-white" {...props} />,
+        h3: ({ node, ...props }) => <h3 className="text-lg md:text-2xl lg:text-3xl font-semibold mt-3 mb-2 text-gray-50 dark:text-white" {...props} />,
+        h4: ({ node, ...props }) => <h4 className="text-base md:text-xl font-medium mt-3 mb-2 text-gray-50 dark:text-white" {...props} />,
+        h5: ({ node, ...props }) => <h5 className="text-sm md:text-lg font-medium mt-2 mb-1 text-gray-50 dark:text-white" {...props} />,
+        h6: ({ node, ...props }) => <h6 className="text-sm md:text-base font-medium mt-2 mb-1 text-gray-50 dark:text-white" {...props} />,
         p: ({ node, ...props }) => <p className="text-gray-200 leading-relaxed mb-4" {...props} />,
         a: ({ node, href, ...props }) => {
             const isExternal = href && !href.startsWith("#") && !href.startsWith("/");
@@ -165,7 +165,7 @@ export default function MarkdownRenderer({ content = '', components }) {
             </div>
         ),
         success: ({ children }) => (
-            <div className="bg-green-500 dark:bg-green-500/20 text-green-100 dark:text-green-300 p-2 rounded w-fit">
+            <div className="bg-green-500 dark:bg-green-500/20 text-white dark:text-green-300 p-2 rounded w-fit">
                 ✅ {children}
             </div>
         ),
