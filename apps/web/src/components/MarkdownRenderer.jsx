@@ -188,19 +188,19 @@ export default function MarkdownRenderer({ content = '', components }) {
         ),
 
         quote: ({ children }) => (
-            <div className="flex border-l-4 border-indigo-600/80 dark:border-indigo-400 pl-4 italic text-sm sm:text-xl md:text-2xl font-bold text-indigo-200 dark:text-indigo-300/80 my-4 wrap-break-word">
-                <span><svg
-                    className='size-3 sm:size-5 md:size-7'
+            <div className="align-middle border-l-4 border-indigo-600/80 dark:border-indigo-400 pl-4 italic text-sm sm:text-xl md:text-2xl font-bold text-indigo-200 dark:text-indigo-300/80 my-4 wrap-break-word">
+                <svg
+                    className='inline-block align-text-top size-3 sm:size-5 md:size-7'
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 320 320">
                     <path
                         d="M82.87 129.48S77.32 98.96 114.31 74c-12.95 0-89.7 30.52-89.7 113.74 0 33.09 27.59 59.73 61.01 58.19 29.85-1.37 54.07-25.6 55.44-55.45 1.54-33.41-25.1-61-58.19-61zm154.26 0S231.58 98.96 268.57 74c-12.95 0-89.7 30.52-89.7 113.74 0 33.09 27.58 59.73 61.01 58.19 29.85-1.37 54.07-25.6 55.44-55.45 1.54-33.41-25.1-61-58.19-61z"
                         fill={theme === "dark" ? "#FFF" : "#4f39f6"}>
                     </path>
-                </svg></span>
+                </svg>
                 <span className='children ml-2 wrap-break-word'>{children}</span>
-                <span><svg
-                    className="size-3 sm:size-5 md:size-7"
+                <svg
+                    className="inline-block align-text-top size-3 sm:size-5 md:size-7"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 320 320"
                 >
@@ -210,7 +210,7 @@ export default function MarkdownRenderer({ content = '', components }) {
                             fill={theme === "dark" ? "#FFF" : "#4f39f2"}
                         />
                     </g>
-                </svg></span>
+                </svg>
 
             </div>
         ),
