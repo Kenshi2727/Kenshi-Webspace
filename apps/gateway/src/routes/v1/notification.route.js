@@ -1,9 +1,9 @@
 import express from 'express';
-import { createServiceProxy } from '../proxy/proxy.middleware.js';
-import services from '../config/services.js';
-import { HEADERS } from '../constants/header.constants.js';
-import { HTTP_STATUS } from '../constants/http.constants.js'
-import logger from '../logger/index.js';
+import { createServiceProxy } from '../../proxy/proxy.middleware.js';
+import services from '../../config/services.js';
+import { HEADERS } from '../../constants/header.constants.js';
+import { HTTP_STATUS } from '../../constants/http.constants.js'
+import logger from '../../logger/index.js';
 
 const router = express.Router();
 const target = services.notification;
@@ -19,7 +19,7 @@ if (!target) {
 } else {
     const proxy = createServiceProxy(target, 'notification-service', {
         pathRewrite: {
-            "^/api/notification": ""
+            "^/notification": ""
         }
     });
 
