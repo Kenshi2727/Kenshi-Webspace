@@ -229,6 +229,43 @@
   }
 }
 
+/*Scrollbar Customized*/
+
+
+.custom-scrollbar-white::-webkit-scrollbar-thumb {
+    background: white;
+    border-radius: 9999px;
+}
+
+/* Chrome, Edge, Safari */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+.custom-scrollbar-white::-webkit-scrollbar {
+    width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 9999px;
+
+}
+
+.custom-scrollbar-white::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #432dd7;
+    border:#ffffff solid 1px;
+    border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #432dd7;
+}
 
 /* Hide scrollbar for Webkit (Chrome, Safari) */
 .hide-scrollbar::-webkit-scrollbar {

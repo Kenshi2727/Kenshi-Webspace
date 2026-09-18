@@ -415,7 +415,7 @@ export default function ArticlePage() {
                         animate="visible"
                     >
                         <div className="grid items-stretch gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(18rem,1fr)]">
-                            <div ref={articleScrollRef} className="hide-scrollbar min-w-0 overflow-y-auto pr-2 scroll-smooth h-[calc(100vh+4rem)]">
+                            <div ref={articleScrollRef} className="hide-scrollbar custom-scrollbar-white min-w-0 overflow-y-auto pr-2 scroll-smooth h-[calc(100vh+4rem)]">
                                 {/* Enhanced Cover with Parallax */}
                                 <motion.div
                                     variants={itemVariants}
@@ -643,7 +643,7 @@ export default function ArticlePage() {
                                         {/* Content with Scroll Animations */}
                                         <motion.div
                                             variants={itemVariants}
-                                            className="prose prose-lg max-w-none dark:prose-invert prose-headings:text-black prose-p:text-gray-50 prose-strong:text-white prose-code:text-indigo-200 prose-code:bg-indigo-900/30 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-pre:bg-gray-900/50 prose-pre:border prose-pre:border-white/10 break-all"
+                                            className="prose prose-lg max-w-none dark:prose-invert prose-headings:text-black prose-p:text-gray-50 prose-strong:text-white prose-code:text-indigo-200 prose-code:bg-indigo-900/30 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-pre:bg-gray-900/50 prose-pre:border prose-pre:border-white/10 break-words hyphens-auto"
                                         >
                                             <MarkdownRenderer content={article.content} />
                                         </motion.div>

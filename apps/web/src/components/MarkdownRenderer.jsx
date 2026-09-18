@@ -188,7 +188,7 @@ export default function MarkdownRenderer({ content = '', components }) {
         ),
 
         quote: ({ children }) => (
-            <div className="align-middle border-l-4 border-indigo-600/80 dark:border-indigo-400 pl-4 italic text-sm sm:text-xl md:text-2xl font-bold text-indigo-200 dark:text-indigo-300/80 my-4 wrap-break-word">
+            <div className="border-l-4 border-indigo-600/80 dark:border-indigo-400 pl-4 italic text-sm sm:text-xl md:text-2xl font-bold text-indigo-200 dark:text-indigo-300/80 my-4 wrap-break-word">
                 <svg
                     className='inline-block align-text-top size-3 sm:size-5 md:size-7'
                     xmlns="http://www.w3.org/2000/svg"
@@ -198,7 +198,7 @@ export default function MarkdownRenderer({ content = '', components }) {
                         fill={theme === "dark" ? "#FFF" : "#4f39f6"}>
                     </path>
                 </svg>
-                <span className='children ml-2 wrap-break-word'>{children}</span>
+                <span className='ml-2 wrap-break-word'>{children}</span>
                 <svg
                     className="inline-block align-text-top size-3 sm:size-5 md:size-7"
                     xmlns="http://www.w3.org/2000/svg"
