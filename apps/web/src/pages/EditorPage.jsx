@@ -773,6 +773,10 @@ export default function EditorPage({ type }) {
             toast.error("Title is required !");
             return false;
         }
+        if (formData.title.trim().length > 60) {
+            toast.error("Title must not exceed 60 characters!");
+            return false;
+        }
         if (formData.excerpt.trim() === "") {
             toast.error("Excerpt is required !");
             return false;
