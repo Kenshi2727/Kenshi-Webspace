@@ -6,7 +6,7 @@ import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
-import { Facebook, Twitter, Linkedin, Pencil, Clock, Eye, Heart, Bookmark, Share2, Delete, DeleteIcon, Trash, DownloadIcon, BrainCircuit, MessageCircle, Send, Sparkles } from 'lucide-react';
+import { Facebook, Twitter, Linkedin, Pencil, Clock, Eye, Heart, Bookmark, Share2, Delete, DeleteIcon, Trash, DownloadIcon, BrainCircuit, MessageCircle, Send, Sparkles, Scroll, ScrollText } from 'lucide-react';
 import MarkdownRenderer from '@/components/MarkdownRenderer';
 import NotFoundPage from './NotFoundPage';
 import LoadingPage from './LoadingPage';
@@ -104,6 +104,7 @@ export default function ArticlePage() {
     const [deleting, setDeleting] = useState(false);
     const [isAiChatOpen, setIsAiChatOpen] = useState(false);
     const articleScrollRef = useRef(null);
+    const [addScrollBar, setAddScrollBar] = useState(false);
 
     // Fixed scroll hook
     const { scrollYProgress, scrollY } = useScroll({ container: articleScrollRef });
@@ -415,7 +416,7 @@ export default function ArticlePage() {
                         animate="visible"
                     >
                         <div className="grid items-stretch gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(18rem,1fr)]">
-                            <div ref={articleScrollRef} className="hide-scrollbar min-w-0 overflow-y-auto pr-2 scroll-smooth h-[calc(100vh+4rem)]">
+                            <div ref={articleScrollRef} className={`${addScrollBar ? `` : `hide-scrollbar`} custom-scrollbar-white min-w-0 overflow-y-auto pr-2 scroll-smooth h-[calc(100vh+4rem)]`}>
                                 {/* Enhanced Cover with Parallax */}
                                 <motion.div
                                     variants={itemVariants}
@@ -423,7 +424,7 @@ export default function ArticlePage() {
                                     whileHover={{
                                         z: 20
                                     }}
-                                    className="no-pdf relative mb-12 h-[calc(15vh)] w-full overflow-hidden rounded-3xl shadow-xl dark:shadow-2xs dark:shadow-indigo-300/50 sm:h-[calc(20vh)] md:h-[calc(40vh)]"
+                                    className="no-pdf relative mb-12 h-[calc(15vh)] w-full overflow-hidden rounded-2xl md:rounded-3xl shadow-xl dark:shadow-2xs dark:shadow-indigo-300/50 sm:h-[calc(20vh)] md:h-[calc(40vh)]"
                                 >
                                     <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent z-10 hover:opacity-0 transition-opacity delay-300 duration-500" />
 
@@ -476,7 +477,7 @@ export default function ArticlePage() {
 
                                         <div className="absolute top-6 left-6 mr-6" >
                                             {/* article title */}
-                                            <h1 className="text-sm sm:text-2xl md:text-3xl lg:text-5xl font-bold text-white line-clamp-4">{article.title}</h1>
+                                            <h1 className="text-sm sm:text-2xl md:text-3xl lg:text-5xl font-bold text-white line-clamp-4 sm:p-1 md:p-2">{article.title}</h1>
 
                                             {/* article author */}
                                             <motion.div
@@ -499,13 +500,13 @@ export default function ArticlePage() {
                                         transition={{ delay: 0.5, duration: 0.6 }}
                                         className="absolute bottom-6 left-6 z-20"
                                     >
-                                        {article.featured && <Badge className="bg-indigo-500/80 text-white border-0 backdrop-blur-sm text-[0.5rem] md:text-xs px-1 py-0.5 md:px-2 md:py-1">
+                                        {article.featured && <Badge className="bg-indigo-500/80 text-white border-0 backdrop-blur-sm text-[0.5rem] md:text-xs px-2 py-0.5 md:px-2 md:py-1">
                                             Featured
                                         </Badge>}
                                     </motion.div>
                                 </motion.div>
 
-                                <Card className="relative w-full overflow-hidden rounded-3xl border border-white/30 bg-purple-300/50 shadow-xl backdrop-blur-xl dark:bg-white/20 dark:shadow-xs dark:shadow-indigo-300/50">
+                                <Card className="relative w-full overflow-hidden rounded-2xl md:rounded-3xl border border-white/30 bg-purple-300/40 shadow-xl backdrop-blur-xl dark:bg-white/20 dark:shadow-xs dark:shadow-indigo-300/50">
                                     <CardContent id="print-area" className="relative p-4 sm:p-10 space-y-8">
                                         {/* Header */}
                                         <motion.div variants={itemVariants} className="flex flex-wrap items-center justify-between gap-4">
@@ -541,8 +542,25 @@ export default function ArticlePage() {
                                             </div>
                                         </motion.div>
 
-                                        {/* Title and Edit Button */}
+                                        {/* Delete, scroll and Edit Button */}
                                         <motion.div variants={itemVariants} id="non-printable" className="flex w-full">
+                                            <motion.div
+                                                initial={{ opacity: 0, scale: 0.8 }}
+                                                animate={{ opacity: 1, scale: 1 }}
+                                                transition={{ delay: 0.2, duration: 0.2 }}
+                                                whileHover={{ scale: 1.1 }}
+                                                whileTap={{ scale: 0.95 }}
+                                            >
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    onClick={() => setAddScrollBar(!addScrollBar)}
+                                                    className="flex items-center gap-2 border-indigo-200/60 bg-indigo-500/60 dark:bg-indigo-500/60 hover:bg-indigo-500/30 hover:border-indigo-200/50 text-white transition-all duration-300 backdrop-blur-sm cursor-pointer"
+                                                >
+                                                    <ScrollText size={16} />
+                                                </Button>
+                                            </motion.div>
+
                                             {user && (user.id === article.authorId) &&
                                                 <div className='flex w-full justify-end gap-2 sm:gap-4'>
                                                     <motion.div
@@ -643,7 +661,7 @@ export default function ArticlePage() {
                                         {/* Content with Scroll Animations */}
                                         <motion.div
                                             variants={itemVariants}
-                                            className="prose prose-lg max-w-none dark:prose-invert prose-headings:text-black prose-p:text-gray-50 prose-strong:text-white prose-code:text-indigo-200 prose-code:bg-indigo-900/30 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-pre:bg-gray-900/50 prose-pre:border prose-pre:border-white/10 break-all"
+                                            className="prose prose-lg max-w-none dark:prose-invert prose-headings:text-black prose-p:text-gray-50 prose-strong:text-white prose-code:text-indigo-200 prose-code:bg-indigo-900/30 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-pre:bg-gray-900/50 prose-pre:border prose-pre:border-white/10 break-words hyphens-auto"
                                         >
                                             <MarkdownRenderer content={article.content} />
                                         </motion.div>

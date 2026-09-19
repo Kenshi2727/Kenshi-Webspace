@@ -773,6 +773,10 @@ export default function EditorPage({ type }) {
             toast.error("Title is required !");
             return false;
         }
+        if (formData.title.trim().length > 60) {
+            toast.error("Title must not exceed 60 characters!");
+            return false;
+        }
         if (formData.excerpt.trim() === "") {
             toast.error("Excerpt is required !");
             return false;
@@ -1533,7 +1537,7 @@ export default function EditorPage({ type }) {
                                             </Tooltip>
 
                                             <Select value="" onValueChange={(val) => handleFormatAction(val)}>
-                                                <SelectTrigger className="w-[70px] h-8 bg-white/10 hover:bg-white/20 text-white border-white/20 text-xs px-2 focus:ring-0 focus:ring-offset-0 relative [&>svg]:right-1 [&>svg]:absolute pr-0 pl-2">
+                                                <SelectTrigger pHcolor="white" className="w-[70px] h-8 bg-white/10 hover:bg-white/20 text-white border-white/20 text-xs px-2 focus:ring-0 focus:ring-offset-0 relative [&>svg]:right-1 [&>svg]:absolute pr-0 pl-2">
                                                     <SelectValue placeholder="Hx" />
                                                 </SelectTrigger>
                                                 <SelectContent className="bg-purple-900 border-white/20 text-white min-w-[70px]">
@@ -1934,7 +1938,7 @@ export default function EditorPage({ type }) {
                                                     onDrop={handleEditorDrop}
                                                     onPaste={handleEditorPaste}
                                                     placeholder="Write your markdown content here... Press Ctrl + Space for Basic Blocks."
-                                                    className={`placeholder:text-indigo-950 p-3 md:p-4 font-mono text-xs md:text-sm bg-pink-300/30 text-white border-white/50 resize-none hide-scrollbar ${isSplitScreen ? (isZenMode ? "max-h-[85vh] h-[85vh] overflow-y-auto" : "max-h-[300px] md:max-h-[400px] lg:max-h-[500px] h-[300px] md:h-[400px] lg:h-[500px] overflow-y-auto") : (isZenMode ? "min-h-[85vh]" : "min-h-[300px] md:min-h-[400px] lg:min-h-[500px]")}`}
+                                                    className={`placeholder:text-indigo-950 p-3 md:p-4 font-mono text-xs md:text-sm bg-pink-300/30 text-white border-white/50 resize-none custom-scrollbar-white scroll-smooth max-h-[300px] md:max-h-[400px] lg:max-h-[500px] h-[300px] md:h-[400px] lg:h-[500px] overflow-y-auto ${isSplitScreen ? (isZenMode ? "max-h-[85vh] h-[85vh] overflow-y-auto" : "") : ""}`}
                                                 />
 
                                                 {showSlashMenu && filteredSlashCommands.length > 0 && (
