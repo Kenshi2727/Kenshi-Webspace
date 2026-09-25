@@ -424,7 +424,7 @@ export default function ArticlePage() {
                                     whileHover={{
                                         z: 20
                                     }}
-                                    className="no-pdf relative mb-12 h-[calc(15vh)] w-full overflow-hidden rounded-2xl md:rounded-3xl shadow-xl dark:shadow-2xs dark:shadow-indigo-300/50 sm:h-[calc(20vh)] md:h-[calc(40vh)]"
+                                    className="no-pdf relative mb-12 h-[calc(15vh)] w-full overflow-hidden rounded-2xl md:rounded-3xl shadow-xl dark:shadow-2xs dark:shadow-indigo-300/50 sm:h-[calc(20vh)] md:h-[calc(40vh)] aspect-video"
                                 >
                                     <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent z-10 hover:opacity-0 transition-opacity delay-300 duration-500" />
 
