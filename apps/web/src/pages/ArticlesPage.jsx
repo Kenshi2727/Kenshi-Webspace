@@ -10,6 +10,8 @@ import { getAllPosts, updatePostLikes } from '../services/GlobalApi';
 import toast from 'react-hot-toast';
 import { formatDate } from '../lib/dateFormatter';
 import { useUser, useAuth } from '@clerk/clerk-react';
+import AnimatedFloatingSquares from '../components/AnimatedFloatingSquares';
+import FloatingOrbs from '../components/FloatingOrbs';
 
 const itemVariants = {
     hidden: { opacity: 0, y: 30 },
@@ -77,7 +79,7 @@ const FloatingParticles = () => {
             startX: Math.random() * 100 + "%",
             startY: Math.random() * 100 + "%",
 
-            moveX: Math.random() * 150 - 75,
+            moveX: Math.random() * 150 + 75,
             moveY: Math.random() * 150 - 75,
 
             duration: Math.random() * 10 + 10,
@@ -90,7 +92,7 @@ const FloatingParticles = () => {
             {bubbles.map((bubble) => (
                 <motion.div
                     key={bubble.id}
-                    className="absolute rounded-full bg-pink-400 dark:bg-linear-to-b dark:from-gray-50 dark:to-gray-300"
+                    className="absolute rounded-full bg-pink-400 dark:bg-linear-to-b dark:from-gray-50 dark:to-gray-300 dark:shadow-lg dark:shadow-gray-400/50"
                     style={{
                         width: bubble.size,
                         height: bubble.size,
@@ -100,13 +102,13 @@ const FloatingParticles = () => {
                     animate={{
                         x: [0, bubble.moveX, -bubble.moveX, 0],
                         y: [0, bubble.moveY, -bubble.moveY, 0],
-                        opacity: [0, 0.55, 0],
+                        opacity: [0, 0.9, 0],
                         scale: [0, 1, 0.8],
                     }}
                     transition={{
                         duration: bubble.duration,
                         repeat: Infinity,
-                        ease: "easeInOut",
+                        ease: "anticipate",
                         delay: bubble.delay,
                     }}
                 />
@@ -354,7 +356,9 @@ const ArticlesPage = () => {
         <div className="min-h-screen relative overflow-hidden">
 
             <div className="fixed inset-0 z-0 mt-16 bg-gradient-to-br from-indigo-600 to-purple-700 dark:from-indigo-950 dark:via-purple-950 dark:to-slate-950">
-                <FloatingParticles />
+                {/* <FloatingParticles /> */}
+                <AnimatedFloatingSquares />
+                <FloatingOrbs />
             </div>
 
             {/* Gradient Overlay */}
