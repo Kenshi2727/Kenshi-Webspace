@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-/* ---------- Animated floating SQUARES (no rounded corners) ---------- */
+/* ---------- Animated floating SQUARES  ---------- */
 const AnimatedFloatingSquares = () => {
     // tweak these to taste
     const amplitudes = [10, 16, 8]; // vertical drift (px)
