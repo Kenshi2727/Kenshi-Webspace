@@ -7,7 +7,7 @@ TypeScript microservice for article insights and article-aware questions.
 - `routes/` maps HTTP endpoints.
 - `controllers/` validates requests and formats responses.
 - `services/` owns insight and chat use cases.
-- `repositories/` owns calls to the configured AI provider.
+- `tools/` owns the article context tool supplied to the LangChain agent.
 - `config/` owns environment configuration.
 
 ## Endpoints
@@ -21,7 +21,7 @@ Both requests send an `article` object with `id`, `title`, and `content`. Chat r
 
 ## Environment
 
-Copy `.env.example` to `.env` and set `GEMINI_API_KEY`, `GATEWAY_SECRET`, and `AI_SERVICE_URL` in the gateway environment. The provider repository calls Gemini's native `generateContent` REST endpoint. `GEMINI_MODEL` and `GEMINI_API_URL` can be changed for another Gemini model or API version.
+Copy `.env.example` to `.env` and set `GOOGLE_API_KEY`, `GATEWAY_SECRET`, and `AI_SERVICE_URL` in the gateway environment. `AI_MODEL` defaults to `google-genai:gemini-3.5-flash-lite`; change that LangChain model identifier to switch providers without changing the service use cases.
 
 ## Commands
 

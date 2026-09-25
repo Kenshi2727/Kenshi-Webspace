@@ -3,9 +3,13 @@ import express from 'express';
 import type { Request, Response, NextFunction } from 'express';
 import { env } from './config/env.js';
 import { gatewayAuth } from './middlewares/gateway-auth.middleware.js';
-import insightsRoutes from './routes/insights.routes.js';
+import { createInsightsRoutes } from './routes/insights.routes.js';
+import { InsightsService } from './services/insights.service.js';
 
 const app = express();
+env.googleApiKey();
+const insightsService = new InsightsService();
+const insightsRoutes = createInsightsRoutes(insightsService);
 
 app.use((_req: Request, res: Response, next: NextFunction) => {
     res.header('Access-Control-Allow-Origin', env.corsOrigin);

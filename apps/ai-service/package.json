@@ -6,12 +6,16 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "dev": "nodemon src/index.js",
+    "dev": "npm run build && node dist/index.js",
     "test": "echo \"No tests configured\""
   },
   "dependencies": {
+    "@langchain/core": "^1.2.12",
+    "@langchain/google-genai": "^2.3.2",
     "dotenv": "^17.4.2",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "langchain": "^1.5.12",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@types/express": "^5.0.1",

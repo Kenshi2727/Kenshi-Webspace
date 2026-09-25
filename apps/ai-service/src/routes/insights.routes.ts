@@ -1,9 +1,13 @@
 import { Router } from 'express';
-import { answerQuestion, createInsights } from '../controllers/insights.controller.js';
+import { createInsightsController } from '../controllers/insights.controller.js';
+import type { InsightsService } from '../services/insights.service.js';
 
-const router = Router();
+export const createInsightsRoutes = (service: InsightsService) => {
+    const router = Router();
+    const controller = createInsightsController(service);
 
-router.post('/insights', createInsights);
-router.post('/chat', answerQuestion);
+    router.post('/insights', controller.createInsights);
+    router.post('/chat', controller.answerQuestion);
 
-export default router;
+    return router;
+};

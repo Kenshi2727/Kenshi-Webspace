@@ -10,7 +10,7 @@ import { Facebook, Twitter, Linkedin, Pencil, Clock, Eye, Heart, Bookmark, Share
 import MarkdownRenderer from '@/components/MarkdownRenderer';
 import NotFoundPage from './NotFoundPage';
 import LoadingPage from './LoadingPage';
-import { getSinglePost, deletePost, updatePostLikes, updatePostViews, updatePostBookmarks } from '../services/GlobalApi.js';
+import { getSinglePost, deletePost, updatePostLikes, updatePostViews, updatePostBookmarks, createArticleInsights, askArticleQuestion } from '../services/GlobalApi.js';
 import toast from 'react-hot-toast';
 import { formatDate, formatMessageTime, formatOnlyNumericDate } from '../lib/dateFormatter.js';
 import { useUser } from '@clerk/clerk-react';
@@ -29,6 +29,57 @@ const related = [
 ];
 
 function AIInsightsPanel({ article, mobile = false }) {
+    const [insights, setInsights] = useState(null);
+    const [question, setQuestion] = useState('');
+    const [answer, setAnswer] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [asking, setAsking] = useState(false);
+    const [error, setError] = useState('');
+
+    useEffect(() => {
+        let active = true;
+
+        const loadInsights = async () => {
+            setLoading(true);
+            setError('');
+            try {
+                const response = await createArticleInsights({
+                    id: article.id,
+                    title: article.title,
+                    content: article.content,
+                });
+                if (active) setInsights(response.data.data);
+            } catch (requestError) {
+                if (active) setError(requestError?.response?.data?.error || 'AI insights are unavailable right now.');
+            } finally {
+                if (active) setLoading(false);
+            }
+        };
+
+        loadInsights();
+        return () => { active = false; };
+    }, [article.id, article.title, article.content]);
+
+    const handleQuestion = async (event) => {
+        event.preventDefault();
+        if (!question.trim() || asking) return;
+
+        setAsking(true);
+        setAnswer('');
+        try {
+            const response = await askArticleQuestion({
+                id: article.id,
+                title: article.title,
+                content: article.content,
+            }, question.trim());
+            setAnswer(response.data.data.answer);
+        } catch (requestError) {
+            setAnswer(requestError?.response?.data?.error || 'I could not answer that question.');
+        } finally {
+            setAsking(false);
+        }
+    };
+
     return (
         <Card className={`border border-fuchsia-300/20 bg-slate-950/40 text-white shadow-2xl shadow-indigo-950/30 backdrop-blur-xl ${mobile ? 'rounded-2xl' : 'rounded-3xl'}`}>
             <CardContent className="space-y-6 p-5 sm:p-6">
@@ -45,10 +96,12 @@ function AIInsightsPanel({ article, mobile = false }) {
 
                 {!mobile && (
                     <div className="space-y-3">
-                        {[
-                            { label: 'Summary', text: 'A concise AI summary will appear here once AI features are connected.' },
-                            { label: 'Key ideas', text: 'Important themes and takeaways will be extracted from this article.' },
-                            { label: 'Ask about it', text: 'The article-aware assistant will answer questions using this article.' },
+                        {loading && <p className="text-sm text-slate-300">Generating insights...</p>}
+                        {error && <p className="text-sm text-rose-200">{error}</p>}
+                        {insights && [
+                            { label: 'Summary', text: insights.summary },
+                            { label: 'Key ideas', text: insights.keyIdeas.join(' ') },
+                            { label: 'Reader questions', text: insights.questions.join(' ') },
                         ].map((insight) => (
                             <div key={insight.label} className="rounded-2xl border border-white/10 bg-white/5 p-4">
                                 <p className="mb-1 text-sm font-semibold text-indigo-100">{insight.label}</p>
@@ -66,24 +119,27 @@ function AIInsightsPanel({ article, mobile = false }) {
                     <p className="mb-4 text-sm leading-relaxed text-slate-300">
                         Ask questions about “{article.title}” when the AI service is available.
                     </p>
-                    <div className="relative">
+                    {answer && <div className="mb-4 rounded-xl border border-white/10 bg-black/20 p-3 text-sm leading-relaxed text-slate-200">{answer}</div>}
+                    <form className="relative" onSubmit={handleQuestion}>
                         <Textarea
-                            disabled
-                            placeholder="AI chat will be available soon..."
+                            value={question}
+                            onChange={(event) => setQuestion(event.target.value)}
+                            disabled={asking}
+                            placeholder="Ask a question about this article..."
                             aria-label="Ask the AI about this article"
                             className="min-h-24 resize-none border-white/10 bg-black/20 pr-12 text-white placeholder:text-slate-400 disabled:cursor-not-allowed disabled:opacity-70"
                         />
                         <Button
-                            type="button"
+                            type="submit"
                             size="icon"
-                            disabled
+                            disabled={asking || !question.trim()}
                             aria-label="Send question"
                             className="absolute bottom-3 right-3 bg-fuchsia-500/40 text-white"
                         >
                             <Send size={16} />
                         </Button>
-                    </div>
-                    <p className="mt-3 text-xs text-slate-400">Frontend placeholder only. No question will be sent.</p>
+                    </form>
+                    <p className="mt-3 text-xs text-slate-400">Answers are grounded in this article.</p>
                 </div>
             </CardContent>
         </Card>

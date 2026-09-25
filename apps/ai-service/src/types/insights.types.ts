@@ -4,15 +4,6 @@ export interface ArticleInput {
     content: string;
 }
 
-export interface InsightsRequest {
-    article: ArticleInput;
-}
-
-export interface ChatRequest {
-    article: ArticleInput;
-    question: string;
-}
-
 export interface ArticleInsights {
     summary: string;
     keyIdeas: string[];
