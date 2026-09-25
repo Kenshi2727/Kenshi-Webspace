@@ -72,41 +72,41 @@ const FloatingParticles = () => {
     const bubbles = useMemo(() => {
         return Array.from({ length }, (_, i) => ({
             id: i,
-            size: Math.random() * 50 + 30, // 30px to 80px
-            targetX: Math.random() * window.innerWidth,
-            targetY: Math.random() * window.innerHeight * 2,
-            duration: Math.random() * 8 + 6,
+            size: Math.random() * 50 + 30,
+
+            startX: Math.random() * 100 + "%",
+            startY: Math.random() * 100 + "%",
+
+            moveX: Math.random() * 150 - 75,
+            moveY: Math.random() * 150 - 75,
+
+            duration: Math.random() * 10 + 10,
             delay: Math.random() * 5,
         }));
-    }, []);
+    }, [length]);
 
     return (
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
             {bubbles.map((bubble) => (
                 <motion.div
                     key={bubble.id}
-                    className="absolute rounded-full bg-pink-400 dark:bg-linear-to-b dark:from-gray-50 dark:to-gray-300 backdrop-blur-sm dark:shadow-2xl dark:shadow-white"
+                    className="absolute rounded-full bg-pink-400 dark:bg-linear-to-b dark:from-gray-50 dark:to-gray-300"
                     style={{
                         width: bubble.size,
                         height: bubble.size,
-                    }}
-                    initial={{
-                        x: 0,
-                        y: 0,
-                        scale: 0,
-                        opacity: 0,
+                        left: bubble.startX,
+                        top: bubble.startY,
                     }}
                     animate={{
-                        x: [0, bubble.targetX],
-                        y: [0, bubble.targetY],
+                        x: [0, bubble.moveX, -bubble.moveX, 0],
+                        y: [0, bubble.moveY, -bubble.moveY, 0],
                         opacity: [0, 0.55, 0],
                         scale: [0, 1, 0.8],
                     }}
                     transition={{
                         duration: bubble.duration,
-                        repeatType: "loop",
                         repeat: Infinity,
-                        ease: "easeOut",
+                        ease: "easeInOut",
                         delay: bubble.delay,
                     }}
                 />
@@ -351,9 +351,11 @@ const ArticlesPage = () => {
 
     // Main Render
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-600 to-purple-700 dark:from-indigo-950 dark:via-purple-950 dark:to-slate-950 relative overflow-hidden">
+        <div className="min-h-screen relative overflow-hidden">
 
-            <FloatingParticles />
+            <div className="fixed inset-0 z-0 mt-16 bg-gradient-to-br from-indigo-600 to-purple-700 dark:from-indigo-950 dark:via-purple-950 dark:to-slate-950">
+                <FloatingParticles />
+            </div>
 
             {/* Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-950/10 to-indigo-950/30 pointer-events-none" />
