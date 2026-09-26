@@ -31,10 +31,15 @@ const related = [
 function AIInsightsPanel({ article, mobile = false }) {
     const [insights, setInsights] = useState(null);
     const [question, setQuestion] = useState('');
-    const [answer, setAnswer] = useState('');
+    const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(true);
     const [asking, setAsking] = useState(false);
     const [error, setError] = useState('');
+    const messagesEndRef = useRef(null);
+
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }, [messages, asking]);
 
     useEffect(() => {
         let active = true;
@@ -64,26 +69,31 @@ function AIInsightsPanel({ article, mobile = false }) {
         event.preventDefault();
         if (!question.trim() || asking) return;
 
+        const submittedQuestion = question.trim();
+        setMessages((currentMessages) => [...currentMessages, { role: 'user', content: submittedQuestion }]);
+        setQuestion('');
         setAsking(true);
-        setAnswer('');
         try {
             const response = await askArticleQuestion({
                 id: article.id,
                 title: article.title,
                 content: article.content,
-            }, question.trim());
-            setAnswer(response.data.data.answer);
+            }, submittedQuestion);
+            setMessages((currentMessages) => [...currentMessages, { role: 'assistant', content: response.data.data.answer }]);
         } catch (requestError) {
-            setAnswer(requestError?.response?.data?.error || 'I could not answer that question.');
+            setMessages((currentMessages) => [...currentMessages, {
+                role: 'assistant',
+                content: requestError?.response?.data?.error || 'I could not answer that question.',
+            }]);
         } finally {
             setAsking(false);
         }
     };
 
     return (
-        <Card className={`border border-fuchsia-300/20 bg-slate-950/40 text-white shadow-2xl shadow-indigo-950/30 backdrop-blur-xl ${mobile ? 'rounded-2xl' : 'rounded-3xl'}`}>
-            <CardContent className="space-y-6 p-5 sm:p-6">
-                <div className="flex items-start justify-between gap-3">
+        <Card className={`${mobile ? 'h-full rounded-2xl' : 'h-[calc(100vh+4rem)] rounded-3xl'} min-h-0 overflow-hidden border-fuchsia-300/20 bg-slate-950/40 text-white shadow-2xl shadow-indigo-950/30 backdrop-blur-xl`}>
+            <CardContent className={`flex h-full min-h-0 flex-col ${mobile ? 'gap-4' : 'gap-3'} p-4 sm:p-5`}>
+                <div className="flex shrink-0 items-start justify-between gap-3">
                     <div>
                         <div className="mb-2 flex items-center gap-2 text-fuchsia-200">
                             <BrainCircuit size={19} />
@@ -95,7 +105,7 @@ function AIInsightsPanel({ article, mobile = false }) {
                 </div>
 
                 {!mobile && (
-                    <div className="space-y-3">
+                    <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-hidden">
                         {loading && <p className="text-sm text-slate-300">Generating insights...</p>}
                         {error && <p className="text-sm text-rose-200">{error}</p>}
                         {insights && [
@@ -103,43 +113,67 @@ function AIInsightsPanel({ article, mobile = false }) {
                             { label: 'Key ideas', text: insights.keyIdeas.join(' ') },
                             { label: 'Reader questions', text: insights.questions.join(' ') },
                         ].map((insight) => (
-                            <div key={insight.label} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                            <div key={insight.label} className="flex min-h-0 flex-1 flex-col rounded-xl border border-white/10 bg-white/5 p-3">
                                 <p className="mb-1 text-sm font-semibold text-indigo-100">{insight.label}</p>
-                                <p className="text-sm leading-relaxed text-slate-300">{insight.text}</p>
+                                <p className="ai-scrollbar min-h-0 flex-1 overflow-y-auto pr-2 text-sm leading-relaxed text-slate-300">{insight.text}</p>
                             </div>
                         ))}
                     </div>
                 )}
 
-                <div className="rounded-2xl border border-fuchsia-300/20 bg-linear-to-br from-fuchsia-500/10 to-indigo-500/10 p-4">
-                    <div className="mb-3 flex items-center gap-2">
+                <div className={`flex min-h-0 flex-col justify-between gap-2.5 rounded-2xl border border-fuchsia-300/20 bg-linear-to-br from-fuchsia-500/10 to-indigo-500/10 p-3 ${mobile ? 'flex-1' : 'flex-[0.5]'}`}>
+                    <div className="flex items-center gap-2">
                         <MessageCircle size={17} className="text-fuchsia-200" />
                         <h3 className="font-semibold text-white">Chat with this article</h3>
                     </div>
-                    <p className="mb-4 text-sm leading-relaxed text-slate-300">
-                        Ask questions about “{article.title}” when the AI service is available.
-                    </p>
-                    {answer && <div className="mb-4 rounded-xl border border-white/10 bg-black/20 p-3 text-sm leading-relaxed text-slate-200">{answer}</div>}
-                    <form className="relative" onSubmit={handleQuestion}>
+                    <div
+                        role="log"
+                        aria-label="Conversation with AI about this article"
+                        aria-live="polite"
+                        className="ai-scrollbar flex h-[50%] min-h-24 shrink-0 flex-col gap-3 overflow-y-auto rounded-xl border border-white/10 bg-black/20 p-3 pr-2"
+                    >
+                        {messages.length === 0 && <p className="text-sm text-slate-400">Your conversation will appear here.</p>}
+                        {messages.map((message, index) => (
+                            <div
+                                key={`${message.role}-${index}`}
+                                className={`max-w-[90%] whitespace-pre-wrap wrap-break-word rounded-xl px-3 py-2 text-sm leading-relaxed ${message.role === 'user' ? 'ml-auto bg-fuchsia-500/20 text-fuchsia-50' : 'mr-auto bg-white/5 text-slate-200'}`}
+                            >
+                                <span className="mb-1 block text-[0.65rem] font-semibold uppercase tracking-wider text-slate-400">
+                                    {message.role === 'user' ? 'You' : 'AI'}
+                                </span>
+                                {message.content}
+                            </div>
+                        ))}
+                        {asking && <p className="mr-auto text-sm text-slate-400">Thinking...</p>}
+                        <div ref={messagesEndRef} />
+                    </div>
+                    <form className="relative shrink-0" onSubmit={handleQuestion}>
                         <Textarea
+                            rows={1}
                             value={question}
                             onChange={(event) => setQuestion(event.target.value)}
+                            onKeyDown={(event) => {
+                                if (event.key === 'Enter' && !event.shiftKey) {
+                                    event.preventDefault();
+                                    handleQuestion(event);
+                                }
+                            }}
                             disabled={asking}
                             placeholder="Ask a question about this article..."
                             aria-label="Ask the AI about this article"
-                            className="min-h-24 resize-none border-white/10 bg-black/20 pr-12 text-white placeholder:text-slate-400 disabled:cursor-not-allowed disabled:opacity-70"
+                            className="ai-scrollbar h-12 min-h-12 max-h-12 field-sizing-fixed resize-none overflow-y-auto border-white/10 bg-black/20 px-4 py-3 pr-12 text-white placeholder:text-slate-400 disabled:cursor-not-allowed disabled:opacity-70"
                         />
                         <Button
                             type="submit"
                             size="icon"
                             disabled={asking || !question.trim()}
                             aria-label="Send question"
-                            className="absolute bottom-3 right-3 bg-fuchsia-500/40 text-white"
+                            className="absolute bottom-1.5 right-3 bg-fuchsia-500/40 text-white"
                         >
                             <Send size={16} />
                         </Button>
                     </form>
-                    <p className="mt-3 text-xs text-slate-400">Answers are grounded in this article.</p>
+                    {!mobile && <p className="mt-3 text-xs text-slate-400">Answers are grounded in this article.</p>}
                 </div>
             </CardContent>
         </Card>
@@ -456,7 +490,7 @@ export default function ArticlePage() {
             </motion.div>
 
             <Dialog open={isAiChatOpen} onOpenChange={setIsAiChatOpen}>
-                <DialogContent className="w-[calc(100%-2rem)] max-w-md rounded-2xl border-white/10 bg-slate-950 p-0 text-white shadow-2xl">
+                <DialogContent className="h-[min(80vh,48rem)] max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-md overflow-hidden rounded-2xl border-white/10 bg-slate-950 p-0 text-white shadow-2xl">
                     <DialogHeader className="sr-only">
                         <DialogTitle>AI insights and article chat</DialogTitle>
                     </DialogHeader>
