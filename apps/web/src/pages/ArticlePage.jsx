@@ -35,10 +35,11 @@ function AIInsightsPanel({ article, mobile = false }) {
     const [loading, setLoading] = useState(true);
     const [asking, setAsking] = useState(false);
     const [error, setError] = useState('');
-    const messagesEndRef = useRef(null);
+    const conversationRef = useRef(null);
 
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        const conversation = conversationRef.current;
+        if (conversation) conversation.scrollTop = conversation.scrollHeight;
     }, [messages, asking]);
 
     useEffect(() => {
@@ -79,11 +80,24 @@ function AIInsightsPanel({ article, mobile = false }) {
                 title: article.title,
                 content: article.content,
             }, submittedQuestion);
-            setMessages((currentMessages) => [...currentMessages, { role: 'assistant', content: response.data.data.answer }]);
+            const result = response?.data?.data;
+            const answer = [result?.answer, result?.explanation]
+                .find((value) => typeof value === 'string' && value.trim())
+                ?.trim() || '';
+            const responseError = typeof result?.error === 'string' ? result.error.trim() : '';
+            setMessages((currentMessages) => [...currentMessages, {
+                role: 'assistant',
+                content: answer || responseError || 'The AI returned an unexpected response.',
+                isError: !answer,
+            }]);
         } catch (requestError) {
             setMessages((currentMessages) => [...currentMessages, {
                 role: 'assistant',
-                content: requestError?.response?.data?.error || 'I could not answer that question.',
+                content: requestError?.response?.data?.data?.error
+                    || requestError?.response?.data?.error
+                    || requestError?.message
+                    || 'I could not answer that question.',
+                isError: true,
             }]);
         } finally {
             setAsking(false);
@@ -105,47 +119,54 @@ function AIInsightsPanel({ article, mobile = false }) {
                 </div>
 
                 {!mobile && (
-                    <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-hidden">
+                    <div className="flex min-h-0 flex-[0.867] flex-col gap-2 overflow-hidden">
                         {loading && <p className="text-sm text-slate-300">Generating insights...</p>}
                         {error && <p className="text-sm text-rose-200">{error}</p>}
                         {insights && [
                             { label: 'Summary', text: insights.summary },
-                            { label: 'Key ideas', text: insights.keyIdeas.join(' ') },
-                            { label: 'Reader questions', text: insights.questions.join(' ') },
+                            { label: 'Key ideas', items: insights.keyIdeas },
+                            { label: 'Reader questions', items: insights.questions },
                         ].map((insight) => (
-                            <div key={insight.label} className="flex min-h-0 flex-1 flex-col rounded-xl border border-white/10 bg-white/5 p-3">
+                            <div key={insight.label} className={`flex min-h-0 ${insight.label === 'Summary' ? 'flex-[1.25]' : 'flex-1'} flex-col rounded-xl border border-white/10 bg-white/5 p-3`}>
                                 <p className="mb-1 text-sm font-semibold text-indigo-100">{insight.label}</p>
-                                <p className="ai-scrollbar min-h-0 flex-1 overflow-y-auto pr-2 text-sm leading-relaxed text-slate-300">{insight.text}</p>
+                                {insight.items ? (
+                                    <ul className="ai-scrollbar min-h-0 flex-1 list-disc space-y-2 overflow-y-auto pl-5 pr-2 text-sm leading-relaxed text-slate-300">
+                                        {insight.items.map((item) => <li key={item}>{item}</li>)}
+                                    </ul>
+                                ) : (
+                                    <p className="ai-scrollbar min-h-0 flex-1 overflow-y-auto pr-2 text-sm leading-relaxed text-slate-300">{insight.text}</p>
+                                )}
                             </div>
                         ))}
                     </div>
                 )}
 
-                <div className={`flex min-h-0 flex-col justify-between gap-2.5 rounded-2xl border border-fuchsia-300/20 bg-linear-to-br from-fuchsia-500/10 to-indigo-500/10 p-3 ${mobile ? 'flex-1' : 'flex-[0.5]'}`}>
+                <div className={`flex min-h-0 flex-col justify-between gap-2.5 rounded-2xl border border-fuchsia-300/20 bg-linear-to-br from-fuchsia-500/10 to-indigo-500/10 p-3 ${mobile ? 'flex-1' : 'flex-[0.633]'}`}>
                     <div className="flex items-center gap-2">
                         <MessageCircle size={17} className="text-fuchsia-200" />
                         <h3 className="font-semibold text-white">Chat with this article</h3>
                     </div>
                     <div
+                        ref={conversationRef}
                         role="log"
                         aria-label="Conversation with AI about this article"
                         aria-live="polite"
-                        className="ai-scrollbar flex h-[50%] min-h-24 shrink-0 flex-col gap-3 overflow-y-auto rounded-xl border border-white/10 bg-black/20 p-3 pr-2"
+                        className="ai-scrollbar flex min-h-24 flex-1 flex-col gap-3 overflow-y-auto rounded-xl border border-white/10 bg-black/20 p-3 pr-2"
                     >
                         {messages.length === 0 && <p className="text-sm text-slate-400">Your conversation will appear here.</p>}
                         {messages.map((message, index) => (
                             <div
                                 key={`${message.role}-${index}`}
-                                className={`max-w-[90%] whitespace-pre-wrap wrap-break-word rounded-xl px-3 py-2 text-sm leading-relaxed ${message.role === 'user' ? 'ml-auto bg-fuchsia-500/20 text-fuchsia-50' : 'mr-auto bg-white/5 text-slate-200'}`}
+                                role={message.isError ? 'alert' : undefined}
+                                className={`max-w-[90%] whitespace-pre-wrap wrap-break-word rounded-xl px-3 py-2 text-sm leading-relaxed ${message.isError ? 'mr-auto border border-rose-400/30 bg-rose-500/10 text-rose-200' : message.role === 'user' ? 'ml-auto bg-fuchsia-500/20 text-fuchsia-50' : 'mr-auto bg-white/5 text-slate-200'}`}
                             >
-                                <span className="mb-1 block text-[0.65rem] font-semibold uppercase tracking-wider text-slate-400">
-                                    {message.role === 'user' ? 'You' : 'AI'}
+                                <span className={`mb-1 block text-[0.65rem] font-semibold uppercase tracking-wider ${message.isError ? 'text-rose-300' : 'text-slate-400'}`}>
+                                    {message.isError ? 'AI error' : message.role === 'user' ? 'You' : 'AI'}
                                 </span>
                                 {message.content}
                             </div>
                         ))}
                         {asking && <p className="mr-auto text-sm text-slate-400">Thinking...</p>}
-                        <div ref={messagesEndRef} />
                     </div>
                     <form className="relative shrink-0" onSubmit={handleQuestion}>
                         <Textarea
