@@ -17,6 +17,17 @@
     "langchain": "^1.5.12",
     "zod": "^3.25.76"
   },
+  "resolutions": {
+    "@langchain/core": "^1.2.12"
+  },
+  "overrides": {
+    "@langchain/core": "^1.2.12"
+  },
+  "npm": {
+    "overrides": {
+      "@langchain/core": "^1.2.12"
+    }
+  },
   "devDependencies": {
     "@types/express": "^5.0.1",
     "@types/node": "^24.2.0",
