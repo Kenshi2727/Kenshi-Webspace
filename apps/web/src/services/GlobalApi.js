@@ -132,6 +132,13 @@ const sendPublicFcmToken = (data) => instance.post('/api/v1/notification/tokens/
 
 const multicast = (data) => instance.post('/api/v1/notification/notifications/multicast', data);
 
+const createArticleInsights = (article) => instance.post('/api/v1/ai/insights', { article });
+
+const askArticleQuestion = (article, question) => instance.post('/api/v1/ai/chat', {
+    article,
+    question,
+});
+
 export {
     pingServer,
     createUser,
@@ -153,6 +160,8 @@ export {
     getUserPosts,
     sendPublicFcmToken,
     multicast,
+    createArticleInsights,
+    askArticleQuestion,
 };
 
 
