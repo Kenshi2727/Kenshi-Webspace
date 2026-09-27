@@ -15,7 +15,10 @@
                 "MODE",
                 "FIREBASE_SERVICE_ACCOUNT",
                 "DATABASE_URL",
-                "FIREBASE_SERVICE_ACCOUNT"
+                "FIREBASE_SERVICE_ACCOUNT",
+                "NODE_ENV",
+                "AI_MODEL",
+                "GEMINI_API_KEY"
             ],
             "outputs": [
                 "dist/**"
