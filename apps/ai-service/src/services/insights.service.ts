@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { env } from '../config/env.js';
 import { createArticleContextTool } from '../tools/article-context.tool.js';
 import type { ArticleAnswer, ArticleInsights, ArticleInput } from '../types/insights.types.js';
+import { createRequire } from 'node:module';
 
 const insightsSchema = z.object({
     summary: z.string(),
@@ -45,16 +46,27 @@ export class InsightsService {
         try {
             const googleGenAI = await import('@langchain/google-genai');
 
+            const require = createRequire(import.meta.url);
+
+            console.log('[ai-service] versions', {
+                langchain: require('langchain/package.json').version,
+                core: require('@langchain/core/package.json').version,
+                googleGenAI: require('@langchain/google-genai/package.json').version,
+            });
+
             console.log(
                 '[ai-service] DIRECT GOOGLE GENAI IMPORT SUCCESS',
                 Object.keys(googleGenAI)
             );
+
         } catch (error) {
             console.error(
                 '[ai-service] DIRECT GOOGLE GENAI IMPORT FAILED',
                 error
             );
         }
+
+
 
         try {
             const agent = createAgent({
