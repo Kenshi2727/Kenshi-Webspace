@@ -38,19 +38,34 @@ export class InsightsService {
     }
 
     private async askAgent<T extends Record<string, unknown>>(article: ArticleInput, request: string, schema: z.ZodType<T>): Promise<T> {
-        const agent = createAgent({
-            model: env.aiModel,
-            tools: [createArticleContextTool(article)],
-            responseFormat: toolStrategy(schema),
-        });
-        const messages = await responsePrompt.formatMessages({ request });
-        const result = await agent.invoke({
-            messages,
-        });
-        const structuredResponse = (result as typeof result & { structuredResponse?: unknown }).structuredResponse;
-        if (!structuredResponse) throw new Error('AI agent returned no structured response');
-        const response = schema.parse(structuredResponse);
-        console.log('AI agent response:', JSON.stringify(response));
-        return response;
+        const startedAt = Date.now();
+        console.info('[ai-service] Agent invocation started', { model: env.aiModel });
+
+        try {
+            const agent = createAgent({
+                model: env.aiModel,
+                tools: [createArticleContextTool(article)],
+                responseFormat: toolStrategy(schema),
+            });
+            const messages = await responsePrompt.formatMessages({ request });
+            const result = await agent.invoke({
+                messages,
+            });
+            const structuredResponse = (result as typeof result & { structuredResponse?: unknown }).structuredResponse;
+            if (!structuredResponse) throw new Error('AI agent returned no structured response');
+            const response = schema.parse(structuredResponse);
+            console.info('[ai-service] Agent invocation succeeded', {
+                model: env.aiModel,
+                durationMs: Date.now() - startedAt,
+            });
+            return response;
+        } catch (error) {
+            console.error('[ai-service] Agent invocation failed', {
+                model: env.aiModel,
+                durationMs: Date.now() - startedAt,
+                error: error instanceof Error ? { name: error.name, message: error.message } : String(error),
+            });
+            throw error;
+        }
     }
 }
