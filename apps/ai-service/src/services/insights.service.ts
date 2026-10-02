@@ -41,6 +41,21 @@ export class InsightsService {
         const startedAt = Date.now();
         console.info('[ai-service] Agent invocation started', { model: env.aiModel });
 
+
+        try {
+            const googleGenAI = await import('@langchain/google-genai');
+
+            console.log(
+                '[ai-service] DIRECT GOOGLE GENAI IMPORT SUCCESS',
+                Object.keys(googleGenAI)
+            );
+        } catch (error) {
+            console.error(
+                '[ai-service] DIRECT GOOGLE GENAI IMPORT FAILED',
+                error
+            );
+        }
+
         try {
             const agent = createAgent({
                 model: env.aiModel,
