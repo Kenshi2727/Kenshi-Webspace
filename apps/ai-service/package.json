@@ -10,11 +10,11 @@
     "test": "echo \"No tests configured\""
   },
   "dependencies": {
-    "@langchain/core": "^1.2.12",
+    "@langchain/core": "^1.2.14",
     "@langchain/google-genai": "^2.3.2",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "langchain": "^1.5.12",
+    "langchain": "^1.5.15",
     "zod": "^3.25.76"
   },
   "devDependencies": {
