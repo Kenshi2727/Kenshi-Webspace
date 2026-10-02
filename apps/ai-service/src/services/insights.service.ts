@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { env } from '../config/env.js';
 import { createArticleContextTool } from '../tools/article-context.tool.js';
 import type { ArticleAnswer, ArticleInsights, ArticleInput } from '../types/insights.types.js';
+import { createRequire } from 'node:module';
 
 const insightsSchema = z.object({
     summary: z.string(),
@@ -38,19 +39,60 @@ export class InsightsService {
     }
 
     private async askAgent<T extends Record<string, unknown>>(article: ArticleInput, request: string, schema: z.ZodType<T>): Promise<T> {
-        const agent = createAgent({
-            model: env.aiModel,
-            tools: [createArticleContextTool(article)],
-            responseFormat: toolStrategy(schema),
-        });
-        const messages = await responsePrompt.formatMessages({ request });
-        const result = await agent.invoke({
-            messages,
-        });
-        const structuredResponse = (result as typeof result & { structuredResponse?: unknown }).structuredResponse;
-        if (!structuredResponse) throw new Error('AI agent returned no structured response');
-        const response = schema.parse(structuredResponse);
-        console.log('AI agent response:', JSON.stringify(response));
-        return response;
+        const startedAt = Date.now();
+        console.info('[ai-service] Agent invocation started', { model: env.aiModel });
+
+
+        try {
+            const googleGenAI = await import('@langchain/google-genai');
+
+            const require = createRequire(import.meta.url);
+
+            console.log('[ai-service] versions', {
+                langchain: require('langchain/package.json').version,
+                core: require('@langchain/core/package.json').version,
+                googleGenAI: require('@langchain/google-genai/package.json').version,
+            });
+
+            console.log(
+                '[ai-service] DIRECT GOOGLE GENAI IMPORT SUCCESS',
+                Object.keys(googleGenAI)
+            );
+
+        } catch (error) {
+            console.error(
+                '[ai-service] DIRECT GOOGLE GENAI IMPORT FAILED',
+                error
+            );
+        }
+
+
+
+        try {
+            const agent = createAgent({
+                model: env.aiModel,
+                tools: [createArticleContextTool(article)],
+                responseFormat: toolStrategy(schema),
+            });
+            const messages = await responsePrompt.formatMessages({ request });
+            const result = await agent.invoke({
+                messages,
+            });
+            const structuredResponse = (result as typeof result & { structuredResponse?: unknown }).structuredResponse;
+            if (!structuredResponse) throw new Error('AI agent returned no structured response');
+            const response = schema.parse(structuredResponse);
+            console.info('[ai-service] Agent invocation succeeded', {
+                model: env.aiModel,
+                durationMs: Date.now() - startedAt,
+            });
+            return response;
+        } catch (error) {
+            console.error('[ai-service] Agent invocation failed', {
+                model: env.aiModel,
+                durationMs: Date.now() - startedAt,
+                error: error instanceof Error ? { name: error.name, message: error.message } : String(error),
+            });
+            throw error;
+        }
     }
 }
