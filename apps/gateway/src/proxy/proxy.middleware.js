@@ -10,6 +10,18 @@ import attachGatewaySecret from './attachGatewaySecret.js';
 
 /*
 * proxy middleware with timeouts
+For contributors:    
+    How proxy works:
+
+    condition:
+    pathRewrite: {
+            "^/content": ""
+        }
+
+    proxy action:
+    /content/articles/123
+        ↓
+    /articles/123
 */
 const createServiceProxy = (target, serviceName, options = {}) => {
     const { pathRewrite = {} } = options;

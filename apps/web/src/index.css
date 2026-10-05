@@ -229,6 +229,68 @@
   }
 }
 
+/*Scrollbar Customized*/
+/* AI content scrollbars */
+.ai-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #d879f5 transparent;
+}
+
+.ai-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.ai-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.ai-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #e879f9, #818cf8);
+  border: 1px solid rgb(255 255 255 / 12%);
+  border-radius: 9999px;
+}
+
+@media (max-width: 640px) {
+  .ai-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+}
+
+
+.custom-scrollbar-white::-webkit-scrollbar-thumb {
+    background: white;
+    border-radius: 9999px;
+}
+
+/* Chrome, Edge, Safari */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+.custom-scrollbar-white::-webkit-scrollbar {
+    width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 9999px;
+
+}
+
+.custom-scrollbar-white::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #432dd7;
+    border:#ffffff solid 1px;
+    border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #432dd7;
+}
 
 /* Hide scrollbar for Webkit (Chrome, Safari) */
 .hide-scrollbar::-webkit-scrollbar {

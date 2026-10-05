@@ -3,9 +3,8 @@
 ### [Documentation](https://kenshi2727.github.io/Kenshi-Webspace/)
 
 ## Overview
-**Kenshi WebSpace** is an ambitious digital platform designed to **connect, inspire, and empower users** through a rich, interactive experience
+**Kenshi WebSpace** Architecture is a **monorepo-based event driven serverless multi language microservices Architecture** and is a web application hosted on the secured .dev domain ([kenshi.dev](kenshi.dev)) 
 
 ### Support the Project
 
- **Reach out:** [abhishekmathurofficial@gmail.com](mailto:abhishekmathurofficial@gmail.com)
- **Portfolio & Projects:** [GitHub](https://github.com/Kenshi2727)
+   Suggest improvemnts 😁
