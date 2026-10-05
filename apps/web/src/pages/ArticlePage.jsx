@@ -6,11 +6,11 @@ import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
-import { Facebook, Twitter, Linkedin, Pencil, Clock, Eye, Heart, Bookmark, Share2, Delete, DeleteIcon, Trash, DownloadIcon, BrainCircuit, MessageCircle, Send, Sparkles } from 'lucide-react';
+import { Facebook, Twitter, Linkedin, Pencil, Clock, Eye, Heart, Bookmark, Share2, Delete, DeleteIcon, Trash, DownloadIcon, BrainCircuit, MessageCircle, Send, Sparkles, Scroll, ScrollText } from 'lucide-react';
 import MarkdownRenderer from '@/components/MarkdownRenderer';
 import NotFoundPage from './NotFoundPage';
 import LoadingPage from './LoadingPage';
-import { getSinglePost, deletePost, updatePostLikes, updatePostViews, updatePostBookmarks } from '../services/GlobalApi.js';
+import { getSinglePost, deletePost, updatePostLikes, updatePostViews, updatePostBookmarks, createArticleInsights, askArticleQuestion } from '../services/GlobalApi.js';
 import toast from 'react-hot-toast';
 import { formatDate, formatMessageTime, formatOnlyNumericDate } from '../lib/dateFormatter.js';
 import { useUser } from '@clerk/clerk-react';
@@ -29,10 +29,85 @@ const related = [
 ];
 
 function AIInsightsPanel({ article, mobile = false }) {
+    const [insights, setInsights] = useState(null);
+    const [question, setQuestion] = useState('');
+    const [messages, setMessages] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [asking, setAsking] = useState(false);
+    const [error, setError] = useState('');
+    const conversationRef = useRef(null);
+
+    useEffect(() => {
+        const conversation = conversationRef.current;
+        if (conversation) conversation.scrollTop = conversation.scrollHeight;
+    }, [messages, asking]);
+
+    useEffect(() => {
+        let active = true;
+
+        const loadInsights = async () => {
+            setLoading(true);
+            setError('');
+            try {
+                const response = await createArticleInsights({
+                    id: article.id,
+                    title: article.title,
+                    content: article.content,
+                });
+                if (active) setInsights(response.data.data);
+            } catch (requestError) {
+                if (active) setError(requestError?.response?.data?.error || 'AI insights are unavailable right now.');
+            } finally {
+                if (active) setLoading(false);
+            }
+        };
+
+        loadInsights();
+        return () => { active = false; };
+    }, [article.id, article.title, article.content]);
+
+    const handleQuestion = async (event) => {
+        event.preventDefault();
+        if (!question.trim() || asking) return;
+
+        const submittedQuestion = question.trim();
+        setMessages((currentMessages) => [...currentMessages, { role: 'user', content: submittedQuestion }]);
+        setQuestion('');
+        setAsking(true);
+        try {
+            const response = await askArticleQuestion({
+                id: article.id,
+                title: article.title,
+                content: article.content,
+            }, submittedQuestion);
+            const result = response?.data?.data;
+            const answer = [result?.answer, result?.explanation]
+                .find((value) => typeof value === 'string' && value.trim())
+                ?.trim() || '';
+            const responseError = typeof result?.error === 'string' ? result.error.trim() : '';
+            setMessages((currentMessages) => [...currentMessages, {
+                role: 'assistant',
+                content: answer || responseError || 'The AI returned an unexpected response.',
+                isError: !answer,
+            }]);
+        } catch (requestError) {
+            setMessages((currentMessages) => [...currentMessages, {
+                role: 'assistant',
+                content: requestError?.response?.data?.data?.error
+                    || requestError?.response?.data?.error
+                    || requestError?.message
+                    || 'I could not answer that question.',
+                isError: true,
+            }]);
+        } finally {
+            setAsking(false);
+        }
+    };
+
     return (
-        <Card className={`border border-fuchsia-300/20 bg-slate-950/40 text-white shadow-2xl shadow-indigo-950/30 backdrop-blur-xl ${mobile ? 'rounded-2xl' : 'rounded-3xl'}`}>
-            <CardContent className="space-y-6 p-5 sm:p-6">
-                <div className="flex items-start justify-between gap-3">
+        <Card className={`${mobile ? 'h-full rounded-2xl' : 'h-[calc(100vh+4rem)] rounded-3xl'} min-h-0 overflow-hidden border-fuchsia-300/20 bg-slate-950/40 text-white shadow-2xl shadow-indigo-950/30 backdrop-blur-xl`}>
+            <CardContent className={`flex h-full min-h-0 flex-col ${mobile ? 'gap-4' : 'gap-3'} p-4 sm:p-5`}>
+                <div className="flex shrink-0 items-start justify-between gap-3">
                     <div>
                         <div className="mb-2 flex items-center gap-2 text-fuchsia-200">
                             <BrainCircuit size={19} />
@@ -44,46 +119,82 @@ function AIInsightsPanel({ article, mobile = false }) {
                 </div>
 
                 {!mobile && (
-                    <div className="space-y-3">
-                        {[
-                            { label: 'Summary', text: 'A concise AI summary will appear here once AI features are connected.' },
-                            { label: 'Key ideas', text: 'Important themes and takeaways will be extracted from this article.' },
-                            { label: 'Ask about it', text: 'The article-aware assistant will answer questions using this article.' },
+                    <div className="flex min-h-0 flex-[0.867] flex-col gap-2 overflow-hidden">
+                        {loading && <p className="text-sm text-slate-300">Generating insights...</p>}
+                        {error && <p className="text-sm text-rose-200">{error}</p>}
+                        {insights && [
+                            { label: 'Summary', text: insights.summary },
+                            { label: 'Key ideas', items: insights.keyIdeas },
+                            { label: 'Reader questions', items: insights.questions },
                         ].map((insight) => (
-                            <div key={insight.label} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                            <div key={insight.label} className={`flex min-h-0 ${insight.label === 'Summary' ? 'flex-[1.25]' : 'flex-1'} flex-col rounded-xl border border-white/10 bg-white/5 p-3`}>
                                 <p className="mb-1 text-sm font-semibold text-indigo-100">{insight.label}</p>
-                                <p className="text-sm leading-relaxed text-slate-300">{insight.text}</p>
+                                {insight.items ? (
+                                    <ul className="ai-scrollbar min-h-0 flex-1 list-disc space-y-2 overflow-y-auto pl-5 pr-2 text-sm leading-relaxed text-slate-300">
+                                        {insight.items.map((item) => <li key={item}>{item}</li>)}
+                                    </ul>
+                                ) : (
+                                    <p className="ai-scrollbar min-h-0 flex-1 overflow-y-auto pr-2 text-sm leading-relaxed text-slate-300">{insight.text}</p>
+                                )}
                             </div>
                         ))}
                     </div>
                 )}
 
-                <div className="rounded-2xl border border-fuchsia-300/20 bg-linear-to-br from-fuchsia-500/10 to-indigo-500/10 p-4">
-                    <div className="mb-3 flex items-center gap-2">
+                <div className={`flex min-h-0 flex-col justify-between gap-2.5 rounded-2xl border border-fuchsia-300/20 bg-linear-to-br from-fuchsia-500/10 to-indigo-500/10 p-3 ${mobile ? 'flex-1' : 'flex-[0.633]'}`}>
+                    <div className="flex items-center gap-2">
                         <MessageCircle size={17} className="text-fuchsia-200" />
                         <h3 className="font-semibold text-white">Chat with this article</h3>
                     </div>
-                    <p className="mb-4 text-sm leading-relaxed text-slate-300">
-                        Ask questions about “{article.title}” when the AI service is available.
-                    </p>
-                    <div className="relative">
+                    <div
+                        ref={conversationRef}
+                        role="log"
+                        aria-label="Conversation with AI about this article"
+                        aria-live="polite"
+                        className="ai-scrollbar flex min-h-24 flex-1 flex-col gap-3 overflow-y-auto rounded-xl border border-white/10 bg-black/20 p-3 pr-2"
+                    >
+                        {messages.length === 0 && <p className="text-sm text-slate-400">Your conversation will appear here.</p>}
+                        {messages.map((message, index) => (
+                            <div
+                                key={`${message.role}-${index}`}
+                                role={message.isError ? 'alert' : undefined}
+                                className={`max-w-[90%] whitespace-pre-wrap wrap-break-word rounded-xl px-3 py-2 text-sm leading-relaxed ${message.isError ? 'mr-auto border border-rose-400/30 bg-rose-500/10 text-rose-200' : message.role === 'user' ? 'ml-auto bg-fuchsia-500/20 text-fuchsia-50' : 'mr-auto bg-white/5 text-slate-200'}`}
+                            >
+                                <span className={`mb-1 block text-[0.65rem] font-semibold uppercase tracking-wider ${message.isError ? 'text-rose-300' : 'text-slate-400'}`}>
+                                    {message.isError ? 'AI error' : message.role === 'user' ? 'You' : 'AI'}
+                                </span>
+                                {message.content}
+                            </div>
+                        ))}
+                        {asking && <p className="mr-auto text-sm text-slate-400">Thinking...</p>}
+                    </div>
+                    <form className="relative shrink-0" onSubmit={handleQuestion}>
                         <Textarea
-                            disabled
-                            placeholder="AI chat will be available soon..."
+                            rows={1}
+                            value={question}
+                            onChange={(event) => setQuestion(event.target.value)}
+                            onKeyDown={(event) => {
+                                if (event.key === 'Enter' && !event.shiftKey) {
+                                    event.preventDefault();
+                                    handleQuestion(event);
+                                }
+                            }}
+                            disabled={asking}
+                            placeholder="Ask a question about this article..."
                             aria-label="Ask the AI about this article"
-                            className="min-h-24 resize-none border-white/10 bg-black/20 pr-12 text-white placeholder:text-slate-400 disabled:cursor-not-allowed disabled:opacity-70"
+                            className="ai-scrollbar h-12 min-h-12 max-h-12 field-sizing-fixed resize-none overflow-y-auto border-white/10 bg-black/20 px-4 py-3 pr-12 text-white placeholder:text-slate-400 disabled:cursor-not-allowed disabled:opacity-70"
                         />
                         <Button
-                            type="button"
+                            type="submit"
                             size="icon"
-                            disabled
+                            disabled={asking || !question.trim()}
                             aria-label="Send question"
-                            className="absolute bottom-3 right-3 bg-fuchsia-500/40 text-white"
+                            className="absolute bottom-1.5 right-3 bg-fuchsia-500/40 text-white"
                         >
                             <Send size={16} />
                         </Button>
-                    </div>
-                    <p className="mt-3 text-xs text-slate-400">Frontend placeholder only. No question will be sent.</p>
+                    </form>
+                    {!mobile && <p className="mt-3 text-xs text-slate-400">Answers are grounded in this article.</p>}
                 </div>
             </CardContent>
         </Card>
@@ -104,6 +215,7 @@ export default function ArticlePage() {
     const [deleting, setDeleting] = useState(false);
     const [isAiChatOpen, setIsAiChatOpen] = useState(false);
     const articleScrollRef = useRef(null);
+    const [addScrollBar, setAddScrollBar] = useState(false);
 
     // Fixed scroll hook
     const { scrollYProgress, scrollY } = useScroll({ container: articleScrollRef });
@@ -399,7 +511,7 @@ export default function ArticlePage() {
             </motion.div>
 
             <Dialog open={isAiChatOpen} onOpenChange={setIsAiChatOpen}>
-                <DialogContent className="w-[calc(100%-2rem)] max-w-md rounded-2xl border-white/10 bg-slate-950 p-0 text-white shadow-2xl">
+                <DialogContent className="h-[min(80vh,48rem)] max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-md overflow-hidden rounded-2xl border-white/10 bg-slate-950 p-0 text-white shadow-2xl">
                     <DialogHeader className="sr-only">
                         <DialogTitle>AI insights and article chat</DialogTitle>
                     </DialogHeader>
@@ -415,7 +527,7 @@ export default function ArticlePage() {
                         animate="visible"
                     >
                         <div className="grid items-stretch gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(18rem,1fr)]">
-                            <div ref={articleScrollRef} className="hide-scrollbar min-w-0 overflow-y-auto overscroll-contain pr-2 scroll-smooth lg:h-[calc(100vh+4rem)]">
+                            <div ref={articleScrollRef} className={`${addScrollBar ? `` : `hide-scrollbar`} custom-scrollbar-white min-w-0 overflow-y-auto pr-2 scroll-smooth h-[calc(100vh+4rem)]`}>
                                 {/* Enhanced Cover with Parallax */}
                                 <motion.div
                                     variants={itemVariants}
@@ -423,7 +535,7 @@ export default function ArticlePage() {
                                     whileHover={{
                                         z: 20
                                     }}
-                                    className="no-pdf relative mb-12 h-[calc(15vh)] w-full overflow-hidden rounded-3xl shadow-xl dark:shadow-2xs dark:shadow-indigo-300/50 sm:h-[calc(20vh)] md:h-[calc(40vh)]"
+                                    className="no-pdf relative mb-12 h-[calc(15vh)] w-full overflow-hidden rounded-2xl md:rounded-3xl shadow-xl dark:shadow-2xs dark:shadow-indigo-300/50 sm:h-[calc(20vh)] md:h-[calc(40vh)] aspect-video"
                                 >
                                     <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent z-10 hover:opacity-0 transition-opacity delay-300 duration-500" />
 
@@ -476,7 +588,7 @@ export default function ArticlePage() {
 
                                         <div className="absolute top-6 left-6 mr-6" >
                                             {/* article title */}
-                                            <h1 className="text-sm sm:text-2xl md:text-3xl lg:text-5xl font-bold text-white line-clamp-4">{article.title}</h1>
+                                            <h1 className="text-sm sm:text-2xl md:text-3xl lg:text-5xl font-bold text-white line-clamp-4 sm:p-1 md:p-2">{article.title}</h1>
 
                                             {/* article author */}
                                             <motion.div
@@ -499,13 +611,13 @@ export default function ArticlePage() {
                                         transition={{ delay: 0.5, duration: 0.6 }}
                                         className="absolute bottom-6 left-6 z-20"
                                     >
-                                        {article.featured && <Badge className="bg-indigo-500/80 text-white border-0 backdrop-blur-sm text-[0.5rem] md:text-xs px-1 py-0.5 md:px-2 md:py-1">
+                                        {article.featured && <Badge className="bg-indigo-500/80 text-white border-0 backdrop-blur-sm text-[0.5rem] md:text-xs px-2 py-0.5 md:px-2 md:py-1">
                                             Featured
                                         </Badge>}
                                     </motion.div>
                                 </motion.div>
 
-                                <Card className="relative w-full overflow-hidden rounded-3xl border border-white/30 bg-purple-300/50 shadow-xl backdrop-blur-xl dark:bg-white/20 dark:shadow-xs dark:shadow-indigo-300/50">
+                                <Card className="relative w-full overflow-hidden rounded-2xl md:rounded-3xl border border-white/30 bg-purple-300/40 shadow-xl backdrop-blur-xl dark:bg-white/20 dark:shadow-xs dark:shadow-indigo-300/50">
                                     <CardContent id="print-area" className="relative p-4 sm:p-10 space-y-8">
                                         {/* Header */}
                                         <motion.div variants={itemVariants} className="flex flex-wrap items-center justify-between gap-4">
@@ -541,8 +653,25 @@ export default function ArticlePage() {
                                             </div>
                                         </motion.div>
 
-                                        {/* Title and Edit Button */}
+                                        {/* Delete, scroll and Edit Button */}
                                         <motion.div variants={itemVariants} id="non-printable" className="flex w-full">
+                                            <motion.div
+                                                initial={{ opacity: 0, scale: 0.8 }}
+                                                animate={{ opacity: 1, scale: 1 }}
+                                                transition={{ delay: 0.2, duration: 0.2 }}
+                                                whileHover={{ scale: 1.1 }}
+                                                whileTap={{ scale: 0.95 }}
+                                            >
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    onClick={() => setAddScrollBar(!addScrollBar)}
+                                                    className="flex items-center gap-2 border-indigo-200/60 bg-indigo-500/60 dark:bg-indigo-500/60 hover:bg-indigo-500/30 hover:border-indigo-200/50 text-white transition-all duration-300 backdrop-blur-sm cursor-pointer"
+                                                >
+                                                    <ScrollText size={16} />
+                                                </Button>
+                                            </motion.div>
+
                                             {user && (user.id === article.authorId) &&
                                                 <div className='flex w-full justify-end gap-2 sm:gap-4'>
                                                     <motion.div
@@ -643,7 +772,7 @@ export default function ArticlePage() {
                                         {/* Content with Scroll Animations */}
                                         <motion.div
                                             variants={itemVariants}
-                                            className="prose prose-lg max-w-none dark:prose-invert prose-headings:text-black prose-p:text-gray-50 prose-strong:text-white prose-code:text-indigo-200 prose-code:bg-indigo-900/30 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-pre:bg-gray-900/50 prose-pre:border prose-pre:border-white/10 wrap-break-word"
+                                            className="prose prose-lg max-w-none dark:prose-invert prose-headings:text-black prose-p:text-gray-50 prose-strong:text-white prose-code:text-indigo-200 prose-code:bg-indigo-900/30 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-pre:bg-gray-900/50 prose-pre:border prose-pre:border-white/10 break-words hyphens-auto"
                                         >
                                             <MarkdownRenderer content={article.content} />
                                         </motion.div>
