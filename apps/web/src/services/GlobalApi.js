@@ -139,6 +139,8 @@ const askArticleQuestion = (article, question) => instance.post('/api/v1/ai/chat
     question,
 });
 
+const createArticleDiagram = (article) => instance.post('/api/v1/ai/diagram', { article });
+
 export {
     pingServer,
     createUser,
@@ -162,6 +164,7 @@ export {
     multicast,
     createArticleInsights,
     askArticleQuestion,
+    createArticleDiagram,
 };
 
 

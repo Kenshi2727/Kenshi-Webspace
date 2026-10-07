@@ -39,6 +39,15 @@ export const createInsightsController = (service: InsightsService) => ({
             res.status(400).json({ success: false, error: error instanceof Error ? error.message : 'Unable to answer question' });
         }
     },
+
+    createDiagram: async (req: Request, res: Response): Promise<void> => {
+        try {
+            const diagram = await service.createDiagram(validateArticle(req.body?.article));
+            res.status(200).json({ success: true, data: diagram });
+        } catch (error) {
+            res.status(400).json({ success: false, error: error instanceof Error ? error.message : 'Unable to create diagram' });
+        }
+    },
 });
 
 

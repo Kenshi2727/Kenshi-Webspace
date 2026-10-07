@@ -8,6 +8,7 @@ export const createInsightsRoutes = (service: InsightsService) => {
 
     router.post('/insights', controller.createInsights);
     router.post('/chat', controller.answerQuestion);
+    router.post('/diagram', controller.createDiagram);
 
     return router;
 };

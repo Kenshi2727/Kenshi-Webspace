@@ -167,7 +167,6 @@ const ArticlesPage = () => {
         return matchesCategory && matchesSearch;
     });
 
-
     // Article Card Component
     const ArticleCard = ({ article, index }) => {
         const [isLiked, setIsLiked] = useState(article?.PostActions?.find(action => action?.userId === user?.id && action?.likeStatus));
@@ -603,6 +602,7 @@ const ArticlesPage = () => {
                             </motion.div>
                         ))}
                     </motion.div>
+
                 </motion.div>
             </main>
         </div>
