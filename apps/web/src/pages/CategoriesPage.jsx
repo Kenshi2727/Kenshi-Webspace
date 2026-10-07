@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { format as formatNumber, max, scaleBand, scaleLinear, scaleOrdinal, schemeTableau10 } from "d3";
 import {
     ArrowRight,
     Atom,
@@ -188,6 +189,25 @@ const CategoriesPage = () => {
 
     const totalArticles = categoriesWithCounts.reduce((sum, category) => sum + category.count, 0);
     const trendingCount = categories.filter((category) => category.trending).length;
+    const chartCategories = useMemo(
+        () => [...filteredCategories].sort((a, b) => b.count - a.count),
+        [filteredCategories],
+    );
+    const chartWidth = 760;
+    const chartHeight = Math.max(220, 36 * chartCategories.length + 44);
+    const chartMargin = { top: 12, right: 72, bottom: 20, left: 158 };
+    const xScale = scaleLinear()
+        .domain([0, max(chartCategories, (category) => category.count) || 1])
+        .nice()
+        .range([chartMargin.left, chartWidth - chartMargin.right]);
+    const yScale = scaleBand()
+        .domain(chartCategories.map((category) => category.name))
+        .range([chartMargin.top, chartHeight - chartMargin.bottom])
+        .padding(0.3);
+    const colorScale = scaleOrdinal(schemeTableau10)
+        .domain(chartCategories.map((category) => category.name));
+    const chartTicks = xScale.ticks(4);
+    const formatChartValue = formatNumber(".2s");
 
     const handleCategoryClick = async (category) => {
         setCheckingCategoryId(category.id);
@@ -469,6 +489,117 @@ const CategoriesPage = () => {
                         <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Try a broader search term.</p>
                     </motion.div>
                 )}
+
+                <motion.section
+                    variants={itemVariants}
+                    className="mt-10 overflow-hidden rounded-2xl border border-white/70 bg-white/65 shadow-2xl shadow-black/50 dark:shadow-indigo-300/50 backdrop-blur-lg ring-1 ring-white/50 dark:border-white/10 dark:bg-white/7 dark:ring-white/10"
+                >
+                    <div className="p-5 sm:p-7">
+                        <div className="mb-5">
+                            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Articles by category</h2>
+                            <p className="mt-1 text-sm text-gray-500 dark:text-gray-300">Published article counts across topics</p>
+                        </div>
+
+                        {!countsLoading && chartCategories.length > 0 ? (
+                            <div className="w-full overflow-x-auto">
+                                <svg
+                                    viewBox={`0 0 ${chartWidth} ${chartHeight}`}
+                                    role="group"
+                                    aria-label="Published article counts by category"
+                                    className="h-auto min-w-[560px] w-full"
+                                >
+                                    {chartTicks.map((tick) => (
+                                        <g key={tick}>
+                                            <line
+                                                x1={xScale(tick)}
+                                                x2={xScale(tick)}
+                                                y1={chartMargin.top}
+                                                y2={chartHeight - chartMargin.bottom}
+                                                stroke="rgba(100,116,139,0.25)"
+                                            />
+                                            <text
+                                                x={xScale(tick)}
+                                                y={chartHeight - 2}
+                                                textAnchor="middle"
+                                                fill="currentColor"
+                                                className="text-gray-500 dark:text-gray-300"
+                                                fontSize="11"
+                                            >
+                                                {formatChartValue(tick)}
+                                            </text>
+                                        </g>
+                                    ))}
+                                    {chartCategories.map((category) => {
+                                        const rowY = yScale(category.name);
+                                        const isChecking = checkingCategoryId === category.id;
+                                        return (
+                                            <g
+                                                key={category.id}
+                                                role="button"
+                                                tabIndex={checkingCategoryId === null ? 0 : -1}
+                                                aria-label={`Browse ${category.name}, ${category.count} ${category.count === 1 ? "article" : "articles"}`}
+                                                aria-disabled={checkingCategoryId !== null}
+                                                onClick={() => handleCategoryClick(category)}
+                                                onKeyDown={(event) => {
+                                                    if (event.key === "Enter" || event.key === " ") {
+                                                        event.preventDefault();
+                                                        handleCategoryClick(category);
+                                                    }
+                                                }}
+                                                className="cursor-pointer outline-none focus-visible:opacity-75"
+                                            >
+                                                <title>{`${category.name}: ${category.count} ${category.count === 1 ? "article" : "articles"}. Activate to browse.`}</title>
+                                                <rect
+                                                    x="0"
+                                                    y={rowY}
+                                                    width={chartWidth}
+                                                    height={yScale.bandwidth()}
+                                                    fill="transparent"
+                                                />
+                                                <text
+                                                    x={chartMargin.left - 12}
+                                                    y={rowY + yScale.bandwidth() / 2}
+                                                    textAnchor="end"
+                                                    dominantBaseline="middle"
+                                                    fill="currentColor"
+                                                    className="text-gray-700 dark:text-gray-200"
+                                                    fontSize="12"
+                                                >
+                                                    {category.name}
+                                                </text>
+                                                <rect
+                                                    x={chartMargin.left}
+                                                    y={rowY + (yScale.bandwidth() - 16) / 2}
+                                                    width={Math.max(0, xScale(category.count) - chartMargin.left)}
+                                                    height="16"
+                                                    rx="8"
+                                                    fill={colorScale(category.name)}
+                                                    opacity={isChecking ? 0.55 : 0.9}
+                                                    stroke={isChecking ? "#312e81" : "none"}
+                                                    strokeWidth="1.5"
+                                                />
+                                                <text
+                                                    x={Math.min(xScale(category.count) + 8, chartWidth - chartMargin.right + 8)}
+                                                    y={rowY + yScale.bandwidth() / 2}
+                                                    dominantBaseline="middle"
+                                                    fill="currentColor"
+                                                    className="text-gray-700 dark:text-gray-100"
+                                                    fontSize="11"
+                                                >
+                                                    {category.count}
+                                                </text>
+                                            </g>
+                                        );
+                                    })}
+                                </svg>
+                            </div>
+                        ) : (
+                            <p className="py-8 text-center text-sm text-gray-500 dark:text-gray-400">
+                                {countsLoading ? "Loading category counts..." : "No category counts available."}
+                            </p>
+                        )}
+                    </div>
+                </motion.section>
 
                 <motion.section
                     initial={{ opacity: 0, y: 16 }}

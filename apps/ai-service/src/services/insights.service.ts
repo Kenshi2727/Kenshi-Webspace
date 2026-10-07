@@ -3,7 +3,7 @@ import { createAgent, toolStrategy } from 'langchain';
 import { z } from 'zod';
 import { env } from '../config/env.js';
 import { createArticleContextTool } from '../tools/article-context.tool.js';
-import type { ArticleAnswer, ArticleInsights, ArticleInput } from '../types/insights.types.js';
+import type { ArticleAnswer, ArticleDiagram, ArticleInsights, ArticleInput } from '../types/insights.types.js';
 import { createRequire } from 'node:module';
 
 const insightsSchema = z.object({
@@ -14,6 +14,10 @@ const insightsSchema = z.object({
 
 const answerSchema = z.object({
     answer: z.string(),
+}).strict();
+
+const diagramSchema = z.object({
+    mermaid: z.string().min(1),
 }).strict();
 
 const responsePrompt = ChatPromptTemplate.fromMessages([
@@ -35,6 +39,14 @@ export class InsightsService {
             article,
             `Answer this reader question using only the article: ${question}. Return exactly one JSON field named "answer" containing the response text. Do not use "explanation" or any other field.`,
             answerSchema,
+        );
+    }
+
+    async createDiagram(article: ArticleInput): Promise<ArticleDiagram> {
+        return this.askAgent(
+            article,
+            'Create a clear Mermaid flowchart that explains the article\'s main ideas and their relationships. Return valid Mermaid source only in the mermaid field, without Markdown fences or prose. Keep it focused and readable, use safe plain-text node labels, and do not use HTML, click directives, or links.',
+            diagramSchema,
         );
     }
 

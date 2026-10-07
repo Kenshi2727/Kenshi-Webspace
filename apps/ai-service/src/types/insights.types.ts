@@ -13,3 +13,7 @@ export interface ArticleInsights {
 export interface ArticleAnswer {
     answer: string;
 }
+
+export interface ArticleDiagram {
+    mermaid: string;
+}

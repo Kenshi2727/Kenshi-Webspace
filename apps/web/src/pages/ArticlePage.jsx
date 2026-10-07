@@ -6,11 +6,11 @@ import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
-import { Facebook, Twitter, Linkedin, Pencil, Clock, Eye, Heart, Bookmark, Share2, Delete, DeleteIcon, Trash, DownloadIcon, BrainCircuit, MessageCircle, Send, Sparkles, Scroll, ScrollText } from 'lucide-react';
+import { Facebook, Twitter, Linkedin, Pencil, Clock, Eye, Heart, Bookmark, Share2, Delete, DeleteIcon, Trash, DownloadIcon, BrainCircuit, MessageCircle, Send, Sparkles, Scroll, ScrollText, Workflow, ZoomIn, ZoomOut, Maximize, Volume2, Pause, Square } from 'lucide-react';
 import MarkdownRenderer from '@/components/MarkdownRenderer';
 import NotFoundPage from './NotFoundPage';
 import LoadingPage from './LoadingPage';
-import { getSinglePost, deletePost, updatePostLikes, updatePostViews, updatePostBookmarks, createArticleInsights, askArticleQuestion } from '../services/GlobalApi.js';
+import { getSinglePost, deletePost, updatePostLikes, updatePostViews, updatePostBookmarks, createArticleInsights, askArticleQuestion, createArticleDiagram } from '../services/GlobalApi.js';
 import toast from 'react-hot-toast';
 import { formatDate, formatMessageTime, formatOnlyNumericDate } from '../lib/dateFormatter.js';
 import { useUser } from '@clerk/clerk-react';
@@ -21,12 +21,31 @@ import { useAuth } from '@clerk/clerk-react';
 import { useDispatch } from 'react-redux';
 import { setCurrentArticle } from '@/features/articles/currentArticleSlice';
 import { Textarea } from '@/components/ui/textarea';
+import mermaid from 'mermaid';
+import svgPanZoom from 'svg-pan-zoom';
+import { useTheme } from 'next-themes';
 
 const related = [
     { id: 2, title: 'Coming soon...', readTime: '0 min', category: 'Crying Kitty' },
     { id: 4, title: 'Coming soon...', readTime: '0 min', category: 'Crying Kitty' },
     { id: 3, title: 'Coming soon...', readTime: '0 min', category: 'Crying Kitty' },
 ];
+
+// function splitSpeechText(text, maxLength = 220) {
+//     const chunks = [];
+//     let chunk = '';
+
+//     for (const word of text.split(/\s+/)) {
+//         if (chunk && chunk.length + word.length + 1 > maxLength) {
+//             chunks.push(chunk);
+//             chunk = '';
+//         }
+//         chunk = chunk ? `${chunk} ${word}` : word;
+//     }
+
+//     if (chunk) chunks.push(chunk);
+//     return chunks;
+// }
 
 function AIInsightsPanel({ article, mobile = false }) {
     const [insights, setInsights] = useState(null);
@@ -130,11 +149,11 @@ function AIInsightsPanel({ article, mobile = false }) {
                             <div key={insight.label} className={`flex min-h-0 ${insight.label === 'Summary' ? 'flex-[1.25]' : 'flex-1'} flex-col rounded-xl border border-white/10 bg-white/5 p-3`}>
                                 <p className="mb-1 text-sm font-semibold text-indigo-100">{insight.label}</p>
                                 {insight.items ? (
-                                    <ul className="ai-scrollbar min-h-0 flex-1 list-disc space-y-2 overflow-y-auto pl-5 pr-2 text-sm leading-relaxed text-slate-300">
+                                    <ul className="ai-scrollbar min-h-0 flex-1 list-disc space-y-2 overflow-y-auto pl-5 pr-2 text-xs leading-relaxed text-slate-300">
                                         {insight.items.map((item) => <li key={item}>{item}</li>)}
                                     </ul>
                                 ) : (
-                                    <p className="ai-scrollbar min-h-0 flex-1 overflow-y-auto pr-2 text-sm leading-relaxed text-slate-300">{insight.text}</p>
+                                    <p className="ai-scrollbar min-h-0 flex-1 overflow-y-auto pr-2 text-xs leading-relaxed text-slate-300">{insight.text}</p>
                                 )}
                             </div>
                         ))}
@@ -201,6 +220,140 @@ function AIInsightsPanel({ article, mobile = false }) {
     );
 }
 
+/* eslint-disable react/prop-types */
+function ArticleDiagramDialog({ article, open, onOpenChange }) {
+    const [diagram, setDiagram] = useState('');
+    const [svg, setSvg] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+    const diagramViewportRef = useRef(null);
+    const panZoomRef = useRef(null);
+
+    useEffect(() => {
+        if (!open) return;
+
+        let active = true;
+        setLoading(true);
+        setError('');
+        setDiagram('');
+        setSvg('');
+
+        createArticleDiagram({
+            id: article.id,
+            title: article.title,
+            content: article.content,
+        })
+            .then((response) => {
+                const source = response?.data?.data?.mermaid;
+                if (typeof source !== 'string' || !source.trim()) {
+                    throw new Error('The AI returned an empty diagram.');
+                }
+                if (active) setDiagram(source.trim());
+            })
+            .catch((requestError) => {
+                if (active) setError(requestError?.response?.data?.error || requestError.message || 'Unable to generate the diagram.');
+            })
+            .finally(() => {
+                if (active) setLoading(false);
+            });
+
+        return () => { active = false; };
+    }, [open, article.id, article.title, article.content]);
+
+    useEffect(() => {
+        if (!diagram) return;
+
+        let active = true;
+        const renderDiagram = async () => {
+            try {
+                const renderId = `article-diagram-${article.id}-${Date.now()}`;
+                const { svg: renderedSvg } = await mermaid.render(renderId, diagram);
+                if (active) setSvg(renderedSvg);
+            } catch {
+                if (active) setError('The generated diagram could not be rendered. Try generating it again.');
+            }
+        };
+
+        renderDiagram();
+        return () => { active = false; };
+    }, [diagram, article.id]);
+
+    useEffect(() => {
+        if (!svg || !diagramViewportRef.current) return;
+
+        const svgElement = diagramViewportRef.current.querySelector('svg');
+        if (!svgElement) return;
+
+        svgElement.style.maxWidth = 'none';
+        svgElement.style.width = '100%';
+        svgElement.style.height = '100%';
+        svgElement.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+
+        const panZoom = svgPanZoom(svgElement, {
+            zoomEnabled: true,
+            controlIconsEnabled: false,
+            fit: true,
+            center: true,
+            minZoom: 0.15,
+            maxZoom: 8,
+            zoomScaleSensitivity: 0.3,
+        });
+        panZoomRef.current = panZoom;
+        const animationFrame = window.requestAnimationFrame(() => {
+            panZoom.resize();
+            panZoom.fit();
+            panZoom.center();
+        });
+
+        return () => {
+            window.cancelAnimationFrame(animationFrame);
+            panZoom.destroy();
+            panZoomRef.current = null;
+        };
+    }, [svg]);
+
+    const fitDiagram = () => {
+        panZoomRef.current?.fit();
+        panZoomRef.current?.center();
+    };
+
+    return (
+        <Dialog open={open} onOpenChange={onOpenChange}>
+            <DialogContent className="flex h-[calc(100dvh-1rem)] max-h-none w-[96vw] max-w-[96vw] sm:max-w-[96vw] 2xl:max-w-[1600px] flex-col gap-0 overflow-hidden border-white/15 bg-slate-950 p-0 text-white">
+                <DialogHeader className="border-b border-white/10 px-5 py-4 pr-12 text-left sm:px-6">
+                    <DialogTitle className="flex items-center gap-2 text-lg">
+                        <Workflow size={19} className="text-fuchsia-300" />
+                        Article diagram
+                    </DialogTitle>
+                    <p className="line-clamp-1 text-sm text-slate-400">{article.title}</p>
+                </DialogHeader>
+                <div className="flex shrink-0 items-center justify-between gap-3 border-b border-white/10 px-4 py-2 sm:px-6">
+                    <p className="hidden text-xs text-slate-400 sm:block">Drag to pan. Use the wheel or controls to zoom.</p>
+                    <div className="ml-auto flex items-center gap-1">
+                        <Button type="button" variant="ghost" size="icon" title="Zoom out" aria-label="Zoom out" disabled={!svg || loading || Boolean(error)} onClick={() => panZoomRef.current?.zoomOut()}>
+                            <ZoomOut size={18} />
+                        </Button>
+                        <Button type="button" variant="ghost" size="icon" title="Zoom in" aria-label="Zoom in" disabled={!svg || loading || Boolean(error)} onClick={() => panZoomRef.current?.zoomIn()}>
+                            <ZoomIn size={18} />
+                        </Button>
+                        <Button type="button" variant="ghost" size="icon" title="Fit diagram" aria-label="Fit diagram" disabled={!svg || loading || Boolean(error)} onClick={fitDiagram}>
+                            <Maximize size={18} />
+                        </Button>
+                    </div>
+                </div>
+                <div className="relative min-h-0 flex-1 overflow-hidden bg-slate-900/70" aria-live="polite">
+                    {loading && <p className="absolute inset-0 z-10 grid place-items-center text-sm text-slate-300">Generating diagram...</p>}
+                    {error && <p role="alert" className="absolute inset-0 z-10 grid place-items-center px-6 text-center text-sm text-rose-200">{error}</p>}
+                    {!loading && !error && svg && (
+                        <div ref={diagramViewportRef} className="grid h-full w-full touch-none place-items-center" dangerouslySetInnerHTML={{ __html: svg }} />
+                    )}
+                </div>
+            </DialogContent>
+        </Dialog>
+    );
+}
+/* eslint-enable react/prop-types */
+
 export default function ArticlePage() {
     const { id } = useParams();
     const { user } = useUser();
@@ -214,8 +367,15 @@ export default function ArticlePage() {
     const [open, setOpen] = useState(false);
     const [deleting, setDeleting] = useState(false);
     const [isAiChatOpen, setIsAiChatOpen] = useState(false);
+    const [isDiagramOpen, setIsDiagramOpen] = useState(false);
     const articleScrollRef = useRef(null);
+    const articleBodyRef = useRef(null);
+    const speechSessionRef = useRef(0);
+    const [speechStatus, setSpeechStatus] = useState('idle');
     const [addScrollBar, setAddScrollBar] = useState(false);
+    const { theme } = useTheme();
+
+    mermaid.initialize({ startOnLoad: false, securityLevel: 'strict', theme: theme === 'dark' ? 'dark' : 'default' });
 
     // Fixed scroll hook
     const { scrollYProgress, scrollY } = useScroll({ container: articleScrollRef });
@@ -267,6 +427,11 @@ export default function ArticlePage() {
         const unsubscribe = readingProgress.on('change', setProgress);
         return unsubscribe;
     }, [readingProgress]);
+
+    useEffect(() => () => {
+        speechSessionRef.current += 1;
+        window.speechSynthesis?.cancel();
+    }, [article?.id]);
 
     if (loading) {
         return <LoadingPage />
@@ -390,6 +555,82 @@ export default function ArticlePage() {
             console.log("Error downloading blog:", error);
             toast.error("Some error occured!")
         }
+    };
+
+    const handleListen = () => {
+        const speechSynthesis = window.speechSynthesis;
+        if (!speechSynthesis) {
+            toast.error('Audio reading is not supported by this browser.');
+            return;
+        }
+
+        if (speechStatus === 'speaking') {
+            speechSynthesis.pause();
+            setSpeechStatus('paused');
+            return;
+        }
+
+        if (speechStatus === 'paused') {
+            speechSynthesis.resume();
+            setSpeechStatus('speaking');
+            return;
+        }
+
+        const body = articleBodyRef.current?.cloneNode(true);
+        body?.querySelectorAll('button, svg, script, style').forEach((element) => element.remove());
+        const articleText = [article.title, body?.innerText || body?.textContent]
+            .filter(Boolean)
+            .join('. ')
+            .replace(/\s+/g, ' ')
+            .trim();
+        const utterance = `Welcome to Kenshi Webspace, from Momo! ${articleText} Thanks for listening, meowww!!`;
+
+        // if (!chunks.length) {
+        //     toast.error('There is no article text to read.');
+        //     return;
+        // }
+
+        const voices = speechSynthesis.getVoices();
+        const femaleVoicePattern = /female|woman|zira|samantha|victoria|karen|moira|tessa|fiona|susan|ava|aria|jenny|michelle|libby|natasha|sonia|catherine|serena/i;
+        const preferredVoice = voices.find((voice) => femaleVoicePattern.test(`${voice.name} ${voice.voiceURI}`))
+            || voices.find((voice) => voice.lang.toLowerCase().startsWith(navigator.language.split('-')[0].toLowerCase()))
+            || voices[0];
+
+        if (!voices.some((voice) => femaleVoicePattern.test(`${voice.name} ${voice.voiceURI}`))) {
+            toast('No identifiable female voice is installed; using the browser default voice.');
+        }
+
+        speechSynthesis.cancel();
+        const session = speechSessionRef.current + 1;
+        speechSessionRef.current = session;
+        setSpeechStatus('speaking');
+
+        const utter = new SpeechSynthesisUtterance(utterance);
+        if (preferredVoice) utter.voice = preferredVoice;
+        speechSynthesis.speak(utter);
+        // chunks.forEach((chunk, index) => {
+        //     const utterance = new SpeechSynthesisUtterance(chunk);
+        //     if (preferredVoice) utterance.voice = preferredVoice;
+        //     if (index === chunks.length - 1) {
+        //         utterance.onend = () => {
+        //             if (speechSessionRef.current === session) setSpeechStatus('idle');
+        //         };
+        //     }
+        //     utterance.onerror = () => {
+        //         if (speechSessionRef.current === session) {
+        //             speechSessionRef.current += 1;
+        //             speechSynthesis.cancel();
+        //             setSpeechStatus('idle');
+        //         }
+        //     };
+        //     speechSynthesis.speak(utterance);
+        // });
+    };
+
+    const handleStopListening = () => {
+        speechSessionRef.current += 1;
+        window.speechSynthesis?.cancel();
+        setSpeechStatus('idle');
     };
 
     // main render
@@ -518,6 +759,8 @@ export default function ArticlePage() {
                     <AIInsightsPanel article={article} mobile />
                 </DialogContent>
             </Dialog>
+
+            <ArticleDiagramDialog article={article} open={isDiagramOpen} onOpenChange={setIsDiagramOpen} />
 
             <div className="min-h-screen bg-gradient-to-br from-indigo-700 to-purple-700 dark:from-indigo-950 dark:via-purple-950 dark:to-slate-950 relative">
                 <div className="relative z-10 min-h-screen px-6 pb-4 pt-20 lg:px-16">
@@ -653,27 +896,89 @@ export default function ArticlePage() {
                                             </div>
                                         </motion.div>
 
-                                        {/* Delete, scroll and Edit Button */}
+                                        {/* Delete, scroll, listen , diagram and Edit Button */}
                                         <motion.div variants={itemVariants} id="non-printable" className="flex w-full">
-                                            <motion.div
-                                                initial={{ opacity: 0, scale: 0.8 }}
-                                                animate={{ opacity: 1, scale: 1 }}
-                                                transition={{ delay: 0.2, duration: 0.2 }}
-                                                whileHover={{ scale: 1.1 }}
-                                                whileTap={{ scale: 0.95 }}
-                                            >
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    onClick={() => setAddScrollBar(!addScrollBar)}
-                                                    className="flex items-center gap-2 border-indigo-200/60 bg-indigo-500/60 dark:bg-indigo-500/60 hover:bg-indigo-500/30 hover:border-indigo-200/50 text-white transition-all duration-300 backdrop-blur-sm cursor-pointer"
+                                            <div className="flex w-full flex-wrap items-center gap-2">
+                                                <motion.div
+                                                    initial={{ opacity: 0, scale: 0.8 }}
+                                                    animate={{ opacity: 1, scale: 1 }}
+                                                    transition={{ delay: 0.2, duration: 0.2 }}
+                                                    whileHover={{ scale: 1.1 }}
+                                                    whileTap={{ scale: 0.95 }}
                                                 >
-                                                    <ScrollText size={16} />
-                                                </Button>
-                                            </motion.div>
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={() => setAddScrollBar(!addScrollBar)}
+                                                        className="flex items-center gap-2 border-indigo-200/60 bg-indigo-500/60 dark:bg-indigo-500/60 hover:bg-indigo-500/30 hover:border-indigo-200/50 text-white transition-all duration-300 backdrop-blur-sm cursor-pointer"
+                                                    >
+                                                        <ScrollText size={16} />
+                                                    </Button>
+                                                </motion.div>
+
+                                                <motion.div
+                                                    initial={{ opacity: 0, scale: 0.8 }}
+                                                    animate={{ opacity: 1, scale: 1 }}
+                                                    transition={{ delay: 0.2, duration: 0.2 }}
+                                                    whileHover={{ scale: 1.1 }}
+                                                    whileTap={{ scale: 0.95 }}
+                                                >
+                                                    <Button
+                                                        type="button"
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={handleListen}
+                                                        aria-label={speechStatus === 'speaking' ? 'Pause article audio' : speechStatus === 'paused' ? 'Resume article audio' : 'Listen to the whole article'}
+                                                        className="flex items-center gap-2 border-emerald-200/60 bg-emerald-500/50 text-white backdrop-blur-sm transition-all duration-300 hover:bg-emerald-500/30 cursor-pointer"
+                                                    >
+                                                        {speechStatus === 'speaking' ? <Pause size={16} /> : <Volume2 size={16} />}
+                                                    </Button>
+                                                </motion.div>
+
+
+                                                {speechStatus !== 'idle' && (
+                                                    <motion.div
+                                                        initial={{ opacity: 0, scale: 0.8 }}
+                                                        animate={{ opacity: 1, scale: 1 }}
+                                                        transition={{ delay: 0.2, duration: 0.2 }}
+                                                        whileHover={{ scale: 1.1 }}
+                                                        whileTap={{ scale: 0.95 }}
+                                                    >
+                                                        <Button
+                                                            type="button"
+                                                            variant="outline"
+                                                            size="icon"
+                                                            onClick={handleStopListening}
+                                                            aria-label="Stop article audio"
+                                                            title="Stop reading"
+                                                            className="border-rose-200/60 bg-rose-500/40 text-white hover:bg-rose-500/30 cursor-pointer"
+                                                        >
+                                                            <Square size={14} />
+                                                        </Button>
+                                                    </motion.div>
+                                                )}
+
+                                                <motion.div
+                                                    initial={{ opacity: 0, scale: 0.8 }}
+                                                    animate={{ opacity: 1, scale: 1 }}
+                                                    transition={{ delay: 0.2, duration: 0.2 }}
+                                                    whileHover={{ scale: 1.1 }}
+                                                    whileTap={{ scale: 0.95 }}
+                                                >
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={() => setIsDiagramOpen(true)}
+                                                        className="flex items-center gap-2 border-fuchsia-200/60 bg-fuchsia-500/60 text-white backdrop-blur-sm transition-all duration-300 hover:border-fuchsia-200/50 hover:bg-fuchsia-500/30 cursor-pointer"
+                                                    >
+                                                        <Workflow size={16} />
+                                                    </Button>
+                                                </motion.div>
+                                            </div>
+
 
                                             {user && (user.id === article.authorId) &&
-                                                <div className='flex w-full justify-end gap-2 sm:gap-4'>
+                                                <div className='flex w-full [@media(min-width:400px)]:justify-end gap-2 sm:gap-4'>
                                                     <motion.div
                                                         initial={{ opacity: 0, scale: 0.8 }}
                                                         animate={{ opacity: 1, scale: 1 }}
@@ -688,7 +993,7 @@ export default function ArticlePage() {
                                                             className="flex items-center gap-2 border-indigo-200/60 bg-indigo-500/60 dark:bg-indigo-500/60 hover:bg-indigo-500/30 hover:border-indigo-200/50 text-white transition-all duration-300 backdrop-blur-sm cursor-pointer"
                                                         >
                                                             <Trash size={16} />
-                                                            <span className="hidden [@media(min-width:240px)]:inline">Delete</span>
+                                                            <span className="hidden [@media(min-width:400px)]:inline">Delete</span>
                                                         </Button>
                                                     </motion.div>
 
@@ -731,7 +1036,7 @@ export default function ArticlePage() {
                                                                 className="flex items-center gap-2 border-indigo-200/60 bg-indigo-500/60 dark:bg-indigo-500/60 hover:bg-indigo-500/30 hover:border-indigo-200/50 text-white transition-all duration-300 backdrop-blur-sm cursor-pointer"
                                                             >
                                                                 <Pencil size={16} />
-                                                                <span className="hidden [@media(min-width:240px)]:inline">Edit</span>
+                                                                <span className="hidden [@media(min-width:400px)]:inline">Edit</span>
                                                             </Button>
                                                         </motion.div>
                                                     </Link>
@@ -772,6 +1077,7 @@ export default function ArticlePage() {
                                         {/* Content with Scroll Animations */}
                                         <motion.div
                                             variants={itemVariants}
+                                            ref={articleBodyRef}
                                             className="prose prose-lg max-w-none dark:prose-invert prose-headings:text-black prose-p:text-gray-50 prose-strong:text-white prose-code:text-indigo-200 prose-code:bg-indigo-900/30 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-pre:bg-gray-900/50 prose-pre:border prose-pre:border-white/10 break-words hyphens-auto"
                                         >
                                             <MarkdownRenderer content={article.content} />
