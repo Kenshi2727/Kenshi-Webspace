@@ -1,9 +1,13 @@
 import express from "express";
 import * as controller from "../controllers/post.controller.js";
 import { protectRoute } from "../middlewares/auth.middleware.js";
+import { optionalProtectRoute } from "../middlewares/auth.middleware.js";
 import { privilegedRouteAccess } from "../middlewares/rbac.middleware.js";
 
 const router = express.Router();
+
+router.get('/review/pending', protectRoute, privilegedRouteAccess(["ADMIN", "OWNER"]), controller.getPendingReviewPosts);
+router.patch('/review/:postId', protectRoute, privilegedRouteAccess(["ADMIN", "OWNER"]), controller.updatePostReview);
 
 // post routes
 router.post('/new/:authorId', protectRoute, controller.createNewPost);
@@ -13,7 +17,9 @@ router.get('/category/counts', controller.getCategoryPostCounts);
 
 router.get('/category/check/:categoryName', controller.checkCategoryPosts);
 
-router.get('/:postId', controller.getSinglePost);
+router.get('/reading-map', controller.getReadingMapArticles);
+
+router.get('/:postId', optionalProtectRoute, controller.getSinglePost);
 
 router.get('/', controller.getAllPosts, controller.getFeaturedPosts);
 

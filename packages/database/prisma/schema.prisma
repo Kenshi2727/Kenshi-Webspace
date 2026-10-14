@@ -99,6 +99,7 @@ model Post {
   downloads       Int           @default(0)
   referenceStatus Boolean       @default(false) // Whether the post has an associated ServiceRef
   status          PostStatus    @default(draft)
+  adminRemark     String?
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
   PostActions     PostActions[]

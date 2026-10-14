@@ -511,7 +511,7 @@ const AboutPage = () => {
     ];
 
     return (
-        <div className="min-h-screen relative overflow-hidden text-gray-900 transition-colors duration-300 bg-gradient-to-br from-indigo-600 to-purple-700 dark:from-indigo-950 dark:to-purple-950 dark:text-gray-100">
+        <div className="min-h-screen relative overflow-hidden text-gray-900 transition-colors duration-300 bg-linear-to-bl from-indigo-400 via-purple-800 to-purple-800 dark:from-indigo-950 dark:via-purple-950 dark:to-slate-950 dark:text-gray-100">
             {/* Enhanced animated background */}
             <div className="fixed inset-0 z-0">
                 <NeuralNetwork excludeZones={storyRef.current ? [storyRef.current] : []} />
@@ -899,7 +899,7 @@ const AboutPage = () => {
                                     whileTap={{ scale: 0.95 }}
                                 >
                                     <span className="relative z-10 flex items-center justify-center gap-2 sm:gap-3">
-                                        <span className="hidden sm:inline">git clone community</span>
+                                        <span className="hidden sm:inline">git clone kenshi-webspace</span>
                                         <span className="sm:hidden">Join Community</span>
                                         <motion.span
                                             animate={{ rotate: [0, 360] }}

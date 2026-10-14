@@ -8,6 +8,9 @@ const createNewPost = async (req, res) => {
             postId
         });
     }
+    else if (status === "403") {
+        return res.status(403).json({ error });
+    }
     else if (status === "500") {
         return res.status(500).json({ error });
     }
@@ -70,6 +73,27 @@ const getFeaturedPosts = async (req, res) => {
     return res.status(500).json({ error: "HIGH IMPACT: Unexpected error occurred in getFeaturedPosts controller!" });
 }
 
+const getReadingMapArticles = async (_req, res) => {
+    const { status, articles, error } = await service.getReadingMapArticles();
+    if (status === "200") return res.status(200).json({ articles });
+    return res.status(500).json({ error });
+};
+
+const getPendingReviewPosts = async (_req, res) => {
+    const { status, posts, error } = await service.getPendingReviewPosts();
+    if (status === "200") return res.status(200).json({ posts });
+    return res.status(500).json({ error });
+};
+
+const updatePostReview = async (req, res) => {
+    const { status, post, error } = await service.updatePostReview(req);
+    if (status === "200") return res.status(200).json({ post });
+    if (status === "400") return res.status(400).json({ error });
+    if (status === "404") return res.status(404).json({ error });
+    if (status === "409") return res.status(409).json({ error });
+    return res.status(500).json({ error: error || "Failed to update article review" });
+};
+
 const checkCategoryPosts = async (req, res) => {
     const { categoryName } = req.params;
     const decodedCategory = decodeURIComponent(categoryName || "").trim();
@@ -119,6 +143,9 @@ const getUserPosts = async (req, res) => {
     }
     else if (status === "404") {
         return res.status(404).json({ error });
+    }
+    else if (status === "403") {
+        return res.status(403).json({ error });
     }
     else if (status === "500") {
         return res.status(500).json({ error });
@@ -196,6 +223,9 @@ export {
     createNewPost,
     getSinglePost,
     getAllPosts,
+    getReadingMapArticles,
+    getPendingReviewPosts,
+    updatePostReview,
     getFeaturedPosts,
     checkCategoryPosts,
     getCategoryPostCounts,

@@ -25,6 +25,7 @@
     "start": "node src/index.js"
   },
   "dependencies": {
+    "@clerk/express": "^1.7.83",
     "@repo/database": "*",
     "@sentry/node": "^10.34.0",
     "dotenv": "^17.2.3",

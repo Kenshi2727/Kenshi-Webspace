@@ -21,9 +21,23 @@ const getPostById = async (id, include = { author: true, PostActions: true }) =>
     }
 };
 
+const getUserRole = async (userId) => {
+    try {
+        const user = await prisma.user.findUnique({
+            where: { id: userId },
+            select: { role: true }
+        });
+        return user?.role || null;
+    } catch (error) {
+        console.error("Post Repo getUserRole error:", error);
+        return null;
+    }
+};
+
 const getAllPosts = async () => {
     try {
         return await prisma.post.findMany({
+            where: { status: "published" },
             orderBy: { createdAt: 'desc' },
             include: { PostActions: true }
         });
@@ -33,10 +47,31 @@ const getAllPosts = async () => {
     }
 };
 
+const getReadingMapArticles = async () => {
+    try {
+        return await prisma.post.findMany({
+            where: { status: "published" },
+            orderBy: { createdAt: "desc" },
+            take: 40,
+            select: {
+                id: true,
+                title: true,
+                excerpt: true,
+                category: true,
+                createdAt: true,
+                updatedAt: true,
+            }
+        });
+    } catch (error) {
+        console.error("Post Repo getReadingMapArticles error:", error);
+        return null;
+    }
+};
+
 const getFeaturedPosts = async () => {
     try {
         return await prisma.post.findMany({
-            where: { featured: true },
+            where: { featured: true, status: "published" },
             orderBy: {
                 createdAt: "desc",
             },
@@ -51,6 +86,7 @@ const countPostsByCategory = async (category) => {
     try {
         return await prisma.post.count({
             where: {
+                status: "published",
                 category: {
                     equals: category,
                     mode: 'insensitive'
@@ -67,10 +103,52 @@ const getCategoryPostCounts = async () => {
     try {
         return await prisma.post.groupBy({
             by: ['category'],
+            where: { status: "published" },
             _count: { _all: true }
         });
     } catch (error) {
         console.error("Post Repo getCategoryPostCounts error:", error);
+        return null;
+    }
+};
+
+const getPendingReviewPosts = async () => {
+    try {
+        return await prisma.post.findMany({
+            where: { status: "draft" },
+            orderBy: { createdAt: "asc" },
+            include: {
+                author: {
+                    select: {
+                        id: true,
+                        firstName: true,
+                        lastName: true,
+                        email: true,
+                        profile: { select: { image: true } }
+                    }
+                }
+            }
+        });
+    } catch (error) {
+        console.error("Post Repo getPendingReviewPosts error:", error);
+        return null;
+    }
+};
+
+const updatePostReview = async (postId, data) => {
+    try {
+        const result = await prisma.post.updateMany({
+            where: { id: postId, status: "draft" },
+            data
+        });
+        if (result.count === 0) return null;
+
+        return await prisma.post.findUnique({
+            where: { id: postId },
+            select: { id: true, status: true, adminRemark: true }
+        });
+    } catch (error) {
+        console.error("Post Repo updatePostReview error:", error);
         return null;
     }
 };
@@ -93,8 +171,10 @@ const getPostsByAuthor = async (authorId) => {
                 bookmarks: true,
                 downloads: true,
                 updatedAt: true,
+                createdAt: true,
                 status: true,
-                content: true
+                content: true,
+                adminRemark: true
             }
         });
     } catch (error) {
@@ -218,7 +298,11 @@ const incrementPostField = async (postId, field, operation) => {
 export {
     createPost,
     getPostById,
+    getUserRole,
     getAllPosts,
+    getReadingMapArticles,
+    getPendingReviewPosts,
+    updatePostReview,
     getFeaturedPosts,
     countPostsByCategory,
     getCategoryPostCounts,

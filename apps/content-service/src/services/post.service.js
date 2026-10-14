@@ -101,6 +101,13 @@ const createNewPost = async (req) => {
     console.log("Request body:", req.body);
     console.log("Creating a new post for author ID:", req.params.authorId);
 
+    if (req.authenticatedUserId !== req.params.authorId) {
+        return {
+            status: "403",
+            error: "You are not authorized to create an article for this user"
+        };
+    }
+
     const {
         title,
         excerpt,
@@ -124,7 +131,8 @@ const createNewPost = async (req) => {
             content,
             readTime: Number(readTime),
             authorId: req.params.authorId,
-            referenceStatus: Boolean(referenceStatus)
+            referenceStatus: Boolean(referenceStatus),
+            status: "draft"
         });
 
         if (!newPost) {
@@ -194,6 +202,16 @@ const getSinglePost = async (req) => {
             };
         }
 
+        if (post.status !== "published") {
+            const requesterId = req.authenticatedUserId;
+            let canView = requesterId === post.authorId;
+            if (requesterId && !canView) {
+                const role = await repo.getUserRole(requesterId);
+                canView = role === "ADMIN" || role === "OWNER";
+            }
+            if (!canView) return { status: "404", error: "Post not found !" };
+        }
+
         console.log("Post fetched successfully:", post);
         return {
             status: "200",
@@ -242,6 +260,56 @@ const getAllPosts = async (req) => {
         };
     }
 }
+
+const getReadingMapArticles = async () => {
+    try {
+        const articles = await repo.getReadingMapArticles();
+        if (articles === null) throw new Error("Failed to fetch reading map articles");
+        return { status: "200", articles };
+    } catch (error) {
+        console.error("Error fetching reading map articles:", error);
+        return { status: "500", error: "Failed to fetch reading map articles" };
+    }
+};
+
+const getPendingReviewPosts = async () => {
+    try {
+        const posts = await repo.getPendingReviewPosts();
+        if (posts === null) throw new Error("Failed to fetch pending review posts");
+
+        return { status: "200", posts };
+    } catch (error) {
+        console.error("Error fetching pending review posts:", error);
+        return { status: "500", error: "Failed to fetch pending review posts" };
+    }
+};
+
+const updatePostReview = async (req) => {
+    const { postId } = req.params;
+    const { status, adminRemark } = req.body;
+
+    if (status !== undefined && !["published", "rejected"].includes(status)) {
+        return { status: "400", error: "Review status must be published or rejected" };
+    }
+    if (adminRemark !== undefined && (typeof adminRemark !== "string" || adminRemark.length > 5000)) {
+        return { status: "400", error: "Admin remark must be a string up to 5000 characters" };
+    }
+    if (status === undefined && adminRemark === undefined) {
+        return { status: "400", error: "A review status or admin remark is required" };
+    }
+
+    const update = {};
+    if (status !== undefined) update.status = status;
+    if (adminRemark !== undefined) update.adminRemark = adminRemark.trim() || null;
+
+    const post = await repo.updatePostReview(postId, update);
+    if (post) return { status: "200", post };
+
+    const existingPost = await repo.getPostById(postId);
+    return existingPost
+        ? { status: "409", error: "This article is no longer awaiting review" }
+        : { status: "404", error: "Article not found" };
+};
 
 const getFeaturedPosts = async () => {
     console.log("Fetching featured posts");
@@ -324,10 +392,17 @@ const getCategoryPostCounts = async () => {
 const getUserPosts = async (req) => {
     try {
         const { userId } = req.params;
+        const requesterId = req.authenticatedUserId;
+        if (requesterId !== userId) {
+            const role = requesterId ? await repo.getUserRole(requesterId) : null;
+            if (role !== "ADMIN" && role !== "OWNER") {
+                return { status: "403", error: "You are not authorized to view these articles" };
+            }
+        }
         console.log("Fetch request for user with ID", userId);
         const posts = await repo.getPostsByAuthor(userId);
 
-        if (!posts || posts.length === 0) {
+        if (!posts) {
             console.log("No posts found for user with ID:", userId);
             return {
                 status: "404",
@@ -656,6 +731,9 @@ export {
     createNewPost,
     getSinglePost,
     getAllPosts,
+    getReadingMapArticles,
+    getPendingReviewPosts,
+    updatePostReview,
     getFeaturedPosts,
     checkCategoryPosts,
     getCategoryPostCounts,

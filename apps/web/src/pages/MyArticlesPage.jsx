@@ -276,6 +276,13 @@ export default function MyArticlesPage() {
                         </ScrollArea>
                     </div>
 
+                    {selectedArticle?.adminRemark && (
+                        <div className="mb-4 rounded-lg border border-amber-500/20 bg-amber-500/10 p-3">
+                            <h3 className="mb-1 text-sm font-semibold text-amber-200">Admin remarks</h3>
+                            <p className="whitespace-pre-wrap text-sm text-amber-100">{selectedArticle.adminRemark}</p>
+                        </div>
+                    )}
+
                     <DialogFooter>
                         <div className="flex items-center justify-end gap-2">
                             <Button variant="ghost" onClick={() => setPreviewOpen(false)}>Close</Button>

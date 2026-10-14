@@ -59,14 +59,29 @@ const createPost = (data, authorId, token) => instance.post(`/api/v1/content/pos
     withCredentials: true,
 });
 
-const getSinglePost = (postId) => instance.get(`/api/v1/content/posts/${postId}`);
+const getSinglePost = (postId, token) => instance.get(`/api/v1/content/posts/${postId}`, {
+    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    withCredentials: true,
+});
 
 const getAllPosts = () => instance.get('/api/v1/content/posts?populate=*');
+
+const getReadingMapArticles = () => instance.get('/api/v1/content/posts/reading-map');
 
 const getUserPosts = (userId, token) => instance.get(`/api/v1/content/posts/user-posts/${userId}`, {
     headers: {
         Authorization: `Bearer ${token}`,
     },
+    withCredentials: true,
+});
+
+const getPendingReviewPosts = (token) => instance.get('/api/v1/content/posts/review/pending', {
+    headers: { Authorization: `Bearer ${token}` },
+    withCredentials: true,
+});
+
+const updatePostReview = (postId, data, token) => instance.patch(`/api/v1/content/posts/review/${postId}`, data, {
+    headers: { Authorization: `Bearer ${token}` },
     withCredentials: true,
 });
 
@@ -124,13 +139,20 @@ const deleteMedia = (data, token) => instance.delete('/api/v1/content/media', {
 
 
 // Notification Service APIs
-const sendPublicFcmToken = (data) => instance.post('/api/v1/notification/tokens/fcm-token', data, {
+const registerFcmToken = (data, authToken) => instance.post('/api/v1/notification/tokens/fcm-token', data, {
     headers: {
-        'fcm-service-type': 'public', // custom header to identify fcm service type
+        'fcm-service-type': authToken ? 'private' : 'public',
+        ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
     }
 });
 
 const multicast = (data) => instance.post('/api/v1/notification/notifications/multicast', data);
+const multicastReviewers = (data, authToken) => instance.post('/api/v1/notification/notifications/multicast', {
+    ...data,
+    audience: 'reviewers',
+}, {
+    headers: { Authorization: `Bearer ${authToken}` },
+});
 
 const createArticleInsights = (article) => instance.post('/api/v1/ai/insights', { article });
 
@@ -140,6 +162,8 @@ const askArticleQuestion = (article, question) => instance.post('/api/v1/ai/chat
 });
 
 const createArticleDiagram = (article) => instance.post('/api/v1/ai/diagram', { article });
+
+const generateArticleNetwork = (articles) => instance.post('/api/v1/ai/network', { articles });
 
 export {
     pingServer,
@@ -151,6 +175,7 @@ export {
     deleteMedia,
     getSinglePost,
     getAllPosts,
+    getReadingMapArticles,
     getFeaturedPosts,
     getCategoryPostCounts,
     checkCategoryPosts,
@@ -160,11 +185,15 @@ export {
     updatePostViews,
     updatePostBookmarks,
     getUserPosts,
-    sendPublicFcmToken,
+    getPendingReviewPosts,
+    updatePostReview,
+    registerFcmToken,
     multicast,
+    multicastReviewers,
     createArticleInsights,
     askArticleQuestion,
     createArticleDiagram,
+    generateArticleNetwork,
 };
 
 

@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 import { InsightsService } from '../services/insights.service.js';
-import type { ArticleInput } from '../types/insights.types.js';
+import type { ArticleInput, NetworkArticleInput } from '../types/insights.types.js';
 
 const validateArticle = (article: unknown): ArticleInput => {
     if (!article || typeof article !== 'object') {
@@ -13,6 +13,38 @@ const validateArticle = (article: unknown): ArticleInput => {
     }
 
     return candidate as ArticleInput;
+};
+
+const validateNetworkArticles = (articles: unknown): NetworkArticleInput[] => {
+    if (!Array.isArray(articles) || articles.length === 0 || articles.length > 40) {
+        throw new Error('articles must contain between 1 and 40 published articles');
+    }
+
+    const validated = articles.map((article, index) => {
+        if (!article || typeof article !== 'object') throw new Error(`articles[${index}] is invalid`);
+        const candidate = article as Partial<NetworkArticleInput>;
+        if (
+            typeof candidate.id !== 'string' || !candidate.id.trim() || candidate.id.length > 100 ||
+            typeof candidate.title !== 'string' || !candidate.title.trim() || candidate.title.length > 180 ||
+            typeof candidate.excerpt !== 'string' || candidate.excerpt.length > 600 ||
+            typeof candidate.category !== 'string' || candidate.category.length > 80 ||
+            typeof candidate.publishedAt !== 'string' || !Number.isFinite(Date.parse(candidate.publishedAt))
+        ) {
+            throw new Error(`articles[${index}] must include a valid id, title, excerpt, and category`);
+        }
+        return {
+            id: candidate.id,
+            title: candidate.title.trim(),
+            excerpt: candidate.excerpt.trim(),
+            category: candidate.category.trim(),
+            publishedAt: candidate.publishedAt,
+        };
+    });
+
+    if (new Set(validated.map((article) => article.id)).size !== validated.length) {
+        throw new Error('article IDs must be unique');
+    }
+    return validated;
 };
 
 export const createInsightsController = (service: InsightsService) => ({
@@ -46,6 +78,16 @@ export const createInsightsController = (service: InsightsService) => ({
             res.status(200).json({ success: true, data: diagram });
         } catch (error) {
             res.status(400).json({ success: false, error: error instanceof Error ? error.message : 'Unable to create diagram' });
+        }
+    },
+
+    createArticleNetwork: async (req: Request, res: Response): Promise<void> => {
+        try {
+            const articles = validateNetworkArticles(req.body?.articles);
+            const network = await service.createArticleNetwork(articles);
+            res.status(200).json({ success: true, data: network });
+        } catch (error) {
+            res.status(400).json({ success: false, error: error instanceof Error ? error.message : 'Unable to analyze article network' });
         }
     },
 });

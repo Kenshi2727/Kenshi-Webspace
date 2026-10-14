@@ -31,7 +31,7 @@ import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { getToken, getMessaging, onMessage } from "firebase/messaging";
 import { messaging } from './services/firebase';
-import { sendPublicFcmToken } from './services/GlobalApi';
+import { registerFcmToken } from './services/GlobalApi';
 import PopupBanner from './components/banners/PopupBanner';
 import { useDispatch } from "react-redux";
 import { setUser } from './features/users/userSlice.js';
@@ -46,7 +46,7 @@ function App() {
   const { isSignedIn, isLoaded } = useUser();
   const [params] = useSearchParams();
   const dispatch = useDispatch();
-  const { userId, getToken: getAuthToken } = useAuth();
+  const { userId, getToken: getAuthToken, isLoaded: authLoaded } = useAuth();
   const { theme } = useTheme();
   const location = useLocation();
 
@@ -78,86 +78,88 @@ function App() {
   useEffect(() => {
     try {
       async function notifReq() {
-        await Notification.requestPermission().then(async (permission) => {
-          if (permission === 'granted') {
-            console.log('Notification permission granted.');
-            const messaging = getMessaging();
-            onMessage(messaging, (payload) => {
-              console.log('Message received. ', payload);
-              const { title, body, image } = payload?.notification || {};
-              // const notification = new Notification(title, {
-              //   body: body,
-              //   icon: image
-              // });
+        if (!authLoaded || typeof Notification === 'undefined') return;
+        const permission = await Notification.requestPermission();
+        if (permission === 'granted') {
+          console.log('Notification permission granted.');
+          const messaging = getMessaging();
+          onMessage(messaging, (payload) => {
+            console.log('Message received. ', payload);
+            const { title, body, image } = payload?.notification || {};
+            // const notification = new Notification(title, {
+            //   body: body,
+            //   icon: image
+            // });
 
-              toast.custom((t) => (
-                <div
-                  className={`flex w-[380px] items-start gap-3 rounded-xl bg-white p-4 shadow-lg border border-gray-200 transition-all duration-300 ${t.visible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-5"}`}
-                >
-                  {/* Image */}
-                  {image && (
-                    <img
-                      src={image}
-                      alt=""
-                      className="h-12 w-12 shrink-0 rounded-lg object-cover"
-                    />
-                  )}
+            toast.custom((t) => (
+              <div
+                className={`flex w-[380px] items-start gap-3 rounded-xl bg-white p-4 shadow-lg border border-gray-200 transition-all duration-300 ${t.visible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-5"}`}
+              >
+                {/* Image */}
+                {image && (
+                  <img
+                    src={image}
+                    alt=""
+                    className="h-12 w-12 shrink-0 rounded-lg object-cover"
+                  />
+                )}
 
-                  {/* Content */}
-                  <div className="min-w-0 flex-1">
-                    <h4 className="truncate text-sm font-semibold text-gray-900">
-                      {title}
-                    </h4>
+                {/* Content */}
+                <div className="min-w-0 flex-1">
+                  <h4 className="truncate text-sm font-semibold text-gray-900">
+                    {title}
+                  </h4>
 
-                    <p className="mt-1 line-clamp-2 text-sm text-gray-600">
-                      {body}
-                    </p>
-                  </div>
-
-                  {/* Close button */}
-                  <button
-                    onClick={() => toast.dismiss(t.id)}
-                    className="text-gray-400 hover:text-gray-700"
-                  >
-                    ×
-                  </button>
+                  <p className="mt-1 line-clamp-2 text-sm text-gray-600">
+                    {body}
+                  </p>
                 </div>
-              ));
 
-              // notification.onclick = (event) => {
-              //   event.preventDefault();
+                {/* Close button */}
+                <button
+                  onClick={() => toast.dismiss(t.id)}
+                  className="text-gray-400 hover:text-gray-700"
+                >
+                  ×
+                </button>
+              </div>
+            ));
 
-              //   if (payload?.fcmOptions.link) {
-              //     window.focus();
-              //     window.location.href = payload?.fcmOptions.link;
-              //   }
-              // };
-            });
+            // notification.onclick = (event) => {
+            //   event.preventDefault();
 
-            // generate the FCM token
-            const token = await getToken(messaging, {
-              vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY
-            });
-            // console.log("Token generated:", token);
+            //   if (payload?.fcmOptions.link) {
+            //     window.focus();
+            //     window.location.href = payload?.fcmOptions.link;
+            //   }
+            // };
+          });
 
-            if (localStorage.getItem("fcmToken") === token) return; //token already stored
+          // generate the FCM token
+          const token = await getToken(messaging, {
+            vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY
+          });
+          // console.log("Token generated:", token);
 
-            // send the token to the server
-            localStorage.setItem("fcmToken", token);
-            await sendPublicFcmToken({ token });
-          } else {
-            console.log('Unable to get permission to notify.');
-            console.log('Status:', permission);
-            toast.error("Notification permission denied. Please enable it in your browser settings if you change your mind.");
-          }
-        });
+          const registrationKey = `${token}:${userId || 'public'}`;
+          if (localStorage.getItem("fcmTokenOwner") === registrationKey) return;
+
+          // send the token to the server
+          const authToken = userId ? await getAuthToken() : null;
+          await registerFcmToken({ token }, authToken);
+          localStorage.setItem("fcmTokenOwner", registrationKey);
+        } else {
+          console.log('Unable to get permission to notify.');
+          console.log('Status:', permission);
+          toast.error("Notification permission denied. Please enable it in your browser settings if you change your mind.");
+        }
       }
 
       notifReq();
     } catch (error) {
       console.error("An error occurred while requesting notification permission:", error);
     }
-  }, [])
+  }, [authLoaded, userId, getAuthToken])
 
 
   // jotform embedding
@@ -230,6 +232,7 @@ function App() {
 
             {/*Testing Routes */}
             <Route path="/test/article-pdf" element={<ArticlePDF />} />
+            <Route path="/test/loading" element={<LoadingPage />} />
 
             {/*Invalid route Handling*/}
             <Route path="*" element={<NotFoundPage />} />

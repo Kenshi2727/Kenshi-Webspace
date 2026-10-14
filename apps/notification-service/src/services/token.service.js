@@ -1,6 +1,6 @@
 import * as repo from "../repositories/token.repository.js";
 
-const saveFcmToken = async (token, type) => {
+const saveFcmToken = async (token, type, userId = null) => {
     if (!token) {
         console.error("Token Service saveFcmToken error: FCM token is required");
         return {
@@ -19,7 +19,7 @@ const saveFcmToken = async (token, type) => {
 
     try {
         const tokenType = type === 'private' ? "PRIVATE" : "PUBLIC";
-        const savedToken = await repo.saveFcmToken(token, tokenType);
+        const savedToken = await repo.saveFcmToken(token, tokenType, userId);
 
         if (!savedToken) {
             console.error("Token Service saveFcmToken error: Failed to save FCM token");
@@ -43,12 +43,18 @@ const saveFcmToken = async (token, type) => {
     }
 };
 
-const getAllFcmTokens = async () => {
+const getAllFcmTokens = async (audience = "all") => {
     try {
-        const tokenRows = await repo.getAllFcmTokens();
+        if (!["all", "reviewers"].includes(audience)) return [];
+
+        const tokenRows = audience === "reviewers"
+            ? await repo.getReviewerFcmTokens()
+            : await repo.getAllFcmTokens();
         if (!tokenRows) return [];
 
-        console.log("Retrieved FCM tokens:", tokenRows);
+        if (audience === "reviewers") return tokenRows;
+
+        console.log(`Retrieved ${audience} FCM tokens:`, tokenRows.length);
         return tokenRows.map((row) => row.token);
     } catch (error) {
         console.error("Token Service getAllFcmTokens error:", error);
