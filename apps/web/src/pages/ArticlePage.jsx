@@ -124,7 +124,7 @@ function AIInsightsPanel({ article, mobile = false }) {
     };
 
     return (
-        <Card className={`${mobile ? 'h-full rounded-2xl' : 'h-[calc(100vh+4rem)] rounded-3xl'} min-h-0 overflow-hidden border-fuchsia-300/20 bg-slate-950/40 text-white shadow-2xl shadow-indigo-950/30 backdrop-blur-xl`}>
+        <Card className={`${mobile ? 'h-full rounded-2xl' : 'h-[calc(100vh+4rem)] rounded-3xl'} min-h-0 overflow-hidden border-fuchsia-300/20 bg-slate-950/40 text-white shadow-2xl shadow-indigo-950/30 dark:shadow-md dark:shadow-indigo-300 backdrop-blur-xl`}>
             <CardContent className={`flex h-full min-h-0 flex-col ${mobile ? 'gap-4' : 'gap-3'} p-4 sm:p-5`}>
                 <div className="flex shrink-0 items-start justify-between gap-3">
                     <div>
@@ -138,7 +138,7 @@ function AIInsightsPanel({ article, mobile = false }) {
                 </div>
 
                 {!mobile && (
-                    <div className="flex min-h-0 flex-[0.867] flex-col gap-2 overflow-hidden">
+                    <div className="flex min-h-0 flex-[0.867] flex-col gap-2 overflow-hidden py-1">
                         {loading && <p className="text-sm text-slate-300">Generating insights...</p>}
                         {error && <p className="text-sm text-rose-200">{error}</p>}
                         {insights && [
@@ -146,7 +146,7 @@ function AIInsightsPanel({ article, mobile = false }) {
                             { label: 'Key ideas', items: insights.keyIdeas },
                             { label: 'Reader questions', items: insights.questions },
                         ].map((insight) => (
-                            <div key={insight.label} className={`flex min-h-0 ${insight.label === 'Summary' ? 'flex-[1.25]' : 'flex-1'} flex-col rounded-xl border border-white/10 bg-white/5 p-3`}>
+                            <div key={insight.label} className={`flex min-h-0 ${insight.label === 'Summary' ? 'flex-[1.25]' : 'flex-1'} flex-col rounded-xl border border-white/10 bg-white/5 p-3  dark:shadow-md dark:shadow-indigo-400 dark:hover:bg-white/10`}>
                                 <p className="mb-1 text-sm font-semibold text-indigo-100">{insight.label}</p>
                                 {insight.items ? (
                                     <ul className="ai-scrollbar min-h-0 flex-1 list-disc space-y-2 overflow-y-auto pl-5 pr-2 text-xs leading-relaxed text-slate-300">
@@ -160,7 +160,7 @@ function AIInsightsPanel({ article, mobile = false }) {
                     </div>
                 )}
 
-                <div className={`flex min-h-0 flex-col justify-between gap-2.5 rounded-2xl border border-fuchsia-300/20 bg-linear-to-br from-fuchsia-500/10 to-indigo-500/10 p-3 ${mobile ? 'flex-1' : 'flex-[0.633]'}`}>
+                <div className={`flex min-h-0 flex-col justify-between gap-2.5 rounded-2xl border border-fuchsia-300/20 bg-linear-to-br from-fuchsia-500/10 to-indigo-500/10 dark:shadow-md dark:shadow-indigo-300 p-3 ${mobile ? 'flex-1' : 'flex-[0.633]'}`}>
                     <div className="flex items-center gap-2">
                         <MessageCircle size={17} className="text-fuchsia-200" />
                         <h3 className="font-semibold text-white">Chat with this article</h3>
@@ -170,7 +170,7 @@ function AIInsightsPanel({ article, mobile = false }) {
                         role="log"
                         aria-label="Conversation with AI about this article"
                         aria-live="polite"
-                        className="ai-scrollbar flex min-h-24 flex-1 flex-col gap-3 overflow-y-auto rounded-xl border border-white/10 bg-black/20 p-3 pr-2"
+                        className="ai-scrollbar flex min-h-24 flex-1 flex-col gap-3 overflow-y-auto rounded-xl border border-white/10 bg-black/20 p-3 pr-2 dark:shadow-sm cursor-pointer dark:hover:shadow-md dark:shadow-indigo-300"
                     >
                         {messages.length === 0 && <p className="text-sm text-slate-400">Your conversation will appear here.</p>}
                         {messages.map((message, index) => (
@@ -201,7 +201,7 @@ function AIInsightsPanel({ article, mobile = false }) {
                             disabled={asking}
                             placeholder="Ask a question about this article..."
                             aria-label="Ask the AI about this article"
-                            className="ai-scrollbar h-12 min-h-12 max-h-12 field-sizing-fixed resize-none overflow-y-auto border-white/10 bg-black/20 px-4 py-3 pr-12 text-white placeholder:text-slate-400 disabled:cursor-not-allowed disabled:opacity-70"
+                            className="ai-scrollbar h-12 min-h-12 max-h-12 field-sizing-fixed resize-none overflow-y-auto border-white/10 bg-black/20 px-4 py-3 pr-12 text-white placeholder:text-slate-400 disabled:cursor-not-allowed disabled:opacity-70 dark:shadow-sm dark:shadow-indigo-300"
                         />
                         <Button
                             type="submit"
@@ -762,7 +762,7 @@ export default function ArticlePage() {
 
             <ArticleDiagramDialog article={article} open={isDiagramOpen} onOpenChange={setIsDiagramOpen} />
 
-            <div className="min-h-screen bg-gradient-to-br from-indigo-700 to-purple-700 dark:from-indigo-950 dark:via-purple-950 dark:to-slate-950 relative">
+            <div className="min-h-screen bg-linear-to-bl from-indigo-400 via-purple-800 to-purple-800 dark:from-indigo-950 dark:via-purple-950 dark:to-slate-950 relative">
                 <div className="relative z-10 min-h-screen px-6 pb-4 pt-20 lg:px-16">
                     <motion.div
                         variants={containerVariants}
@@ -778,7 +778,7 @@ export default function ArticlePage() {
                                     whileHover={{
                                         z: 20
                                     }}
-                                    className="no-pdf relative mb-12 h-[calc(15vh)] w-full overflow-hidden rounded-2xl md:rounded-3xl shadow-xl dark:shadow-2xs dark:shadow-indigo-300/50 sm:h-[calc(20vh)] md:h-[calc(40vh)] aspect-video"
+                                    className="no-pdf relative mb-12 h-[calc(15vh)] w-full overflow-hidden rounded-2xl md:rounded-3xl shadow-xl dark:shadow-md dark:shadow-indigo-300 sm:h-[calc(20vh)] md:h-[calc(40vh)] aspect-video"
                                 >
                                     <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent z-10 hover:opacity-0 transition-opacity delay-300 duration-500" />
 
@@ -860,7 +860,7 @@ export default function ArticlePage() {
                                     </motion.div>
                                 </motion.div>
 
-                                <Card className="relative w-full overflow-hidden rounded-2xl md:rounded-3xl border border-white/30 bg-purple-300/40 shadow-xl backdrop-blur-xl dark:bg-white/20 dark:shadow-xs dark:shadow-indigo-300/50">
+                                <Card className="relative w-full overflow-hidden rounded-2xl md:rounded-3xl border border-white/30 bg-purple-300/30 shadow-xl backdrop-blur-xl dark:bg-white/20 dark:shadow-md dark:shadow-indigo-300">
                                     <CardContent id="print-area" className="relative p-4 sm:p-10 space-y-8">
                                         {/* Header */}
                                         <motion.div variants={itemVariants} className="flex flex-wrap items-center justify-between gap-4">
@@ -910,7 +910,7 @@ export default function ArticlePage() {
                                                         variant="outline"
                                                         size="sm"
                                                         onClick={() => setAddScrollBar(!addScrollBar)}
-                                                        className="flex items-center gap-2 border-indigo-200/60 bg-indigo-500/60 dark:bg-indigo-500/60 hover:bg-indigo-500/30 hover:border-indigo-200/50 text-white transition-all duration-300 backdrop-blur-sm cursor-pointer"
+                                                        className="flex items-center gap-2 border-indigo-200/60 bg-indigo-500/60 dark:bg-indigo-500 dark:hover:bg-indigo-500/60 hover:bg-indigo-500/30 hover:border-indigo-200/50 text-white transition-all duration-300 backdrop-blur-sm cursor-pointer"
                                                     >
                                                         <ScrollText size={16} />
                                                     </Button>
@@ -929,7 +929,7 @@ export default function ArticlePage() {
                                                         size="sm"
                                                         onClick={handleListen}
                                                         aria-label={speechStatus === 'speaking' ? 'Pause article audio' : speechStatus === 'paused' ? 'Resume article audio' : 'Listen to the whole article'}
-                                                        className="flex items-center gap-2 border-emerald-200/60 bg-emerald-500/50 text-white backdrop-blur-sm transition-all duration-300 hover:bg-emerald-500/30 cursor-pointer"
+                                                        className="flex items-center gap-2 border-emerald-200/60 bg-emerald-500/50 dark:bg-emerald-500 dark:hover:bg-emerald-500/50 text-white backdrop-blur-sm transition-all duration-300 hover:bg-emerald-500/30 cursor-pointer"
                                                     >
                                                         {speechStatus === 'speaking' ? <Pause size={16} /> : <Volume2 size={16} />}
                                                     </Button>
@@ -969,7 +969,7 @@ export default function ArticlePage() {
                                                         variant="outline"
                                                         size="sm"
                                                         onClick={() => setIsDiagramOpen(true)}
-                                                        className="flex items-center gap-2 border-fuchsia-200/60 bg-fuchsia-500/60 text-white backdrop-blur-sm transition-all duration-300 hover:border-fuchsia-200/50 hover:bg-fuchsia-500/30 cursor-pointer"
+                                                        className="flex items-center gap-2 border-fuchsia-200/60 bg-fuchsia-500/60 dark:hover:bg-fuchsia-500/60 dark:bg-fuchsia-500 text-white backdrop-blur-sm transition-all duration-300 hover:border-fuchsia-200/50 hover:bg-fuchsia-500/30 cursor-pointer"
                                                     >
                                                         <Workflow size={16} />
                                                     </Button>

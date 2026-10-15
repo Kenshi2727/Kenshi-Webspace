@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
+import { clerkMiddleware } from '@clerk/express';
 import notificationRoutes from './routes/notification.route.js';
 import tokenRoutes from './routes/token.route.js';
 import testRoutes from './routes/test.route.js'
@@ -16,6 +17,7 @@ app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(validateGatewaySecret);
+app.use(clerkMiddleware());
 
 // routes
 app.use('/tokens', tokenRoutes);

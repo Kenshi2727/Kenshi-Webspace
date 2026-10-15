@@ -1,3 +1,4 @@
+import { multicastReviewers } from '../services/GlobalApi';
 import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -157,7 +158,8 @@ export default function EditorPage({ type }) {
             async function fetchPost() {
                 try {
                     setLoading(true);
-                    const response = (await getSinglePost(params.id)).data;
+                    const token = await getToken();
+                    const response = (await getSinglePost(params.id, token)).data;
                     const post = response.post;
                     // console.log("Post object received:", post);
                     console.log("Response: ", response.message);
@@ -801,11 +803,13 @@ export default function EditorPage({ type }) {
         }
     };
 
-    const notifySubmit = async (data) => {
+    const notifySubmit = async (data, token) => {
         try {
-            await multicast(data);
+            await multicastReviewers(data, token);
+            return true;
         } catch (error) {
             console.log("Some error occured in notifySeubmit:", error);
+            return false;
         }
 
     }
@@ -855,12 +859,15 @@ export default function EditorPage({ type }) {
                     localStorage.removeItem("draft");
                     localStorage.removeItem("lastSaved");
                     toast.success("Draft sent for review successfully !");
-                    notifySubmit({
-                        title: updatedFormData.title,
-                        body: updatedFormData.excerpt,
+                    const reviewersNotified = await notifySubmit({
+                        title: "Article awaiting review",
+                        body: updatedFormData.title,
                         image: updatedFormData.thumbnail,
-                        link: `${window.location.origin}/articles/${res.data.postId}`,
-                    });
+                        link: `${window.location.origin}/review`,
+                    }, token);
+                    if (!reviewersNotified) {
+                        toast.error("Article saved as draft, but reviewer notification could not be sent.");
+                    }
                     copyToClipboard(
                         `${window.location.origin}/articles/${res.data.postId}`,
                     );

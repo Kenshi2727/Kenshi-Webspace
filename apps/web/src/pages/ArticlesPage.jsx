@@ -53,70 +53,6 @@ const categories = [
 
 const categoryFilterOptions = ['All', ...categories];
 
-// Floating bubbles component
-const FloatingParticles = () => {
-    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
-    useEffect(() => {
-        // for tilting device orientation
-        const handleResize = () => {
-            setWindowWidth(window.innerWidth);
-        };
-
-        window.addEventListener('resize', handleResize);
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []);
-
-    const length = windowWidth > 768 ? 100 : 10;
-
-    const bubbles = useMemo(() => {
-        return Array.from({ length }, (_, i) => ({
-            id: i,
-            size: Math.random() * 50 + 30,
-
-            startX: Math.random() * 100 + "%",
-            startY: Math.random() * 100 + "%",
-
-            moveX: Math.random() * 150 + 75,
-            moveY: Math.random() * 150 - 75,
-
-            duration: Math.random() * 10 + 10,
-            delay: Math.random() * 5,
-        }));
-    }, [length]);
-
-    return (
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            {bubbles.map((bubble) => (
-                <motion.div
-                    key={bubble.id}
-                    className="absolute rounded-full bg-pink-400 dark:bg-linear-to-b dark:from-gray-50 dark:to-gray-300 dark:shadow-lg dark:shadow-gray-400/50"
-                    style={{
-                        width: bubble.size,
-                        height: bubble.size,
-                        left: bubble.startX,
-                        top: bubble.startY,
-                    }}
-                    animate={{
-                        x: [0, bubble.moveX, -bubble.moveX, 0],
-                        y: [0, bubble.moveY, -bubble.moveY, 0],
-                        opacity: [0, 0.9, 0],
-                        scale: [0, 1, 0.8],
-                    }}
-                    transition={{
-                        duration: bubble.duration,
-                        repeat: Infinity,
-                        ease: "anticipate",
-                        delay: bubble.delay,
-                    }}
-                />
-            ))}
-        </div>
-    );
-};
-
 const ArticlesPage = () => {
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [searchTerm, setSearchTerm] = useState('');
@@ -350,14 +286,42 @@ const ArticlesPage = () => {
     }
 
 
+    const particles = useMemo(
+        () => (
+            Array.from({ length: 100 }, (_, i) => (
+                <motion.div
+                    key={i}
+                    className="absolute w-1 h-1 bg-white rounded-full"
+                    animate={{
+                        x: [0, Math.random() * 200 - 100, 0],
+                        y: [0, Math.random() * 200 - 100, 0],
+                        opacity: [0.3, 0.7, 0.3],
+                        scale: [0.5, 1, 0.5]
+                    }}
+                    transition={{
+                        duration: 3 + Math.random() * 2,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                        delay: Math.random() * 2
+                    }}
+                    style={{
+                        left: `${20 + Math.random() * 60}%`,
+                        top: `${20 + Math.random() * 60}%`
+                    }}
+                />
+            ))), []);
+
+
     // Main Render
     return (
         <div className="min-h-screen relative overflow-hidden">
 
-            <div className="fixed inset-0 z-0 mt-16 bg-gradient-to-br from-indigo-600 to-purple-700 dark:from-indigo-950 dark:via-purple-950 dark:to-slate-950">
-                {/* <FloatingParticles /> */}
+            <div className="fixed inset-0 z-0 mt-16 bg-linear-to-br from-indigo-600 to-purple-700 dark:from-indigo-950 dark:via-purple-950 dark:to-slate-950">
                 <AnimatedFloatingSquares />
                 <FloatingOrbs />
+
+                {/* Floating particles */}
+                {particles}
             </div>
 
             {/* Gradient Overlay */}

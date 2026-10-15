@@ -1,7 +1,7 @@
 import * as firebaseService from "./firebase.service.js";
 import * as tokenService from "./token.service.js";
 
-const multicast = async ({ title, body, image, link }) => {
+const multicast = async ({ title, body, image, link, audience = "all" }) => {
     if (!title || !body) {
         return {
             status: 400,
@@ -9,11 +9,15 @@ const multicast = async ({ title, body, image, link }) => {
         };
     }
 
-    const registrationTokens = await tokenService.getAllFcmTokens();
+    if (!["all", "reviewers"].includes(audience)) {
+        return { status: 400, message: "Audience must be all or reviewers" };
+    }
+
+    const registrationTokens = await tokenService.getAllFcmTokens(audience);
     if (!registrationTokens || registrationTokens.length === 0) {
         return {
             status: 404,
-            message: "No FCM tokens available"
+            message: audience === "reviewers" ? "No reviewer notification tokens available" : "No FCM tokens available"
         };
     }
 
@@ -64,6 +68,4 @@ const multicast = async ({ title, body, image, link }) => {
     }
 };
 
-export {
-    multicast
-};
+export { multicast };

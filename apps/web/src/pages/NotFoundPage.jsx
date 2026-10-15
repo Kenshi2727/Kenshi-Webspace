@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { AlertTriangle, Home, RotateCcw, Search, Map } from "lucide-react";
 
@@ -38,13 +38,44 @@ export default function NotFoundPage() {
         return () => clearInterval(phraseInterval);
     }, []);
 
+    // Floating particles animation
+    const particles = useMemo(
+        () => (
+            Array.from({ length: 50 }, (_, i) => (
+                <motion.div
+                    key={i}
+                    className="absolute w-1 h-1 bg-pink-200 dark:bg-white rounded-full"
+                    animate={{
+                        x: [0, Math.random() * 200 - 100, 0],
+                        y: [0, Math.random() * 200 - 100, 0],
+                        opacity: [0.3, 0.7, 0.3],
+                        scale: [0.5, 1, 0.5]
+                    }}
+                    transition={{
+                        duration: 3 + Math.random() * 2,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                        delay: Math.random() * 2
+                    }}
+                    style={{
+                        left: `${20 + Math.random() * 60}%`,
+                        top: `${20 + Math.random() * 60}%`
+                    }}
+                />
+            ))), []);
+
+
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900 dark:from-indigo-950 dark:via-purple-950 dark:to-slate-950 flex items-center justify-center p-6">
+        <div className="min-h-screen bg-linear-to-bl from-indigo-400 via-purple-800 to-purple-800 dark:from-indigo-950 dark:via-purple-950 dark:to-slate-950 flex items-center justify-center p-6">
+
+            {/* Floating particles */}
+            {particles}
+
             <motion.div
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.45 }}
-                className="w-full max-w-md bg-white/5 backdrop-blur-sm border border-white/6 rounded-2xl p-8 text-center shadow-2xl"
+                className="w-full max-w-md bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 text-center shadow-2xl dark:shadow-xl dark:shadow-indigo-300/50"
             >
                 <div className="flex flex-col items-center gap-4">
                     <motion.div
@@ -63,7 +94,7 @@ export default function NotFoundPage() {
                                 opacity: [0.3, 0.6, 0.3]
                             }}
                             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                            className="absolute inset-0 rounded-full border border-red-500/30"
+                            className="absolute inset-0 rounded-full border border-red-500 dark:border-red-500/30"
                         />
                     </motion.div>
 

@@ -8,4 +8,5 @@ export const HEADERS = {
     TRACE_ID: 'x-trace-id',
     CONTENT_TYPE: 'content-type',
     AUTHORIZATION: 'authorization',
+    FCM_SERVICE_TYPE: 'fcm-service-type',
 };

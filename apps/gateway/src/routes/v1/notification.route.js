@@ -18,9 +18,9 @@ if (!target) {
     });
 } else {
     const proxy = createServiceProxy(target, 'notification-service', {
-        pathRewrite: {
-            "^/notification": ""
-        }
+        // pathRewrite: {
+        //     "^/notification": ""
+        // }
     });
 
     router.use((req, res, next) => {

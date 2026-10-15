@@ -20,10 +20,26 @@ export const protectRoute = (req, res, next) => {
             });
         }
         res.locals.userId = auth.userId;
+        req.authenticatedUserId = auth.userId;
         return next();
     } catch (error) {
         console.error("Authentication middleware error:", error);
         res.status(500).json({
+            success: false,
+            message: "Internal Server Error: Authentication failed"
+        });
+    }
+};
+
+export const optionalProtectRoute = (req, res, next) => {
+    try {
+        const auth = getAuth(req);
+        req.authenticatedUserId = auth?.userId || null;
+        if (req.authenticatedUserId) res.locals.userId = req.authenticatedUserId;
+        return next();
+    } catch (error) {
+        console.error("Optional authentication middleware error:", error);
+        return res.status(500).json({
             success: false,
             message: "Internal Server Error: Authentication failed"
         });

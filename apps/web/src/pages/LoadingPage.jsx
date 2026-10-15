@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Rocket, Wifi, Zap } from "lucide-react";
 
@@ -42,31 +42,33 @@ export default function LoadingPage() {
     }, [progress]);
 
     // Floating particles animation
-    const particles = Array.from({ length: 8 }, (_, i) => (
-        <motion.div
-            key={i}
-            className="absolute w-1 h-1 bg-white/30 rounded-full"
-            animate={{
-                x: [0, Math.random() * 200 - 100, 0],
-                y: [0, Math.random() * 200 - 100, 0],
-                opacity: [0.3, 0.7, 0.3],
-                scale: [0.5, 1, 0.5]
-            }}
-            transition={{
-                duration: 3 + Math.random() * 2,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: Math.random() * 2
-            }}
-            style={{
-                left: `${20 + Math.random() * 60}%`,
-                top: `${20 + Math.random() * 60}%`
-            }}
-        />
-    ));
+    const particles = useMemo(
+        () => (
+            Array.from({ length: 50 }, (_, i) => (
+                <motion.div
+                    key={i}
+                    className="absolute w-1 h-1 bg-pink-200 dark:bg-white rounded-full"
+                    animate={{
+                        x: [0, Math.random() * 200 - 100, 0],
+                        y: [0, Math.random() * 200 - 100, 0],
+                        opacity: [0.3, 0.7, 0.3],
+                        scale: [0.5, 1, 0.5]
+                    }}
+                    transition={{
+                        duration: 3 + Math.random() * 2,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                        delay: Math.random() * 2
+                    }}
+                    style={{
+                        left: `${20 + Math.random() * 60}%`,
+                        top: `${20 + Math.random() * 60}%`
+                    }}
+                />
+            ))), []);
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900 dark:from-indigo-950 dark:via-purple-950 dark:to-slate-950 flex items-center justify-center p-6 relative overflow-hidden">
+        <div className="min-h-screen bg-linear-to-bl from-indigo-400 via-purple-800 to-purple-800 dark:from-indigo-950 dark:via-purple-950 dark:to-slate-950 flex items-center justify-center p-6 relative overflow-hidden">
             {/* Floating particles */}
             {particles}
 
@@ -74,7 +76,7 @@ export default function LoadingPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
-                className="w-full max-w-md bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 text-center shadow-2xl relative z-10"
+                className="w-full max-w-md bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 text-center shadow-2xl dark:shadow-xl dark:shadow-indigo-300/50 relative z-10"
             >
                 <div className="flex flex-col items-center gap-6">
                     {/* Animated rocket icon */}
@@ -90,7 +92,7 @@ export default function LoadingPage() {
                                 y: [0, -5, 5, 0]
                             }}
                             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                            className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-blue-500/10 border border-blue-500/20"
+                            className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-blue-950/9 dark:bg-blue-500/10 border border-blue-500/20"
                         >
                             <Rocket className="h-8 w-8 text-blue-400" />
                         </motion.div>
@@ -102,7 +104,7 @@ export default function LoadingPage() {
                                 opacity: [0.5, 0.2, 0.5]
                             }}
                             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                            className="absolute inset-0 rounded-full border border-blue-500/30"
+                            className="absolute inset-0 rounded-full border border-blue-100 dark:border-blue-500/80"
                         />
                         <motion.div
                             animate={{

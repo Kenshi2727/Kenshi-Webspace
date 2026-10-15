@@ -94,7 +94,7 @@ export default function MyArticlesPage() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="min-h-screen bg-gradient-to-br from-purple-950 to-purple-800 dark:from-indigo-950 dark:via-purple-950 dark:to-slate-950 py-10 px-4 sm:px-8 lg:px-16"
+            className="min-h-screen bg-gradient-to-br from-indigo-600 to-purple-700 dark:from-indigo-950 dark:via-purple-950 dark:to-slate-950 py-10 px-4 sm:px-8 lg:px-16"
         >
             <div className="max-w-6xl mx-auto">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
@@ -275,6 +275,13 @@ export default function MyArticlesPage() {
                             )}
                         </ScrollArea>
                     </div>
+
+                    {selectedArticle?.adminRemark && (
+                        <div className="mb-4 rounded-lg border border-amber-500/20 bg-amber-500/10 p-3">
+                            <h3 className="mb-1 text-sm font-semibold text-amber-200">Admin remarks</h3>
+                            <p className="whitespace-pre-wrap text-sm text-amber-100">{selectedArticle.adminRemark}</p>
+                        </div>
+                    )}
 
                     <DialogFooter>
                         <div className="flex items-center justify-end gap-2">

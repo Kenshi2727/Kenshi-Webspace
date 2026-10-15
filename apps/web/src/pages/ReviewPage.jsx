@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { useAuth } from '@clerk/clerk-react';
+import { getPendingReviewPosts, updatePostReview } from '../services/GlobalApi';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -9,6 +11,7 @@ import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/comp
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
@@ -40,129 +43,71 @@ export default function ReviewPage() {
     const [rejectReason, setRejectReason] = useState('');
     const [showRejectDialog, setShowRejectDialog] = useState(false);
     const [articleToReject, setArticleToReject] = useState(null);
+    const [remarkDraft, setRemarkDraft] = useState('');
+    const [openRejectAfterPreview, setOpenRejectAfterPreview] = useState(false);
+    const rejectReasonRef = useRef(null);
+    const { getToken } = useAuth();
 
     useEffect(() => {
         fetchPendingArticles();
     }, []);
 
+    useEffect(() => {
+        if (!previewOpen && openRejectAfterPreview) {
+            setOpenRejectAfterPreview(false);
+            setShowRejectDialog(true);
+        }
+    }, [previewOpen, openRejectAfterPreview]);
+
     async function fetchPendingArticles() {
         setLoading(true);
         setError(null);
         try {
-            const res = await fetch('/api/admin/pending-articles');
-            if (!res.ok) throw new Error('Failed to load pending articles');
-            const data = await res.json();
-            setArticles(data);
+            const token = await getToken();
+            const response = await getPendingReviewPosts(token);
+            const posts = response.data.posts || [];
+            setArticles(posts.map(post => ({
+                ...post,
+                status: 'pending',
+                cover: post.coverImage || post.thumbnail,
+                submittedAt: post.createdAt,
+                priority: 'medium',
+                author: {
+                    name: [post.author?.firstName, post.author?.lastName].filter(Boolean).join(' ') || 'Unknown author',
+                    avatar: post.author?.profile?.image || post.authorImage,
+                    email: post.author?.email || ''
+                }
+            })));
         } catch (err) {
             console.error(err);
             setError(err.message || 'Something went wrong');
-            // Fallback demo content
-            setArticles([
-                {
-                    id: 'pending-1',
-                    title: 'Building Scalable Web Applications with React and Node.js',
-                    excerpt: 'A comprehensive guide to building modern web applications that can handle growth and scale effectively. This covers architecture patterns, performance optimization, and deployment strategies.',
-                    status: 'pending',
-                    cover: null,
-                    content: '# Building Scalable Web Applications\n\nScalability is crucial for modern web applications...\n\n## Architecture Patterns\n\n- Microservices\n- Event-driven architecture\n- CQRS pattern\n\n## Performance Optimization\n\n- Code splitting\n- Lazy loading\n- Caching strategies',
-                    readTime: 8,
-                    createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-                    updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-                    author: {
-                        name: 'Sarah Chen',
-                        avatar: null,
-                        email: 'sarah@example.com'
-                    },
-                    submittedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-                    priority: 'high'
-                },
-                {
-                    id: 'pending-2',
-                    title: 'The Future of AI in Web Development',
-                    excerpt: 'Exploring how artificial intelligence is transforming the way we build websites and web applications, from automated testing to intelligent code generation.',
-                    status: 'pending',
-                    cover: null,
-                    content: '# AI in Web Development\n\nArtificial Intelligence is revolutionizing web development...\n\n## Current Applications\n\n- Code completion\n- Bug detection\n- Performance optimization\n\n## Future Possibilities\n\n- Automated UI generation\n- Smart debugging\n- Predictive scaling',
-                    readTime: 6,
-                    createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-                    updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-                    author: {
-                        name: 'Alex Rodriguez',
-                        avatar: null,
-                        email: 'alex@example.com'
-                    },
-                    submittedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-                    priority: 'medium'
-                },
-                {
-                    id: 'approved-1',
-                    title: 'CSS Grid Layout Mastery',
-                    excerpt: 'Master CSS Grid with this comprehensive guide covering everything from basic concepts to advanced layout techniques.',
-                    status: 'approved',
-                    cover: null,
-                    content: '# CSS Grid Layout\n\nCSS Grid is a powerful layout system...',
-                    readTime: 5,
-                    createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-                    updatedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-                    author: {
-                        name: 'Maria Lopez',
-                        avatar: null,
-                        email: 'maria@example.com'
-                    },
-                    submittedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
-                    approvedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-                    priority: 'low'
-                },
-                {
-                    id: 'rejected-1',
-                    title: 'Quick React Tips',
-                    excerpt: 'Some quick tips for React development that might be useful.',
-                    status: 'rejected',
-                    cover: null,
-                    content: '# React Tips\n\n- Use hooks\n- Keep components small',
-                    readTime: 2,
-                    createdAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
-                    updatedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
-                    author: {
-                        name: 'John Doe',
-                        avatar: null,
-                        email: 'john@example.com'
-                    },
-                    submittedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-                    rejectedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
-                    rejectionReason: 'Content too brief and lacks depth. Please expand with more detailed examples and explanations.',
-                    priority: 'low'
-                }
-            ]);
+            setArticles([]);
         } finally {
             setLoading(false);
         }
     }
 
     function filtered() {
+        const normalizedQuery = query.toLowerCase();
         return articles
-            .filter(a => filter === 'all' ? true : a.status === filter)
-            .filter(a =>
-                a.title.toLowerCase().includes(query.toLowerCase()) ||
-                (a.excerpt || '').toLowerCase().includes(query.toLowerCase()) ||
-                a.author.name.toLowerCase().includes(query.toLowerCase())
+            .filter(article => filter === 'all' || article.status === filter)
+            .filter(article =>
+                article.title.toLowerCase().includes(normalizedQuery) ||
+                (article.excerpt || '').toLowerCase().includes(normalizedQuery) ||
+                article.author.name.toLowerCase().includes(normalizedQuery)
             );
     }
 
-    async function handleApprove(id) {
+    async function handleApprove(id, adminRemark) {
         setActionLoading(id);
         try {
-            const res = await fetch(`/api/admin/articles/${id}/approve`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' }
-            });
-            if (!res.ok) throw new Error('Approval failed');
-
-            setArticles(prev => prev.map(a =>
-                a.id === id
-                    ? { ...a, status: 'approved', approvedAt: new Date().toISOString() }
-                    : a
-            ));
+            const token = await getToken();
+            await updatePostReview(id, {
+                status: 'published',
+                ...(adminRemark !== undefined ? { adminRemark } : {})
+            }, token);
+            setArticles(prev => prev.filter(article => article.id !== id));
+            setPreviewOpen(false);
         } catch (err) {
             alert('Could not approve: ' + (err.message || err));
         } finally {
@@ -173,23 +118,9 @@ export default function ReviewPage() {
     async function handleReject(id, reason) {
         setActionLoading(id);
         try {
-            const res = await fetch(`/api/admin/articles/${id}/reject`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ reason })
-            });
-            if (!res.ok) throw new Error('Rejection failed');
-
-            setArticles(prev => prev.map(a =>
-                a.id === id
-                    ? {
-                        ...a,
-                        status: 'rejected',
-                        rejectedAt: new Date().toISOString(),
-                        rejectionReason: reason
-                    }
-                    : a
-            ));
+            const token = await getToken();
+            await updatePostReview(id, { status: 'rejected', adminRemark: reason }, token);
+            setArticles(prev => prev.filter(article => article.id !== id));
             setShowRejectDialog(false);
             setRejectReason('');
             setArticleToReject(null);
@@ -200,14 +131,35 @@ export default function ReviewPage() {
         }
     }
 
+    async function handleSaveRemark(id) {
+        setActionLoading(id);
+        try {
+            const token = await getToken();
+            await updatePostReview(id, { adminRemark: remarkDraft }, token);
+            setArticles(prev => prev.map(article => article.id === id ? { ...article, adminRemark: remarkDraft } : article));
+            setSelectedArticle(prev => prev?.id === id ? { ...prev, adminRemark: remarkDraft } : prev);
+        } catch (err) {
+            alert('Could not save remark: ' + (err.message || err));
+        } finally {
+            setActionLoading(null);
+        }
+    }
+
     function openPreview(article) {
         setSelectedArticle(article);
+        setRemarkDraft(article.adminRemark || '');
         setPreviewOpen(true);
     }
 
-    function openRejectDialog(article) {
+    function openRejectDialog(article, closePreview = false) {
         setArticleToReject(article);
-        setShowRejectDialog(true);
+        setRejectReason('');
+        if (closePreview) {
+            setOpenRejectAfterPreview(true);
+            setPreviewOpen(false);
+        } else {
+            setShowRejectDialog(true);
+        }
     }
 
     function getPriorityColor(priority) {
@@ -243,7 +195,7 @@ export default function ReviewPage() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="min-h-screen bg-gradient-to-br from-purple-950 to-purple-800 dark:from-indigo-950 dark:via-purple-950 dark:to-slate-950 py-10 px-4 sm:px-8 lg:px-16"
+            className="min-h-screen bg-gradient-to-br from-indigo-600 to-purple-700 dark:via-purple-950 dark:to-slate-950 py-10 px-4 sm:px-8 lg:px-16"
         >
             <div className="max-w-7xl mx-auto">
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
@@ -314,20 +266,6 @@ export default function ReviewPage() {
                                             <Clock size={14} />
                                             Pending ({articles.filter(a => a.status === 'pending').length})
                                         </TabsTrigger>
-                                        <TabsTrigger
-                                            value="approved"
-                                            className="data-[state=active]:bg-black data-[state=active]:text-white px-3 py-1 rounded-full flex items-center gap-2"
-                                        >
-                                            <CheckCircle size={14} />
-                                            Approved
-                                        </TabsTrigger>
-                                        <TabsTrigger
-                                            value="rejected"
-                                            className="data-[state=active]:bg-black data-[state=active]:text-white px-3 py-1 rounded-full flex items-center gap-2"
-                                        >
-                                            <AlertTriangle size={14} />
-                                            Rejected
-                                        </TabsTrigger>
                                     </TabsList>
                                 </Tabs>
                             </div>
@@ -345,6 +283,11 @@ export default function ReviewPage() {
                                             className="w-8 h-8 border-2 border-white/20 border-t-white rounded-full mx-auto mb-4"
                                         />
                                         Loading articles for review...
+                                    </div>
+                                ) : error ? (
+                                    <div className="col-span-full py-20 text-center text-red-200">
+                                        <p>{error}</p>
+                                        <Button variant="outline" onClick={fetchPendingArticles} className="mt-4">Try again</Button>
                                     </div>
                                 ) : filtered().length === 0 ? (
                                     <motion.div
@@ -409,12 +352,11 @@ export default function ReviewPage() {
                                                             </div>
                                                         </div>
 
-                                                        {/* Rejection reason for rejected articles */}
-                                                        {article.status === 'rejected' && article.rejectionReason && (
-                                                            <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-2 mb-3">
-                                                                <div className="text-xs text-red-300 font-medium mb-1">Rejection Reason:</div>
-                                                                <div className="text-xs text-red-200" style={{ ...multilineClamp(2) }}>
-                                                                    {article.rejectionReason}
+                                                        {article.adminRemark && (
+                                                            <div className="bg-white/5 border border-white/10 rounded-lg p-2 mb-3">
+                                                                <div className="text-xs text-gray-300 font-medium mb-1">Saved admin remark</div>
+                                                                <div className="text-xs text-gray-200" style={{ ...multilineClamp(2) }}>
+                                                                    {article.adminRemark}
                                                                 </div>
                                                             </div>
                                                         )}
@@ -549,7 +491,7 @@ export default function ReviewPage() {
                         </DialogTitle>
                     </DialogHeader>
 
-                    <div className="py-4">
+                    <div className="py-4 space-y-4">
                         <ScrollArea className="h-96 p-4 bg-white/5 rounded-lg border border-white/10">
                             {selectedArticle ? (
                                 <div className="prose prose-invert max-w-none">
@@ -561,6 +503,28 @@ export default function ReviewPage() {
                                 <div className="text-gray-300">No preview available</div>
                             )}
                         </ScrollArea>
+                        {selectedArticle?.status === 'pending' && (
+                            <div className="space-y-2">
+                                <label htmlFor="admin-remark" className="text-sm font-medium">Admin remarks</label>
+                                <textarea
+                                    id="admin-remark"
+                                    value={remarkDraft}
+                                    onChange={(event) => setRemarkDraft(event.target.value)}
+                                    maxLength={5000}
+                                    placeholder="Share feedback with the author..."
+                                    className="w-full min-h-24 px-3 py-2 bg-white/5 border border-white/10 rounded-lg resize-y"
+                                />
+                                <div className="flex justify-end">
+                                    <Button
+                                        variant="outline"
+                                        onClick={() => handleSaveRemark(selectedArticle.id)}
+                                        disabled={actionLoading === selectedArticle.id}
+                                    >
+                                        {actionLoading === selectedArticle.id ? 'Saving...' : 'Save remark'}
+                                    </Button>
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     <DialogFooter>
@@ -573,8 +537,7 @@ export default function ReviewPage() {
                                     <Button
                                         variant="outline"
                                         onClick={() => {
-                                            openRejectDialog(selectedArticle);
-                                            setPreviewOpen(false);
+                                            openRejectDialog(selectedArticle, true);
                                         }}
                                         className="text-red-400 border-red-400/20 hover:bg-red-400/10"
                                     >
@@ -583,9 +546,9 @@ export default function ReviewPage() {
                                     </Button>
                                     <Button
                                         onClick={() => {
-                                            handleApprove(selectedArticle.id);
-                                            setPreviewOpen(false);
+                                            handleApprove(selectedArticle.id, remarkDraft);
                                         }}
+                                        disabled={actionLoading === selectedArticle.id}
                                         className="bg-green-600 hover:bg-green-700"
                                     >
                                         <Check size={16} className="mr-2" />
@@ -600,29 +563,56 @@ export default function ReviewPage() {
 
             {/* Reject Dialog */}
             <Dialog open={showRejectDialog} onOpenChange={setShowRejectDialog}>
-                <DialogContent className="max-w-md">
+                <DialogContent
+                    className="max-w-lg border border-red-200/15 bg-slate-950 text-slate-100 shadow-2xl"
+                    onOpenAutoFocus={(event) => {
+                        event.preventDefault();
+                        rejectReasonRef.current?.focus();
+                    }}
+                >
                     <DialogHeader>
-                        <DialogTitle className="text-red-400">Reject Article</DialogTitle>
+                        <DialogTitle className="flex items-center gap-3 text-left text-red-300">
+                            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-500/15 text-red-300">
+                                <MessageSquare size={18} />
+                            </span>
+                            <span>Request article changes</span>
+                        </DialogTitle>
                     </DialogHeader>
-                    <div className="py-4 space-y-4">
-                        <p className="text-sm text-gray-300">
-                            Please provide a reason for rejecting "{articleToReject?.title}". This will help the author improve their submission.
-                        </p>
-                        <textarea
+                    <div className="space-y-5 py-2">
+                        <div className="rounded-lg border border-white/10 bg-white/5 p-3">
+                            <div className="mb-1 text-xs font-medium uppercase tracking-wide text-slate-400">Article</div>
+                            <p className="line-clamp-2 text-sm font-medium text-slate-100">{articleToReject?.title}</p>
+                        </div>
+                        <div className="space-y-2">
+                            <label htmlFor="reject-reason" className="text-sm font-medium text-slate-100">
+                                Feedback for the author <span className="text-red-300">*</span>
+                            </label>
+                            <Textarea
+                                id="reject-reason"
+                                ref={rejectReasonRef}
                             value={rejectReason}
-                            onChange={(e) => setRejectReason(e.target.value)}
-                            placeholder="Explain why this article needs improvement..."
-                            className="w-full h-24 px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-gray-400 resize-none"
-                        />
+                                onChange={(event) => setRejectReason(event.target.value)}
+                                maxLength={5000}
+                                rows={6}
+                                placeholder="Explain what needs to change and how the author can improve the article."
+                                className="min-h-36 resize-y border-white/15 bg-white/5 text-slate-100 placeholder:text-slate-500 focus-visible:border-red-300/60 focus-visible:ring-red-300/20"
+                                aria-describedby="reject-reason-hint reject-reason-count"
+                                disabled={actionLoading === articleToReject?.id}
+                            />
+                            <div className="flex items-start justify-between gap-4 text-xs text-slate-400">
+                                <span id="reject-reason-hint">The author will see this feedback in My Articles.</span>
+                                <span id="reject-reason-count" className="shrink-0">{rejectReason.length}/5000</span>
+                            </div>
+                        </div>
                     </div>
-                    <DialogFooter>
-                        <Button variant="ghost" onClick={() => setShowRejectDialog(false)}>
+                    <DialogFooter className="border-t border-white/10 pt-4">
+                        <Button variant="ghost" onClick={() => setShowRejectDialog(false)} disabled={actionLoading === articleToReject?.id}>
                             Cancel
                         </Button>
                         <Button
-                            onClick={() => handleReject(articleToReject?.id, rejectReason)}
+                            onClick={() => handleReject(articleToReject?.id, rejectReason.trim())}
                             disabled={!rejectReason.trim() || actionLoading === articleToReject?.id}
-                            className="bg-red-600 hover:bg-red-700"
+                            className="bg-red-600 text-white hover:bg-red-700 disabled:opacity-50"
                         >
                             {actionLoading === articleToReject?.id ? (
                                 <motion.div

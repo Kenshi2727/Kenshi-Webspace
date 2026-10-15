@@ -112,7 +112,7 @@ export default function MarkdownRenderer({ content = '', components }) {
             <figure className="my-4">
 
                 <div className="relative w-fit mx-auto">
-                    <img className="mx-auto rounded-lg shadow-sm max-h-[420px] object-contain" {...props} />
+                    <img className="mx-auto rounded-lg shadow-sm dark:shadow-indigo-300 max-h-[420px] object-contain" {...props} />
                 </div>
 
                 {props.alt && <figcaption className="text-sm text-gray-950 dark:text-gray-200 text-center mt-2"><span className='font-bold'>Fig. </span>{props.alt}</figcaption>}
