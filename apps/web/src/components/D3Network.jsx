@@ -199,22 +199,22 @@ export default function D3Network() {
             target: `article:${pair.targetId}`,
             kind: "related",
             reason: pair.reason,
-            color: isDark ? "#fb7185" : "#be123c",
+            color: isDark ? "#f9a8d4" : "#be185d",
         }));
         const nodes = [...topicNodes, ...articleNodes];
         const links = [...membershipLinks, ...relatedLinks];
 
         let width = Math.max(container.clientWidth, 320);
         let height = Math.max(340, Math.min(470, width * 0.56));
-        const textColor = isDark ? "#e2e8f0" : "#334155";
-        const defaultLinkOpacity = isDark ? 0.42 : 0.36;
+        const textColor = isDark ? "#e9d5ff" : "#374151";
+        const defaultLinkOpacity = isDark ? 0.46 : 0.38;
         const tooltip = d3.select(container)
             .append("div")
             .attr("class", "pointer-events-none absolute z-10 max-w-64 rounded-md border px-3 py-2 text-xs shadow-lg")
             .style("display", "none")
-            .style("border-color", isDark ? "rgba(148,163,184,.28)" : "rgba(100,116,139,.24)")
-            .style("background", isDark ? "rgba(15,23,42,.96)" : "rgba(255,255,255,.97)")
-            .style("color", isDark ? "#f1f5f9" : "#0f172a");
+            .style("border-color", isDark ? "rgba(255,255,255,.16)" : "rgba(255,255,255,.8)")
+            .style("background", isDark ? "rgba(35,22,57,.96)" : "rgba(255,255,255,.97)")
+            .style("color", isDark ? "#faf5ff" : "#1f2937");
         const svg = d3.select(container)
             .append("svg")
             .attr("viewBox", `0 0 ${width} ${height}`)
@@ -253,7 +253,7 @@ export default function D3Network() {
         nodeSelection.append("circle")
             .attr("class", "node-core")
             .attr("r", (node) => node.radius)
-            .attr("fill", (node) => node.type === "topic" ? node.color : (isDark ? "#0f172a" : "#ffffff"))
+            .attr("fill", (node) => node.type === "topic" ? node.color : (isDark ? "#2b1d42" : "#ffffff"))
             .attr("fill-opacity", (node) => node.type === "topic" ? (isDark ? 0.92 : 0.96) : 1)
             .attr("stroke", (node) => node.color)
             .attr("stroke-width", (node) => node.type === "topic" ? 2 : 2.5);
@@ -398,76 +398,76 @@ export default function D3Network() {
         : [];
 
     return (
-        <section aria-labelledby="reading-paths-title" className="overflow-hidden rounded-xl border border-slate-200 bg-white/85 shadow-lg shadow-slate-900/5 dark:border-slate-700 dark:bg-slate-950/65 dark:shadow-black/20">
-            <div className="flex flex-col gap-4 border-b border-slate-200 px-5 py-5 dark:border-slate-800 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+        <section aria-labelledby="reading-paths-title" className="overflow-hidden rounded-xl border border-white/80 bg-white/10 shadow-md dark:shadow-indigo-300 backdrop-blur-lg ring-1 ring-white dark:border-white/10  dark:ring-white/10">
+            <div className="flex flex-col gap-4 border-b border-white/80 px-5 py-5 dark:border-white/10 sm:flex-row sm:items-center sm:justify-between sm:px-6">
                 <div className="flex items-start gap-3">
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-teal-50 text-teal-700 dark:bg-teal-400/10 dark:text-teal-300">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-indigo-100 bg-indigo-50/80 text-purple-600 dark:border-indigo-300/15 dark:bg-indigo-400/10 dark:text-indigo-200">
                         <Network className="size-5" />
                     </span>
                     <div>
-                        <h2 id="reading-paths-title" className="text-lg font-semibold text-slate-900 dark:text-white">AI reading paths</h2>
-                        <p className="mt-1 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-400">
+                        <h2 id="reading-paths-title" className="text-lg font-semibold text-gray-900 dark:text-white">AI reading paths</h2>
+                        <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-200 dark:text-gray-300">
                             Discover shared ideas across Kenshi articles and follow a path into a new subject.
                         </p>
                     </div>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
-                    <span className="inline-flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
-                        <Sparkles className="size-3.5 text-amber-600 dark:text-amber-300" />
+                    <span className="inline-flex items-center gap-1.5 text-xs text-gray-300 dark:text-gray-400">
+                        <Sparkles className="size-3.5 text-indigo-300 dark:text-purple-300" />
                         {usingFallback ? "Category map" : "AI topic map"}
                     </span>
-                    <span className="inline-flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
-                        <BookOpen className="size-4 text-teal-700 dark:text-teal-300" />
+                    <span className="inline-flex items-center gap-2 text-sm text-gray-300 dark:text-gray-300">
+                        <BookOpen className="size-4 text-indigo-300 dark:text-indigo-300" />
                         {loading ? "Analyzing published articles" : `${articles.length} recent articles`}
                     </span>
                 </div>
             </div>
 
-            <div className="mx-4 mt-4 flex items-start gap-3 rounded-lg border border-teal-200/70 bg-teal-50/70 px-4 py-3 dark:border-teal-400/15 dark:bg-teal-400/5 sm:mx-5">
-                <Sparkles className="mt-0.5 size-4 shrink-0 text-teal-700 dark:text-teal-300" />
+            <div className="mx-4 mt-4 flex items-start gap-3 rounded-lg border border-indigo-100/80 bg-white/75 px-4 py-3 backdrop-blur-sm dark:border-indigo-300/15 dark:bg-white/5 sm:mx-5">
+                <Sparkles className="mt-0.5 size-4 shrink-0 text-indigo-600 dark:text-indigo-300" />
                 <div>
-                    <p className="text-xs font-semibold uppercase tracking-wide text-teal-800 dark:text-teal-200">Collection summary</p>
-                    <p aria-live="polite" className="mt-1 text-sm leading-6 text-slate-700 dark:text-slate-300">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-indigo-800 dark:text-indigo-200">Collection summary</p>
+                    <p aria-live="polite" className="mt-1 text-sm leading-6 text-gray-700 dark:text-gray-200">
                         {loading ? "Analyzing themes across the published article collection…" : network?.summary || "No published articles are available to summarize."}
                     </p>
                 </div>
             </div>
 
             <div className="grid min-w-0 gap-4 p-4 sm:p-5 lg:grid-cols-[minmax(0,1fr)_280px]">
-                <div className="min-w-0 space-y-3">
+                <div className="min-w-0 space-y-3 flex flex-col">
                     <div className="flex flex-wrap items-center justify-between gap-2 px-1">
-                        <span className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Connection map</span>
-                        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500 dark:text-slate-400">
+                        <span className="text-xs font-semibold uppercase tracking-wide text-gray-200 dark:text-gray-400">Connection map</span>
+                        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-950 dark:text-gray-400">
                             <span className="inline-flex items-center gap-2">
-                                <span className="h-0.5 w-4 rounded bg-teal-600 dark:bg-teal-400" /> Shared AI topic
+                                <span className="h-0.5 w-8 rounded bg-indigo-600 dark:bg-indigo-400" /> Shared AI topic
                             </span>
                             <span className="inline-flex items-center gap-2">
-                                <span className="w-4 border-t-2 border-dashed border-rose-700 dark:border-rose-400" /> Related reading
+                                <span className="w-8 border-t-2 border-dashed border-pink-700 dark:border-pink-300" /> Related reading
                             </span>
                         </div>
                     </div>
-                    <div className="relative flex aspect-video max-h-117.5 min-h-85 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-slate-50/70 dark:border-slate-800 dark:bg-slate-900/50">
+                    <div className="relative flex aspect-video max-h-117.5 min-h-85 items-center justify-center overflow-hidden rounded-lg border border-white/80 bg-white/85 dark:border-white/10 dark:bg-black/10">
                         {loading ? (
-                            <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+                            <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
                                 <LoaderCircle className="size-4 animate-spin" /> Analyzing the latest articles
                             </div>
                         ) : error ? (
                             <div className="max-w-sm px-5 text-center">
-                                <p className="text-sm text-slate-600 dark:text-slate-300">Published articles could not be loaded.</p>
+                                <p className="text-sm text-gray-600 dark:text-gray-300">Published articles could not be loaded.</p>
                                 <Button variant="outline" size="sm" onClick={() => setRefreshKey((key) => key + 1)} className="mt-3">Try again</Button>
                             </div>
                         ) : articles.length === 0 ? (
-                            <p className="px-5 text-center text-sm text-slate-500 dark:text-slate-400">Published articles will appear here as a topic map.</p>
+                            <p className="px-5 text-center text-sm text-gray-500 dark:text-gray-400">Published articles will appear here as a topic map.</p>
                         ) : (
                             <div ref={graphRef} className="absolute inset-0 h-full w-full" />
                         )}
                     </div>
                 </div>
 
-                <aside className="flex flex-col gap-4 rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900/60">
+                <aside className="flex flex-col gap-4 rounded-lg border border-white/80 bg-white/75 p-4 backdrop-blur-sm dark:border-white/10 dark:bg-white/5">
                     <div>
-                        <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{selectedTopic?.name || "Topics"}</h3>
-                        <p className="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">
+                        <h3 className="text-sm font-semibold text-gray-900 dark:text-white">{selectedTopic?.name || "Topics"}</h3>
+                        <p className="mt-1 text-xs leading-5 text-gray-500 dark:text-gray-400">
                             {selectedTopic?.description || "AI groups published articles by shared ideas."}
                         </p>
                     </div>
@@ -479,8 +479,8 @@ export default function D3Network() {
                                     type="button"
                                     onClick={() => setSelectedTopicIndex(index)}
                                     className={`rounded-md border px-2 py-1 text-xs transition-colors ${index === selectedTopicIndex
-                                        ? "border-teal-700 bg-teal-50 text-teal-900 dark:border-teal-400/40 dark:bg-teal-400/10 dark:text-teal-100"
-                                        : "border-slate-200 text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"}`}
+                                        ? "border-indigo-600 bg-indigo-50 text-indigo-900 dark:border-indigo-300/40 dark:bg-indigo-400/10 dark:text-indigo-100"
+                                        : "border-white/80 text-gray-600 hover:bg-white/70 dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/10"}`}
                                 >
                                     {topic.name}
                                 </button>
@@ -494,7 +494,7 @@ export default function D3Network() {
                                     <button
                                         type="button"
                                         onClick={() => navigate(`/articles/${article.id}`)}
-                                        className="group flex w-full items-start gap-2 rounded-md px-2 py-2 text-left text-sm text-slate-700 transition-colors hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
+                                        className="group flex w-full items-start gap-2 rounded-md px-2 py-2 text-left text-sm text-gray-700 transition-colors hover:bg-white/70 dark:text-gray-200 dark:hover:bg-white/10"
                                     >
                                         <span className="mt-1.5 size-2 shrink-0 rounded-full" style={{ backgroundColor: categoryPalette[Math.max(topics.indexOf(selectedTopic), 0) % categoryPalette.length] }} />
                                         <span className="min-w-0 flex-1 leading-5">{article.title}</span>
@@ -506,15 +506,15 @@ export default function D3Network() {
                     ) : categorySummary.length > 0 ? (
                         <ul className="space-y-1">
                             {categorySummary.map((category) => (
-                                <li key={category.name} className="flex items-center gap-2 px-2 py-1.5 text-xs text-slate-600 dark:text-slate-300">
+                                <li key={category.name} className="flex items-center gap-2 px-2 py-1.5 text-xs text-gray-600 dark:text-gray-300">
                                     <span className="size-2 shrink-0 rounded-full" style={{ backgroundColor: category.color }} />
                                     <span className="min-w-0 flex-1 truncate">{category.name}</span>
-                                    <span className="text-slate-500 dark:text-slate-400">{category.articleIds.length}</span>
+                                    <span className="text-gray-500 dark:text-gray-400">{category.articleIds.length}</span>
                                 </li>
                             ))}
                         </ul>
                     ) : null}
-                    <p className="mt-auto border-t border-slate-200 pt-3 text-xs leading-5 text-slate-500 dark:border-slate-800 dark:text-slate-400">
+                    <p className="mt-auto border-t border-white/70 pt-3 text-xs leading-5 text-gray-500 dark:border-white/10 dark:text-gray-400">
                         Select a topic to explore its articles. Article points open the full read.
                     </p>
                 </aside>

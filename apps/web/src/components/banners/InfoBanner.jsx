@@ -57,7 +57,7 @@ export default function InfoBanner({ title, content, badgeText }) {
             aria-live="polite"
             className="mx-3 sm:mx-4 md:mx-6 lg:mx-auto my-2"
         >
-            <div className="relative overflow-hidden rounded-xl border border-purple-200/60 shadow-md backdrop-blur-sm">
+            <div className="relative overflow-hidden rounded-xl border border-purple-200/60 shadow-md backdrop-blur-sm dark:shadow-indigo-300">
                 {/* Gradient Background */}
                 <div className="absolute inset-0 bg-gradient-to-r from-violet-200 to-purple-300" />
 

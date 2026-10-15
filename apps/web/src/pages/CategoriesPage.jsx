@@ -340,7 +340,7 @@ const CategoriesPage = () => {
 
     return (
         <div className="relative isolate min-h-screen bg-linear-to-bl from-indigo-500 to-purple-400 dark:from-indigo-950 dark:via-purple-950 dark:to-purple-950 overflow-hidden">
-            <main className="relative mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
+            <main className="relative mx-auto max-w-340 px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
                 <section className="mb-8 grid gap-6 lg:grid-cols-[1fr_360px] lg:items-center">
                     <motion.div
                         initial={{ opacity: 0, y: 16 }}
@@ -387,12 +387,18 @@ const CategoriesPage = () => {
                     </motion.div>
                 </section>
 
+
+                <div className="my-8">
+                    <D3Network />
+                </div>
+
                 <motion.section
                     initial={{ opacity: 0, y: 14 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.16, duration: 0.45 }}
                     className="mb-8 rounded-2xl border border-white/70 bg-white/5 p-4 shadow-xl dark:shadow-indigo-300/50 backdrop-blur-lg ring-1 ring-white/50 dark:border-white/10 dark:bg-white/7 dark:ring-white/10"
                 >
+
                     <div className="grid gap-3 items-center lg:grid-cols-[1fr_auto_auto]">
                         <div className="relative">
                             <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
@@ -470,10 +476,6 @@ const CategoriesPage = () => {
                         <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Try a broader search term.</p>
                     </motion.div>
                 )}
-
-                <div className="mt-8">
-                    <D3Network />
-                </div>
 
                 <motion.section
                     initial={{ opacity: 0, y: 16 }}
