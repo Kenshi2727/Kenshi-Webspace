@@ -6,9 +6,6 @@ import { privilegedRouteAccess } from "../middlewares/rbac.middleware.js";
 
 const router = express.Router();
 
-router.get('/review/pending', protectRoute, privilegedRouteAccess(["ADMIN", "OWNER"]), controller.getPendingReviewPosts);
-router.patch('/review/:postId', protectRoute, privilegedRouteAccess(["ADMIN", "OWNER"]), controller.updatePostReview);
-
 // post routes
 router.post('/new/:authorId', protectRoute, controller.createNewPost);
 
@@ -25,11 +22,15 @@ router.get('/', controller.getAllPosts, controller.getFeaturedPosts);
 
 router.get('/user-posts/:userId', protectRoute, controller.getUserPosts);
 
+router.get('/review/pending', protectRoute, privilegedRouteAccess(["ADMIN", "OWNER"]), controller.getPendingReviewPosts);
+
 // delete routes
 router.delete('/:postId', protectRoute, controller.deletePost);
 
 // update routes
 router.patch('/:postId', protectRoute, privilegedRouteAccess(["USER", "OWNER"]), controller.updatePost);
+
+router.patch('/review/:postId', protectRoute, privilegedRouteAccess(["ADMIN", "OWNER"]), controller.updatePostReview);
 
 router.put('/likes/:postId', protectRoute, controller.updatePostLikes);
 
