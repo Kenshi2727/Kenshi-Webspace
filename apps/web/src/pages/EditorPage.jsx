@@ -860,10 +860,10 @@ export default function EditorPage({ type }) {
                     localStorage.removeItem("lastSaved");
                     toast.success("Draft sent for review successfully !");
                     const reviewersNotified = await notifySubmit({
-                        title: "Article awaiting review",
+                        title: "New Article awaiting review",
                         body: updatedFormData.title,
                         image: updatedFormData.thumbnail,
-                        link: `${window.location.origin}/review`,
+                        link: '/review',
                     }, token);
                     if (!reviewersNotified) {
                         toast.error("Article saved as draft, but reviewer notification could not be sent.");
@@ -984,6 +984,15 @@ export default function EditorPage({ type }) {
 
                 if (res && res.status === 200) {
                     toast.success("Post updated successfully!");
+                    const reviewersNotified = await notifySubmit({
+                        title: "Updated Article awaiting review",
+                        body: updatedFormData.title,
+                        image: updatedFormData.thumbnail,
+                        link: '/review',
+                    }, token);
+                    if (!reviewersNotified) {
+                        toast.error("Article saved as draft, but reviewer notification could not be sent.");
+                    }
                 } else {
                     toast.error("Failed to update post !");
                 }

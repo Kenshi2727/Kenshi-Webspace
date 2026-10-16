@@ -507,7 +507,10 @@ const updatePost = async (req) => {
         }
 
         // proceed to update post
-        const updatedData = { ...req.body };
+        const updatedData = {
+            ...req.body,
+            status: "draft"
+        };
 
         // delete thumb_id and cover_id from patch data (NOT PART OF DATABASE SCHEMA)
         delete updatedData.thumb_id;
